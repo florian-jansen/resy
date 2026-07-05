@@ -34,7 +34,7 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 library(sf)
-library(vegdata)
+# library(vegdata)  # not needed: taxon names are cleaned natively (see below)
 library(RESY)
 ```
 
@@ -47,7 +47,10 @@ First, the vegetation surveys:
 ```{r example-data-species, message=FALSE}
 data_species <- read_csv(system.file("extdata", "data_example_species.csv", package = "RESY"), skip = 0)
 data_species
-data_species$species <- taxname.removeAuthors(data_species$species)
+
+# clean names with RESY's native cleaner: drops author strings, keeps ranks
+data_species$species <- resy_clean_names(data_species$species)
+# data_species$species <- vegdata::taxname.removeAuthors(data_species$species)
 ```
 
 Second, the sites data:
