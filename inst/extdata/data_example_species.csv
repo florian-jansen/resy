@@ -1,0 +1,3581 @@
+PlotObservationID,cover,species
+HU32,0.1,Dryopteris filix-mas (L.) Schott
+HU32,0.1,Cephalanthera longifolia (L.) Fritsch
+HU32,0.5,Prenanthes purpurea L.
+HU32,0.5,Anemone nemorosa L.
+HU32,0.5,Epipactis helleborine (L.) Crantz subsp. helleborine
+HU32,0.5,Sorbus aucuparia L. subsp. aucuparia
+HU32,87.5,Fagus sylvatica L.
+HU32,3,Rubus hirtus Waldst. & Kit.
+HU32,3,Abies alba Mill.
+HU32,3,Oxalis acetosella L.
+KW76,0.1,Poa nemoralis L. subsp. nemoralis
+KW76,0.1,Epipactis helleborine (L.) Crantz subsp. helleborine
+KW76,0.5,Luzula nivea (L.) DC.
+KW76,0.5,Prenanthes purpurea L.
+KW76,0.5,Dryopteris filix-mas (L.) Schott
+KW76,0.5,Anemone nemorosa L.
+KW76,0.5,"Senecio ovatus (G.Gaertn., B.Mey. & Scherb.) Willd."
+KW76,0.5,Viola reichenbachiana Jord. ex Boreau
+KW76,0.5,Cardamine bulbifera (L.) Crantz
+KW76,0.5,Rubus hirtus Waldst. & Kit.
+KW76,87.5,Fagus sylvatica L.
+KW76,15,Geranium robertianum L.
+KW76,3,Galium rotundifolium L. subsp. rotundifolium
+KW76,3,Neottia nidus-avis (L.) Rich.
+KW76,3,Sanicula europaea L.
+YB18,0.5,Poa nemoralis L. subsp. nemoralis
+YB18,0.5,Viola reichenbachiana Jord. ex Boreau
+YB18,0.5,Veronica officinalis L.
+YB18,0.5,Rubus hirtus Waldst. & Kit.
+YB18,0.5,Oxalis acetosella L.
+YB18,0.5,Dryopteris filix-mas (L.) Schott
+YB18,87.5,Fagus sylvatica L.
+YB18,3,Luzula nivea (L.) DC.
+NX70,0.1,Oxalis acetosella L.
+NX70,0.5,Gymnocarpium dryopteris (L.) Newman
+NX70,0.5,Rubus hirtus Waldst. & Kit.
+NX70,0.5,Poa nemoralis L. subsp. nemoralis
+NX70,87.5,Fagus sylvatica L.
+NX70,3,Luzula nivea (L.) DC.
+NX70,3,Dryopteris filix-mas (L.) Schott
+OL48,0.1,Sorbus aucuparia L. subsp. aucuparia
+OL48,0.1,Abies alba Mill.
+OL48,0.5,Hieracium murorum L.
+OL48,0.5,Viola reichenbachiana Jord. ex Boreau
+OL48,0.5,Festuca heterophylla Lam.
+OL48,0.5,Veronica urticifolia Jacq.
+OL48,87.5,Fagus sylvatica L.
+OL48,15,Luzula nivea (L.) DC.
+OL48,3,Sesleria argentea (Savi) Savi
+YL40,0.1,Anemone nemorosa L.
+YL40,0.1,Ajuga reptans L.
+YL40,0.5,Vaccinium myrtillus L.
+YL40,0.5,Luzula nivea (L.) DC.
+YL40,0.5,Veronica officinalis L.
+YL40,0.5,Solidago virgaurea L.
+YL40,0.5,Prenanthes purpurea L.
+YL40,0.5,Sanicula europaea L.
+YL40,0.5,Euphorbia dulcis L.
+YL40,0.5,Oxalis acetosella L.
+YL40,0.5,Rubus hirtus Waldst. & Kit.
+YL40,0.5,Sorbus aucuparia L. subsp. aucuparia
+YL40,87.5,Fagus sylvatica L.
+YL40,3,Hieracium murorum L.
+YL40,3,Luzula pedemontana Boiss. & Reut.
+RO82,0.5,Dryopteris filix-mas (L.) Schott
+RO82,0.5,Veronica urticifolia Jacq.
+RO82,0.5,Campanula trachelium L. subsp. trachelium
+RO82,0.5,Anemone nemorosa L.
+RO82,0.5,Oxalis acetosella L.
+RO82,0.5,Poa nemoralis L. subsp. nemoralis
+RO82,0.5,Epilobium montanum L.
+RO82,0.5,Saxifraga rotundifolia L. subsp. rotundifolia
+RO82,0.5,Geranium robertianum L.
+RO82,87.5,Fagus sylvatica L.
+RO82,3,Gymnocarpium dryopteris (L.) Newman
+RO82,3,Luzula pedemontana Boiss. & Reut.
+CX45,0.1,Urtica dioica L.
+CX45,0.1,Saxifraga rotundifolia L. subsp. rotundifolia
+CX45,0.5,Viola reichenbachiana Jord. ex Boreau
+CX45,0.5,Stellaria nemorum L. subsp. montana (Pierrat) Berher
+CX45,87.5,Fagus sylvatica L.
+CX45,15,Oxalis acetosella L.
+CX45,3,Dryopteris filix-mas (L.) Schott
+GB31,0.1,Urtica dioica L.
+GB31,0.1,Stellaria nemorum L. subsp. montana (Pierrat) Berher
+GB31,0.1,Anemone nemorosa L.
+GB31,0.1,Polystichum lonchitis (L.) Roth
+GB31,0.5,Saxifraga rotundifolia L. subsp. rotundifolia
+GB31,0.5,Dryopteris filix-mas (L.) Schott
+GB31,0.5,Lathyrus vernus (L.) Bernh. subsp. vernus
+GB31,0.5,Galium odoratum (L.) Scop.
+GB31,0.5,Epipactis helleborine (L.) Crantz subsp. helleborine
+GB31,87.5,Fagus sylvatica L.
+IY53,0.1,Lactuca muralis (L.) Gaertn.
+IY53,0.5,Dryopteris filix-mas (L.) Schott
+IY53,0.5,Prenanthes purpurea L.
+IY53,0.5,Carex sylvatica Huds. subsp. sylvatica
+IY53,0.5,Hepatica nobilis Mill.
+IY53,0.5,Daphne laureola L.
+IY53,62.5,Fagus sylvatica L.
+IY53,15,Abies alba Mill.
+IY53,15,Acer pseudoplatanus L.
+IY53,3,Lamium galeobdolon (L.) L. subsp. montanum (Pers.) Hayek
+IY53,3,Geranium robertianum L.
+IY53,3,Melica uniflora Retz.
+XS50,0.5,Veronica urticifolia Jacq.
+XS50,0.5,Anemone nemorosa L.
+XS50,0.5,Oxalis acetosella L.
+XS50,0.5,Luzula nivea (L.) DC.
+XS50,0.5,Sorbus aucuparia L. subsp. aucuparia
+XS50,0.5,Rubus hirtus Waldst. & Kit.
+XS50,0.5,Lactuca muralis (L.) Gaertn.
+XS50,0.5,Euphorbia dulcis L.
+XS50,87.5,Fagus sylvatica L.
+XS50,15,Abies alba Mill.
+XS50,3,Gymnocarpium dryopteris (L.) Newman
+XS50,3,Prenanthes purpurea L.
+XS50,3,Athyrium filix-femina (L.) Roth
+QZ52,0.1,Poa nemoralis L. subsp. nemoralis
+QZ52,0.5,Veronica urticifolia Jacq.
+QZ52,0.5,Anemone nemorosa L.
+QZ52,0.5,Oxalis acetosella L.
+QZ52,0.5,Luzula nivea (L.) DC.
+QZ52,0.5,Sorbus aucuparia L. subsp. aucuparia
+QZ52,0.5,Abies alba Mill.
+QZ52,0.5,Geranium nodosum L.
+QZ52,0.5,Hieracium murorum L.
+QZ52,87.5,Fagus sylvatica L.
+QZ52,3,Prenanthes purpurea L.
+QZ52,3,Athyrium filix-femina (L.) Roth
+RS48,0.1,Carex sylvatica Huds. subsp. sylvatica
+RS48,0.5,Dryopteris filix-mas (L.) Schott
+RS48,0.5,Anemone nemorosa L.
+RS48,0.5,Dryopteris dilatata (Hoffm.) A.Gray
+RS48,62.5,Fagus sylvatica L.
+RS48,15,Vaccinium myrtillus L.
+RS48,3,Oxalis acetosella L.
+RS48,3,Abies alba Mill.
+RS48,3,Sorbus aucuparia L. subsp. aucuparia
+OP46,0.5,Luzula nivea (L.) DC.
+OP46,0.5,Dryopteris filix-mas (L.) Schott
+OP46,0.5,Veronica urticifolia Jacq.
+OP46,0.5,Acer pseudoplatanus L.
+OP46,0.5,Vaccinium myrtillus L.
+OP46,0.5,Sorbus aucuparia L. subsp. aucuparia
+OP46,0.5,Geranium nodosum L.
+OP46,0.5,Campanula trachelium L. subsp. trachelium
+OP46,87.5,Fagus sylvatica L.
+OP46,15,Prenanthes purpurea L.
+OP46,3,Anemone nemorosa L.
+HD42,0.1,Peucedanum ostruthium (L.) W.D.J.Koch
+HD42,0.5,Anemone nemorosa L.
+HD42,0.5,Abies alba Mill.
+HD42,0.5,Sorbus aucuparia L. subsp. aucuparia
+HD42,0.5,Veronica urticifolia Jacq.
+HD42,0.5,Stellaria nemorum L. subsp. montana (Pierrat) Berher
+HD42,0.5,"Senecio ovatus (G.Gaertn., B.Mey. & Scherb.) Willd."
+HD42,0.5,Geranium nodosum L.
+HD42,0.5,Lactuca muralis (L.) Gaertn.
+HD42,0.5,Acer pseudoplatanus L.
+HD42,0.5,Cardamine bulbifera (L.) Crantz
+HD42,0.5,Daphne mezereum L.
+HD42,0.5,Ajuga reptans L.
+HD42,87.5,Fagus sylvatica L.
+HD42,37.5,Prenanthes purpurea L.
+HD42,15,Athyrium filix-femina (L.) Roth
+HD42,3,Dryopteris filix-mas (L.) Schott
+HD42,3,Gymnocarpium dryopteris (L.) Newman
+HD42,3,Rubus idaeus L. subsp. idaeus
+HD42,3,Doronicum austriacum Jacq.
+ZX92,0.5,Anemone nemorosa L.
+ZX92,0.5,Abies alba Mill.
+ZX92,0.5,Sorbus aucuparia L. subsp. aucuparia
+ZX92,0.5,Veronica urticifolia Jacq.
+ZX92,0.5,Gymnocarpium dryopteris (L.) Newman
+ZX92,0.5,Vaccinium myrtillus L.
+ZX92,0.5,Oxalis acetosella L.
+ZX92,0.5,Luzula nivea (L.) DC.
+ZX92,87.5,Fagus sylvatica L.
+ZX92,15,Prenanthes purpurea L.
+ZX92,15,Sorbus aria (L.) Crantz
+ZX92,3,Dryopteris filix-mas (L.) Schott
+ZX92,3,Hieracium murorum L.
+RU21,0.5,Anemone nemorosa L.
+RU21,0.5,Abies alba Mill.
+RU21,0.5,Sorbus aucuparia L. subsp. aucuparia
+RU21,0.5,Gymnocarpium dryopteris (L.) Newman
+RU21,0.5,Oxalis acetosella L.
+RU21,0.5,Dryopteris filix-mas (L.) Schott
+RU21,0.5,Hieracium murorum L.
+RU21,0.5,Acer pseudoplatanus L.
+RU21,87.5,Fagus sylvatica L.
+RU21,3,Prenanthes purpurea L.
+RU21,3,Athyrium filix-femina (L.) Roth
+AM30,0.1,Luzula nivea (L.) DC.
+AM30,0.1,Lactuca muralis (L.) Gaertn.
+AM30,0.5,Hieracium murorum L.
+AM30,0.5,Veronica urticifolia Jacq.
+AM30,0.5,Acer pseudoplatanus L.
+AM30,0.5,Sorbus aucuparia L. subsp. aucuparia
+AM30,0.5,Abies alba Mill.
+AM30,0.5,Solidago virgaurea L.
+AM30,0.5,Dryopteris filix-mas (L.) Schott
+AM30,0.5,Athyrium filix-femina (L.) Roth
+AM30,87.5,Fagus sylvatica L.
+AM30,3,Prenanthes purpurea L.
+TF90,0.5,Hieracium murorum L.
+TF90,0.5,"Senecio ovatus (G.Gaertn., B.Mey. & Scherb.) Willd."
+TF90,0.5,Solidago virgaurea L.
+TF90,0.5,Acer pseudoplatanus L.
+TF90,0.5,Sorbus aucuparia L. subsp. aucuparia
+TF90,0.5,Veronica urticifolia Jacq.
+TF90,62.5,Fagus sylvatica L.
+TF90,15,Abies alba Mill.
+TF90,15,Prenanthes purpurea L.
+IG85,0.1,Oxalis acetosella L.
+IG85,0.1,Hieracium murorum L.
+IG85,0.1,Veronica officinalis L.
+IG85,0.1,Neottia nidus-avis (L.) Rich.
+IG85,0.1,Galeopsis tetrahit L.
+IG85,0.5,"Senecio ovatus (G.Gaertn., B.Mey. & Scherb.) Willd."
+IG85,0.5,Geranium nodosum L.
+IG85,0.5,Lactuca muralis (L.) Gaertn.
+IG85,0.5,Rubus hirtus Waldst. & Kit.
+IG85,0.5,Cardamine chelidonia L.
+IG85,62.5,Fagus sylvatica L.
+IG85,15,Abies alba Mill.
+IG85,15,Prenanthes purpurea L.
+IG85,3,Dryopteris filix-mas (L.) Schott
+IG85,3,Solidago virgaurea L.
+DK44,0.1,Lactuca muralis (L.) Gaertn.
+DK44,0.1,Poa nemoralis L. subsp. nemoralis
+DK44,0.5,Sorbus aucuparia L. subsp. aucuparia
+DK44,0.5,Oxalis acetosella L.
+DK44,0.5,Dryopteris filix-mas (L.) Schott
+DK44,0.5,Hieracium murorum L.
+DK44,0.5,Prenanthes purpurea L.
+DK44,0.5,Veronica urticifolia Jacq.
+DK44,0.5,Luzula nivea (L.) DC.
+DK44,0.5,"Senecio ovatus (G.Gaertn., B.Mey. & Scherb.) Willd."
+DK44,87.5,Fagus sylvatica L.
+DK44,3,Gymnocarpium dryopteris (L.) Newman
+KJ39,0.5,Viola reichenbachiana Jord. ex Boreau
+KJ39,0.5,Sorbus aucuparia L. subsp. aucuparia
+KJ39,0.5,Oxalis acetosella L.
+KJ39,0.5,Prenanthes purpurea L.
+KJ39,0.5,Luzula nivea (L.) DC.
+KJ39,0.5,Acer pseudoplatanus L.
+KJ39,0.5,Stellaria nemorum L. subsp. montana (Pierrat) Berher
+KJ39,0.5,Lactuca muralis (L.) Gaertn.
+KJ39,0.5,Melica uniflora Retz.
+KJ39,62.5,Fagus sylvatica L.
+KJ39,37.5,Abies alba Mill.
+KJ39,15,Galium odoratum (L.) Scop.
+KJ39,3,Dryopteris filix-mas (L.) Schott
+KJ39,3,Geranium robertianum L.
+KJ39,3,Lamium galeobdolon (L.) L. subsp. montanum (Pers.) Hayek
+DD98,0.1,"Senecio ovatus (G.Gaertn., B.Mey. & Scherb.) Willd."
+DD98,0.1,Poa nemoralis L. subsp. nemoralis
+DD98,0.1,Cystopteris fragilis (L.) Bernh.
+DD98,0.5,Prenanthes purpurea L.
+DD98,0.5,Geranium robertianum L.
+DD98,0.5,Melica uniflora Retz.
+DD98,0.5,Saxifraga rotundifolia L. subsp. rotundifolia
+DD98,0.5,Galium odoratum (L.) Scop.
+DD98,0.5,Stellaria nemorum L. subsp. montana (Pierrat) Berher
+DD98,0.5,Luzula nivea (L.) DC.
+DD98,0.5,Vaccinium myrtillus L.
+DD98,62.5,Fagus sylvatica L.
+DD98,15,Abies alba Mill.
+DD98,3,Dryopteris filix-mas (L.) Schott
+DD98,3,Galium rotundifolium L. subsp. rotundifolium
+GM59,0.5,Luzula nivea (L.) DC.
+GM59,0.5,Acer pseudoplatanus L.
+GM59,0.5,Sorbus aucuparia L. subsp. aucuparia
+GM59,0.5,Hieracium murorum L.
+GM59,0.5,Oxalis acetosella L.
+GM59,62.5,Fagus sylvatica L.
+GM59,15,Abies alba Mill.
+GM59,15,Vaccinium myrtillus L.
+GM59,3,Prenanthes purpurea L.
+GW56,0.1,Anemone nemorosa L.
+GW56,0.5,Dryopteris filix-mas (L.) Schott
+GW56,87.5,Fagus sylvatica L.
+GW56,3,Oxalis acetosella L.
+GW56,3,Stellaria nemorum L. subsp. montana (Pierrat) Berher
+BL76,0.1,Saxifraga rotundifolia L. subsp. rotundifolia
+BL76,0.5,Lamium galeobdolon (L.) L. subsp. montanum (Pers.) Hayek
+BL76,0.5,Anemone nemorosa L.
+BL76,0.5,Dryopteris filix-mas (L.) Schott
+BL76,0.5,Lactuca muralis (L.) Gaertn.
+BL76,0.5,Geranium robertianum L.
+BL76,0.5,Veronica officinalis L.
+BL76,0.5,Silene dioica (L.) Clairv.
+BL76,0.5,Calamintha grandiflora (L.) Moench
+BL76,87.5,Fagus sylvatica L.
+BL76,15,Galium odoratum (L.) Scop.
+BL76,3,Stellaria nemorum L. subsp. montana (Pierrat) Berher
+BL76,3,Milium effusum L.
+UD91,0.5,Gymnocarpium dryopteris (L.) Newman
+UD91,0.5,Carex sylvatica Huds. subsp. sylvatica
+UD91,87.5,Fagus sylvatica L.
+UD91,15,Stellaria nemorum L. subsp. montana (Pierrat) Berher
+UD91,3,Oxalis acetosella L.
+UD91,3,Athyrium filix-femina (L.) Roth
+OF90,0.1,Prenanthes purpurea L.
+OF90,0.5,Hieracium murorum L.
+OF90,0.5,Luzula nivea (L.) DC.
+OF90,0.5,Dryopteris filix-mas (L.) Schott
+OF90,0.5,Sorbus aria (L.) Crantz
+OF90,87.5,Fagus sylvatica L.
+OF90,62.5,Vaccinium myrtillus L.
+OF90,3,Sorbus aucuparia L. subsp. aucuparia
+OF90,3,Gymnocarpium dryopteris (L.) Newman
+DT51,0.5,Prenanthes purpurea L.
+DT51,0.5,Sorbus aucuparia L. subsp. aucuparia
+DT51,0.5,Luzula nivea (L.) DC.
+DT51,0.5,Hieracium murorum L.
+DT51,37.5,Abies alba Mill.
+DT51,37.5,Fagus sylvatica L.
+DT51,15,Picea abies (L.) H.Karst.
+DT51,3,Vaccinium myrtillus L.
+XJ49,62.5,Quercus cerris L.
+XJ49,3,Fraxinus ornus L. subsp. ornus
+XJ49,15,Erica arborea L.
+XJ49,3,Juniperus communis L.
+XJ49,15,Quercus pubescens Willd.
+XJ49,3,Pinus pinaster Aiton
+XJ49,0.5,Rubia peregrina L. subsp. peregrina
+XJ49,0.5,Hedera helix L.
+XJ49,0.5,Trifolium pratense L.
+XJ49,0.5,Tanacetum corymbosum (L.) Sch.Bip. subsp. corymbosum
+XJ49,0.5,Stachys officinalis (L.) Trevis.
+XJ49,0.5,Carex sylvatica Huds. subsp. sylvatica
+XJ49,37.5,Brachypodium rupestre (Host) Roem. & Schult.
+XJ49,3,Crataegus monogyna Jacq.
+XJ49,0.5,Molinia caerulea (L.) Moench subsp. arundinacea (Schrank) K.Richt.
+XJ49,0.5,Serratula tinctoria L. subsp. tinctoria
+XJ49,0.5,Poa nemoralis L. subsp. nemoralis
+XJ49,3,Rosa agrestis Savi
+XJ49,0.5,Hieracium virgaurea Coss.
+XJ49,0.5,Cruciata glabra (L.) C.Bauhin ex Opiz
+XJ49,0.5,Ruscus aculeatus L.
+XJ49,0.5,Juglans regia L.
+XJ49,0.5,Viola reichenbachiana Jord. ex Boreau
+XJ49,0.5,Oenanthe pimpinelloides L.
+XJ49,0.5,Peucedanum cervaria (L.) Lapeyr.
+XJ49,3,Malus florentina (Zuccagni) C.K.Schneid.
+RC51,87.5,Eleocharis uniglumis (Link) Schult. subsp. uniglumis
+RC51,3,Mentha aquatica L. subsp. aquatica
+JH35,87.5,Eleocharis uniglumis (Link) Schult. subsp. uniglumis
+JH35,3,Mentha aquatica L. subsp. aquatica
+VL22,62.5,Molinia arundinacea Schrank
+VL22,3,Scirpoides holoschoenus (L.) Soják
+VL22,3,Dorycnium pentaphyllum Scop.
+VL22,0.5,Stachys officinalis (L.) Trevis.
+VL22,0.5,Agrostis stolonifera L.
+VL22,3,Pulicaria dysenterica (L.) Bernh.
+VL22,3,Mentha aquatica L. subsp. aquatica
+VL22,0.5,Polygala flavescens DC.
+VL22,15,Tetragonolobus maritimus (L.) Roth
+VL22,0.5,Oenanthe pimpinelloides L.
+VL22,0.5,Cornus mas L.
+VL22,0.5,Fraxinus ornus L. subsp. ornus
+VL22,0.5,Carex flacca Schreb.
+VL22,0.1,Crepis leontodontoides All.
+VL22,0.5,Brachypodium rupestre (Host) Roem. & Schult.
+VL22,0.5,Cichorium intybus L. subsp. intybus
+VL22,0.5,Festuca arundinacea Schreb. subsp. arundinacea
+VL22,0.5,Acer campestre L.
+VL22,0.1,Tussilago farfara L.
+VL22,3,Equisetum telmateia Ehrh.
+VL22,0.5,Carex distans L.
+VL22,0.5,Prunella vulgaris L. subsp. vulgaris
+VL22,0.5,Senecio erucifolius L.
+VL22,0.5,Plantago major L. subsp. major
+VL22,0.1,Dactylis glomerata L.
+VL22,0.1,Daucus carota L.
+VL22,0.1,Picris echioides L.
+VL22,15,Inula salicina L.
+VL22,0.5,Eupatorium cannabinum L. subsp. cannabinum
+VL22,0.5,Agrimonia eupatoria L.
+VL22,3,Stachys sylvatica L.
+VV29,15,Tussilago farfara L.
+VV29,62.5,Molinia arundinacea Schrank
+VV29,15,Carex flacca Schreb.
+VV29,3,Senecio erucifolius L.
+VV29,0.5,Scirpoides holoschoenus (L.) Soják
+VV29,0.5,Carex distans L.
+VV29,3,Pulicaria dysenterica (L.) Bernh.
+VV29,3,Crataegus monogyna Jacq.
+VV29,0.5,Ligustrum vulgare L.
+VV29,0.5,Equisetum telmateia Ehrh.
+VV29,0.5,Ulmus minor Mill. subsp. minor
+VV29,3,Teucrium scordium L. subsp. scordioides (Schreb.) Arcang.
+VV29,0.5,Oenanthe pimpinelloides L.
+VV29,0.5,Festuca arundinacea Schreb. subsp. arundinacea
+VV29,0.5,Eupatorium cannabinum L. subsp. cannabinum
+VV29,0.5,Mentha aquatica L. subsp. aquatica
+VV29,0.1,Centaurium tenuiflorum (Hoffmanns. & Link) Fritsch subsp. tenuiflorum
+VV29,0.5,Juncus inflexus L.
+VV29,0.5,Daucus carota L.
+VV29,0.5,Galium album Mill.
+VV29,0.5,Juncus articulatus L. subsp. articulatus
+VV29,0.5,Inula salicina L.
+VV29,0.5,Stachys officinalis (L.) Trevis.
+VV29,0.5,Galium verum L. subsp. verum
+UL29,62.5,Abies alba Mill.
+UL29,0.1,Athyrium filix-femina (L.) Roth
+UL29,0.1,Carex sylvatica Huds.
+UL29,0.5,Dryopteris filix-mas (L.) Schott
+UL29,0.5,Epilobium montanum L.
+UL29,3,Galeopsis pubescens Besser
+UL29,0.5,Geranium robertianum L.
+UL29,0.5,Polystichum lonchitis (L.) Roth
+UL29,0.5,Pteridium aquilinum (L.) Kuhn
+UL29,3,Quercus cerris L.
+UL29,3,Rubus hirtus Waldst. & Kit.
+UL29,0.5,Rubus idaeus L.
+UL29,0.5,Scrophularia nodosa L.
+UL29,62.5,Senecio fuchsii C.C.Gmel.
+TQ93,62.5,Abies alba Mill.
+TQ93,0.1,Acer pseudoplatanus L.
+TQ93,0.5,Brachypodium sylvaticum (Huds.) P.Beauv.
+TQ93,0.5,Campanula trachelium L.
+TQ93,0.5,Cephalanthera longifolia (L.) Fritsch
+TQ93,0.1,Daphne laureola L.
+TQ93,37.5,Fagus sylvatica L.
+TQ93,0.5,Festuca heterophylla Lam.
+TQ93,3,Geranium nodosum L.
+TQ93,15,Hedera helix L.
+TQ93,0.5,Lathyrus venetus (Mill.) Wohlf.
+TQ93,3,Melica uniflora Retz.
+TQ93,0.1,Mycelis muralis (L.) Dumort.
+TQ93,15,Quercus cerris L.
+TQ93,0.5,Salvia glutinosa L.
+TQ93,3,Sanicula europaea L.
+SA50,37.5,Ampelodesmos mauritanicus (Poir.) T.Durand & Schinz
+SA50,3,Anemone hortensis L.
+SA50,0.5,Brachypodium distachyon (L.) P.Beauv.
+SA50,0.5,Carlina corymbosa L.
+SA50,37.5,Cistus creticus L. subsp. eriocephalus (Viv.) Greuter & Burdet
+SA50,0.1,Convolvulus althaeoides L. subsp. tenuissimus (Sibth. & Sm.) Stace
+SA50,0.5,Dorycnium hirsutum (L.) Ser.
+SA50,0.5,Galium corrudifolium Vill.
+SA50,0.5,Helichrysum italicum (Roth) G.Don
+SA50,0.5,Orchis italica Poir.
+SA50,3,Psoralea bituminosa L.
+SA50,0.5,Quercus ilex L.
+SA50,0.5,Serratula cichoracea (L.) DC.
+SA50,0.5,Seseli tortuosum L.
+SA50,0.5,Spartium junceum L.
+MF17,0.5,Aira elegans Willd.
+MF17,0.5,Allium subhirsutum L.
+MF17,37.5,Ampelodesmos mauritanicus (Poir.) T.Durand & Schinz
+MF17,0.1,Asparagus acutifolius L.
+MF17,15,Asphodelus ramosus L.
+MF17,0.5,Asterolinon linum-stellatum (L.) Duby
+MF17,0.5,Avena barbata Pott ex Link
+MF17,0.1,Blackstonia perfoliata (L.) Huds.
+MF17,3,Brachypodium plukenetii (All.) Beauv.
+MF17,0.5,Briza maxima L.
+MF17,0.5,Bromus erectus Huds.
+MF17,0.5,Campanula rapunculus L.
+MF17,0.5,Carlina corymbosa L.
+MF17,0.1,Centaurium erythraea Rafn
+MF17,0.1,Cistus creticus L. subsp. eriocephalus (Viv.) Greuter & Burdet
+MF17,0.5,Cistus monspeliensis L.
+MF17,0.5,Convolvulus althaeoides L. subsp. tenuissimus (Sibth. & Sm.) Stace
+MF17,0.5,Crupina vulgaris Cass.
+MF17,0.5,Dactylis glomerata L.
+MF17,0.5,Desmazeria rigida (L.) Tutin
+MF17,0.5,Dianthus longicaulis Ten.
+MF17,0.5,Echium plantagineum L.
+MF17,0.5,Filago pyramidata L.
+MF17,0.1,Galactites tomentosa Moench
+MF17,3,Galium corrudifolium Vill.
+MF17,0.5,Gastridium ventricosum (Gouan) Schinz & Thell.
+MF17,0.5,Hypochaeris achyrophorus L.
+MF17,0.5,Kundmannia sicula (L.) DC.
+MF17,0.1,Linum trigynum L.
+MF17,0.5,Myrtus communis L.
+MF17,0.5,Parentucellia viscosa (L.) Caruel
+MF17,0.5,Pistacia lentiscus L.
+MF17,0.5,Psoralea bituminosa L.
+MF17,0.1,Pulicaria odora (L.) Rchb.
+MF17,0.5,Reichardia picroides (L.) Roth
+MF17,0.5,Sideritis romana L.
+MF17,0.1,Spartium junceum L.
+MF17,0.5,Teucrium fruticans L.
+MF17,0.5,Trifolium arvense L.
+MF17,0.5,Trifolium campestre Schreb.
+MF17,0.1,Trifolium scabrum L.
+MF17,0.5,Tuberaria guttata (L.) Fourr.
+MF17,0.1,Urospermum dalechampii (L.) Scop. ex F.W.Schmidt
+JP48,3,Allium subhirsutum L.
+JP48,62.5,Ampelodesmos mauritanicus (Poir.) T.Durand & Schinz
+JP48,0.5,Arenaria serpyllifolia L.
+JP48,0.1,Asparagus acutifolius L.
+JP48,0.5,Asterolinon linum-stellatum (L.) Duby
+JP48,0.5,Blackstonia perfoliata (L.) Huds.
+JP48,0.5,Briza maxima L.
+JP48,0.5,Centaurium erythraea Rafn
+JP48,0.5,Cistus monspeliensis L.
+JP48,0.5,Desmazeria rigida (L.) Tutin
+JP48,0.1,Dianthus longicaulis Ten.
+JP48,0.1,Galactites tomentosa Moench
+JP48,0.1,Galium corrudifolium Vill.
+JP48,0.5,Hypochaeris achyrophorus L.
+JP48,0.5,Kundmannia sicula (L.) DC.
+JP48,0.1,Linum strictum L.
+JP48,0.5,Lophochloa cristata (L.) H.Hyl.
+JP48,0.5,Ononis reclinata L.
+JP48,0.5,Phillyrea angustifolia L.
+JP48,0.5,Pistacia lentiscus L.
+JP48,15,Psoralea bituminosa L.
+JP48,0.1,Pulicaria odora (L.) Rchb.
+JP48,0.1,Satureja graeca L.
+JP48,0.1,Sherardia arvensis L.
+JP48,0.1,Sideritis romana L.
+JP48,0.5,Smilax aspera L.
+JP48,0.5,Spartium junceum L.
+JP48,0.5,Teucrium capitatum L.
+JP48,0.5,Teucrium fruticans L.
+JP48,0.1,Trifolium scabrum L.
+JP48,0.1,"Valantia hispida auct. Fl. Tosc., non L."
+JP48,0.1,Vulpia ciliata Dumort.
+JC83,62.5,"Petasites hybridus (L.) G.Gaertn., B.Mey. & Scherb. subsp. hybridus"
+JC83,15,Equisetum telmateia Ehrh.
+JC83,15,Ranunculus repens L.
+JC83,3,Aegopodium podagraria L.
+JC83,3,Carex remota L.
+JC83,3,Geranium robertianum L.
+JC83,3,Heracleum sphondylium L.
+JC83,3,Ranunculus lanuginosus L.
+JC83,3,Rubus hirtus Waldst. & Kit.
+JC83,0.5,Myosotis sylvatica Hoffm. subsp. sylvatica
+JC83,0.5,Stachys sylvatica L.
+JC83,0.5,Urtica dioica L. subsp. dioica
+JC83,3,Rosa arvensis Huds.
+JC83,0.5,Acer campestre L.
+JC83,0.5,Brachypodium sylvaticum (Huds.) P.Beauv. subsp. sylvaticum
+JC83,0.5,Carex sylvatica Huds. subsp. sylvatica
+JC83,0.5,Lonicera etrusca Santi
+JC83,0.5,Lactuca muralis (L.) Gaertn.
+GR90,0.1,Cytisus scoparius (L.) Link
+GR90,0.1,Daphne laureola L.
+GR90,0.1,Daphne mezereum L.
+GR90,0.1,Melica uniflora Retz.
+GR90,0.1,Prenanthes purpurea L.
+GR90,0.1,Rumex conglomeratus Murray
+GR90,0.1,Sambucus nigra L.
+GR90,0.5,Acer pseudoplatanus L.
+GR90,0.5,Aremonia agrimonoides (L.) DC.
+GR90,0.5,Arisarum vulgare Targ.Tozz.
+GR90,0.5,Circaea lutetiana L.
+GR90,0.5,Epilobium montanum L.
+GR90,0.5,Euphorbia amygdaloides L.
+GR90,0.5,Fagus sylvatica L.
+GR90,0.5,Fragaria vesca L.
+GR90,0.5,Galium rotundifolium L.
+GR90,0.5,Luzula nivea (L.) DC.
+GR90,0.5,Milium effusum L.
+GR90,0.5,Mycelis muralis (L.) Dumort.
+GR90,0.5,Polygonatum multiflorum (L.) All.
+GR90,0.5,Pteridium aquilinum (L.) Kuhn
+GR90,0.5,Rubus hirtus Waldst. & Kit.
+GR90,0.5,Sanicula europaea L.
+GR90,0.5,Viola reichenbachiana Jord. ex Boreau
+GR90,87.5,Abies alba Mill.
+GR90,37.5,Senecio fuchsii C.C.Gmel.
+GR90,15,Salvia glutinosa L.
+GR90,3,Cardamine chelidonia L.
+GR90,3,Geranium robertianum L.
+GR90,3,Oxalis acetosella L.
+GR90,3,Rubus idaeus L.
+KU72,0.1,Brachypodium sylvaticum (Huds.) P.Beauv.
+KU72,0.1,Campanula trachelium L.
+KU72,0.1,Circaea lutetiana L.
+KU72,0.1,Clematis vitalba L.
+KU72,0.1,Epilobium montanum L.
+KU72,0.1,Fraxinus ornus L.
+KU72,0.1,Mycelis muralis (L.) Dumort.
+KU72,0.1,Solidago virgaurea L.
+KU72,0.1,Tamus communis L.
+KU72,0.5,Daphne laureola L.
+KU72,0.5,Euphorbia amygdaloides L.
+KU72,0.5,Fragaria vesca L.
+KU72,0.5,Galeopsis tetrahit L.
+KU72,0.5,Hedera helix L.
+KU72,0.5,Hieracium murorum L.
+KU72,0.5,Milium effusum L.
+KU72,0.5,Pteridium aquilinum (L.) Kuhn
+KU72,0.5,Rubus hirtus Waldst. & Kit.
+KU72,0.5,Silene dioica (L.) Clairv.
+KU72,0.5,Viola alba Besser subsp. dehnhardtii (Ten.) W.Becker
+KU72,87.5,Abies alba Mill.
+KU72,37.5,Senecio fuchsii C.C.Gmel.
+KU72,15,Fagus sylvatica L.
+KU72,15,Melica uniflora Retz.
+KU72,15,Sanicula europaea L.
+KU72,3,Acer pseudoplatanus L.
+KU72,3,Cardamine chelidonia L.
+KU72,3,Castanea sativa Mill.
+KU72,3,Corylus avellana L.
+KU72,3,Geranium robertianum L.
+KU72,3,Quercus cerris L.
+CL91,0.1,Adenostyles australis (Ten.) Nyman
+CL91,0.1,Athyrium filix-femina (L.) Roth
+CL91,0.1,Geum urbanum L.
+CL91,0.1,Hieracium murorum L.
+CL91,0.1,Lamium galeobdolon (L.) L.
+CL91,0.1,Polygonatum verticillatum (L.) All.
+CL91,0.5,Cardamine bulbifera (L.) Crantz
+CL91,0.5,Cardamine chelidonia L.
+CL91,0.5,Circaea lutetiana L.
+CL91,0.5,Epilobium montanum L.
+CL91,0.5,Galeopsis tetrahit L.
+CL91,0.5,Galium aristatum L.
+CL91,0.5,Geranium robertianum L.
+CL91,0.5,Impatiens noli-tangere L.
+CL91,0.5,Oxalis acetosella L.
+CL91,0.5,Prenanthes purpurea L.
+CL91,0.5,Pteridium aquilinum (L.) Kuhn
+CL91,0.5,Salvia glutinosa L.
+CL91,0.5,Solidago virgaurea L.
+CL91,0.5,Viola reichenbachiana Jord. ex Boreau
+CL91,87.5,Abies alba Mill.
+CL91,15,Senecio fuchsii C.C.Gmel.
+CL91,3,Galium odoratum (L.) Scop.
+CL91,3,Geranium nodosum L.
+CL91,3,Melica uniflora Retz.
+CL91,3,Rubus hirtus Waldst. & Kit.
+CL91,3,Sanicula europaea L.
+ZX20,0.1,Agrostis tenuis Sibth.
+ZX20,0.1,Mycelis muralis (L.) Dumort.
+ZX20,0.1,Rumex sanguineus L.
+ZX20,0.5,Athyrium filix-femina (L.) Roth
+ZX20,0.5,Cardamine bulbifera (L.) Crantz
+ZX20,0.5,Epilobium montanum L.
+ZX20,0.5,Galeopsis tetrahit L.
+ZX20,0.5,Galium rotundifolium L.
+ZX20,0.5,Geranium robertianum L.
+ZX20,0.5,Geum urbanum L.
+ZX20,0.5,Melica uniflora Retz.
+ZX20,0.5,Milium effusum L.
+ZX20,0.5,Prenanthes purpurea L.
+ZX20,0.5,Rubus hirtus Waldst. & Kit.
+ZX20,0.5,Stellaria montana Pierrat
+ZX20,0.5,Veronica montana L.
+ZX20,0.5,Viola reichenbachiana Jord. ex Boreau
+ZX20,87.5,Abies alba Mill.
+ZX20,37.5,Fagus sylvatica L.
+ZX20,15,Cardamine heptaphylla (Vill.) O.E.Schulz
+ZX20,15,Sanicula europaea L.
+ZX20,15,Senecio fuchsii C.C.Gmel.
+ZX20,3,Geranium nodosum L.
+ZX20,3,Oxalis acetosella L.
+XE11,0.1,Linum tenuifolium L.
+XE11,0.1,Sedum sexangulare L.
+XE11,0.1,Trifolium campestre Schreb.
+XE11,0.5,Bromus erectus Huds.
+XE11,0.5,Carex flacca Schreb.
+XE11,0.5,Clematis flammula L.
+XE11,0.5,Convolvulus cantabrica L.
+XE11,0.5,Daphne gnidium L.
+XE11,0.5,Dorycnium hirsutum (L.) Ser.
+XE11,0.5,Euphorbia terracina L.
+XE11,0.5,Holoschoenus australis (L.) Rchb.
+XE11,0.5,Linum strictum L.
+XE11,0.5,Melilotus neapolitanus Ten.
+XE11,0.5,Micromeria graeca (L.) Benth. ex Rchb.
+XE11,0.5,Petrorhagia saxifraga (L.) Link
+XE11,0.5,Phragmites australis (Cav.) Trin. ex Steud.
+XE11,0.5,Pistacia lentiscus L.
+XE11,0.5,Seseli tortuosum L.
+XE11,37.5,Ampelodesmos mauritanicus (Poir.) T.Durand & Schinz
+XE11,37.5,Cistus creticus L. subsp. eriocephalus (Viv.) Greuter & Burdet
+XE11,15,Fumana thymifolia (L.) Spach ex Webb
+XE11,15,Helichrysum italicum (Roth) G.Don
+XE11,15,Santolina etrusca (Lacaita) Marchi & D'Amato
+XE11,3,Euphorbia spinosa L. subsp. spinosa
+XE11,3,Rhamnus alaternus L.
+XE11,3,Salix eleagnos Scop.
+XE11,3,Satureja montana L.
+XE11,3,Spartium junceum L.
+XE11,3,Teucrium polium L. subsp. capitatum (L.) Arcang.
+DQ28,0.1,Blackstonia perfoliata (L.) Huds.
+DQ28,0.1,Petrorhagia saxifraga (L.) Link
+DQ28,0.5,Asparagus acutifolius L.
+DQ28,0.5,Briza media L.
+DQ28,0.5,Clematis flammula L.
+DQ28,0.5,Linum strictum L.
+DQ28,0.5,Melilotus neapolitanus Ten.
+DQ28,0.5,Micromeria graeca (L.) Benth. ex Rchb.
+DQ28,0.5,Sedum rupestre L.
+DQ28,0.5,Thymus longicaulis C.Presl
+DQ28,62.5,Ampelodesmos mauritanicus (Poir.) T.Durand & Schinz
+DQ28,15,Cistus creticus L. subsp. eriocephalus (Viv.) Greuter & Burdet
+DQ28,15,Spartium junceum L.
+DQ28,3,Helichrysum italicum (Roth) G.Don
+DQ28,3,Paliurus spina-christi Mill.
+DQ28,3,Rhamnus alaternus L.
+DQ28,3,Santolina etrusca (Lacaita) Marchi & D'Amato
+DQ28,3,Satureja montana L.
+DQ28,3,Seseli tortuosum L.
+IR86,0.1,Dactylis hispanica Roth
+IR86,0.5,Asparagus acutifolius L.
+IR86,0.5,Briza media L.
+IR86,0.5,Clematis flammula L.
+IR86,0.5,Euphorbia terracina L.
+IR86,0.5,Linum strictum L.
+IR86,0.5,Micromeria graeca (L.) Benth. ex Rchb.
+IR86,0.5,Seseli tortuosum L.
+IR86,0.5,Spartium junceum L.
+IR86,0.5,Thymus longicaulis C.Presl
+IR86,0.5,Trifolium campestre Schreb.
+IR86,0.5,Blackstonia perfoliata (L.) Huds.
+IR86,37.5,Ampelodesmos mauritanicus (Poir.) T.Durand & Schinz
+IR86,15,Cistus creticus L. subsp. eriocephalus (Viv.) Greuter & Burdet
+IR86,15,Helichrysum italicum (Roth) G.Don
+IR86,3,Daphne gnidium L.
+IR86,3,Fumana thymifolia (L.) Spach ex Webb
+IR86,3,Paliurus spina-christi Mill.
+IR86,3,Pyracantha coccinea M.Roem.
+IR86,3,Rhamnus alaternus L.
+IR86,3,Santolina etrusca (Lacaita) Marchi & D'Amato
+IR86,3,Satureja montana L.
+IE22,0.1,Allium tenuiflorum Ten.
+IE22,0.1,Hypericum perforatum L.
+IE22,0.5,Anemone hortensis L.
+IE22,0.5,Bromus erectus Huds.
+IE22,0.5,Dactylis hispanica Roth
+IE22,0.5,Fumana thymifolia (L.) Spach ex Webb
+IE22,0.5,Hedysarum coronarium L.
+IE22,0.5,Linum strictum L.
+IE22,0.5,Melilotus neapolitanus Ten.
+IE22,0.5,Rhamnus alaternus L.
+IE22,0.5,Seseli tortuosum L.
+IE22,0.5,Spartium junceum L.
+IE22,0.5,Blackstonia perfoliata (L.) Huds.
+IE22,37.5,Ampelodesmos mauritanicus (Poir.) T.Durand & Schinz
+IE22,37.5,Cistus creticus L. subsp. eriocephalus (Viv.) Greuter & Burdet
+IE22,3,Helichrysum italicum (Roth) G.Don
+IE22,3,Paliurus spina-christi Mill.
+IE22,3,Phillyrea latifolia L.
+IE22,3,Santolina etrusca (Lacaita) Marchi & D'Amato
+IE22,3,Satureja montana L.
+IE22,3,Sedum rupestre L.
+IE22,3,Teucrium polium L. subsp. capitatum (L.) Arcang.
+UC40,0.1,Briza media L.
+UC40,0.1,Leopoldia comosa (L.) Parl.
+UC40,0.1,Scabiosa maritima L.
+UC40,0.5,Clematis flammula L.
+UC40,0.5,Globularia punctata L.
+UC40,0.5,Linum tenuifolium L.
+UC40,0.5,Melilotus neapolitanus Ten.
+UC40,0.5,Petrorhagia saxifraga (L.) Link
+UC40,0.5,Pistacia lentiscus L.
+UC40,0.5,Sanguisorba minor Scop.
+UC40,0.5,Sedum rupestre L.
+UC40,0.5,Spartium junceum L.
+UC40,0.5,Thesium divaricatum Jan ex Mert. & W.D.J.Koch
+UC40,0.5,Thymus longicaulis C.Presl
+UC40,0.5,Urospermum dalechampii (L.) Scop. ex F.W.Schmidt
+UC40,15,Ampelodesmos mauritanicus (Poir.) T.Durand & Schinz
+UC40,15,Helichrysum italicum (Roth) G.Don
+UC40,15,Santolina etrusca (Lacaita) Marchi & D'Amato
+UC40,15,Satureja montana L.
+UC40,3,Cistus creticus L. subsp. eriocephalus (Viv.) Greuter & Burdet
+UC40,3,Micromeria graeca (L.) Benth. ex Rchb.
+UC40,3,Seseli tortuosum L.
+UC40,3,Teucrium polium L. subsp. capitatum (L.) Arcang.
+MN39,0.1,Carex flacca Schreb.
+MN39,0.5,Asparagus acutifolius L.
+MN39,0.5,Blackstonia perfoliata (L.) Huds.
+MN39,0.5,Bromus erectus Huds.
+MN39,0.5,Dactylis hispanica Roth
+MN39,0.5,Eryngium campestre L.
+MN39,0.5,Hedysarum coronarium L.
+MN39,0.5,Hypericum perforatum L.
+MN39,0.5,Linum strictum L.
+MN39,0.5,Phragmites australis (Cav.) Trin. ex Steud.
+MN39,0.5,Pistacia lentiscus L.
+MN39,0.5,Plantago lanceolata L.
+MN39,0.5,Sanguisorba minor Scop.
+MN39,0.5,Trifolium campestre Schreb.
+MN39,0.5,Urospermum dalechampii (L.) Scop. ex F.W.Schmidt
+MN39,15,Ampelodesmos mauritanicus (Poir.) T.Durand & Schinz
+MN39,15,Cistus creticus L. subsp. eriocephalus (Viv.) Greuter & Burdet
+MN39,15,Festuca ovina L.
+MN39,15,Sedum rupestre L.
+MN39,15,Spartium junceum L.
+MN39,3,Crataegus monogyna Jacq.
+MN39,3,Festuca arundinacea Schreb.
+MN39,3,Foeniculum vulgare Mill.
+MN39,3,Melilotus neapolitanus Ten.
+MN39,3,Santolina etrusca (Lacaita) Marchi & D'Amato
+MN39,3,Satureja montana L.
+MN39,3,Scabiosa maritima L.
+PI31,0.5,Bellis perennis L.
+PI31,0.5,Chenopodium vulvaria L.
+PI31,0.5,Eleusine indica (L.) Gaertn.
+PI31,0.5,Equisetum telmateia Ehrh.
+PI31,0.5,Lysimachia arvensis (L.) U.Manns & Anderb.
+PI31,0.5,Oxalis corniculata L.
+PI31,0.5,Portulaca oleracea L.
+PI31,0.5,Senecio vulgaris L.
+PI31,0.5,Sonchus asper (L.) Hill
+PI31,0.5,Stellaria media (L.) Vill.
+PI31,0.5,Trifolium campestre Schreb.
+PI31,15,Erigeron canadensis L.
+PI31,15,Polycarpon tetraphyllum (L.) L.
+PI31,15,Sagina apetala Ard.
+PI31,3,Euphorbia prostrata Aiton
+PI31,3,Poa annua L.
+PI31,3,Polygonum arenastrum Boreau
+MY83,0.5,Campanula scheuchzeri Vill.
+MY83,87.5,Castanea sativa Mill.
+MY83,3,Cephalanthera longifolia (L.) Fritsch
+MY83,0.5,Cruciata glabra (L.) C.Bauhin ex Opiz
+MY83,15,Deschampsia flexuosa (L.) Trin.
+MY83,0.1,Festuca heterophylla Lam.
+MY83,0.5,Galium rotundifolium L.
+MY83,0.5,Hieracium murorum L.
+MY83,0.5,Luzula forsteri (Sm.) DC.
+MY83,0.5,Luzula nivea (L.) DC.
+MY83,0.5,Agrostis tenuis Sibth.
+MY83,0.1,Anemone nemorosa L.
+MY83,0.5,Phyteuma scorzonerifolium Vill.
+MY83,3,Pinus sylvestris L.
+MY83,0.5,Platanthera bifolia (L.) Rich.
+MY83,0.1,Polypodium interjectum Shivas
+MY83,0.5,Prenanthes purpurea L.
+MY83,3,Pteridium aquilinum (L.) Kuhn
+MY83,0.1,Quercus ilex L.
+MY83,3,Rubus hirtus Waldst. & Kit.
+MY83,3,Solidago virgaurea L.
+MY83,0.5,Stellaria holostea L.
+MY83,0.5,Teucrium scorodonia L.
+MX25,87.5,Castanea sativa Mill.
+MX25,3,Deschampsia flexuosa (L.) Trin.
+MX25,0.1,Festuca heterophylla Lam.
+MX25,0.5,Galium rotundifolium L.
+MX25,0.1,Abies alba Mill.
+MX25,0.1,Agrostis tenuis Sibth.
+MX25,0.5,Anemone nemorosa L.
+MX25,0.5,Brachypodium rupestre (Host) Roem. & Schult.
+MX25,0.1,Luzula pedemontana Boiss. & Reut.
+MX25,0.5,Physospermum cornubiense (L.) DC.
+MX25,3,Pinus sylvestris L.
+MX25,0.1,Platanthera bifolia (L.) Rich.
+MX25,3,Pteridium aquilinum (L.) Kuhn
+MX25,15,Rubus hirtus Waldst. & Kit.
+XP78,87.5,Castanea sativa Mill.
+XP78,0.5,Corylus avellana L.
+XP78,0.5,Deschampsia flexuosa (L.) Trin.
+XP78,0.1,Epilobium montanum L.
+XP78,0.1,Epipactis helleborine (L.) Crantz
+XP78,0.5,Euonymus europaeus L.
+XP78,0.5,Festuca heterophylla Lam.
+XP78,0.1,Fraxinus ornus L.
+XP78,0.5,Acer pseudoplatanus L.
+XP78,0.5,Luzula pedemontana Boiss. & Reut.
+XP78,0.1,Moehringia trinervia (L.) Clairv.
+XP78,0.1,Mycelis muralis (L.) Dumort.
+XP78,0.1,Phyteuma scorzonerifolium Vill.
+XP78,0.5,Prenanthes purpurea L.
+XP78,0.1,Prunus avium L.
+XP78,0.1,Pteridium aquilinum (L.) Kuhn
+XP78,3,Rubus hirtus Waldst. & Kit.
+XP78,3,Salix caprea L.
+XP78,0.5,Solidago virgaurea L.
+XP78,0.5,Sorbus aria (L.) Crantz
+XP78,3,Vaccinium myrtillus L.
+KD45,3,Cornus mas L.
+KD45,3,Corylus avellana L.
+KD45,3,Geranium nodosum L.
+KD45,3,Robinia pseudacacia L.
+KD45,3,Sambucus ebulus L.
+KD45,3,Sambucus nigra L.
+KD45,15,Alliaria petiolata (M.Bieb.) Cavara & Grande
+KD45,15,Populus nigra L.
+KD45,15,Rubus ulmifolius Schott
+KD45,37.5,Alnus glutinosa (L.) Gaertn.
+KD45,37.5,Glechoma hederacea L.
+KD45,37.5,Salix cinerea L.
+KD45,37.5,Stachys sylvatica L.
+KD45,37.5,Veronica hederifolia L.
+KD45,0.5,Aegopodium podagraria L.
+KD45,0.5,Agrostis stolonifera L.
+KD45,0.5,Arctium lappa L.
+KD45,0.5,Chaerophyllum temulentum L.
+KD45,0.5,Clematis vitalba L.
+KD45,0.5,Cornus sanguinea L.
+KD45,0.5,Galium aparine L.
+KD45,0.5,Hirschfeldia incana (L.) Lagr.-Foss.
+KD45,0.5,Humulus lupulus L.
+KD45,0.5,Tamus communis L.
+KD45,0.5,Vitis vinifera L. subsp. sylvestris (C.C.Gmel.) Hegi
+KD45,0.5,Brassica adpressa Boiss.
+YH59,0.5,Alisma plantago-aquatica L.
+YH59,87.5,Lemna minor L.
+BY42,0.5,Achillea millefolium L.
+BY42,0.5,Aira caryophyllea L.
+BY42,0.5,Arenaria serpyllifolia L. subsp. serpyllifolia
+BY42,0.01,Bombycilaena erecta (L.) Smoljan.
+BY42,5,Bromopsis erecta (Huds.) Fourr.
+BY42,15,Bromus hordeaceus L.
+BY42,4,Centaurea solstitialis L.
+BY42,5,Cerastium glomeratum Thuill.
+BY42,0.02,Cynosurus cristatus L.
+BY42,10,Cynosurus echinatus L.
+BY42,1,Erodium ciconium (L.) L'Hér.
+BY42,0.1,Festuca inops De Not.
+BY42,15,Festuca myuros L.
+BY42,10,Lolium perenne L.
+BY42,0.5,Orlaya grandiflora (L.) Hoffm.
+BY42,0.01,Petrorhagia prolifera (L.) P.W.Ball & Heywood
+BY42,8,Phleum pratense L. subsp. pratense
+BY42,5,Plantago lanceolata L.
+BY42,0.1,Poa bulbosa L.
+BY42,2,Potentilla detommasii Ten.
+BY42,0.5,Ranunculus bulbosus L.
+BY42,0.5,Salvia pratensis L.
+BY42,1,Scleranthus annuus L.
+BY42,0.05,Taraxacum sp.
+BY42,7,Teucrium chamaedrys L.
+BY42,4,Trifolium incarnatum L.
+BY42,0.5,Trifolium repens L.
+BY42,3,Trifolium subterraneum L.
+BY42,3,Trisetaria flavescens (L.) Baumg.
+BY42,10,Triticum vagans (Jord. & Fourr.) Greuter
+SD89,3,Calystegia soldanella (L.) Roem. & Schult.
+SD89,3,Euphorbia paralias L.
+SD89,37.5,Elymus farctus (Viv.) Runemark ex Melderis
+SD89,0.5,Cakile maritima Scop.
+SD89,0.5,Salsola kali L.
+SD89,0.5,Ammophila littoralis (P.Beauv.) Rothm.
+SD89,0.5,Bromus madritensis L.
+OY37,15,Cerastium ligusticum Viv.
+OY37,0.5,Silene badaroi Breistr.
+OY37,15,Rumex bucephalophorus L.
+OY37,0.5,Viola corsica Nyman subsp. ilvensis (W.Becker) Merxm.
+OY37,0.1,Aphanes minutiflora (Azn.) Holub
+OY37,0.5,Geranium lucidum L.
+OY37,0.5,Bunium bulbocastanum L.
+OY37,0.5,Myosotis ramosissima Rochel ex Schult.
+OY37,0.5,Sherardia arvensis L.
+OY37,0.5,Cruciata glabra (L.) C.Bauhin ex Opiz
+OY37,0.1,Hypochaeris achyrophorus L.
+OY37,0.5,Robertia taraxacoides (Loisel.) DC.
+OY37,0.1,Crepis leontodontoides All.
+OY37,0.1,Romulea insularis Sommier
+OY37,15,Poa perligularis H.Scholz
+OY37,3,Festuca gamisansii Kerguélen subsp. aethaliae Signorini & Foggi
+OY37,0.1,Vulpia myuros (L.) C.C.Gmel.
+OY37,15,Micropyrum tenellum (L.) Link
+OY37,0.5,Cynosurus echinatus L.
+OY37,0.5,Bromus madritensis L.
+OY37,3,Bromus hordeaceus L.
+OY37,3,Brachypodium retusum (Pers.) P.Beauv.
+OY37,37.5,Aira caryophyllea L.
+PK58,0.5,Cerastium ligusticum Viv.
+PK58,0.5,Petrorhagia dubia (Raf.) G.López & Romo
+PK58,3,Tuberaria guttata (L.) Fourr.
+PK58,0.5,Astragalus pelecinus (L.) Barneby
+PK58,0.5,Vicia grandiflora Scop.
+PK58,0.5,Trifolium campestre Schreb.
+PK58,15,Trifolium cherleri L.
+PK58,0.5,Trifolium stellatum L.
+PK58,37.5,Plantago bellardii All.
+PK58,0.5,Anthemis arvensis L. subsp. incrassata (Loisel.) Nyman
+PK58,0.5,Rhagadiolus stellatus (L.) Gaertn.
+PK58,3,Hypochaeris achyrophorus L.
+PK58,15,Vulpia myuros (L.) C.C.Gmel.
+PK58,0.5,Briza maxima L.
+PK58,3,Bromus rubens L.
+QI21,0.5,Cerastium ligusticum Viv.
+QI21,0.5,Rumex bucephalophorus L.
+QI21,0.1,Viola corsica Nyman subsp. ilvensis (W.Becker) Merxm.
+QI21,0.1,Poa perligularis H.Scholz
+QI21,0.5,Vulpia bromoides (L.) Gray
+QI21,0.1,Vulpia myuros (L.) C.C.Gmel.
+QI21,15,Micropyrum tenellum (L.) Link
+QI21,0.5,Cynosurus effusus Link
+QI21,0.5,Briza maxima L.
+QI21,0.1,Bromus hordeaceus L.
+QI21,37.5,Brachypodium retusum (Pers.) P.Beauv.
+QI21,0.5,Aira caryophyllea L.
+IF62,0.5,Ajuga reptans L.
+IF62,0.5,Arabis turrita L.
+IF62,3,Brachypodium rupestre (Host) Roem. & Schult.
+IF62,3,Bromus erectus Huds.
+IF62,0.5,Campanula trachelium L.
+IF62,62.5,Castanea sativa Mill.
+IF62,0.5,Clematis vitalba L.
+IF62,0.5,Clinopodium vulgare L.
+IF62,0.5,Coronilla emerus L.
+IF62,0.5,Crataegus monogyna Jacq.
+IF62,0.5,Cruciata glabra (L.) C.Bauhin ex Opiz
+IF62,0.5,Cytisus scoparius (L.) Link
+IF62,3,Dactylis glomerata L.
+IF62,0.5,Digitalis micrantha Roth ex Schweigg.
+IF62,3,Festuca heterophylla Lam.
+IF62,3,Fraxinus ornus L.
+IF62,3,Hieracium sylvaticum (L.) L.
+IF62,0.5,Hypericum montanum L.
+IF62,0.5,Juniperus communis L.
+IF62,0.5,Mycelis muralis (L.) Dumort.
+IF62,3,Poa nemoralis L.
+IF62,0.5,Polypodium vulgare L.
+IF62,0.5,Primula vulgaris Huds.
+IF62,0.5,Prunus spinosa L.
+IF62,15,Quercus cerris L.
+IF62,15,Quercus pubescens Willd.
+IF62,0.5,Rosa canina L.
+IF62,0.5,Rumex alpestris Jacq.
+IF62,0.5,Salvia glutinosa L.
+IF62,0.5,Sedum cepaea L.
+IF62,0.5,Silene italica (L.) Pers.
+IF62,0.5,Solidago virgaurea L.
+IF62,0.5,Viola alba Besser subsp. dehnhardtii (Ten.) W.Becker
+JZ37,0.5,Acer campestre L.
+JZ37,0.5,Anthoxanthum odoratum L.
+JZ37,0.5,Asarum europaeum L.
+JZ37,0.5,Clematis vitalba L.
+JZ37,0.5,Cornus sanguinea L.
+JZ37,0.5,Corylus avellana L.
+JZ37,0.5,Fraxinus ornus L.
+JZ37,62.5,Hedera helix L.
+JZ37,0.5,Helleborus foetidus L.
+JZ37,3,Molinia arundinacea Schrank
+JZ37,0.5,Ostrya carpinifolia Scop.
+JZ37,15,Populus alba L.
+JZ37,15,Populus canescens (Aiton) Sm.
+JZ37,15,Populus nigra L.
+JZ37,3,Populus tremula L.
+JZ37,0.5,Robinia pseudacacia L.
+JZ37,0.5,Rubia peregrina L.
+JZ37,15,Rubus ulmifolius Schott
+JZ37,3,Ruscus aculeatus L.
+JZ37,0.5,Tamus communis L.
+EC75,0.5,Anthoxanthum odoratum L. subsp. nipponicum (Honda) Tzvelev
+EC75,0.5,Avenella flexuosa (L.) Drejer subsp. flexuosa
+EC75,3,Brachypodium genuense (DC.) Roem. & Schult.
+EC75,0.5,Cerastium alpinum L. subsp. alpinum
+EC75,0.5,Dianthus sylvestris Wulfen
+EC75,62.5,Festuca paniculata (L.) Schinz & Thell.
+EC75,15,Festuca riccerii Foggi & Gr.Rossi
+EC75,3,Festuca rubra L. subsp. commutata (Gaudin) Markgr.-Dann.
+EC75,3,Hypericum richeri Vill.
+EC75,15,Juncus trifidus L.
+EC75,3,Juniperus communis L. subsp. saxatilis (Pall.) A.E.Murray
+EC75,0.5,Luzula lutea (All.) DC.
+EC75,0.5,Luzula luzuloides (Lam.) Dandy & Wilmott
+EC75,0.5,Luzula multiflora (Ehrh.) Lej.
+EC75,3,Nardus stricta L.
+EC75,0.5,Phyteuma hemisphaericum L.
+EC75,0.5,Plantago alpina L.
+EC75,0.5,Pulsatilla alpina (L.) Delarbre subsp. millefoliata (Bertol.) D.M.Moser
+EC75,0.5,Thymus pulegioides L.
+EC75,3,Vaccinium gaultherioides Bigelow
+EC75,3,Vaccinium myrtillus L.
+DR59,15,Spartium junceum L.
+DR59,15,Galactites tomentosa Moench
+DR59,3,Echium plantagineum L.
+DR59,3,Euphorbia pinea L.
+DR59,3,Silene nocturna L.
+DR59,62.5,Ampelodesmos mauritanicus (Poir.) T.Durand & Schinz
+DR59,0.5,Erodium cicutarium (L.) L'Hér.
+DR59,0.5,Geranium purpureum Vill.
+DR59,0.5,Calendula arvensis (Vaill.) L.
+DR59,0.5,Dittrichia viscosa (L.) Greuter
+DR59,0.5,Calicotome villosa (Poir.) Link
+QX85,62.5,Phragmites australis (Cav.) Trin. ex Steud.
+QX85,15,Calystegia sepium (L.) R.Br.
+QX85,3,Lysimachia vulgaris L.
+QX85,15,Thelypteris palustris Schott
+QX85,0.5,Lactuca serriola L.
+QX85,3,Rubus ulmifolius Schott
+QX85,3,Eupatorium cannabinum L.
+QX85,15,Lonicera japonica Thunb.
+QX85,3,Lythrum salicaria L.
+QX85,3,Frangula alnus Mill.
+QX85,0.5,Solanum dulcamara L.
+QX85,0.5,Epilobium hirsutum L.
+QX85,0.5,Cirsium creticum (Lam.) d'Urv. subsp. triumfettii (Lacaita) K.Werner
+QX85,15,Osmunda regalis L.
+QX85,3,Oenanthe aquatica (L.) Poir.
+QX85,3,Agrostis stolonifera L.
+QX85,0.5,Iris pseudacorus L.
+RT56,0.5,Acinos arvensis (Lam.) Dandy
+RT56,0.5,Aethionema saxatile (L.) R.Br.
+RT56,0.5,Anthyllis vulneraria L.
+RT56,0.5,Brachypodium distachyon (L.) P.Beauv.
+RT56,0.5,Carex humilis Leyss.
+RT56,0.5,Centaurea paniculata L. subsp. carueliana (Micheletti) Arrigoni
+RT56,0.5,Convolvulus cantabrica L.
+RT56,0.5,Crepis neglecta L.
+RT56,0.5,Galium lucidum All.
+RT56,0.5,Helianthemum nummularium (L.) Mill.
+RT56,0.5,Hypericum perforatum L.
+RT56,0.5,Iris lutescens Lam.
+RT56,0.5,Linum trigynum L.
+RT56,0.5,Odontites luteus (L.) Clairv.
+RT56,0.5,Poa bulbosa L.
+RT56,0.5,Potentilla hirta L.
+RT56,0.5,Sanguisorba minor Scop.
+RT56,0.5,Sedum album L.
+RT56,0.5,Stachys recta L.
+RT56,0.5,Teucrium chamaedrys L.
+RT56,0.5,Thymus longicaulis C.Presl
+RT56,0.5,Urospermum dalechampii (L.) Scop. ex F.W.Schmidt
+RT56,37.5,Bromus erectus Huds.
+RT56,15,Carex liparocarpos Gaudin
+RT56,15,Festuca inops De Not.
+RT56,15,Helichrysum italicum (Roth) G.Don
+RT56,15,Teucrium capitatum L.
+RT56,3,Globularia bisnagarica L.
+RT56,3,Plantago lanceolata L.
+NR60,0.5,Allium sphaerocephalon L.
+NR60,0.5,Alyssum alyssoides (L.) L.
+NR60,0.5,Brachypodium distachyon (L.) P.Beauv.
+NR60,0.5,Carduus micropterus (Borbás) Teyber subsp. micropterus
+NR60,0.5,Carlina corymbosa L.
+NR60,0.5,Centaurea triumfetti All.
+NR60,0.5,Cerastium arvense L. var. etruscum Fiori
+NR60,0.5,Cerastium brachypetalum Desp. ex Pers.
+NR60,0.5,Eryngium campestre L.
+NR60,0.5,Euphorbia exigua L.
+NR60,0.5,Festuca inops De Not.
+NR60,0.5,Globularia bisnagarica L.
+NR60,0.5,Helianthemum nummularium (L.) Mill.
+NR60,0.5,Helichrysum italicum (Roth) G.Don
+NR60,0.5,Leontodon crispus Vill.
+NR60,0.5,Lotus corniculatus L.
+NR60,0.5,Odontites luteus (L.) Clairv.
+NR60,0.5,Orlaya grandiflora (L.) Hoffm.
+NR60,0.5,Ranunculus bulbosus L.
+NR60,0.5,Stachys recta L.
+NR60,0.5,Teucrium chamaedrys L.
+NR60,37.5,Bromus erectus Huds.
+NR60,37.5,Plantago lanceolata L.
+NR60,15,Carex liparocarpos Gaudin
+NR60,15,Poa bulbosa L.
+NR60,15,Sanguisorba minor Scop.
+NR60,3,Centaurea paniculata L. subsp. carueliana (Micheletti) Arrigoni
+NR60,3,Thymus longicaulis C.Presl
+NR60,3,Urospermum dalechampii (L.) Scop. ex F.W.Schmidt
+VU15,0.5,Anogramma leptophylla (L.) Link
+VU15,0.5,Asplenium foreziense Le Grand ex Magnier
+VU15,0.5,Bryum capillare Hedw.
+VU15,0.5,Carduus fasciculiflorus Viv.
+VU15,0.5,Geranium lucidum L.
+VU15,0.5,Geranium molle L.
+VU15,0.5,Isothecium myosuroides Brid.
+VU15,0.5,Moehringia pentandra J.Gay
+VU15,0.5,Polycarpon tetraphyllum (L.) L.
+VU15,0.5,Vincetoxicum hirundinaria Medik.
+VU15,0.5,Vulpia myuros (L.) C.C.Gmel. subsp. myuros
+VU15,87.5,Teucrium marum L.
+VU15,15,Oxyrrhynchium praelongum (Hedw.) Warnst.
+VU15,3,Crepis leontodontoides All.
+VU15,3,Mnium affine Funck
+VU15,3,Scleropodium tourretti (Brid.) L.J.Koch
+VU15,3,Vulpia ciliata Dumort.
+ZL89,0.5,Anagallis arvensis L.
+ZL89,0.5,Asterolinon linum-stellatum (L.) Duby
+ZL89,0.5,Brachypodium distachyon (L.) P.Beauv.
+ZL89,0.5,Campylopus introflexus (Hedw.) Brid.
+ZL89,0.5,Cerastium glomeratum Thuill.
+ZL89,0.5,Crepis leontodontoides All.
+ZL89,0.5,Flavoparmelia caperata (L.) Hale
+ZL89,0.5,Galium murale (L.) All.
+ZL89,0.5,Galium parisiense L.
+ZL89,0.5,Hypochaeris glabra L.
+ZL89,0.5,Lagurus ovatus L.
+ZL89,0.5,Selaginella denticulata (L.) Spring
+ZL89,0.5,Trifolium campestre Schreb.
+ZL89,0.5,Vicia hirsuta (L.) Gray
+ZL89,0.5,Vicia sativa L. subsp. nigra (L.) Ehrh.
+ZL89,62.5,Cistus monspeliensis L.
+ZL89,37.5,Teucrium marum L.
+ZL89,15,Cladonia rangiformis Hoffm.
+ZL89,15,Vulpia ciliata Dumort.
+ZL89,3,Aetheorhiza bulbosa (L.) Cass.
+ZL89,3,Tuberaria guttata (L.) Fourr.
+ZL89,3,Usnea sp.
+ZL89,3,Vulpia myuros (L.) C.C.Gmel. subsp. myuros
+IK24,0.5,Campylopus introflexus (Hedw.) Brid.
+IK24,0.5,Cicendia filiformis (L.) Delarbre
+IK24,0.5,Grimmia apocarpa Hedw.
+IK24,0.5,Juncus capitatus Weigel
+IK24,0.5,Lotus subbiflorus Lag.
+IK24,0.5,Montia fontana L.
+IK24,0.5,Radiola linoides Roth
+IK24,87.5,Mentha requienii Benth.
+IK24,37.5,Bryum alpinum Huds.
+IK24,3,Isolepis setacea (L.) R.Br.
+IK24,3,Plantago coronopus L.
+IK24,3,"Sagina subulata (Sw.) C.Presl, nom. illeg."
+IK24,3,Vulpia myuros (L.) C.C.Gmel. subsp. myuros
+AE28,0.5,Bromus madritensis L.
+AE28,0.5,Lotus subbiflorus Lag.
+AE28,0.5,Plantago coronopus L.
+AE28,0.5,Pohlia elongata (Hedw.) Schwaegr.
+AE28,0.5,Sagina apetala Ard.
+AE28,0.5,"Sagina subulata (Sw.) C.Presl, nom. illeg."
+AE28,0.5,Trifolium micranthum Viv.
+AE28,87.5,Mentha requienii Benth.
+AE28,15,Vulpia myuros (L.) C.C.Gmel. subsp. myuros
+AE28,3,Cicendia filiformis (L.) Delarbre
+AE28,3,Polypogon maritimus Willd.
+AE28,3,Radiola linoides Roth
+AE28,3,Vincetoxicum hirundinaria Medik.
+AE28,3,Vulpia ciliata Dumort.
+VG68,0.5,Cistus monspeliensis L.
+VG68,0.5,Crassula tillaea Lest.-Garl.
+VG68,0.5,Galium parisiense L.
+VG68,0.5,Isolepis setacea (L.) R.Br.
+VG68,0.5,Plantago coronopus L.
+VG68,0.5,Polypogon maritimus Willd.
+VG68,0.5,Sagina apetala Ard.
+VG68,0.5,Trifolium suffocatum L.
+VG68,0.5,Vicia tetrasperma (L.) Schreb.
+VG68,0.5,Vulpia ciliata Dumort.
+VG68,87.5,Mentha requienii Benth.
+VG68,15,Bryum alpinum Huds.
+VG68,15,"Sagina subulata (Sw.) C.Presl, nom. illeg."
+VG68,15,Teucrium marum L.
+VG68,3,Arisarum vulgare Targ.Tozz.
+VG68,3,Galium murale (L.) All.
+VG68,3,Juncus bufonius L.
+VG68,3,Juncus capitatus Weigel
+VG68,3,Ornithopus pinnatus (Mill.) Druce
+VG68,3,Polycarpon tetraphyllum (L.) L.
+VG68,3,Vulpia myuros (L.) C.C.Gmel. subsp. myuros
+GB12,0.5,Asterolinon linum-stellatum (L.) Duby
+GB12,0.5,Centaurium maritimum (L.) Fritsch
+GB12,0.5,Cicendia filiformis (L.) Delarbre
+GB12,0.5,Filago gallica L.
+GB12,0.5,Galium murale (L.) All.
+GB12,0.5,Hypochaeris glabra L.
+GB12,0.5,Juncus capitatus Weigel
+GB12,0.5,Lotus angustissimus L.
+GB12,0.5,Lotus subbiflorus Lag.
+GB12,0.5,Ornithopus pinnatus (Mill.) Druce
+GB12,0.5,Selaginella denticulata (L.) Spring
+GB12,0.5,Sherardia arvensis L.
+GB12,0.5,Tuberaria guttata (L.) Fourr.
+GB12,0.5,Vicia lutea L.
+GB12,0.5,Vulpia myuros (L.) C.C.Gmel. subsp. myuros
+GB12,37.5,Polytrichum juniperinum Willd.
+GB12,15,Cladonia foliacea (Huds.) Willd.
+GB12,3,Anagallis arvensis L.
+GB12,3,Arisarum vulgare Targ.Tozz.
+GB12,3,Bromus madritensis L.
+GB12,3,Cladonia rangiformis Hoffm.
+GB12,3,Radiola linoides Roth
+GB12,0.5,Erica arborea L.
+GT42,0.5,Allium sphaerocephalon L.
+GT42,0.5,Centaurea deusta Ten.
+GT42,0.5,Cerastium pumilum Curtis
+GT42,0.5,Crepis neglecta L.
+GT42,0.5,Erodium cicutarium (L.) L'Hér.
+GT42,0.5,Eryngium campestre L.
+GT42,0.5,Hieracium piloselloides Vill.
+GT42,0.5,Linum tenuifolium L.
+GT42,0.5,Marrubium incanum Desr.
+GT42,0.5,Medicago minima (L.) Bartal.
+GT42,0.5,Potentilla hirta L.
+GT42,0.5,Romulea bulbocodium (L.) Sebast. & Mauri
+GT42,0.5,Scabiosa columbaria L.
+GT42,62.5,Vulpia ciliata (Danth.) Link
+GT42,15,Bromus commutatus Schrad.
+GT42,15,Plantago lanceolata L.
+GT42,15,Trifolium scabrum L.
+GT42,15,Trifolium stellatum L.
+GT42,3,Aira elegans Willd.
+GT42,3,Bromus erectus Huds.
+GT42,3,Convolvulus cantabrica L.
+WM57,0.5,Allium sphaerocephalon L.
+WM57,0.5,Althaea hirsuta L.
+WM57,0.5,Alyssum alyssoides (L.) L.
+WM57,0.5,Anthemis arvensis L.
+WM57,0.5,Briza maxima L.
+WM57,0.5,Carlina corymbosa L.
+WM57,0.5,Centaurea ambigua Guss.
+WM57,0.5,Cerastium pumilum Curtis
+WM57,0.5,Convolvulus cantabrica L.
+WM57,0.5,Crepis neglecta L.
+WM57,0.5,Echium vulgare L.
+WM57,0.5,Erodium cicutarium (L.) L'Hér.
+WM57,0.5,Filago germanica (L.) Huds.
+WM57,0.5,Hieracium piloselloides Vill.
+WM57,0.5,Linum tenuifolium L.
+WM57,0.5,Malva moschata L.
+WM57,0.5,Medicago minima (L.) Bartal.
+WM57,0.5,Orlaya grandiflora (L.) Hoffm.
+WM57,0.5,Plantago lanceolata L.
+WM57,0.5,Satureja acinos (L.) Scheele
+WM57,0.5,Trifolium campestre Schreb.
+WM57,37.5,Vulpia ciliata (Danth.) Link
+WM57,15,Aegilops geniculata Roth
+WM57,15,Cynosurus echinatus L.
+WM57,15,Trifolium stellatum L.
+WM57,3,Aira elegans Willd.
+WM57,3,Bromus commutatus Schrad.
+WM57,3,Bromus erectus Huds.
+WM57,3,Trifolium scabrum L.
+KG84,0.5,Calystegia soldanella (L.) Roem. & Schult.
+KG84,0.5,Echinophora spinosa L.
+KG84,0.5,Euphorbia paralias L.
+KG84,0.5,Oenothera biennis L.
+KG84,0.5,Salsola kali L. subsp. kali
+KG84,62.5,Ammophila littoralis (P.Beauv.) Rothm.
+KG84,3,Otanthus maritimus (L.) Hoffmanns. & Link
+CK54,0.5,Asparagus acutifolius L.
+CK54,0.1,Bellis sylvestris Cirillo
+CK54,15,Brachypodium rupestre (Host) Roem. & Schult.
+CK54,0.1,Campanula rapunculus L.
+CK54,0.1,Clematis flammula L.
+CK54,0.1,Clematis vitalba L.
+CK54,3,Cornus sanguinea L.
+CK54,0.1,Coronilla emerus L.
+CK54,0.5,Crataegus monogyna Jacq.
+CK54,3,Cupressus sempervirens L.
+CK54,0.5,Dactylis glomerata L.
+CK54,0.5,Fraxinus ornus L.
+CK54,0.1,Geranium dissectum L.
+CK54,0.5,Hedera helix L.
+CK54,0.1,Juniperus communis L.
+CK54,0.5,Ligustrum vulgare L.
+CK54,3,Lonicera etrusca Santi
+CK54,0.1,Luzula forsteri (Sm.) DC.
+CK54,0.5,Malus sylvestris (L.) Mill.
+CK54,3,Oenanthe pimpinelloides L.
+CK54,0.1,Phleum pratense L. subsp. bertolonii (DC.) Bornm.
+CK54,0.1,Platanthera bifolia (L.) Rich.
+CK54,0.5,Prunus spinosa L.
+CK54,87.5,Quercus cerris L.
+CK54,15,Quercus pubescens Willd.
+CK54,0.5,Rosa canina L.
+CK54,0.5,Rosa sempervirens L.
+CK54,15,Rubia peregrina L.
+CK54,0.5,Rubus ulmifolius Schott
+CK54,0.1,Scorpiurus muricatus L.
+CK54,0.1,Sedum forsterianum Sm.
+CK54,0.5,Viola alba Besser subsp. dehnhardtii (Ten.) W.Becker
+OF19,15,Brachypodium rupestre (Host) Roem. & Schult.
+OF19,3,Bromus ramosus Huds.
+OF19,0.5,Coronilla emerus L.
+OF19,15,Crataegus monogyna Jacq.
+OF19,0.5,Cruciata glabra (L.) C.Bauhin ex Opiz
+OF19,0.5,Daphne laureola L.
+OF19,0.1,Festuca heterophylla Lam.
+OF19,15,Fraxinus ornus L.
+OF19,3,Hedera helix L.
+OF19,0.5,Helleborus bocconei Ten.
+OF19,37.5,Lonicera etrusca Santi
+OF19,0.1,Luzula forsteri (Sm.) DC.
+OF19,3,Ostrya carpinifolia Scop.
+OF19,87.5,Quercus cerris L.
+OF19,3,Quercus pubescens Willd.
+OF19,0.1,Rosa canina L.
+OF19,0.1,Rosa sempervirens L.
+OF19,0.5,Rubus glandulosus Bellardi
+OF19,0.5,Ruscus aculeatus L.
+LF51,0.1,Acer campestre L.
+LF51,0.5,Asparagus acutifolius L.
+LF51,0.1,Asplenium onopteris L.
+LF51,0.5,Brachypodium sylvaticum (Huds.) P.Beauv.
+LF51,0.5,Carex flacca Schreb.
+LF51,0.5,Cornus sanguinea L.
+LF51,0.5,Crataegus monogyna Jacq.
+LF51,0.5,Cruciata glabra (L.) C.Bauhin ex Opiz
+LF51,0.5,Daphne laureola L.
+LF51,0.1,Festuca heterophylla Lam.
+LF51,0.5,Fragaria vesca L.
+LF51,37.5,Fraxinus ornus L.
+LF51,15,Hedera helix L.
+LF51,0.5,Juniperus communis L.
+LF51,0.5,Ligustrum vulgare L.
+LF51,15,Lonicera etrusca Santi
+LF51,0.5,Ostrya carpinifolia Scop.
+LF51,0.5,Polypodium interjectum Shivas
+LF51,0.1,Prunus avium L.
+LF51,87.5,Quercus cerris L.
+LF51,0.5,Quercus pubescens Willd.
+LF51,0.5,Rosa sempervirens L.
+LF51,0.5,Rubia peregrina L.
+LF51,0.5,Rubus ulmifolius Schott
+LF51,3,Ruscus aculeatus L.
+LF51,0.5,Sorbus domestica L.
+LF51,0.5,Sorbus torminalis (L.) Crantz
+LF51,0.1,Teucrium chamaedrys L.
+LF51,15,Viburnum tinus L.
+NJ33,0.1,Anthoxanthum odoratum L.
+NJ33,0.1,Asparagus acutifolius L.
+NJ33,0.5,Asplenium onopteris L.
+NJ33,0.5,Brachypodium rupestre (Host) Roem. & Schult.
+NJ33,0.1,Cornus sanguinea L.
+NJ33,0.5,Cruciata glabra (L.) C.Bauhin ex Opiz
+NJ33,0.5,Cytisus villosus Pourr.
+NJ33,0.1,Daphne laureola L.
+NJ33,0.5,Erica arborea L.
+NJ33,0.1,Euonymus europaeus L.
+NJ33,3,Festuca heterophylla Lam.
+NJ33,0.1,Fragaria vesca L.
+NJ33,15,Fraxinus ornus L.
+NJ33,0.5,Genista germanica L.
+NJ33,0.5,Hedera helix L.
+NJ33,0.5,Hieracium virgaurea Coss.
+NJ33,0.5,Juniperus communis L.
+NJ33,0.1,Lathyrus niger (L.) Bernh.
+NJ33,0.5,Laurus nobilis L.
+NJ33,3,Lonicera etrusca Santi
+NJ33,0.5,Luzula forsteri (Sm.) DC.
+NJ33,15,Physospermum cornubiense (L.) DC.
+NJ33,0.1,Polypodium australe Fée
+NJ33,0.5,Polypodium interjectum Shivas
+NJ33,87.5,Quercus cerris L.
+NJ33,0.5,Quercus pubescens Willd.
+NJ33,0.5,Rubia peregrina L.
+NJ33,15,Rubus ulmifolius Schott
+NJ33,3,Ruscus aculeatus L.
+NJ33,3,Serratula tinctoria L.
+NJ33,0.1,Silene italica (L.) Pers.
+NJ33,0.5,Sorbus domestica L.
+NJ33,0.5,Sorbus torminalis (L.) Crantz
+NJ33,0.1,Stachys officinalis (L.) Trevis.
+NJ33,0.5,Tamus communis L.
+NJ33,0.1,Viola alba Besser subsp. dehnhardtii (Ten.) W.Becker
+NJ33,0.1,Viola reichenbachiana Jord. ex Boreau
+QJ27,0.1,Galium anisophyllon Vill.
+QJ27,0.1,Hieracium sp.
+QJ27,0.1,Hypericum richeri Vill.
+QJ27,0.1,Ranunculus pollinensis (N.Terracc.) Chiov.
+QJ27,0.1,Thesium alpinum L.
+QJ27,0.1,Thymus pulegioides L.
+QJ27,0.5,Asperula aristata L.f.
+QJ27,0.5,Avenella flexuosa (L.) Drejer subsp. flexuosa
+QJ27,0.5,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+QJ27,0.5,Viola ferrarinii Moraldo & Ricceri
+QJ27,1,Alchemilla transiens (Buser) Buser
+QJ27,1,Anthoxanthum sp.
+QJ27,1,Brachypodium genuense (DC.) Roem. & Schult.
+QJ27,2,Festuca sp.
+QJ27,3,Carex sempervirens Vill.
+QJ27,3,Genista tinctoria L.
+QJ27,5,Oreojuncus trifidus (Jacq.) Záv.Drábk. & Kirschner
+QJ27,10,Potentilla crantzii (Crantz) Beck ex Fritsch
+QJ27,15,Vaccinium myrtillus L.
+QJ27,25,Vaccinium uliginosum L.
+QJ27,40,Trifolium alpinum L.
+JN90,0.5,Crocus neglectus Peruzzi & Carta
+JN90,0.5,Dianthus deltoides L.
+JN90,0.5,Geum montanum L.
+JN90,0.5,Phyteuma hemisphaericum L.
+JN90,0.5,Solidago virgaurea L.
+JN90,2,Anthoxanthum nipponicum Honda
+JN90,2,Genista tinctoria L.
+JN90,2,Hypericum richeri Vill.
+JN90,2,Luzula multiflora (Ehrh.) Lej.
+JN90,2,"Pilosella officinarum Vaill., nom. inval."
+JN90,4,Festuca riccerii Foggi & Gr.Rossi
+JN90,4,Oreojuncus trifidus (Jacq.) Záv.Drábk. & Kirschner
+JN90,5,Viola ferrarinii Moraldo & Ricceri
+JN90,7,Vaccinium myrtillus L.
+JN90,10,Carex sempervirens Vill.
+JN90,13,Vaccinium uliginosum L.
+JN90,45,Trifolium alpinum L.
+TF93,0.5,Crocus neglectus Peruzzi & Carta
+TF93,0.5,Cryptogramma crispa (L.) R.Br. ex Hook.
+TF93,0.5,Hypericum richeri Vill.
+TF93,0.5,Lotus corniculatus L. subsp. corniculatus
+TF93,0.5,Luzula pedemontana Boiss. & Reut.
+TF93,0.5,Phyteuma orbiculare L.
+TF93,0.5,Pimpinella saxifraga L.
+TF93,0.5,Vaccinium myrtillus L.
+TF93,0.5,Viola canina L.
+TF93,0.5,Viola ferrarinii Moraldo & Ricceri
+TF93,1,Anthoxanthum odoratum L.
+TF93,1,Avenella flexuosa (L.) Drejer subsp. flexuosa
+TF93,1,Festuca sp.
+TF93,1,Meum athamanticum Jacq.
+TF93,1,Nardus stricta L.
+TF93,1,"Pilosella officinarum Vaill., nom. inval."
+TF93,5,Thymus praecox Opiz
+TF93,6,Genista tinctoria L.
+TF93,8,Alchemilla transiens (Buser) Buser
+TF93,60,Brachypodium genuense (DC.) Roem. & Schult.
+KG68,0.1,Rumex nebroides Campd.
+KG68,0.5,Carex sempervirens Vill.
+KG68,0.5,Dianthus hyssopifolius L.
+KG68,0.5,Festuca rubra L.
+KG68,1,Galium anisophyllon Vill.
+KG68,1,Hypericum richeri Vill.
+KG68,1,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+KG68,1,Meum athamanticum Jacq.
+KG68,1,Pimpinella saxifraga L.
+KG68,2,Anthoxanthum nipponicum Honda
+KG68,3,Carlina acaulis L.
+KG68,10,Avenella flexuosa (L.) Drejer subsp. flexuosa
+KG68,15,Vaccinium myrtillus L.
+KG68,55,Brachypodium genuense (DC.) Roem. & Schult.
+QE18,0.1,Cytisus scoparius (L.) Link
+QE18,0.5,Dianthus sylvestris Wulfen
+QE18,0.5,Ervilia hirsuta (L.) Opiz
+QE18,0.5,Erysimum pseudorhaeticum Polatschek
+QE18,0.5,Galium obliquum Vill.
+QE18,0.5,Poterium sanguisorba L.
+QE18,0.5,Thymus praecox Opiz
+QE18,1,Arenaria serpyllifolia L.
+QE18,1,Hypericum perforatum L.
+QE18,1,Knautia arvensis (L.) Coult.
+QE18,3,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+QE18,4,Clinopodium alpinum (L.) Kuntze
+QE18,7,Festuca riccerii Foggi & Gr.Rossi
+QE18,8,Astragalus hypoglottis L.
+QE18,9,Euphorbia cyparissias L.
+QE18,35,Brachypodium genuense (DC.) Roem. & Schult.
+WT62,0.1,Crocus neglectus Peruzzi & Carta
+WT62,0.5,Alchemilla xanthochlora Rothm.
+WT62,0.5,Carlina acaulis L.
+WT62,0.5,Galium anisophyllon Vill.
+WT62,0.5,Primula veris L.
+WT62,0.5,Rumex acetosa L.
+WT62,0.5,Vicia sepium L.
+WT62,1,Cruciata glabra (L.) C.Bauhin ex Opiz
+WT62,2,Briza media L.
+WT62,2,Festuca sp.
+WT62,2,Hypericum richeri Vill.
+WT62,2,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+WT62,2,Ranunculus sp.
+WT62,3,Genista tinctoria L.
+WT62,5,Avenella flexuosa (L.) Drejer subsp. flexuosa
+WT62,15,Meum athamanticum Jacq.
+WT62,60,Brachypodium genuense (DC.) Roem. & Schult.
+RQ20,0.5,Anthoxanthum nipponicum Honda
+RQ20,0.5,Briza media L.
+RQ20,0.5,Carlina acaulis L.
+RQ20,0.5,Helianthemum nummularium (L.) Mill.
+RQ20,0.5,Pimpinella saxifraga L.
+RQ20,0.5,Potentilla erecta (L.) Raeusch.
+RQ20,0.5,Primula veris L.
+RQ20,1,Galium anisophyllon Vill.
+RQ20,2,Genista tinctoria L.
+RQ20,2,Vaccinium myrtillus L.
+RQ20,3,Ranunculus sp.
+RQ20,5,Lathyrus linifolius (Reichard) Bässler
+RQ20,8,Avenella flexuosa (L.) Drejer subsp. flexuosa
+RQ20,12,Meum athamanticum Jacq.
+RQ20,15,Festuca sp.
+RQ20,75,Brachypodium genuense (DC.) Roem. & Schult.
+JN17,0.1,Leucanthemum heterophyllum (Willd.) DC.
+JN17,0.5,Alchemilla xanthochlora Rothm.
+JN17,0.5,Anthoxanthum sp.
+JN17,0.5,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+JN17,0.5,Potentilla erecta (L.) Raeusch.
+JN17,0.5,Primula veris L.
+JN17,1,Cruciata glabra (L.) C.Bauhin ex Opiz
+JN17,1,Galium anisophyllon Vill.
+JN17,1,Helianthemum nummularium (L.) Mill.
+JN17,1,Pimpinella saxifraga L.
+JN17,1,Ranunculus sp.
+JN17,2,Carlina acaulis L.
+JN17,2,Juniperus communis L.
+JN17,2,Rumex acetosa L.
+JN17,3,Vaccinium myrtillus L.
+JN17,7,Meum athamanticum Jacq.
+JN17,8,Avenella flexuosa (L.) Drejer subsp. flexuosa
+JN17,25,Festuca sp.
+JN17,65,Brachypodium genuense (DC.) Roem. & Schult.
+WP14,0.1,Narcissus tazetta L.
+WP14,0.5,Galium anisophyllon Vill.
+WP14,0.5,Hypericum richeri Vill.
+WP14,0.5,Lathyrus pratensis L.
+WP14,0.5,Microthlaspi perfoliatum (L.) F.K.Mey.
+WP14,0.5,Pimpinella saxifraga L.
+WP14,0.5,Rumex acetosa L.
+WP14,0.5,Vicia cracca L.
+WP14,1,Anemonoides nemorosa (L.) Holub
+WP14,1,Cruciata glabra (L.) C.Bauhin ex Opiz
+WP14,2,Lathyrus vernus (L.) Bernh.
+WP14,2,Vaccinium myrtillus L.
+WP14,4,Avenella flexuosa (L.) Drejer subsp. flexuosa
+WP14,4,Stellaria graminea L.
+WP14,10,Festuca sp.
+WP14,18,Meum athamanticum Jacq.
+WP14,70,Brachypodium genuense (DC.) Roem. & Schult.
+VI38,0.5,Anthoxanthum odoratum L.
+VI38,0.5,Dianthus deltoides L.
+VI38,0.5,Galium anisophyllon Vill.
+VI38,0.5,Pimpinella saxifraga L.
+VI38,0.5,Thesium alpinum L.
+VI38,0.5,Viola ferrarinii Moraldo & Ricceri
+VI38,1,Briza media L.
+VI38,1,Carlina acaulis L.
+VI38,1,Cerastium arvense L.
+VI38,1,Nardus stricta L.
+VI38,1,Thymus praecox Opiz
+VI38,2,Euphorbia cyparissias L.
+VI38,2,Festuca sp.
+VI38,2,Hypericum richeri Vill.
+VI38,2,Knautia collina Jord.
+VI38,2,Luzula campestris (L.) DC.
+VI38,5,Genista tinctoria L.
+VI38,8,Achillea millefolium L.
+VI38,10,Festuca riccerii Foggi & Gr.Rossi
+VI38,10,Meum athamanticum Jacq.
+VI38,35,Avenella flexuosa (L.) Drejer subsp. flexuosa
+VI38,40,Brachypodium genuense (DC.) Roem. & Schult.
+SG59,0.1,Veronica officinalis L.
+SG59,0.5,Achillea millefolium L.
+SG59,0.5,Hieracium murorum L.
+SG59,0.5,Linaria purpurea (L.) Mill.
+SG59,0.5,Phyteuma italicum Arv.-Touv.
+SG59,0.5,Primula veris L.
+SG59,0.5,Senecio doronicum (L.) L.
+SG59,1,Briza media L.
+SG59,1,Galium album Mill.
+SG59,1,Hypericum montanum L.
+SG59,1,Knautia arvensis (L.) Coult.
+SG59,1,Lathyrus pratensis L.
+SG59,1,Lathyrus vernus (L.) Bernh.
+SG59,1,Leontodon hispidus L.
+SG59,1,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+SG59,1,Luzula campestris (L.) DC.
+SG59,1,Trifolium pratense L.
+SG59,2,Cruciata glabra (L.) C.Bauhin ex Opiz
+SG59,2,Digitalis lutea L.
+SG59,2,Pimpinella saxifraga L.
+SG59,2,Vicia cracca L.
+SG59,10,Agrostis capillaris L.
+SG59,10,Carlina acaulis L.
+SG59,15,Festuca rubra L.
+SG59,15,Trisetaria flavescens (L.) Baumg.
+SG59,45,Brachypodium genuense (DC.) Roem. & Schult.
+PM79,0.5,Anemonoides nemorosa (L.) Holub
+PM79,0.5,Carlina acaulis L.
+PM79,0.5,Crocus neglectus Peruzzi & Carta
+PM79,0.5,Genista tinctoria L.
+PM79,0.5,Helianthemum nummularium (L.) Mill.
+PM79,0.5,Potentilla erecta (L.) Raeusch.
+PM79,0.5,Primula veris L.
+PM79,0.5,Rumex acetosa L.
+PM79,0.5,Trollius europaeus L.
+PM79,0.5,Vaccinium myrtillus L.
+PM79,1,Festuca rubra L.
+PM79,1,Rubus idaeus L.
+PM79,2,Alchemilla xanthochlora Rothm.
+PM79,2,Galium anisophyllon Vill.
+PM79,2,Knautia arvensis (L.) Coult.
+PM79,2,Lathyrus vernus (L.) Bernh.
+PM79,4,Vicia cracca L.
+PM79,5,Dactylis glomerata L.
+PM79,5,Galium album Mill.
+PM79,6,Hypericum montanum L.
+PM79,8,Agrostis capillaris L.
+PM79,8,Avenella flexuosa (L.) Drejer subsp. flexuosa
+PM79,8,Meum athamanticum Jacq.
+PM79,55,Brachypodium genuense (DC.) Roem. & Schult.
+GO83,0.5,Anthoxanthum odoratum L.
+GO83,0.5,Biscutella laevigata L.
+GO83,0.5,Briza media L.
+GO83,0.5,Galium anisophyllon Vill.
+GO83,0.5,Narcissus poëticus L.
+GO83,1,Anemonoides nemorosa (L.) Holub
+GO83,1,Avenella flexuosa (L.) Drejer subsp. flexuosa
+GO83,1,Festuca rubra L.
+GO83,1,Linum usitatissimum L.
+GO83,1,Primula veris L.
+GO83,1,Vicia cracca L.
+GO83,2,Carlina acaulis L.
+GO83,2,Helianthemum nummularium (L.) Mill.
+GO83,2,Lathyrus vernus (L.) Bernh.
+GO83,2,Lilium martagon L.
+GO83,3,Cruciata glabra (L.) C.Bauhin ex Opiz
+GO83,3,Meum athamanticum Jacq.
+GO83,10,Senecio doronicum (L.) L.
+GO83,70,Brachypodium genuense (DC.) Roem. & Schult.
+XX35,0.1,Carlina acaulis L.
+XX35,0.5,Galium album Mill.
+XX35,0.5,Genista tinctoria L.
+XX35,0.5,Helianthemum nummularium (L.) Mill.
+XX35,0.5,Leucanthemum heterophyllum (Willd.) DC.
+XX35,0.5,Meum athamanticum Jacq.
+XX35,0.5,Narcissus poëticus L.
+XX35,0.5,Pimpinella saxifraga L.
+XX35,0.5,Trifolium pratense L.
+XX35,1,Briza media L.
+XX35,1,Campanula glomerata L.
+XX35,1,Cruciata glabra (L.) C.Bauhin ex Opiz
+XX35,1,Dianthus sylvestris Wulfen
+XX35,1,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+XX35,1,Vicia cracca L.
+XX35,2,Euphorbia cyparissias L.
+XX35,2,Festuca sp.
+XX35,2,Galium anisophyllon Vill.
+XX35,2,Knautia arvensis (L.) Coult.
+XX35,5,Senecio doronicum (L.) L.
+XX35,8,Bromopsis erecta (Huds.) Fourr.
+XX35,72,Brachypodium genuense (DC.) Roem. & Schult.
+HI82,0.5,Crocus neglectus Peruzzi & Carta
+HI82,0.5,Cruciata glabra (L.) C.Bauhin ex Opiz
+HI82,0.5,Genista tinctoria L.
+HI82,0.5,Hypericum montanum L.
+HI82,0.5,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+HI82,0.5,Luzula campestris (L.) DC.
+HI82,0.5,Microthlaspi perfoliatum (L.) F.K.Mey.
+HI82,0.5,Orobanche gracilis Sm.
+HI82,0.5,Potentilla sp.
+HI82,0.5,Senecio doronicum (L.) L.
+HI82,0.5,Vaccinium myrtillus L.
+HI82,1,Helianthemum nummularium (L.) Mill.
+HI82,1,Thymus praecox Opiz
+HI82,2,Festuca filiformis Pourr.
+HI82,2,Galium anisophyllon Vill.
+HI82,3,Silene vulgaris (Moench) Garcke
+HI82,5,Calluna vulgaris (L.) Hull
+HI82,5,Carlina acaulis L.
+HI82,5,Knautia arvensis (L.) Coult.
+HI82,5,Meum athamanticum Jacq.
+HI82,20,Avenella flexuosa (L.) Drejer subsp. flexuosa
+HI82,50,Brachypodium genuense (DC.) Roem. & Schult.
+ZQ20,0.1,Potentilla micrantha Ramond ex DC.
+ZQ20,0.5,Campanula glomerata L.
+ZQ20,0.5,Crocus neglectus Peruzzi & Carta
+ZQ20,0.5,Hypericum montanum L.
+ZQ20,0.5,Narcissus poëticus L.
+ZQ20,1,Anemonoides nemorosa (L.) Holub
+ZQ20,1,Carlina acaulis L.
+ZQ20,1,Cruciata glabra (L.) C.Bauhin ex Opiz
+ZQ20,1,Euphorbia cyparissias L.
+ZQ20,1,Lathyrus vernus (L.) Bernh.
+ZQ20,1,Sorbus aria (L.) Crantz
+ZQ20,2,Vicia incana Gouan
+ZQ20,4,Asphodelus macrocarpus Parl. subsp. macrocarpus
+ZQ20,4,Senecio doronicum (L.) L.
+ZQ20,10,Festuca rubra L.
+ZQ20,75,Brachypodium genuense (DC.) Roem. & Schult.
+YM15,0.1,Hypericum montanum L.
+YM15,0.5,Anemonoides nemorosa (L.) Holub
+YM15,0.5,Campanula scheuchzeri Vill.
+YM15,0.5,Cruciata glabra (L.) C.Bauhin ex Opiz
+YM15,0.5,Galium album Mill.
+YM15,0.5,Genista tinctoria L.
+YM15,0.5,Laburnum anagyroides Medik.
+YM15,0.5,Lilium martagon L.
+YM15,0.5,Vaccinium myrtillus L.
+YM15,1,Lathyrus vernus (L.) Bernh.
+YM15,1,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+YM15,1,Pimpinella saxifraga L.
+YM15,1,Rumex acetosa L.
+YM15,1,Trisetaria flavescens (L.) Baumg.
+YM15,2,Galium anisophyllon Vill.
+YM15,2,Lathyrus linifolius (Reichard) Bässler
+YM15,5,Carlina acaulis L.
+YM15,7,Meum athamanticum Jacq.
+YM15,9,Senecio doronicum (L.) L.
+YM15,10,Festuca sp.
+YM15,20,Avenella flexuosa (L.) Drejer subsp. flexuosa
+YM15,65,Brachypodium genuense (DC.) Roem. & Schult.
+KR85,0.1,Anemonoides nemorosa (L.) Holub
+KR85,0.5,Centaurea triumfettii All.
+KR85,0.5,Cruciata glabra (L.) C.Bauhin ex Opiz
+KR85,0.5,Galium anisophyllon Vill.
+KR85,0.5,Geum montanum L.
+KR85,0.5,Narcissus poëticus L.
+KR85,1,Avenella flexuosa (L.) Drejer subsp. flexuosa
+KR85,1,Galium album Mill.
+KR85,1,Lathyrus linifolius (Reichard) Bässler
+KR85,2,Carlina acaulis L.
+KR85,2,Festuca sp.
+KR85,2,Lathyrus vernus (L.) Bernh.
+KR85,4,Trifolium pratense L.
+KR85,6,Meum athamanticum Jacq.
+KR85,6,Vicia cracca L.
+KR85,10,Hypericum perforatum L.
+KR85,10,Senecio doronicum (L.) L.
+KR85,70,Brachypodium genuense (DC.) Roem. & Schult.
+DO92,0.5,Anthoxanthum sp.
+DO92,0.5,Briza media L.
+DO92,0.5,Carex sp.
+DO92,0.5,Crocus neglectus Peruzzi & Carta
+DO92,0.5,Galium anisophyllon Vill.
+DO92,0.5,Orobanche gracilis Sm.
+DO92,0.5,Pimpinella saxifraga L.
+DO92,0.5,Ranunculus sp.
+DO92,1,Achillea millefolium L.
+DO92,1,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+DO92,1,Luzula campestris (L.) DC.
+DO92,1,Potentilla erecta (L.) Raeusch.
+DO92,1,Rumex acetosa L.
+DO92,2,Helianthemum nummularium (L.) Mill.
+DO92,2,Hypericum montanum L.
+DO92,2,Hypericum perforatum L.
+DO92,3,Patzkea paniculata (L.) G.H.Loos subsp. paniculata
+DO92,4,Silene nutans L.
+DO92,7,Genista tinctoria L.
+DO92,10,Avenella flexuosa (L.) Drejer subsp. flexuosa
+DO92,10,Meum athamanticum Jacq.
+DO92,70,Brachypodium genuense (DC.) Roem. & Schult.
+GZ65,0.5,Anthoxanthum odoratum L.
+GZ65,0.5,Campanula scheuchzeri Vill.
+GZ65,0.5,Euphorbia cyparissias L.
+GZ65,0.5,Genista tinctoria L.
+GZ65,0.5,Phyteuma italicum Arv.-Touv.
+GZ65,0.5,Silene nutans L.
+GZ65,1,Carlina acaulis L.
+GZ65,1,Cerastium arvense L.
+GZ65,1,Euphorbia dulcis L.
+GZ65,1,Festuca rubra L.
+GZ65,1,Knautia arvensis (L.) Coult.
+GZ65,1,Pimpinella saxifraga L.
+GZ65,1,Potentilla erecta (L.) Raeusch.
+GZ65,1,Primula veris L.
+GZ65,2,Galium anisophyllon Vill.
+GZ65,2,Helianthemum nummularium (L.) Mill.
+GZ65,3,Vaccinium myrtillus L.
+GZ65,4,Lathyrus vernus (L.) Bernh.
+GZ65,5,Avenella flexuosa (L.) Drejer subsp. flexuosa
+GZ65,5,Meum athamanticum Jacq.
+GZ65,7,Senecio doronicum (L.) L.
+GZ65,60,Brachypodium genuense (DC.) Roem. & Schult.
+PN36,0.5,Astragalus monspessulanus L.
+PN36,0.5,Avena barbata Pott ex Link
+PN36,0.5,Catapodium rigidum (L.) C.E.Hubb.
+PN36,0.5,Cephalanthera rubra (L.) Rich.
+PN36,0.5,Cerastium ligusticum Viv.
+PN36,0.5,Crepis leontodontoides All.
+PN36,0.5,Daucus carota L.
+PN36,0.5,Hieracium pilosella L.
+PN36,0.5,Hieracium piloselloides Vill.
+PN36,0.5,Hypochaeris achyrophorus L.
+PN36,0.5,Lathyrus cicera L.
+PN36,0.5,Leopoldia comosa (L.) Parl.
+PN36,0.5,Linum trigynum L.
+PN36,0.5,Ophrys bertolonii Moretti
+PN36,0.5,Paliurus spina-christi Mill.
+PN36,0.5,Potentilla hirta L.
+PN36,0.5,Pulicaria odora (L.) Rchb.
+PN36,0.5,Pyrus amygdaliformis Vill.
+PN36,0.5,Quercus pubescens Willd.
+PN36,0.5,Trifolium campestre Schreb.
+PN36,0.5,Urospermum dalechampii (L.) Scop. ex F.W.Schmidt
+PN36,0.5,Veronica arvensis L.
+PN36,0.1,Serapias vomeracea (Burm.f.) Briq.
+PN36,0.1,Tetragonolobus purpureus Moench
+PN36,3,Carex flacca Schreb.
+PN36,3,Dorycnium hirsutum (L.) Ser.
+PN36,3,Odontites rubra (Baumg.) Opiz
+PN36,3,Poa sylvicola Guss.
+PN36,3,Teucrium polium L.
+PN36,15,Aegilops geniculata Roth
+PN36,15,Brachypodium distachyon (L.) P.Beauv.
+PN36,15,Bromus sterilis L.
+PN36,15,Cynodon dactylon (L.) Pers.
+PN36,15,Eryngium campestre L.
+KW77,0.5,Adonis annua L.
+KW77,0.5,Bellis annua L.
+KW77,0.5,Carthamus lanatus L.
+KW77,0.5,Cerastium ligusticum Viv.
+KW77,0.5,Crepis leontodontoides All.
+KW77,0.5,Crepis vesicaria L.
+KW77,0.5,Foeniculum vulgare Mill.
+KW77,0.5,Phillyrea latifolia L.
+KW77,0.5,Pistacia lentiscus L.
+KW77,0.5,Poa pratensis L. subsp. pratensis
+KW77,0.5,Pyrus amygdaliformis Vill.
+KW77,0.5,Pyrus pyraster (L.) Burgsd.
+KW77,0.5,Quercus cerris L.
+KW77,0.5,Quercus ilex L.
+KW77,0.5,Quercus pubescens Willd.
+KW77,0.5,Rosa canina L.
+KW77,0.5,Rubus ulmifolius Schott
+KW77,0.5,Sherardia arvensis L.
+KW77,0.5,Tordylium apulum L.
+KW77,0.5,Trifolium stellatum L.
+KW77,0.1,Serapias vomeracea (Burm.f.) Briq.
+KW77,3,Daucus carota L.
+KW77,3,Tanacetum corymbosum (L.) Sch.Bip. var. tenuifolium (Willd.) Briq. et Cavill.
+KW77,15,Dactylis glomerata L.
+KW77,15,Inula viscosa (L.) Aiton
+KW77,37.5,Cynodon dactylon (L.) Pers.
+JH97,0.5,Aira caryophyllea L.
+JH97,0.5,Blackstonia perfoliata (L.) Huds.
+JH97,0.5,Centaurium pulchellum (Sw.) Druce
+JH97,0.5,Cerastium ligusticum Viv.
+JH97,0.5,Daucus carota L.
+JH97,0.5,Inula viscosa (L.) Aiton
+JH97,0.5,Pyrus amygdaliformis Vill.
+JH97,0.5,Quercus ilex L.
+JH97,0.5,Scorpiurus muricatus L.
+JH97,0.1,Trifolium scabrum L.
+JH97,3,Hieracium piloselloides Vill.
+JH97,3,Lathyrus cicera L.
+JH97,3,Sherardia arvensis L.
+JH97,37.5,Cynodon dactylon (L.) Pers.
+JH97,37.5,Dactylis glomerata L.
+EE37,0.5,Ajuga reptans L.
+EE37,0.5,Allium pendulinum Ten.
+EE37,0.5,Aristolochia rotunda L.
+EE37,0.5,Arum italicum Mill.
+EE37,0.5,Borago officinalis L.
+EE37,0.5,Brachypodium sylvaticum (Huds.) P.Beauv.
+EE37,0.5,Calamintha sylvatica Bromf.
+EE37,0.5,Carex pendula Huds.
+EE37,0.5,Carex sylvatica Huds.
+EE37,0.5,Clematis vitalba L.
+EE37,0.5,Crataegus monogyna Jacq.
+EE37,0.5,Cruciata glabra (L.) C.Bauhin ex Opiz
+EE37,0.5,Dipsacus fullonum L.
+EE37,0.5,Euonymus europaeus L.
+EE37,0.5,Eupatorium cannabinum L.
+EE37,0.5,Euphorbia amygdaloides L.
+EE37,0.5,Galium aparine L.
+EE37,0.5,Hedera helix L.
+EE37,0.5,Helleborus bocconei Ten.
+EE37,0.5,Lamium purpureum L.
+EE37,0.5,Melica uniflora Retz.
+EE37,0.5,Mentha aquatica L.
+EE37,0.5,Oenanthe pimpinelloides L.
+EE37,0.5,Poa trivialis L.
+EE37,0.5,Prunus spinosa L.
+EE37,0.5,Rosa sempervirens L.
+EE37,0.5,Stellaria media (L.) Vill.
+EE37,0.5,Veronica anagallis-aquatica L.
+EE37,3,Acer campestre L.
+EE37,3,Anemone apennina L.
+EE37,3,Anemone nemorosa L.
+EE37,3,Cornus sanguinea L.
+EE37,3,Galium mollugo L.
+EE37,3,Salix purpurea L.
+EE37,15,Alliaria petiolata (M.Bieb.) Cavara & Grande
+EE37,15,Arctium lappa L.
+EE37,15,Fraxinus oxycarpa M.Bieb. ex Willd.
+EE37,15,Ranunculus ficaria L.
+EE37,15,Ranunculus lanuginosus L.
+EE37,15,Rubus ulmifolius Schott
+EE37,15,Salix alba L.
+EE37,15,Ulmus minor Mill.
+EE37,37.5,Populus nigra L.
+MG76,0.5,Anthyllis tetraphylla L.
+MG76,0.5,Arbutus unedo L.
+MG76,0.5,Asparagus acutifolius L.
+MG76,0.5,Centaurium pulchellum (Sw.) Druce
+MG76,0.5,Cistus monspeliensis L.
+MG76,0.5,Convolvulus cantabrica L.
+MG76,0.5,Cymbopogon hirtus (L.) Janch.
+MG76,0.5,Euphorbia helioscopia L.
+MG76,0.5,Hippocrepis unisiliquosa L.
+MG76,0.5,Onobrychis caput-galli (L.) Lam.
+MG76,0.5,Ononis reclinata L.
+MG76,0.5,Parentucellia viscosa (L.) Caruel
+MG76,0.5,Phalaris coerulescens Desf.
+MG76,0.5,Phillyrea latifolia L.
+MG76,0.5,Plantago bellardii All.
+MG76,0.5,Plantago cynops L.
+MG76,0.5,Quercus ilex L.
+MG76,0.5,Quercus pubescens Willd.
+MG76,0.5,Reichardia picroides (L.) Roth
+MG76,0.5,Rhamnus alaternus L.
+MG76,0.5,Salvia verbenaca L.
+MG76,0.5,Sherardia arvensis L.
+MG76,0.5,Sideritis romana L.
+MG76,0.5,Tordylium apulum L.
+MG76,0.5,Trifolium subterraneum L.
+MG76,0.5,Urospermum dalechampii (L.) Scop. ex F.W.Schmidt
+MG76,3,Brachypodium ramosum (L.) Roem. & Schult.
+MG76,3,Catapodium rigidum (L.) C.E.Hubb.
+MG76,3,Centaurea arrigonii Greuter
+MG76,3,Hypochaeris achyrophorus L.
+MG76,3,Sanguisorba minor Scop.
+MG76,3,Trifolium stellatum L.
+MG76,15,Brachypodium distachyon (L.) P.Beauv.
+MG76,15,Teucrium polium L.
+MG76,37.5,Aegilops geniculata Roth
+FR49,0.1,Allium sphaerocephalon L.
+FR49,0.5,Alyssum bertolonii Desv. subsp. bertolonii
+FR49,0.5,Brachypodium pinnatum (L.) P.Beauv. subsp. rupestre (Host) Schübl. & G.Martens
+FR49,15,Bromus erectus Huds.
+FR49,0.1,Carex humilis Leyss.
+FR49,0.5,Carlina corymbosa L.
+FR49,0.5,Centaurea aplolepa Moretti subsp. carueliana (Micheletti) Dostál
+FR49,0.5,Cistus salviifolius L.
+FR49,0.5,Echium vulgare L.
+FR49,15,Festuca inops De Not.
+FR49,3,Festuca robustifolia Markgr.-Dann.
+FR49,3,Galium corrudifolium Vill.
+FR49,0.1,Genista januensis Viv.
+FR49,3,Helichrysum italicum (Roth) G.Don
+FR49,0.5,Hieracium piloselloides Vill.
+FR49,0.5,Jasione montana L.
+FR49,3,Linum trigynum L.
+FR49,0.5,Reichardia picroides (L.) Roth
+FR49,0.1,Sedum rupestre L.
+FR49,0.1,Stachys recta L. subsp. serpentini (Fiori) Arrigoni
+FR49,3,Thymus striatus Vahl var. ophioliticus (Lac.) Fiori
+FR49,0.1,Stipa etrusca Moraldo
+BS15,7,Achillea collina (Rchb.f.) Heimerl
+BS15,0.5,Alchemilla xanthochlora Rothm.
+BS15,55,Brachypodium genuense (DC.) Roem. & Schult.
+BS15,0.01,Bunium bulbocastanum L.
+BS15,0.2,Carex caryophyllea Latourr.
+BS15,0.01,Cirsium sp.
+BS15,7,Euphorbia cyparissias L.
+BS15,0.5,Euphorbia flavicoma DC. subsp. flavicoma
+BS15,15,Festuca inops De Not.
+BS15,0.2,Fragaria viridis Duchesne subsp. viridis
+BS15,1.5,Galium anisophyllon Vill.
+BS15,2,Helianthemum nummularium (L.) Mill.
+BS15,1,Knautia drymeia Heuff.
+BS15,0.5,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+BS15,0.5,Luzula campestris (L.) DC.
+BS15,0.1,Narcissus poëticus L.
+BS15,1,"Pilosella officinarum Vaill., nom. inval."
+BS15,1,Primula veris L.
+BS15,0.02,Prunella vulgaris L. subsp. vulgaris
+BS15,1,Ranunculus bulbosus L.
+BS15,1,Salvia pratensis L.
+BS15,0.01,Taraxacum erythrosperma (group)
+BS15,1,Trifolium sp.
+BS15,4,Vicia sepium L.
+JK45,0.05,Aphanes arvensis L.
+JK45,0.5,Arenaria serpyllifolia L. subsp. serpyllifolia
+JK45,0.5,Astragalus hypoglottis L. subsp. gremlii (Burnat) Greuter & Burdet
+JK45,25,Brachypodium genuense (DC.) Roem. & Schult.
+JK45,25,Bromopsis erecta (Huds.) Fourr.
+JK45,0.05,Bunium bulbocastanum L.
+JK45,0.02,Bupleurum baldense Turra
+JK45,3,Carex sempervirens Vill. subsp. sempervirens
+JK45,1.5,Cerastium arvense L. subsp. suffruticosum (L.) Ces.
+JK45,1,Crepis leontodontoides All.
+JK45,0.1,Euphorbia cyparissias L.
+JK45,15,Festuca rubra L.
+JK45,1,Galium anisophyllon Vill.
+JK45,1,Geranium columbinum L.
+JK45,7,Helianthemum nummularium (L.) Mill.
+JK45,0.1,Lathyrus pratensis L.
+JK45,0.1,Lathyrus sphaericus Retz.
+JK45,2,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+JK45,1,Medicago lupulina L.
+JK45,0.5,Myosotis ramosissima Rochel ex Schult. subsp. ramosissima
+JK45,2,Ranunculus bulbosus L.
+JK45,5,Teucrium chamaedrys L.
+JK45,5.1,Trifolium ochroleucum Huds.
+JK45,0.5,Veronica arvensis L.
+JK45,0.01,Vicia sp.
+VX64,7,Alchemilla xanthochlora Rothm.
+VX64,0.1,Astragalus hypoglottis L. subsp. gremlii (Burnat) Greuter & Burdet
+VX64,50,Brachypodium genuense (DC.) Roem. & Schult.
+VX64,0.05,Briza media L.
+VX64,2,Bromopsis erecta (Huds.) Fourr.
+VX64,0.01,Cerastium arvense L. subsp. suffruticosum (L.) Ces.
+VX64,0.01,Crocus vernus (L.) Hill
+VX64,3,Cruciata glabra (L.) C.Bauhin ex Opiz
+VX64,2.1,Dianthus seguieri Vill. subsp. seguieri
+VX64,3,Festuca circummediterranea Patzke
+VX64,0.01,Galium anisophyllon Vill.
+VX64,3,Genista tinctoria L.
+VX64,1.5,Koeleria splendens C.Presl
+VX64,0.5,Lathyrus pratensis L.
+VX64,0.5,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+VX64,0.01,Luzula campestris (L.) DC.
+VX64,5,Meum athamanticum Jacq.
+VX64,0.05,Narcissus poëticus L.
+VX64,7,Nardus stricta L.
+VX64,0.02,Polygala nicaeensis Risso ex W.D.J.Koch
+VX64,1.5,Potentilla erecta (L.) Raeusch.
+VX64,0.02,Potentilla pedata Willd. ex Hornem.
+VX64,4,Primula veris L.
+VX64,0.02,Ranunculus bulbosus L.
+VX64,2,Thymus praecox Opiz subsp. polytrichus (A.Kern ex Borbás) Jalas
+VX64,4,Trifolium pratense L.
+VX64,3,Vaccinium myrtillus L.
+VX64,0.1,Veronica chamaedrys L.
+VX64,0.05,Viola reichenbachiana Jord. ex Boreau
+HY57,0.5,Alchemilla xanthochlora Rothm.
+HY57,0.05,Anthyllis vulneraria L.
+HY57,0.05,Arenaria serpyllifolia L. subsp. serpyllifolia
+HY57,25,Brachypodium genuense (DC.) Roem. & Schult.
+HY57,5,Bromopsis erecta (Huds.) Fourr.
+HY57,0.5,Bunium bulbocastanum L.
+HY57,1,Centaurea triumfettii All.
+HY57,0.5,Cerastium arvense L. subsp. suffruticosum (L.) Ces.
+HY57,0.01,Clinopodium acinos (L.) Kuntze subsp. acinos
+HY57,0.05,Dianthus seguieri Vill. subsp. seguieri
+HY57,0.1,Euphorbia cyparissias L.
+HY57,25,Festuca circummediterranea Patzke
+HY57,1,Galium obliquum Vill.
+HY57,5,Geranium sanguineum L.
+HY57,0.05,Helianthemum nummularium (L.) Mill.
+HY57,0.5,Hippocrepis comosa L. subsp. comosa
+HY57,3,Koeleria splendens C.Presl
+HY57,0.5,Lilium bulbiferum L. subsp. croceum (Chaix) Jan
+HY57,2,Paeonia officinalis L.
+HY57,0.1,Plantago argentea Chaix
+HY57,0.1,Plantago lanceolata L.
+HY57,0.05,Potentilla pedata Willd. ex Hornem.
+HY57,0.5,Primula veris L.
+HY57,0.01,Rumex acetosella L.
+HY57,0.05,Sedum acre L.
+SR19,10,Achillea collina (Rchb.f.) Heimerl
+SR19,5,Alchemilla xanthochlora Rothm.
+SR19,0.01,Arenaria serpyllifolia L. subsp. serpyllifolia
+SR19,0.1,Astragalus hypoglottis L. subsp. gremlii (Burnat) Greuter & Burdet
+SR19,35,Brachypodium genuense (DC.) Roem. & Schult.
+SR19,0.1,Bunium bulbocastanum L.
+SR19,0.5,Cerastium arvense L. subsp. suffruticosum (L.) Ces.
+SR19,0.1,Dianthus longicaulis Ten.
+SR19,10,Euphorbia cyparissias L.
+SR19,35,Festuca rubra L.
+SR19,3,Fragaria viridis Duchesne subsp. viridis
+SR19,0.01,Geranium columbinum L.
+SR19,3,"Helictochloa praetutiana (Parl. ex Arcang.) Bartolucci, F.Conti, Peruzzi & Banfi"
+SR19,0.05,Lathyrus pratensis L.
+SR19,1.5,Myosotis arvensis (L.) Hill subsp. arvensis
+SR19,0.05,"Pilosella officinarum Vaill., nom. inval."
+SR19,0.01,Primula veris L.
+SR19,0.02,Taraxacum erythrosperma (group)
+SR19,0.01,Veronica arvensis L.
+SR19,0.05,Vicia sepium L.
+BK34,7,Alchemilla xanthochlora Rothm.
+BK34,0.05,Anemonoides nemorosa (L.) Holub
+BK34,2,Avenella flexuosa (L.) Drejer subsp. flexuosa
+BK34,45,Brachypodium genuense (DC.) Roem. & Schult.
+BK34,1,Briza media L.
+BK34,0.01,Bunium bulbocastanum L.
+BK34,2,Carex sempervirens Vill. subsp. sempervirens
+BK34,0.5,Crocus vernus (L.) Hill
+BK34,2,Festuca filiformis Pourr.
+BK34,8,Festuca rubra L.
+BK34,0.01,Galium anisophyllon Vill.
+BK34,7,Genista tinctoria L.
+BK34,0.1,Gentiana acaulis L.
+BK34,1,"Helictochloa praetutiana (Parl. ex Arcang.) Bartolucci, F.Conti, Peruzzi & Banfi"
+BK34,0.05,Hypericum montanum L.
+BK34,7,Lathyrus linifolius (Reichard) Bässler
+BK34,0.05,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+BK34,0.5,Luzula campestris (L.) DC.
+BK34,5,Meum athamanticum Jacq.
+BK34,1,Plantago lanceolata L.
+BK34,2,Plantago maritima L. subsp. serpentina (All.) Arcang.
+BK34,1,Polygala alpestris Rchb.
+BK34,3,Potentilla erecta (L.) Raeusch.
+BK34,7,Primula veris L.
+BK34,0.05,Ranunculus bulbosus L.
+BK34,3,Trifolium pratense L.
+BK34,0.01,Viola reichenbachiana Jord. ex Boreau
+MO47,0.5,Alchemilla xanthochlora Rothm.
+MO47,0.05,Astragalus hypoglottis L. subsp. gremlii (Burnat) Greuter & Burdet
+MO47,2,Avenella flexuosa (L.) Drejer subsp. flexuosa
+MO47,23,Brachypodium genuense (DC.) Roem. & Schult.
+MO47,3,Briza media L.
+MO47,7,Bromopsis erecta (Huds.) Fourr.
+MO47,0.1,Calluna vulgaris (L.) Hull
+MO47,3,Carduus defloratus L. subsp. carlinifolius (Lam.) Ces.
+MO47,1.5,Carex caryophyllea Latourr.
+MO47,1.5,Carex sempervirens Vill. subsp. sempervirens
+MO47,0.07,Cerastium arvense L. subsp. suffruticosum (L.) Ces.
+MO47,0.5,Crocus vernus (L.) Hill
+MO47,0.1,Cruciata glabra (L.) C.Bauhin ex Opiz
+MO47,0.1,Dianthus longicaulis Ten.
+MO47,7,Festuca circummediterranea Patzke
+MO47,0.1,Galium anisophyllon Vill.
+MO47,1.5,Genista pilosa L.
+MO47,7,Genista tinctoria L.
+MO47,0.1,Hippocrepis comosa L. subsp. comosa
+MO47,2.5,Hypericum montanum L.
+MO47,7,Lathyrus linifolius (Reichard) Bässler
+MO47,0.1,Leontodon hispidus L.
+MO47,0.05,Linaria sp.
+MO47,10,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+MO47,0.5,Luzula campestris (L.) DC.
+MO47,10,Meum athamanticum Jacq.
+MO47,0.02,Pimpinella saxifraga L.
+MO47,2.2,Plantago maritima L. subsp. serpentina (All.) Arcang.
+MO47,2,Poa bulbosa L.
+MO47,0.2,Polygala nicaeensis Risso ex W.D.J.Koch
+MO47,2,Potentilla erecta (L.) Raeusch.
+MO47,0.01,Potentilla pedata Willd. ex Hornem.
+MO47,3,Primula veris L.
+MO47,0.05,Ranunculus bulbosus L.
+MO47,1,Trifolium pratense L.
+MO47,1,Vaccinium myrtillus L.
+MO47,0.05,Viola reichenbachiana Jord. ex Boreau
+SX34,3,Astragalus hypoglottis L. subsp. gremlii (Burnat) Greuter & Burdet
+SX34,10,Brachypodium genuense (DC.) Roem. & Schult.
+SX34,0.5,Bunium bulbocastanum L.
+SX34,3,Centaurea triumfettii All.
+SX34,2,Cerastium arvense L. subsp. suffruticosum (L.) Ces.
+SX34,2,Euphorbia cyparissias L.
+SX34,10,Festuca circummediterranea Patzke
+SX34,5,Galium obliquum Vill.
+SX34,3,"Helictochloa praetutiana (Parl. ex Arcang.) Bartolucci, F.Conti, Peruzzi & Banfi"
+SX34,0.01,Hypericum montanum L.
+SX34,5,Phleum hirsutum Honck.
+SX34,2,Satureja montana L.
+SX34,7,Sesleria juncifolia Suffren subsp. juncifolia
+SX34,10,Teucrium chamaedrys L.
+SX34,7,Vincetoxicum hirundinaria Medik.
+QL13,5,Alchemilla xanthochlora Rothm.
+QL13,0.5,Arenaria serpyllifolia L. subsp. serpyllifolia
+QL13,20,Brachypodium genuense (DC.) Roem. & Schult.
+QL13,10,Briza media L.
+QL13,0.5,Bunium bulbocastanum L.
+QL13,15,Carduus defloratus L. subsp. carlinifolius (Lam.) Ces.
+QL13,3.5,Cerastium arvense L. subsp. suffruticosum (L.) Ces.
+QL13,4,Cirsium eriophorum (L.) Scop.
+QL13,0.1,Ervilia hirsuta (L.) Opiz
+QL13,5,Euphorbia cyparissias L.
+QL13,15,Festuca inops De Not.
+QL13,5,Fragaria viridis Duchesne subsp. viridis
+QL13,2,Galium anisophyllon Vill.
+QL13,10,"Helictochloa praetutiana (Parl. ex Arcang.) Bartolucci, F.Conti, Peruzzi & Banfi"
+QL13,0.05,Hypericum montanum L.
+QL13,0.5,Lathyrus pratensis L.
+QL13,3,Lotus corniculatus L. subsp. alpinus (DC.) Rothm.
+QL13,2,"Pilosella officinarum Vaill., nom. inval."
+QL13,0.5,Plantago lanceolata L.
+QL13,1,Potentilla pedata Willd. ex Hornem.
+QL13,0.5,Primula veris L.
+QL13,0.5,Prunella laciniata (L.) L.
+QL13,0.5,Ranunculus bulbosus L.
+QL13,0.5,Taraxacum erythrosperma (group)
+QL13,0.05,Trifolium pratense L.
+QL13,0.5,Veronica arvensis L.
+QL13,5,Vincetoxicum hirundinaria Medik.
+OB88,0.01,Arenaria serpyllifolia L. subsp. serpyllifolia
+OB88,0.1,Astragalus depressus L. subsp. depressus
+OB88,30,Brachypodium genuense (DC.) Roem. & Schult.
+OB88,0.5,Bunium bulbocastanum L.
+OB88,3,Carduus defloratus L. subsp. carlinifolius (Lam.) Ces.
+OB88,0.5,Cerastium arvense L. subsp. suffruticosum (L.) Ces.
+OB88,0.01,Ervilia hirsuta (L.) Opiz
+OB88,2,Erysimum pseudorhaeticum Polatschek
+OB88,20,Festuca inops De Not.
+OB88,0.01,Lathyrus incospicuus L.
+OB88,10,Phleum hirsutum Honck.
+OB88,2,Poa molinerii Balb.
+OB88,0.5,Ranunculus bulbosus L.
+OB88,2,Silene italica (L.) Pers.
+OB88,2,Teucrium chamaedrys L.
+OB88,3,Verbascum nigrum L.
+OB88,0.5,Viola tricolor L.
+GK61,3,Echinophora spinosa L.
+GK61,3,Eryngium maritimum L.
+GK61,3,Euphorbia terracina L.
+GK61,3,Helichrysum stoechas (L.) Moench
+GK61,3,Inula crithmoides L.
+GK61,62.5,Ammophila arenaria (L.) Link
+GK61,0.5,Asparagus sp.
+GK61,0.5,Ononis variegata L.
+FV31,3,Ammophila arenaria (L.) Link
+FV31,3,Crucianella maritima L.
+FV31,3,Pancratium maritimum L.
+FV31,3,Sporobolus pungens (Schreb.) Kunth
+FV31,62.5,Helichrysum stoechas (L.) Moench
+FV31,0.5,Bromus madritensis L.
+FV31,0.5,Echinophora spinosa L.
+FV31,0.5,Ononis variegata L.
+FV31,0.5,Silene colorata Poir.
+DU33,3,Cuscuta sp.
+DU33,3,Diplotaxis tenuifolia (L.) DC.
+DU33,3,Echinophora spinosa L.
+DU33,3,Eryngium maritimum L.
+DU33,3,Lagurus ovatus L.
+DU33,3,Pancratium maritimum L.
+DU33,3,Scabiosa atropurpurea L.
+DU33,3,Silene niceensis All.
+DU33,3,Vulpia fasciculata (Forssk.) Fritsch
+DU33,15,Ononis variegata L.
+DU33,37.5,Helichrysum stoechas (L.) Moench
+DU33,0.5,Ammophila arenaria (L.) Link
+DU33,0.5,Anthemis maritima L.
+DU33,0.5,Calystegia soldanella (L.) Roem. & Schult.
+DU33,0.5,Crucianella maritima L.
+DU33,0.5,Euphorbia terracina L.
+DU33,0.5,Medicago littoralis Rohde ex Loisel.
+DU33,0.5,Parapholis incurva (L.) C.E.Hubb.
+DU33,0.5,Silene otites (L.) Wibel
+DU33,0.5,Sporobolus pungens (Schreb.) Kunth
+DU33,0.1,Daucus carota L. subsp. commutatus (Paol.) Thell.
+OR48,87.5,Ampelodesmos mauritanicus (Poir.) T.Durand & Schinz
+OR48,0.5,Anthyllis barba-jovis L.
+OR48,0.1,Bituminaria bituminosa (L.) C.H.Stirt.
+OR48,0.5,Calicotome spinosa (L.) Link
+OR48,3,Cistus creticus L. subsp. eriocephalus (Viv.) Greuter & Burdet
+OR48,0.5,Cistus monspeliensis L.
+OR48,3,Erica arborea L.
+OR48,0.5,Myrtus communis L.
+OR48,0.5,Osyris alba L.
+OR48,3,Phillyrea angustifolia L.
+OR48,3,Pistacia lentiscus L.
+OR48,0.5,Rhamnus alaternus L.
+OR48,0.5,Spartium junceum L.
+OR48,0.5,Teucrium flavum L.
+EQ56,87.5,Ampelodesmos mauritanicus (Poir.) T.Durand & Schinz
+EQ56,0.5,Bituminaria bituminosa (L.) C.H.Stirt.
+EQ56,0.1,Dasypyrum villosum (L.) P.Candargy
+EQ56,0.5,Dittrichia viscosa (L.) Greuter
+EQ56,0.5,Dorycnium hirsutum (L.) Ser.
+EQ56,3,Quercus ilex L. subsp. ilex
+EQ56,3,Spartium junceum L.
+EQ56,15,Teucrium flavum L.
+IS69,87.5,Ampelodesmos mauritanicus (Poir.) T.Durand & Schinz
+IS69,3,Anthyllis barba-jovis L.
+IS69,0.1,Crithmum maritimum L.
+IS69,0.5,Pistacia lentiscus L.
+IS69,3,Teucrium flavum L.
+KZ72,0.1,Euphorbia cyparissias L.
+KZ72,0.1,Iberis sempervirens L.
+KZ72,0.2,Polygala chamaebuxus L.
+KZ72,0.5,Carex mucronata All.
+KZ72,0.5,Galium corrudifolium Vill.
+KZ72,0.5,Pimpinella tragium Vill.
+KZ72,0.5,Ranunculus pollinensis (N.Terracc.) Chiov.
+KZ72,0.5,Viola sp.
+KZ72,1,Carum appuanum (Viv.) Grande
+KZ72,1,Erica carnea L.
+KZ72,1,Gentiana verna L.
+KZ72,2,Leucanthemum heterophyllum (Willd.) DC.
+KZ72,3,Thymus praecox Opiz
+KZ72,15,Sesleria apennina Ujhelyi
+KZ72,20,Brachypodium rupestre (Host) Roem. & Schult.
+KZ72,20,Carex digitata L.
+KZ72,40,Carex macrostachys Bertol.
+ZS46,0.1,Crocus sp.
+ZS46,0.1,Gentiana acaulis L.
+ZS46,0.1,Thesium sommieri Hendrych
+ZS46,0.5,Dianthus sp.
+ZS46,0.5,Euphorbia cyparissias L.
+ZS46,0.5,Galium corrudifolium Vill.
+ZS46,0.5,Lathyrus sylvestris L.
+ZS46,0.5,Potentilla micrantha Ramond ex DC.
+ZS46,0.5,Taraxacum sp.
+ZS46,0.5,Veronica officinalis L.
+ZS46,1,Carex caryophyllea Latourr.
+ZS46,1,Cerastium arvense L.
+ZS46,1,Cruciata glabra (L.) C.Bauhin ex Opiz
+ZS46,1,Lotus corniculatus L.
+ZS46,1,Phyteuma hemisphaericum L.
+ZS46,2,Festuca inops De Not.
+ZS46,2,Luzula pedemontana Boiss. & Reut.
+ZS46,2,Polygala chamaebuxus L.
+ZS46,2,Vicia sepium L.
+ZS46,3,Viola sp.
+ZS46,8,Vaccinium myrtillus L.
+ZS46,10,Festuca rubra L. subsp. microphylla St.-Yves
+ZS46,25,Bromopsis erecta (Huds.) Fourr.
+ZS46,45,Brachypodium rupestre (Host) Roem. & Schult.
+GF55,0.1,Euphorbia cyparissias L.
+GF55,0.1,Orchis sp.
+GF55,0.5,Pimpinella tragium Vill.
+GF55,0.5,Potentilla micrantha Ramond ex DC.
+GF55,0.5,Silene pichiana Ferrarini & Cecchi
+GF55,1,Carum appuanum (Viv.) Grande
+GF55,1,Cerastium arvense L.
+GF55,1,Coronilla minima L.
+GF55,1,Dianthus sp.
+GF55,1,Galium corrudifolium Vill.
+GF55,1,Gentiana verna L.
+GF55,1,Lotus corniculatus L.
+GF55,1,Thymus praecox Opiz
+GF55,1,Valeriana montana L.
+GF55,2,Anthyllis vulneraria L.
+GF55,2,Bromopsis erecta (Huds.) Fourr.
+GF55,2,Carex caryophyllea Latourr.
+GF55,2,Festuca inops De Not.
+GF55,3,Astragalus monspessulanus L.
+GF55,4,Polygala chamaebuxus L.
+GF55,5,Primula veris L.
+GF55,10,Sesleria apennina Ujhelyi
+GF55,15,Erica carnea L.
+GF55,30,Brachypodium rupestre (Host) Roem. & Schult.
+PG63,0.1,Polygala alpestris Rchb.
+PG63,0.5,Astragalus monspessulanus L.
+PG63,0.5,Dianthus sp.
+PG63,0.5,Euphorbia cyparissias L.
+PG63,0.5,Gentiana utriculosa L.
+PG63,0.5,Hepatica nobilis Mill.
+PG63,0.5,Pimpinella tragium Vill.
+PG63,0.5,Thymus praecox Opiz
+PG63,1,Anthyllis vulneraria L.
+PG63,1,Coronilla minima L.
+PG63,2,Carum appuanum (Viv.) Grande
+PG63,3,Brachypodium rupestre (Host) Roem. & Schult.
+PG63,3,Galium anisophyllon Vill.
+PG63,5,Juniperus communis L.
+PG63,10,Carex caryophyllea Latourr.
+PG63,10,Festuca sp.
+PG63,50,Sesleria apennina Ujhelyi
+NU56,0.1,Lotus corniculatus L.
+NU56,0.5,Briza media L.
+NU56,0.5,Carum appuanum (Viv.) Grande
+NU56,0.5,Dianthus sp.
+NU56,0.5,Galium corrudifolium Vill.
+NU56,0.5,Potentilla micrantha Ramond ex DC.
+NU56,0.5,Pteridium aquilinum (L.) Kuhn
+NU56,0.5,Thymus pulegioides L.
+NU56,1,Bromopsis erecta (Huds.) Fourr.
+NU56,1,Coronilla minima L.
+NU56,1,Festuca inops De Not.
+NU56,1,Pilosella piloselloides (Vill.) Soják
+NU56,1,Santolina pinnata Viv.
+NU56,2,Euphorbia cyparissias L.
+NU56,2,Polygala chamaebuxus L.
+NU56,4,Helichrysum italicum (Roth) G.Don
+NU56,6,Erica carnea L.
+NU56,8,Brachypodium rupestre (Host) Roem. & Schult.
+NU56,18,Carex caryophyllea Latourr.
+NU56,50,Sesleria argentea (Savi) Savi
+EK88,0.1,Thesium sommieri Hendrych
+EK88,0.5,Dianthus seguieri Vill.
+EK88,0.5,Galium corrudifolium Vill.
+EK88,0.5,Polygala alpestris Rchb.
+EK88,0.5,Polygala chamaebuxus L.
+EK88,0.5,Potentilla micrantha Ramond ex DC.
+EK88,0.5,Viola alba Besser
+EK88,1,Carlina acaulis L.
+EK88,1,Carum appuanum (Viv.) Grande
+EK88,1,Crepis alpestris (Jacq.) Tausch
+EK88,1,Vincetoxicum hirundinaria Medik.
+EK88,2,Sorbus aria (L.) Crantz
+EK88,2,Thymus praecox Opiz
+EK88,3,Carex macrolepis DC.
+EK88,3,Teucrium montanum L.
+EK88,5,Bromopsis erecta (Huds.) Fourr.
+EK88,5,Erica carnea L.
+EK88,5,Sesleria argentea (Savi) Savi
+EK88,10,Festuca inops De Not.
+EK88,40,Brachypodium rupestre (Host) Roem. & Schult.
+MW25,0.1,Astragalus monspessulanus L.
+MW25,0.1,Euphorbia amygdaloides L.
+MW25,0.1,Helleborus viridis L.
+MW25,0.1,Lotus corniculatus L.
+MW25,0.1,Potentilla micrantha Ramond ex DC.
+MW25,0.1,Thymus praecox Opiz
+MW25,0.1,Vincetoxicum hirundinaria Medik.
+MW25,0.5,Allium sp.
+MW25,0.5,Briza media L.
+MW25,0.5,Cerastium arvense L. subsp. suffruticosum (L.) Ces.
+MW25,0.5,Dianthus seguieri Vill.
+MW25,0.5,Gymnadenia conopsea (L.) R.Br.
+MW25,0.5,Pimpinella tragium Vill.
+MW25,0.5,Thesium sommieri Hendrych
+MW25,1,Bromopsis erecta (Huds.) Fourr.
+MW25,1,Campanula glomerata L.
+MW25,1,Dactylis glomerata L.
+MW25,1,Tragopogon sp.
+MW25,2,Euphorbia cyparissias L.
+MW25,2,Festuca inops De Not.
+MW25,2,Polygala chamaebuxus L.
+MW25,3,Erica carnea L.
+MW25,4,Carum appuanum (Viv.) Grande
+MW25,10,Brachypodium rupestre (Host) Roem. & Schult.
+MW25,10,Carex macrolepis DC.
+MW25,50,Sesleria argentea (Savi) Savi
+YW28,0.5,Arum italicum Mill.
+YW28,0.5,Asplenium trichomanes L.
+YW28,0.5,Cornus mas L.
+YW28,0.5,Geum urbanum L.
+YW28,0.5,Helleborus foetidus L.
+YW28,0.5,Hypericum montanum L.
+YW28,0.5,Mycelis muralis (L.) Dumort.
+YW28,0.5,Poa trivialis L.
+YW28,0.5,Quercus pubescens Willd.
+YW28,0.5,Ranunculus lanuginosus L.
+YW28,0.5,Rubia peregrina L.
+YW28,0.5,Ruscus aculeatus L.
+YW28,0.5,Stellaria media (L.) Vill.
+YW28,0.5,Tamus communis L.
+YW28,0.5,Tilia platyphyllos Scop.
+YW28,0.5,Urtica dioica L.
+YW28,0.5,Viola alba Besser subsp. dehnhardtii (Ten.) W.Becker
+YW28,62.5,Acer campestre L.
+YW28,37.5,Corylus avellana L.
+YW28,15,Anthriscus sylvestris (L.) Hoffm.
+YW28,15,Mercurialis perennis L.
+YW28,3,Cardamine monteluccii Brilli-Catt. & Gubellini
+YW28,3,Clematis vitalba L.
+YW28,3,Cyclamen repandum Sm.
+YW28,3,"Cymbalaria muralis G.Gaertn., B.Mey. & Scherb."
+YW28,3,Hedera helix L.
+YW28,3,Melica uniflora Retz.
+YW28,3,Sambucus nigra L.
+YW28,0.1,Lathraea squamaria L.
+YW28,0.1,Scilla bifolia L.
+YW28,0.5,Acer monspessulanum L.
+YW28,0.5,Alliaria petiolata (M.Bieb.) Cavara & Grande
+YW28,0.5,Anemone apennina L.
+YW28,0.5,Aristolochia lutea Desf.
+RY81,3,Arundo donax L.
+RY81,3,Bromus sterilis L.
+RY81,3,Lagurus ovatus L.
+RY81,3,Vulpia geniculata (L.) Link
+RY81,62.5,Ammophila arenaria (L.) Link
+RY81,0.5,Rubia peregrina L.
+RY81,0.5,Cakile maritima Scop.
+RY81,0.5,Juniperus oxycedrus L.
+RY81,0.5,Salsola kali L.
+RY81,0.5,Agropyron repens (L.) P.Beauv.
+RY81,0.5,Calystegia soldanella (L.) Roem. & Schult.
+RY81,0.5,Picris echioides L.
+RY81,0.5,Silene paradoxa L.
+NO40,0.5,Asplenium onopteris L.
+NO40,0.5,Coronilla emerus L.
+NO40,0.5,Hedera helix L.
+NO40,0.5,Polypodium vulgare L.
+NO40,0.5,Pteridium aquilinum (L.) Kuhn
+NO40,0.5,Rubia peregrina L.
+NO40,0.5,Rubus ulmifolius Schott
+NO40,0.5,Smilax aspera L.
+NO40,0.5,Tamus communis L.
+NO40,62.5,Castanea sativa Mill.
+NO40,15,Erica arborea L.
+NO40,15,Quercus ilex L.
+NO40,3,Arbutus unedo L.
+NO40,3,Fraxinus ornus L.
+IJ46,0.1,Andryala integrifolia L.
+IJ46,0.1,Bromus hordeaceus L.
+IJ46,0.1,Scolymus hispanicus L.
+IJ46,0.1,Sinapis alba L.
+IJ46,0.1,Stipellula capensis (Thunb.) Röser & H.R.Hamasha
+IJ46,0.1,Urospermum picroides (L.) Scop. ex F.W.Schmidt
+IJ46,0.5,Anagallis arvensis L.
+IJ46,0.5,Euphorbia helioscopia L. subsp. helioscopia
+IJ46,0.5,Medicago sp.
+IJ46,0.5,Muscari comosum (L.) Mill.
+IJ46,1,Anisantha madritensis (L.) Nevski subsp. madritensis
+IJ46,1,Hedypnois rhagadioloides (L.) F.W.Schmidt
+IJ46,1,Lolium rigidum Gaudin
+IJ46,1,Silene gallica L.
+IJ46,2,Convolvulus arvensis L.
+IJ46,2,Daucus carota L.
+IJ46,2,Erodium malacoides (L.) L'Hér. subsp. malacoides
+IJ46,2,Geranium molle L.
+IJ46,2,Sonchus asper (L.) Hill
+IJ46,2,Thapsia garganica L.
+IJ46,2,Tyrimnus leucographus (L.) Cass.
+IJ46,2,Vicia hybrida L.
+IJ46,3,Calendula arvensis (Vaill.) L.
+IJ46,5,Avena barbata Pott ex Link
+IJ46,5,Lagurus ovatus L.
+IJ46,25,Asphodelus ramosus L. subsp. ramosus
+IJ46,25,Hypochaeris achyrophorus L.
+AN57,0.1,Gymnocarpium dryopteris (L.) Newman
+AN57,0.1,Athyrium filix-femina (L.) Roth
+AN57,0.1,Prenanthes purpurea L.
+AN57,0.1,Dryopteris expansa (C.Presl) Fraser-Jenk. & Jermy
+AN57,0.1,Polypodium vulgare L.
+AN57,0.5,Oxalis acetosella L.
+AN57,0.5,Sorbus aucuparia L. subsp. aucuparia
+AN57,0.5,Abies alba Mill.
+AN57,62.5,Fagus sylvatica L.
+AN57,37.5,Vaccinium myrtillus L.
+WA69,0.1,Prenanthes purpurea L.
+WA69,0.5,Viola reichenbachiana Jord. ex Boreau
+WA69,0.5,Cardamine heptaphylla (Vill.) O.E.Schulz
+WA69,0.5,Lamium galeobdolon (L.) L. subsp. montanum (Pers.) Hayek
+WA69,0.5,Melica uniflora Retz.
+WA69,0.5,Oxalis acetosella L.
+WA69,0.5,Anemone nemorosa L.
+WA69,62.5,Fagus sylvatica L.
+WA69,15,Abies alba Mill.
+WA69,15,Athyrium filix-femina (L.) Roth
+WA69,3,"Senecio ovatus (G.Gaertn., B.Mey. & Scherb.) Willd."
+WA69,3,Geranium nodosum L.
+WA69,3,Dryopteris filix-mas (L.) Schott
+BE71,0.1,Solidago virgaurea L.
+BE71,0.5,Vaccinium myrtillus L.
+BE71,62.5,Fagus sylvatica L.
+BE71,37.5,Abies alba Mill.
+BE71,15,Prenanthes purpurea L.
+UT89,0.5,Vaccinium myrtillus L.
+UT89,0.5,Oxalis acetosella L.
+UT89,87.5,Fagus sylvatica L.
+UT89,15,Solidago virgaurea L.
+UT89,15,Abies alba Mill.
+UT89,15,Prenanthes purpurea L.
+UT89,15,Sorbus aucuparia L. subsp. aucuparia
+UT89,3,Acer pseudoplatanus L.
+UT89,3,Dryopteris filix-mas (L.) Schott
+UT89,3,"Senecio ovatus (G.Gaertn., B.Mey. & Scherb.) Willd."
+ZM18,0.1,Stellaria nemorum L. subsp. montana (Pierrat) Berher
+ZM18,0.1,Melica uniflora Retz.
+ZM18,0.1,Cardamine bulbifera (L.) Crantz
+ZM18,0.1,Paris quadrifolia L.
+ZM18,0.5,Prenanthes purpurea L.
+ZM18,0.5,Lactuca muralis (L.) Gaertn.
+ZM18,0.5,"Senecio ovatus (G.Gaertn., B.Mey. & Scherb.) Willd."
+ZM18,62.5,Abies alba Mill.
+ZM18,62.5,Fagus sylvatica L.
+ZM18,37.5,Geranium nodosum L.
+ZM18,15,Geranium robertianum L.
+ZM18,3,Viola reichenbachiana Jord. ex Boreau
+ZM18,3,Acer pseudoplatanus L.
+ZM18,3,Dryopteris filix-mas (L.) Schott
+BQ20,0.1,Lactuca muralis (L.) Gaertn.
+BQ20,0.1,Drymochloa sylvatica (Pollich) Holub
+BQ20,0.5,Prenanthes purpurea L.
+BQ20,0.5,Viola reichenbachiana Jord. ex Boreau
+BQ20,0.5,Neottia nidus-avis (L.) Rich.
+BQ20,87.5,Abies alba Mill.
+BQ20,37.5,Fagus sylvatica L.
+BQ20,15,Geranium robertianum L.
+BQ20,15,Acer pseudoplatanus L.
+BQ20,15,Galium odoratum (L.) Scop.
+BQ20,15,Cardamine heptaphylla (Vill.) O.E.Schulz
+BQ20,15,Sanicula europaea L.
+BQ20,3,"Senecio ovatus (G.Gaertn., B.Mey. & Scherb.) Willd."
+BQ20,3,Lamium galeobdolon (L.) L. subsp. montanum (Pers.) Hayek
+TD52,3,Leontodon helveticus Mérat
+TD52,15,Anthoxanthum odoratum L. subsp. nipponicum (Honda) Tzvelev
+TD52,87.5,Nardus stricta L.
+TD52,0.5,Potentilla aurea L. subsp. aurea
+TD52,0.1,Vaccinium myrtillus L.
+TD52,0.1,Carex caryophyllea Latourr.
+TD52,0.1,Plantago maritima L. subsp. serpentina (All.) Arcang.
+TD52,0.1,Vaccinium gaultherioides Bigelow
+KF39,0.5,Echinochloa crus-galli (L.) P.Beauv.
+KF39,0.5,Ranunculus trichophyllus Chaix
+KF39,87.5,Lemna gibba L.
+KF39,3,Polygonum amphibium L.
+BK70,0.5,Echinochloa crus-galli (L.) P.Beauv.
+BK70,0.5,Veronica anagallis-aquatica L.
+BK70,87.5,Lemna gibba L.
+BF83,87.5,Lemna gibba L.
+BR64,0.1,Briza media L.
+BR64,0.1,Geranium columbinum L.
+BR64,0.5,Sanguisorba minor Scop. subsp. muricata (Bonnier & Layens) Briq.
+BR64,0.5,Sedum rupestre L.
+BR64,37.5,Artemisia alba Turra
+BR64,15,Hypnum cupressiforme Hedw. var. subjulaceum Molendo
+BR64,3,Avena barbata Pott ex Link
+BR64,3,Teucrium chamaedrys L.
+HC70,0.5,Carex sp.
+HC70,0.5,Euphorbia exigua L.
+HC70,37.5,Bromus erectus Huds.
+HC70,37.5,Hypnum cupressiforme Hedw. var. subjulaceum Molendo
+HC70,15,Briza media L.
+HC70,15,Hypochaeris glabra L.
+HC70,15,Serapias neglecta De Not.
+HC70,3,Aegilops neglecta Req. ex Bertol.
+HC70,3,Lathyrus sylvestris L.
+HC70,3,Teucrium chamaedrys L.
+HC70,3,Tuberaria guttata (L.) Fourr.
+BW43,0.1,Cistus monspeliensis L.
+BW43,0.1,Dorycnium hirsutum (L.) Ser.
+BW43,0.5,Carthamus lanatus L.
+BW43,0.5,Dactylis glomerata L.
+BW43,0.5,Galium lucidum All.
+BW43,0.5,Globularia punctata L.
+BW43,0.5,Helichrysum italicum (Roth) G.Don
+BW43,0.5,Sanguisorba minor Scop. subsp. muricata (Bonnier & Layens) Briq.
+BW43,37.5,Bromus erectus Huds.
+BW43,15,Avena barbata Pott ex Link
+BW43,15,Pleurochaete squarrosa (Brid.) Lindb.
+BW43,15,Teucrium polium L.
+BW43,3,Aegilops neglecta Req. ex Bertol.
+BW43,3,Asparagus acutifolius L.
+BW43,3,Brachypodium distachyon (L.) P.Beauv.
+BW43,3,Eryngium campestre L.
+BW43,3,Galactites tomentosa Moench
+BW43,3,Hypochaeris achyrophorus L.
+BW43,3,Melica ciliata L.
+BW43,3,Odontites sp.
+BW43,3,Onobrychis caput-galli (L.) Lam.
+BW43,3,Teucrium chamaedrys L.
+TV66,0.1,Crepis zacintha (L.) Loisel.
+TV66,0.1,Tordylium apulum L.
+TV66,0.1,Trifolium scabrum L.
+TV66,0.5,Hypochaeris achyrophorus L.
+TV66,0.5,Potentilla hirta L.
+TV66,0.5,Thymus longicaulis C.Presl
+TV66,37.5,Pleurochaete squarrosa (Brid.) Lindb.
+TV66,15,Aegilops neglecta Req. ex Bertol.
+TV66,15,Bromus erectus Huds.
+TV66,15,Sedum sexangulare L.
+TV66,3,Fumana procumbens (Dunal) Gren. & Godr.
+TV66,3,Sanguisorba minor Scop. subsp. muricata (Bonnier & Layens) Briq.
+ZC47,0.1,Sherardia arvensis L.
+ZC47,0.5,Fumana procumbens (Dunal) Gren. & Godr.
+ZC47,0.5,Hypochaeris achyrophorus L.
+ZC47,37.5,Bothriochloa ischaemum (L.) Keng
+ZC47,37.5,Pleurochaete squarrosa (Brid.) Lindb.
+ZC47,15,Cleistogenes serotina (L.) Keng
+ZC47,3,Linaria vulgaris Mill.
+ZC47,3,Teucrium polium L.
+CU93,0.5,Asparagus acutifolius L.
+CU93,0.5,Briza media L.
+CU93,0.5,Carthamus lanatus L.
+CU93,0.5,Crupina vulgaris Cass.
+CU93,0.5,Dorycnium hirsutum (L.) Ser.
+CU93,0.5,Echium vulgare L.
+CU93,0.5,Galactites tomentosa Moench
+CU93,0.5,Sanguisorba minor Scop. subsp. muricata (Bonnier & Layens) Briq.
+CU93,0.5,Teucrium polium L.
+CU93,0.5,Tragopogon porrifolius L.
+CU93,37.5,Bothriochloa ischaemum (L.) Keng
+CU93,37.5,Melica ciliata L.
+CU93,15,Avena barbata Pott ex Link
+CU93,15,Eryngium campestre L.
+CU93,3,Brachypodium rupestre (Host) Roem. & Schult.
+CU93,3,Centaurea deusta Ten.
+CU93,3,Dactylis glomerata L.
+UA72,0.5,Asparagus acutifolius L.
+UA72,0.5,Carthamus lanatus L.
+UA72,0.5,Dactylis glomerata L.
+UA72,0.5,Dianthus balbisii Ser.
+UA72,0.5,Micromeria graeca (L.) Benth. ex Rchb.
+UA72,0.5,Onobrychis caput-galli (L.) Lam.
+UA72,0.5,Reichardia picroides (L.) Roth
+UA72,0.5,Sanguisorba minor Scop. subsp. muricata (Bonnier & Layens) Briq.
+UA72,0.5,Scabiosa columbaria L.
+UA72,0.5,Tragopogon porrifolius L.
+UA72,37.5,Bromus rubens L.
+UA72,37.5,Centaurea deusta Ten.
+UA72,15,Cistus monspeliensis L.
+UA72,15,Spartium junceum L.
+UA72,3,Avena barbata Pott ex Link
+UA72,3,Bothriochloa ischaemum (L.) Keng
+UA72,3,Brachypodium rupestre (Host) Roem. & Schult.
+UA72,3,Carex flacca Schreb.
+UA72,3,Crupina vulgaris Cass.
+UA72,3,Echium vulgare L.
+UA72,3,Galactites tomentosa Moench
+UA72,3,Hypochaeris achyrophorus L.
+UA72,3,Melica ciliata L.
+US55,87.5,Galium debile Desv.
+US55,15,Ranunculus sardous Crantz
+US55,15,Potentilla reptans L.
+US55,3,Oenanthe silaifolia M.Bieb.
+US55,0.5,Eleocharis palustris (L.) Roem. & Schult.
+US55,0.5,Calystegia sepium (L.) R.Br.
+US55,0.5,Poa trivialis L.
+US55,0.5,Lotus corniculatus L.
+US55,0.1,Mentha aquatica L.
+US55,0.5,Alopecurus myosuroides Huds.
+QM87,62.5,"Petasites hybridus (L.) G.Gaertn., B.Mey. & Scherb."
+QM87,15,Calystegia sepium (L.) R.Br.
+QM87,3,Geranium purpureum Vill.
+QM87,0.5,Eupatorium cannabinum L.
+QM87,0.5,Circaea lutetiana L.
+QM87,15,Galium sp.
+QM87,15,Hedera helix L.
+QM87,3,Rubus ulmifolius Schott
+QM87,3,Parietaria officinalis L.
+QM87,3,Scutellaria columnae All.
+QM87,0.5,Mercurialis annua L.
+QM87,0.5,Silene alba (Mill.) E.H.L.Krause
+QM87,0.5,Solanum dulcamara L.
+EA79,3,Cornus mas L.
+EA79,3,Crepis leontodontoides All.
+EA79,3,Filipendula vulgaris Moench
+EA79,3,Ostrya carpinifolia Scop.
+EA79,15,Ruscus aculeatus L.
+EA79,15,Acer monspessulanum L.
+EA79,15,Fraxinus ornus L.
+EA79,15,Quercus frainetto Ten.
+EA79,37.5,Serratula tinctoria L.
+EA79,62.5,Quercus cerris L.
+EA79,0.5,Hedera helix L.
+EA79,0.5,Melica minuta L. var. arrecta (Kuntze) Fiori
+EA79,0.5,Sorbus domestica L.
+EA79,0.5,Festuca heterophylla Lam.
+EA79,0.5,Galium vernum Scop.
+EA79,0.5,Stachys officinalis (L.) Trevis.
+EA79,0.5,Agrimonia eupatoria L.
+EA79,0.5,Crataegus monogyna Jacq.
+EA79,0.5,Dactylis glomerata L.
+EA79,0.5,Echinops ritro L.
+EA79,0.5,Prunus spinosa L.
+EA79,0.5,Viola alba Besser subsp. dehnhardtii (Ten.) W.Becker
+EA79,0.5,Buglossoides purpurocaerulea (L.) I.M.Johnst.
+EA79,0.5,Fragaria vesca L.
+EA79,0.5,Lathyrus venetus (Mill.) Wohlf.
+EA79,0.5,Lychnis flos-cuculi L.
+EA79,0.5,Ajuga reptans L.
+EA79,0.5,Teucrium chamaedrys L.
+EA79,0.5,Luzula forsteri (Sm.) DC.
+EA79,0.5,Oenanthe pimpinelloides L.
+EA79,0.5,Acer campestre L.
+EA79,0.5,Pyrus pyraster (L.) Burgsd.
+EA79,0.5,Rosa sempervirens L.
+EA79,0.5,Ranunculus bulbosus L.
+EA79,0.5,Brachypodium sylvaticum (Huds.) P.Beauv.
+EA79,0.5,Poa trivialis L.
+EA79,0.5,Trifolium ochroleucum Huds.
+EA79,0.5,Quercus pubescens Willd.
+EA79,0.5,Carex distachya Desf.
+EA79,0.5,Lathyrus aphaca L.
+EA79,0.1,Melittis melissophyllum L.
+EA79,0.1,Clematis flammula L.
+EA79,0.1,Geum urbanum L.
+EA79,0.1,Allium sp.
+EA79,0.1,Arabis sagittata (Bertol.) DC.
+EA79,0.1,Helleborus viridis L.
+EA79,0.1,Helleborus foetidus L.
+EA79,0.1,Paliurus spina-christi Mill.
+EA79,0.1,Trifolium pratense L.
+LM27,3,Crataegus monogyna Jacq.
+LM27,3,Buglossoides purpurocaerulea (L.) I.M.Johnst.
+LM27,3,Corylus avellana L.
+LM27,3,Ilex aquifolium L.
+LM27,3,Tilia cordata Mill.
+LM27,15,Quercus frainetto Ten.
+LM27,15,Cornus mas L.
+LM27,15,Hedera helix L.
+LM27,15,Carpinus betulus L.
+LM27,87.5,Quercus cerris L.
+LM27,0.5,Galium vernum Scop.
+LM27,0.5,Viola alba Besser subsp. dehnhardtii (Ten.) W.Becker
+LM27,0.5,Festuca heterophylla Lam.
+LM27,0.5,Stachys officinalis (L.) Trevis.
+LM27,0.5,Prunus spinosa L.
+LM27,0.5,"Rubus fruticosus L., nom. amb."
+LM27,0.5,Acer campestre L.
+LM27,0.5,Dactylis glomerata L.
+LM27,0.5,Fragaria vesca L.
+LM27,0.5,Melica uniflora Retz.
+LM27,0.5,Lathyrus niger (L.) Bernh.
+LM27,0.1,Sorbus domestica L.
+LM27,0.1,Lonicera etrusca Santi
+LM27,0.1,Euphorbia amygdaloides L.
+LM27,0.1,Quercus pubescens Willd.
+LM27,0.1,Carex sp.
+LM27,0.1,Clematis vitalba L.
+LM27,0.1,Crataegus laevigata (Poir.) DC.
+LM27,0.1,Malus sylvestris (L.) Mill.
+LM27,0.1,Primula vulgaris Huds.
+KM11,3,Deschampsia flexuosa (L.) Trin.
+KM11,3,Poa alpina L. subsp. alpina
+KM11,3,Festuca riccerii Foggi & Gr.Rossi
+KM11,15,Luzula multiflora (Ehrh.) Lej.
+KM11,15,Viola calcarata L. subsp. cavillieri (W.Becker) Negodi
+KM11,37.5,Geum montanum L.
+KM11,62.5,Nardus stricta L.
+KM11,0.5,Dianthus deltoides L. subsp. deltoides
+KM11,0.5,Lotus corniculatus L.
+KM11,0.5,Trifolium pratense L.
+KM11,0.5,Plantago maritima L. subsp. serpentina (All.) Arcang.
+KM11,0.5,Carex caryophyllea Latourr.
+KM11,0.5,Bistorta officinalis Delarbre
+KM11,0.5,Ranunculus pollinensis (N.Terracc.) Chiov.
+KM11,0.5,Trifolium thalii Vill.
+SB81,15,Festuca rubra L. subsp. commutata (Gaudin) Markgr.-Dann.
+SB81,87.5,Nardus stricta L.
+SB81,0.5,Anthoxanthum odoratum L. subsp. nipponicum (Honda) Tzvelev
+SB81,0.5,Crocus vernus (L.) Hill
+SB81,0.5,Deschampsia flexuosa (L.) Trin.
+SB81,0.5,Carex pilulifera L. subsp. pilulifera
+JU84,3,Festuca rubra L. subsp. commutata (Gaudin) Markgr.-Dann.
+JU84,3,Dianthus deltoides L. subsp. deltoides
+JU84,3,Agrostis capillaris L.
+JU84,15,Potentilla erecta (L.) Raeusch.
+JU84,37.5,Geum montanum L.
+JU84,62.5,Nardus stricta L.
+JU84,0.5,Veronica officinalis L.
+JU84,0.5,Achillea millefolium L.
+JU84,0.5,Luzula congesta (Thuill.) Lej.
+JU84,0.5,Viola calcarata L. subsp. cavillieri (W.Becker) Negodi
+JU84,0.5,Vaccinium myrtillus L.
+JU84,0.5,Pimpinella saxifraga L.
+JU84,0.5,Carex caryophyllea Latourr.
+JU84,0.5,Cruciata glabra (L.) C.Bauhin ex Opiz
+JU84,0.5,Festuca filiformis Pourr.
+JU84,0.5,Phleum pratense L. subsp. pratense
+JU84,0.1,Anthoxanthum odoratum L. subsp. nipponicum (Honda) Tzvelev
+VG30,3,Veronica officinalis L.
+VG30,3,Carex caryophyllea Latourr.
+VG30,15,Agrostis capillaris L.
+VG30,15,Dianthus sylvestris Wulfen subsp. sylvestris
+VG30,37.5,Festuca rubra L. subsp. commutata (Gaudin) Markgr.-Dann.
+VG30,62.5,Nardus stricta L.
+VG30,0.5,Geum montanum L.
+VG30,0.5,Polygala alpestris Rchb.
+VG30,0.5,Phleum alpinum L.
+VG30,0.5,Pimpinella saxifraga L.
+VG30,0.5,Silene italica (L.) Pers. subsp. italica
+VG30,0.5,Galium mollugo L. subsp. erectum Syme
+VG30,0.5,Lotus corniculatus L.
+VG30,0.5,Luzula congesta (Thuill.) Lej.
+VG30,0.5,Viola reichenbachiana Jord. ex Boreau
+VG30,0.1,Leontodon hispidus L.
+JW66,3,Agrostis capillaris L.
+JW66,3,Geum montanum L.
+JW66,3,Phleum alpinum L.
+JW66,3,Viola calcarata L. subsp. cavillieri (W.Becker) Negodi
+JW66,3,Luzula multiflora (Ehrh.) Lej.
+JW66,15,Festuca rubra L. subsp. commutata (Gaudin) Markgr.-Dann.
+JW66,37.5,Deschampsia cespitosa (L.) P.Beauv. subsp. cespitosa
+JW66,87.5,Nardus stricta L.
+JW66,0.5,Hypericum richeri Vill. subsp. richeri
+JW66,0.5,Alchemilla transiens (Buser) Buser
+WH80,3,Geum montanum L.
+WH80,15,Agrostis capillaris L.
+WH80,15,Festuca microphylla (St.-Yves ex Coste) Patzke
+WH80,62.5,Nardus stricta L.
+WH80,0.5,Dianthus deltoides L. subsp. deltoides
+WH80,0.5,Potentilla erecta (L.) Raeusch.
+WH80,0.5,Phyteuma hemisphaericum L.
+WH80,0.5,Polygala alpestris Rchb.
+DS96,3,Agrostis capillaris L.
+DS96,3,Potentilla erecta (L.) Raeusch.
+DS96,3,Deschampsia flexuosa (L.) Trin.
+DS96,15,Geum montanum L.
+DS96,37.5,Festuca microphylla (St.-Yves ex Coste) Patzke
+DS96,62.5,Nardus stricta L.
+DS96,0.5,Vaccinium myrtillus L.
+DS96,0.5,Anthoxanthum odoratum L. subsp. nipponicum (Honda) Tzvelev
+DS96,0.5,Crocus vernus (L.) Hill
+DS96,0.5,Danthonia decumbens (L.) DC. subsp. decumbens
+DS96,0.5,Bistorta officinalis Delarbre
+DS96,0.5,Carex pilulifera L. subsp. pilulifera
+DS96,0.5,Luzula multiflora (Ehrh.) Lej.
+DS96,0.5,Genista tinctoria L.
+DS96,0.5,Pimpinella saxifraga L.
+DS96,0.5,Plantago maritima L. subsp. serpentina (All.) Arcang.
+DS96,0.5,Achillea millefolium L.
+DS96,0.5,Dianthus sylvestris Wulfen subsp. sylvestris
+DS96,0.5,Stellaria graminea L.
+DS96,0.5,Trifolium pratense L.
+CA81,3,Carex pilulifera L. subsp. pilulifera
+CA81,15,Hypericum richeri Vill. subsp. richeri
+CA81,15,Vaccinium myrtillus L.
+CA81,62.5,Nardus stricta L.
+CA81,0.5,Anthoxanthum odoratum L. subsp. nipponicum (Honda) Tzvelev
+CA81,0.5,Brachypodium genuense (DC.) Roem. & Schult.
+CA81,0.5,Campanula scheuchzeri Vill. subsp. scheuchzeri
+CA81,0.5,Carex sempervirens Vill.
+CA81,0.5,Danthonia decumbens (L.) DC. subsp. decumbens
+CA81,0.5,Dianthus deltoides L. subsp. deltoides
+CA81,0.5,Festuca rubra L. subsp. commutata (Gaudin) Markgr.-Dann.
+CA81,0.5,Galium lucidum All.
+CA81,0.5,Gentiana acaulis L.
+CA81,0.5,Geum montanum L.
+CA81,0.5,Luzula multiflora (Ehrh.) Lej.
+CA81,0.5,Pimpinella saxifraga L.
+CA81,0.5,Plantago maritima L. subsp. serpentina (All.) Arcang.
+CA81,0.5,Potentilla erecta (L.) Raeusch.
+CA81,0.1,Antennaria dioica (L.) Gaertn.
+CA81,0.1,Bistorta officinalis Delarbre
+CA81,0.1,Festuca microphylla (St.-Yves ex Coste) Patzke
+CA81,0.1,Silene italica (L.) Pers.
+ZA68,3,Carex sempervirens Vill.
+ZA68,3,Hypericum richeri Vill. subsp. richeri
+ZA68,3,Bistorta officinalis Delarbre
+ZA68,3,Dianthus deltoides L. subsp. deltoides
+ZA68,3,Potentilla erecta (L.) Raeusch.
+ZA68,15,Vaccinium myrtillus L.
+ZA68,15,Viola calcarata L. subsp. cavillieri (W.Becker) Negodi
+ZA68,37.5,Festuca rubra L. subsp. commutata (Gaudin) Markgr.-Dann.
+ZA68,62.5,Nardus stricta L.
+ZA68,0.5,Anthoxanthum odoratum L. subsp. nipponicum (Honda) Tzvelev
+ZA68,0.5,Agrostis capillaris L.
+ZA68,0.5,Luzula multiflora (Ehrh.) Lej.
+ZA68,0.5,Geum montanum L.
+ZA68,0.5,Deschampsia flexuosa (L.) Trin.
+ZA68,0.5,Veronica officinalis L.
+ZA68,0.5,Plantago maritima L. subsp. serpentina (All.) Arcang.
+ZA68,0.5,Poa alpina L. subsp. alpina
+ZA68,0.5,Carex pilulifera L. subsp. pilulifera
+ZA68,0.5,Polygala alpestris Rchb.
+ZA68,0.5,Genista tinctoria L.
+ZA68,0.5,Gentiana acaulis L.
+IX83,3,Potentilla erecta (L.) Raeusch.
+IX83,3,Geum montanum L.
+IX83,3,Vaccinium myrtillus L.
+IX83,3,Genista tinctoria L.
+IX83,15,Festuca microphylla (St.-Yves ex Coste) Patzke
+IX83,62.5,Nardus stricta L.
+IX83,0.5,Deschampsia flexuosa (L.) Trin.
+IX83,0.5,Anthoxanthum odoratum L. subsp. nipponicum (Honda) Tzvelev
+IX83,0.5,Danthonia decumbens (L.) DC. subsp. decumbens
+IX83,0.5,Luzula multiflora (Ehrh.) Lej.
+IX83,0.5,Carex sempervirens Vill.
+QH46,3,Viola calcarata L. subsp. cavillieri (W.Becker) Negodi
+QH46,3,Festuca rubra L. subsp. commutata (Gaudin) Markgr.-Dann.
+QH46,3,Hypericum richeri Vill. subsp. richeri
+QH46,3,Vaccinium myrtillus L.
+QH46,3,Deschampsia flexuosa (L.) Trin.
+QH46,3,Carex pilulifera L. subsp. pilulifera
+QH46,87.5,Nardus stricta L.
+QH46,0.5,Agrostis capillaris L.
+QH46,0.5,Luzula multiflora (Ehrh.) Lej.
+QH46,0.5,Dianthus sylvestris Wulfen subsp. sylvestris
+QH46,0.5,Pimpinella saxifraga L.
+QH46,0.5,Potentilla erecta (L.) Raeusch.
+QH46,0.5,Gentiana acaulis L.
+QH46,0.5,Danthonia decumbens (L.) DC. subsp. decumbens
+QH46,0.5,Thymus pulegioides L.
+QH46,0.5,Campanula scheuchzeri Vill. subsp. scheuchzeri
+QH46,0.5,Calluna vulgaris (L.) Hull
+TV90,3,Luzula multiflora (Ehrh.) Lej.
+TV90,3,Polygala alpestris Rchb.
+TV90,15,Potentilla erecta (L.) Raeusch.
+TV90,15,Vaccinium myrtillus L.
+TV90,15,Festuca rubra L. subsp. commutata (Gaudin) Markgr.-Dann.
+TV90,15,Alchemilla saxatilis (group)
+TV90,62.5,Nardus stricta L.
+TV90,0.5,Genista tinctoria L.
+TV90,0.5,Anthoxanthum odoratum L. subsp. nipponicum (Honda) Tzvelev
+TV90,0.5,Crocus vernus (L.) Hill
+TV90,0.5,Plantago maritima L. subsp. serpentina (All.) Arcang.
+TV90,0.5,Stellaria graminea L.
+TV90,0.5,Phyteuma orbiculare L.
+IM64,3,Alchemilla saxatilis (group)
+IM64,3,Hypericum richeri Vill. subsp. richeri
+IM64,3,Phyteuma hemisphaericum L.
+IM64,15,Deschampsia flexuosa (L.) Trin.
+IM64,15,Plantago maritima L. subsp. serpentina (All.) Arcang.
+IM64,87.5,Nardus stricta L.
+IM64,0.5,Luzula sylvatica (Huds.) Gaudin subsp. sieberi (Tausch) K.Richt.
+IM64,0.5,Carex sempervirens Vill.
+IM64,0.5,Festuca rubra L. subsp. commutata (Gaudin) Markgr.-Dann.
+IM64,0.5,Festuca sp.
+IM64,0.1,Luzula multiflora (Ehrh.) Lej.
+IM64,0.1,Crepis aurea (L.) Cass. subsp. glabrescens (Caruel) Arcang.
+SQ15,3,Alchemilla saxatilis Buser
+SQ15,3,Festuca sp.
+SQ15,3,Luzula multiflora (Ehrh.) Lej.
+SQ15,3,Veronica officinalis L.
+SQ15,15,Agrostis capillaris L.
+SQ15,37.5,Geum montanum L.
+SQ15,37.5,Dianthus deltoides L. subsp. deltoides
+SQ15,87.5,Nardus stricta L.
+SQ15,0.5,Hypericum richeri Vill. subsp. richeri
+SQ15,0.5,Potentilla erecta (L.) Raeusch.
+SQ15,0.5,Viola calcarata L. subsp. cavillieri (W.Becker) Negodi
+SQ15,0.5,Vaccinium myrtillus L.
+SQ15,0.5,Potentilla aurea L. subsp. aurea
+SQ15,0.5,Danthonia decumbens (L.) DC. subsp. decumbens
+SQ15,0.5,Lotus corniculatus L.
+SQ15,0.5,Trifolium pratense L.
+QZ49,3,Alchemilla saxatilis Buser
+QZ49,3,Festuca microphylla (St.-Yves ex Coste) Patzke
+QZ49,3,Achillea millefolium L.
+QZ49,3,Hypericum richeri Vill. subsp. richeri
+QZ49,15,Agrostis capillaris L.
+QZ49,37.5,Dianthus deltoides L. subsp. deltoides
+QZ49,62.5,Nardus stricta L.
+QZ49,0.5,Anthoxanthum odoratum L. subsp. nipponicum (Honda) Tzvelev
+QZ49,0.5,Luzula multiflora (Ehrh.) Lej.
+QZ49,0.5,Potentilla erecta (L.) Raeusch.
+QZ49,0.5,Geum montanum L.
+QZ49,0.5,Pimpinella saxifraga L.
+QZ49,0.5,Trifolium pratense L.
+QZ49,0.5,Galium anisophyllon Vill.
+QZ49,0.5,Poa pratensis L. subsp. pratensis
+QZ49,0.5,Thymus pulegioides L.
+QZ49,0.5,Veronica officinalis L.
+KD15,3,Festuca rubra L. subsp. commutata (Gaudin) Markgr.-Dann.
+KD15,3,Alchemilla saxatilis Buser
+KD15,3,Potentilla aurea L. subsp. aurea
+KD15,15,Dianthus deltoides L. subsp. deltoides
+KD15,15,Agrostis capillaris L.
+KD15,37.5,Geum montanum L.
+KD15,62.5,Nardus stricta L.
+KD15,0.5,Hypericum richeri Vill. subsp. richeri
+KD15,0.5,Deschampsia flexuosa (L.) Trin.
+KD15,0.5,Luzula multiflora (Ehrh.) Lej.
+KD15,0.5,Campanula scheuchzeri Vill. subsp. scheuchzeri
+KD15,0.5,Phleum alpinum L.
+KD15,0.5,Veronica officinalis L.
+KD15,0.5,Bistorta officinalis Delarbre
+KD15,0.5,Anthoxanthum odoratum L. subsp. nipponicum (Honda) Tzvelev
+KD15,0.5,Plantago maritima L. subsp. serpentina (All.) Arcang.
+KD15,0.5,Achillea millefolium L.
+KD15,0.5,Cerastium holosteoides Fr.
+NF37,3,Festuca rubra L. subsp. commutata (Gaudin) Markgr.-Dann.
+NF37,3,Carex leporina L.
+NF37,3,Phleum alpinum L.
+NF37,15,Anthoxanthum odoratum L. subsp. nipponicum (Honda) Tzvelev
+NF37,62.5,Nardus stricta L.
+NF37,0.5,Alchemilla saxatilis Buser
+NF37,0.5,Hypericum richeri Vill. subsp. richeri
+NF37,0.5,Agrostis capillaris L.
+NF37,0.5,Dianthus deltoides L. subsp. deltoides
+NF37,0.5,Luzula multiflora (Ehrh.) Lej.
+NF37,0.5,Veronica officinalis L.
+NF37,0.5,Deschampsia flexuosa (L.) Trin.
+NF37,0.5,Gnaphalium sylvaticum L.
+MJ41,3,Agrostis stolonifera L.
+MJ41,3,Festuca trachyphylla (Hack.) R.P.Murray
+MJ41,87.5,Adenostyles glabra (Mill.) DC. subsp. glabra
+MJ41,0.5,Briza media L.
+MJ41,0.5,Equisetum palustre L.
+MJ41,0.1,Cerastium arvense L. subsp. suffruticosum (L.) Ces.
+MJ41,0.1,Campanula scheuchzeri Vill. subsp. scheuchzeri
+MJ41,0.1,Galium mollugo L.
+ZK58,3,Anthoxanthum odoratum L. subsp. nipponicum (Honda) Tzvelev
+ZK58,3,Agrostis capillaris L.
+ZK58,3,Luzula multiflora (Ehrh.) Lej.
+ZK58,3,Geum montanum L.
+ZK58,3,Vaccinium myrtillus L.
+ZK58,3,Carex sempervirens Vill.
+ZK58,15,Hypericum richeri Vill. subsp. richeri
+ZK58,15,Deschampsia flexuosa (L.) Trin.
+ZK58,15,Bistorta officinalis Delarbre
+ZK58,37.5,Dianthus deltoides L. subsp. deltoides
+ZK58,62.5,Nardus stricta L.
+ZK58,0.5,Alchemilla saxatilis (group)
+ZK58,0.5,Veronica officinalis L.
+ZK58,0.5,Potentilla erecta (L.) Raeusch.
+ZK58,0.5,Plantago maritima L. subsp. serpentina (All.) Arcang.
+ZK58,0.5,Danthonia decumbens (L.) DC. subsp. decumbens
+ZK58,0.5,Festuca riccerii Foggi & Gr.Rossi
+ZK58,0.5,Phyteuma hemisphaericum L.
+ZK58,0.5,Poa alpina L. subsp. alpina
+ZK58,0.5,Viola calcarata L. subsp. cavillieri (W.Becker) Negodi
+FQ93,3,Hypericum richeri Vill. subsp. richeri
+FQ93,3,Vaccinium myrtillus L.
+FQ93,3,Danthonia decumbens (L.) DC. subsp. decumbens
+FQ93,3,Gentiana acaulis L.
+FQ93,3,Bistorta officinalis Delarbre
+FQ93,3,Cruciata glabra (L.) C.Bauhin ex Opiz
+FQ93,15,Brachypodium genuense (DC.) Roem. & Schult.
+FQ93,15,Carex sempervirens Vill.
+FQ93,15,Dianthus deltoides L. subsp. deltoides
+FQ93,62.5,Nardus stricta L.
+FQ93,0.5,Carex pilulifera L. subsp. pilulifera
+FQ93,0.5,Anthoxanthum odoratum L. subsp. nipponicum (Honda) Tzvelev
+FQ93,0.5,Campanula scheuchzeri Vill. subsp. scheuchzeri
+FQ93,0.5,Festuca rubra L. subsp. commutata (Gaudin) Markgr.-Dann.
+FQ93,0.5,Luzula multiflora (Ehrh.) Lej.
+FQ93,0.5,Potentilla erecta (L.) Raeusch.
+FQ93,0.5,Silene italica (L.) Pers.
+FQ93,0.5,Agrostis capillaris L.
+FQ93,0.5,Genista tinctoria L.
+DZ74,3,Achillea collina (Rchb.f.) Heimerl
+DZ74,3,Aira caryophyllea L.
+DZ74,3,Cerastium arvense L.
+DZ74,3,Cruciata glabra (L.) C.Bauhin ex Opiz
+DZ74,3,Helianthemum nummularium (L.) Mill.
+DZ74,3,Luzula multiflora (Ehrh.) Lej.
+DZ74,3,Poa annua L.
+DZ74,3,Rumex acetosella L.
+DZ74,3,Thymus pulegioides L.
+DZ74,15,Anthoxanthum odoratum L.
+DZ74,15,Thesium divaricatum Jan ex Mert. & W.D.J.Koch
+DZ74,37.5,Bromus erectus Huds.
+DZ74,37.5,Festuca nigrescens Lam.
+DZ74,0.5,Anthericum liliago L.
+DZ74,0.5,Arrhenatherum elatius (L.) P.Beauv. ex J.Presl & C.Presl
+DZ74,0.5,Calluna vulgaris (L.) Hull
+DZ74,0.5,Centaurea ambigua Guss.
+DZ74,0.5,Crepis leontodontoides All.
+DZ74,0.5,Cytisus scoparius (L.) Link
+DZ74,0.5,Leopoldia comosa (L.) Parl.
+DZ74,0.5,Lilium bulbiferum L. subsp. croceum (Chaix) Jan
+DZ74,0.5,Lotus corniculatus L.
+DZ74,0.5,Nardus stricta L.
+DZ74,0.5,Plantago lanceolata L.
+DZ74,0.5,Rubus canescens DC.
+DZ74,0.5,Trifolium medium L.
+DZ74,0.5,Vincetoxicum hirundinaria Medik.
+DZ74,0.1,Carlina acaulis L.
+DZ74,0.1,Centaurea triumfetti All.
+DZ74,0.1,Lathyrus sphaericus Retz.
+NE78,0.5,Arum italicum Mill.
+NE78,0.5,Crataegus monogyna Jacq.
+NE78,0.5,Euonymus europaeus L.
+NE78,0.5,Galium aparine L.
+NE78,0.5,Geum urbanum L.
+NE78,0.5,Rubus ulmifolius Schott
+NE78,0.5,Smilax aspera L.
+NE78,0.5,Torilis arvensis (Huds.) Link
+NE78,0.5,Umbilicus rupestris (Salisb.) Dandy
+NE78,0.5,Viola alba Besser subsp. dehnhardtii (Ten.) W.Becker
+NE78,3,Acer campestre L.
+NE78,3,Acer monspessulanum L.
+NE78,15,Alliaria petiolata (M.Bieb.) Cavara & Grande
+NE78,87.5,Celtis australis L.
+NE78,3,Cornus mas L.
+NE78,15,Lamium garganicum L. subsp. laevigatum Arcang.
+NE78,3,Ruscus aculeatus L.
+NE78,3,Tamus communis L.
+QZ84,0.5,Clematis vitalba L.
+QZ84,0.5,Cornus mas L.
+QZ84,0.5,Euonymus europaeus L.
+QZ84,0.5,Rubia peregrina L.
+QZ84,0.5,Rubus ulmifolius Schott
+QZ84,0.5,Ruscus aculeatus L.
+QZ84,0.5,Smilax aspera L.
+QZ84,0.5,Urtica dioica L.
+QZ84,37.5,Acer campestre L.
+QZ84,15,Acer monspessulanum L.
+QZ84,37.5,Celtis australis L.
+QZ84,37.5,Corylus avellana L.
+QZ84,3,Galium aparine L.
+QZ84,3,Hedera helix L.
+QZ84,3,Lamium garganicum L. subsp. laevigatum Arcang.
+RK56,0.5,Juncus acutus L.
+RK56,37.5,Limonium narbonense Mill.
+RK56,37.5,Salicornia patula Duval-Jouve
+RK56,3,Artemisia caerulescens L. var. palmata (Lam.) Fiori
+IV29,0.5,Aster tripolium L.
+IV29,0.5,Crypsis aculeata (L.) Aiton
+IV29,0.5,Inula viscosa (L.) Aiton
+IV29,62.5,Limonium narbonense Mill.
+IV29,15,Artemisia caerulescens L. var. palmata (Lam.) Fiori
+IV29,3,Salicornia patula Duval-Jouve
+DF11,0.1,Asplenium onopteris L.
+DF11,0.1,Asplenium trichomanes L.
+DF11,0.1,Cardamine graeca L.
+DF11,0.1,Cruciata glabra (L.) C.Bauhin ex Opiz
+DF11,0.1,"Cymbalaria muralis G.Gaertn., B.Mey. & Scherb."
+DF11,0.1,Helleborus foetidus L.
+DF11,0.1,Lithospermum purpurocaeruleum L.
+DF11,0.1,Moehringia pentandra J.Gay
+DF11,0.1,Ornithogalum etruscum Parl.
+DF11,0.1,Umbilicus rupestris (Salisb.) Dandy
+DF11,0.5,Allium subhirsutum L.
+DF11,0.5,Arabis turrita L.
+DF11,0.5,Asparagus acutifolius L.
+DF11,0.5,Brachypodium rupestre (Host) Roem. & Schult.
+DF11,0.5,Brachypodium sylvaticum (Huds.) P.Beauv.
+DF11,0.5,Clematis flammula L.
+DF11,0.5,Ficus carica L.
+DF11,0.5,Lathyrus venetus (Mill.) Wohlf.
+DF11,0.5,Lonicera etrusca Santi
+DF11,0.5,Myrrhoides nodosa (L.) Cannon
+DF11,0.5,Phillyrea latifolia L.
+DF11,0.5,Pistacia terebinthus L.
+DF11,0.5,Poa sylvicola Guss.
+DF11,0.5,Prunus spinosa L.
+DF11,0.5,Ranunculus velutinus Ten.
+DF11,0.5,Rosa sempervirens L.
+DF11,0.5,Scutellaria columnae All.
+DF11,0.5,Viola alba Besser subsp. dehnhardtii (Ten.) W.Becker
+DF11,62.5,Acer monspessulanum L.
+DF11,37.5,Quercus pubescens Willd.
+DF11,37.5,Ruscus aculeatus L.
+DF11,15,Fraxinus ornus L.
+DF11,15,Geranium robertianum L.
+DF11,15,Smilax aspera L.
+DF11,3,Acer campestre L.
+DF11,3,Cercis siliquastrum L.
+DF11,3,Cornus mas L.
+DF11,3,Hedera helix L.
+DF11,3,Melica uniflora Retz.
+DF11,3,Melittis melissophyllum L.
+DF11,3,Ostrya carpinifolia Scop.
+DF11,3,Paliurus spina-christi Mill.
+DF11,3,Quercus cerris L.
+DF11,3,Quercus ilex L.
+DF11,3,Rubia peregrina L.
+DF11,3,Tamus communis L.
+XI71,0.1,Asparagus acutifolius L.
+XI71,0.1,Asplenium onopteris L.
+XI71,0.1,Geum urbanum L.
+XI71,0.1,Melittis melissophyllum L.
+XI71,0.1,Myrrhoides nodosa (L.) Cannon
+XI71,0.1,Ranunculus velutinus Ten.
+XI71,0.1,Sonchus oleraceus L.
+XI71,0.1,Tamus communis L.
+XI71,0.1,Theligonum cynocrambe L.
+XI71,0.5,Allium subhirsutum L.
+XI71,0.5,Aristolochia rotunda L.
+XI71,0.5,Cardamine graeca L.
+XI71,0.5,Crataegus monogyna Jacq.
+XI71,0.5,Cyclamen hederifolium Aiton
+XI71,0.5,Geranium lucidum L.
+XI71,0.5,Helleborus foetidus L.
+XI71,0.5,Parietaria officinalis L.
+XI71,0.5,Poa sylvicola Guss.
+XI71,0.5,Ruscus aculeatus L.
+XI71,0.5,Smilax aspera L.
+XI71,0.5,Viola alba Besser subsp. dehnhardtii (Ten.) W.Becker
+XI71,62.5,Acer monspessulanum L.
+XI71,15,Cercis siliquastrum L.
+XI71,15,Fraxinus ornus L.
+XI71,15,Geranium robertianum L.
+XI71,15,Quercus pubescens Willd.
+XI71,3,Celtis australis L.
+XI71,3,Cornus mas L.
+XI71,3,Hedera helix L.
+XI71,3,Melica uniflora Retz.
+XI71,3,Stellaria media (L.) Vill.
+JU72,0.5,Crataegus monogyna Jacq.
+JU72,0.5,Hedera helix L.
+JU72,0.5,Lilium martagon L.
+JU72,0.5,Tamus communis L.
+JU72,0.5,Tilia platyphyllos Scop.
+JU72,62.5,Acer obtusatum Waldst. & Kit. ex Willd.
+JU72,37.5,Cardamine heptaphylla (Vill.) O.E.Schulz
+JU72,37.5,Laburnum alpinum (Mill.) Bercht. & J.Presl
+JU72,37.5,Ostrya carpinifolia Scop.
+JU72,37.5,Staphylea pinnata L.
+JU72,15,Cardamine bulbifera (L.) Crantz
+JU72,15,Geranium nodosum L.
+JU72,15,Mercurialis perennis L.
+JU72,15,Senecio fuchsii C.C.Gmel.
+JU72,15,Sorbus aria (L.) Crantz
+JU72,3,Adenostyles australis (Ten.) Iamonico & Pignatti
+JU72,3,Anemone trifolia L.
+JU72,3,Fagus sylvatica L.
+JU72,3,Fraxinus excelsior L.
+JU72,3,Polygonatum multiflorum (L.) All.
+JU72,3,Stachys sylvatica L.
+JU72,3,Symphytum tuberosum L.
+FA71,0.5,Fagus sylvatica L.
+FA71,0.5,Hedera helix L.
+FA71,0.5,Hippocrepis emerus (L.) Lassen
+FA71,0.5,Lathyrus venetus (Mill.) Wohlf.
+FA71,0.5,Lilium martagon L.
+FA71,0.5,Lonicera xylosteum L.
+FA71,0.5,Saxifraga rotundifolia L.
+FA71,62.5,Acer obtusatum Waldst. & Kit. ex Willd.
+FA71,62.5,Mercurialis perennis L.
+FA71,37.5,Cardamine bulbifera (L.) Crantz
+FA71,37.5,Ostrya carpinifolia Scop.
+FA71,15,Corylus avellana L.
+FA71,15,Fraxinus excelsior L.
+FA71,15,Laburnum alpinum (Mill.) Bercht. & J.Presl
+FA71,15,Melica uniflora Retz.
+FA71,3,Acer pseudoplatanus L.
+FA71,3,Doronicum columnae Ten.
+FA71,3,Geranium nodosum L.
+FA71,3,Helleborus bocconei Ten.
+FA71,3,Lonicera caprifolium L.
+FA71,3,Senecio fuchsii C.C.Gmel.
+FA71,3,Tilia platyphyllos Scop.
+KM19,0.1,Geranium lucidum L.
+KM19,0.1,Mycelis muralis (L.) Dumort.
+KM19,0.1,Ranunculus millefoliatus Vahl
+KM19,0.5,Alliaria petiolata (M.Bieb.) Cavara & Grande
+KM19,0.5,Corylus avellana L.
+KM19,0.5,Crataegus monogyna Jacq.
+KM19,0.5,Crocus vernus (L.) Hill
+KM19,0.5,Daphne laureola L.
+KM19,0.5,Lamium bifidum Cirillo
+KM19,0.5,Lamium maculatum L.
+KM19,0.5,Mercurialis perennis L.
+KM19,0.5,Myosotis decumbens Host subsp. florentina Grau
+KM19,0.5,Pyrus pyraster (L.) Burgsd.
+KM19,0.5,Ranunculus ficaria L.
+KM19,0.5,Saxifraga bulbifera L.
+KM19,0.5,Smyrnium perfoliatum L.
+KM19,37.5,Acer obtusatum Waldst. & Kit. ex Willd.
+KM19,37.5,Fraxinus excelsior L.
+KM19,15,Acer campestre L.
+KM19,15,Acer monspessulanum L.
+KM19,15,Stellaria media (L.) Vill.
+KM19,3,Anemone apennina L.
+KM19,3,Corydalis cava (L.) Schweigg. & Körte
+KM19,3,Galium aparine L.
+KM19,3,Geranium robertianum L.
+KI68,0.1,Geranium lucidum L.
+KI68,0.5,Alliaria petiolata (M.Bieb.) Cavara & Grande
+KI68,0.5,Anemone apennina L.
+KI68,0.5,Galium aparine L.
+KI68,0.5,Geranium robertianum L.
+KI68,0.5,Holcus mollis L.
+KI68,0.5,Lamium bifidum Cirillo
+KI68,0.5,Ranunculus millefoliatus Vahl
+KI68,0.5,Smyrnium perfoliatum L.
+KI68,0.5,Stellaria media (L.) Vill.
+KI68,37.5,Acer monspessulanum L.
+KI68,15,Acer obtusatum Waldst. & Kit. ex Willd.
+KI68,3,Crataegus monogyna Jacq.
+KI68,3,Daphne laureola L.
+KI68,3,Fraxinus ornus L.
+KI68,3,Ostrya carpinifolia Scop.
+KI68,3,Pyrus pyraster (L.) Burgsd.
+WL58,0.1,Ranunculus millefoliatus Vahl
+WL58,0.5,Anemone apennina L.
+WL58,0.5,Daphne laureola L.
+WL58,0.5,Euonymus europaeus L.
+WL58,0.5,Galium aparine L.
+WL58,0.5,Holcus mollis L.
+WL58,0.5,Prunus spinosa L.
+WL58,0.5,Ranunculus lanuginosus L.
+WL58,0.5,Veronica hederifolia L.
+WL58,37.5,Acer campestre L.
+WL58,15,Acer monspessulanum L.
+WL58,15,Stellaria media (L.) Vill.
+WL58,3,Alliaria petiolata (M.Bieb.) Cavara & Grande
+WL58,3,Fraxinus ornus L.
+WL58,3,Geranium robertianum L.
+WL58,3,Smyrnium perfoliatum L.
+NZ16,0.5,Linum strictum L. subsp. strictum
+NZ16,0.5,Aegilops geniculata Roth
+NZ16,0.5,Althaea hirsuta L.
+NZ16,0.5,Briza maxima L.
+NZ16,0.5,Bromus erectus Huds.
+NZ16,0.5,Coronilla scorpioides (L.) W.D.J.Koch
+NZ16,0.5,Daucus carota L.
+NZ16,0.5,Euphorbia exigua L.
+NZ16,0.5,Euphorbia terracina L.
+NZ16,0.5,Filago pyramidata L.
+NZ16,0.5,Gladiolus italicus Mill.
+NZ16,0.5,Hypericum perforatum L.
+NZ16,0.5,Linum nodiflorum L.
+NZ16,0.5,Medicago orbicularis (L.) Bartal.
+NZ16,0.5,Melilotus neapolitanus Ten.
+NZ16,0.5,Pallenis spinosa (L.) Cass.
+NZ16,0.5,Phleum pratense L.
+NZ16,0.5,Scorpiurus muricatus L.
+NZ16,0.5,Trifolium angustifolium L.
+NZ16,0.5,Trifolium campestre Schreb.
+NZ16,0.5,Trifolium ochroleucum Huds.
+NZ16,0.5,Trifolium strictum L.
+NZ16,0.5,Vicia sativa L. subsp. sativa
+NZ16,37.5,Agropyron caninum (L.) P.Beauv.
+NZ16,3,Coleostephus myconis (L.) Cass. ex Rchb.f.
+NZ16,3,Eryngium campestre L.
+NZ16,3,Teucrium chamaedrys L.
+UF70,0.1,Melilotus neapolitanus Ten.
+UF70,0.5,Anthemis arvensis L.
+UF70,0.5,Bromus gussonei Parl.
+UF70,0.5,Centaurea solstitialis L.
+UF70,0.5,Convolvulus arvensis L.
+UF70,0.5,Lolium rigidum Gaudin
+UF70,0.5,Papaver rhoeas L.
+UF70,0.5,Sanguisorba minor Scop.
+UF70,0.5,Sonchus asper (L.) Hill
+UF70,0.5,Trisetaria panicea (Lam.) Paunero
+UF70,37.5,Polypogon maritimus Willd.
+UF70,15,Cynodon dactylon (L.) Pers.
+UF70,3,Xanthium italicum Moretti
+IZ47,0.5,Galium parisiense L.
+IZ47,0.5,Saxifraga tridactylites L.
+IZ47,37.5,Cardamine hirsuta L.
+IZ47,37.5,Veronica arvensis L.
+IZ47,15,Erophila verna (L.) DC. subsp. praecox (Steven) Walp.
+IZ47,15,Geranium purpureum Vill.
+IZ47,3,Alyssum alyssoides (L.) L.
+PT45,0.5,Bellardia trixago (L.) All.
+PT45,0.5,Blackstonia perfoliata (L.) Huds.
+PT45,0.5,Catapodium rigidum (L.) C.E.Hubb.
+PT45,0.5,Cerastium pumilum Curtis
+PT45,0.5,Coronilla scorpioides (L.) W.D.J.Koch
+PT45,0.5,Filago pyramidata L.
+PT45,0.5,Galium parisiense L.
+PT45,0.5,Arenaria leptoclados (Rchb.) Guss.
+PT45,0.5,Asterolinon linum-stellatum (L.) Duby
+PT45,3,Ononis reclinata L.
+PT45,3,Sherardia arvensis L.
+PT45,37.5,Medicago minima (L.) Bartal.
+PT45,15,Helianthemum salicifolium (L.) Mill.
+PT45,15,Plantago psyllium L.
+PT45,15,Trifolium scabrum L.
+PT45,15,Vulpia ciliata Dumort.
+PT45,15,Xeranthemum inapertum (L.) Mill.
+PT45,3,Hypochaeris achyrophorus L.
+PT45,3,Linum strictum L.
+JT32,0.5,Arbutus unedo L.
+JT32,0.5,Asparagus acutifolius L.
+JT32,0.5,Brachypodium rupestre (Host) Roem. & Schult.
+JT32,0.5,Calluna vulgaris (L.) Hull
+JT32,0.5,Pteridium aquilinum (L.) Kuhn
+JT32,0.5,Viola reichenbachiana Jord. ex Boreau
+JT32,87.5,Ulex europaeus L.
+JT32,15,Erica arborea L.
+JT32,15,Pinus pinaster Aiton
+JT32,15,Rubus ulmifolius Schott
+JT32,3,Cistus creticus L.
+JT32,3,Erica scoparia L.
+JT32,3,Fraxinus ornus L.
+JT32,3,Pulicaria odora (L.) Rchb.
+JT32,3,Quercus cerris L.
+JT32,3,Rubia peregrina L.
+JT32,3,Viburnum tinus L.
+NX43,0.5,Asparagus acutifolius L.
+NX43,0.5,Calluna vulgaris (L.) Hull
+NX43,0.5,Cistus salviifolius L.
+NX43,0.5,Daphne gnidium L.
+NX43,0.5,Rubia peregrina L.
+NX43,87.5,Ulex europaeus L.
+NX43,37.5,Rubus ulmifolius Schott
+NX43,15,Erica arborea L.
+NX43,15,Erica scoparia L.
+NX43,15,Pinus pinaster Aiton
+EH97,0.5,Brachypodium rupestre (Host) Roem. & Schult.
+EH97,0.5,Crataegus monogyna Jacq.
+EH97,0.5,Genista germanica L.
+EH97,0.5,Genista pilosa L.
+EH97,0.5,Hedera helix L.
+EH97,0.5,Juniperus communis L.
+EH97,0.5,Prunus spinosa L.
+EH97,0.5,Pteridium aquilinum (L.) Kuhn
+EH97,0.5,Quercus ilex L.
+EH97,0.5,Quercus pubescens Willd.
+EH97,0.5,Stachys officinalis (L.) Trevis.
+EH97,62.5,Erica arborea L.
+EH97,62.5,Ulex europaeus L.
+EH97,15,Cistus creticus L.
+EH97,15,Erica scoparia L.
+EH97,15,Pinus pinaster Aiton
+EH97,3,Calluna vulgaris (L.) Hull
+EH97,3,Molinia arundinacea Schrank
+EH97,3,Serratula tinctoria L.
+CF13,0.5,Asparagus acutifolius L.
+CF13,0.5,Brachypodium rupestre (Host) Roem. & Schult.
+CF13,0.5,Castanea sativa Mill.
+CF13,0.5,Cistus salviifolius L.
+CF13,0.5,Erica scoparia L.
+CF13,0.5,Rubus sp.
+CF13,87.5,Ulex europaeus L.
+CF13,37.5,Erica arborea L.
+CF13,15,Pinus pinaster Aiton
+ZH63,0.5,Asparagus acutifolius L.
+ZH63,0.5,Asplenium onopteris L.
+ZH63,0.5,Hedera helix L.
+ZH63,0.5,Polypodium vulgare L.
+ZH63,62.5,Ulex europaeus L.
+ZH63,37.5,Erica arborea L.
+ZH63,15,Erica scoparia L.
+ZH63,15,Pinus pinaster Aiton
+ZH63,3,Brachypodium rupestre (Host) Roem. & Schult.
+ZH63,3,Castanea sativa Mill.
+ZH63,3,Crataegus monogyna Jacq.
+ZH63,3,Rubia peregrina L.
+ZH63,3,Rubus ulmifolius Schott
+ZH63,3,Teucrium scorodonia L.
+SU38,0.5,Arbutus unedo L.
+SU38,0.5,Asparagus acutifolius L.
+SU38,0.5,Asplenium onopteris L.
+SU38,0.5,Brachypodium rupestre (Host) Roem. & Schult.
+SU38,0.5,Calluna vulgaris (L.) Hull
+SU38,0.5,Crataegus monogyna Jacq.
+SU38,0.5,Hedera helix L.
+SU38,0.5,Laurus nobilis L.
+SU38,0.5,Phillyrea media L.
+SU38,0.5,Quercus ilex L.
+SU38,0.5,Rhamnus alaternus L.
+SU38,0.5,Rosa sp.
+SU38,0.5,Solidago virgaurea L.
+SU38,0.5,Tamus communis L.
+SU38,0.5,Viola reichenbachiana Jord. ex Boreau
+SU38,87.5,Erica arborea L.
+SU38,15,Brachypodium ramosum (L.) Roem. & Schult.
+SU38,15,Erica scoparia L.
+SU38,15,Fraxinus ornus L.
+SU38,15,Pinus pinaster Aiton
+SU38,15,Rubia peregrina L.
+SU38,15,Ulex europaeus L.
+SU38,3,Castanea sativa Mill.
+SU38,3,Myrtus communis L.
+SU38,3,Rubus ulmifolius Schott
+SU38,3,Smilax aspera L.
+CG67,0.5,Calluna vulgaris (L.) Hull
+CG67,0.5,Clematis flammula L.
+CG67,0.5,Cymbopogon hirtus (L.) Janch.
+CG67,0.5,Cytisus villosus Pourr.
+CG67,0.5,Daphne gnidium L.
+CG67,0.5,Dorycnium hirsutum (L.) Ser.
+CG67,0.5,Genista pilosa L.
+CG67,0.5,Lavandula stoechas L.
+CG67,0.5,Lonicera implexa Aiton
+CG67,0.5,Odontites luteus (L.) Clairv.
+CG67,0.5,Osyris alba L.
+CG67,0.5,Phillyrea angustifolia L.
+CG67,0.5,Rubus ulmifolius Schott
+CG67,87.5,Erica arborea L.
+CG67,37.5,Myrtus communis L.
+CG67,15,Erica scoparia L.
+CG67,15,Ulex europaeus L.
+CG67,3,Cistus salviifolius L.
+CG67,3,Pinus pinaster Aiton
+CG67,3,Rubia peregrina L.
+HC96,0.5,Pteridium aquilinum (L.) Kuhn
+HC96,0.5,Solanum dulcamara L.
+HC96,87.5,Ulex europaeus L.
+HC96,37.5,Rubus ulmifolius Schott
+HC96,3,Calystegia silvatica (Kit.) Griseb.
+DZ84,0.5,Clematis flammula L.
+DZ84,0.5,Euonymus europaeus L.
+DZ84,87.5,Ulex europaeus L.
+DZ84,15,Rubus ulmifolius Schott
+DZ84,3,Crataegus monogyna Jacq.
+DZ84,3,Erica arborea L.
+DZ84,3,Ligustrum vulgare L.
+DZ84,3,Rubia peregrina L.
+DZ84,3,Tamus communis L.

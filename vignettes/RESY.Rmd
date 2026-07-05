@@ -1,0 +1,188 @@
+---
+title: "Classifying vegetation surveys with RESY"
+author: "Florian Jansen & Markus Bauer & Mariasole Calbi & Gilles Collins"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteIndexEntry{Classifying vegetation surveys with RESY}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+## Introduction
+
+RESY implements the **Expert System (ESy)** framework for vegetation
+classification (Bruelheide [1997](https://doi.org/10.1007/BF02803883); Chytrý et al. [2020](https://doi.org/10.1111/avsc.12519)).
+An ESy file encodes three sections:
+
+1. **Taxonomy** – species aggregations and synonyms  
+2. **Taxon groups** – species assemblages referenced in classification conditions  
+3. **Vegetation types** – logical formulas that combine group thresholds into
+   named habitat types
+
+The package can work with any ESy-compliant classification. This vignette uses
+two bundled systems:
+
+- **EUNIS** (European Nature Information System habitat types;
+  [FloraVeg.EU](https://floraveg.eu/))
+- **Apennine-test** (a simplified test system for the Italian Apennines)
+
+For EUNIS specifically, many formulas also require geographic columns
+(`Ecoreg`, `Country`, `Coast_EEA`, `Dunes_Bohn`) in a sites header table.
+Those preparation steps are covered in `vignette("EUNIS")`.
+
+```{r libraries, echo=TRUE, message=FALSE, warning=FALSE}
+library(readr)
+library(dplyr)
+library(RESY)
+```
+
+---
+
+## 1. Load and prepare species data
+
+`resy_classify()` expects the observation table to have three columns:
+
+| Column | Description |
+|---|---|
+| `PlotObservationID` | Plot identifier (auto-detected) |
+| `TaxonName` | Species name |
+| `Cover_Perc` | Cover value (percent or Braun-Blanquet scale) |
+
+```{r load-species, message=FALSE}
+data_species <- read_csv(
+  system.file("extdata", "data_example_species.csv", package = "RESY"),
+  show_col_types = FALSE
+) |>
+  rename(TaxonName = species, Cover_Perc = cover)
+
+glimpse(data_species)
+```
+
+A minimal **header** table (one row per plot) is required even when no
+geographic conditions are used. It must contain the same plot ID column as
+the observation table.
+
+```{r header}
+header <- data_species |>
+  distinct(PlotObservationID) |>
+  as.data.frame()
+```
+
+---
+
+## 2. Load expert systems
+
+`resy_available_classifications()` lists all schemes and versions available (# function resy_available_classifications() only gives esy files bundled in the package so far. Either expand or delete the function.
+
+```{r available}
+resy_available_classifications() |> select(scheme, version)
+```
+
+To add a custom expert system, use `resy_add_classification()`.
+
+
+`resy_load_expert()` parses a bundled classification into a
+`resy_parsed_expert` object, used here for taxonomy checking.
+`resy_classify()` loads the expert internally from `scheme`/`version`.
+
+```{r load-experts}
+parsed_apennine <- resy_load_expert(scheme = "Apennine-test")
+```
+
+
+
+## 3. Check taxonomy
+
+`resy_check_taxonomy()` maps observation names against Section 1 of the expert
+system (canonical names + synonyms). This is classification-specific: a name
+may resolve in one system but not another.
+
+
+```{r taxonomy-apennine}
+tax_apennine <- resy_check_taxonomy(
+  obs    = data_species,
+  parsed = parsed_apennine,
+  col    = "TaxonName"
+)
+cat("Apennine-test — matched:", sum(tax_apennine$matched),
+    "/ unmatched:", sum(!tax_apennine$matched), "\n")
+```
+
+
+## 4. Classify
+
+`resy_classify()` evaluates all membership formulas and returns a
+`resy_result` object. Pass `scheme` to select the bundled expert system; it
+will be loaded automatically.
+
+
+```{r classify-apennine, message=FALSE}
+res_apennine <- resy_classify(
+  obs    = data_species,
+  header = header,
+  scheme = "Apennine-test"
+)
+```
+
+---
+
+## 5. Inspect results
+
+### Print classification hierarchy
+
+```{r tree}
+tree_filled <- resy_expert_tree(parsed_apennine, fill = TRUE)
+print(tree_filled)
+```
+
+To browse the type hierarchy of a loaded system, use `resy_view_expert()`.
+
+
+### Vegetation type details
+
+`resy_eval_type()` shows conditiosn of a type is evaluated.
+
+```{r eval-type}
+resy_eval_type(res_apennine, t = "FB")
+```
+
+
+### Long table of candidates for all plots
+
+`resy_candidates()` extracts ranked classification results. Use `top_n` to
+limit the number of types returned per plot.
+
+```{r candidates-apennine}
+cand_apennine <- resy_candidates(res_apennine, top_n = 3)
+head(cand_apennine)
+
+```
+
+### Plot-level details
+
+`resy_eval_plot()` prints the full evidence for one plot: which species
+matched, which group conditions fired, and which vegetation-type formulas
+evaluated to `TRUE`.
+
+```{r eval-plot}
+# Replace "AN57" with a PlotObservationID present in your data
+resy_eval_plot(res_apennine, p = "AN57")
+
+```
+
+
+
+
+## Next steps
+
+- For EUNIS with geographic enrichment (ecoregion, country, coast), see
+  `vignette("EUNIS")`.
+- To validate an ESy text file before importing, use `resy_validate_esy()`.
+

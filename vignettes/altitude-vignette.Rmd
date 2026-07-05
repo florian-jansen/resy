@@ -1,0 +1,151 @@
+---
+title: "Altitude data"
+author: "Markus Bauer"
+date: "`r Sys.Date()`"
+output:
+   rmarkdown::html_vignette:
+      toc: true
+vignette: >
+  %\VignetteIndexEntry{Get altitude data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette illustrates how you can get altitude data for the wrapper function `check_eunis`. Since the altitude data for Europe is too big for a R package, you have to get it on your own.
+
+# Example
+
+First, we illustrate the altitude data for our example dataset.
+
+```{r libraries, message=FALSE}
+library(tidyverse)
+library(here)
+library(sf)
+library(terra)
+library(tidyterra)
+```
+
+## Load the example data
+
+Load the altitude data for the area of our example.
+
+```{r example-data-altitude, warning=FALSE, message=FALSE}
+altitude <- terra::rast(
+  system.file("extdata", "data_example_altitude.tif", package = "RESY")
+)
+altitude
+```
+
+We load the example plots.
+
+```{r example-data-sites, warning=FALSE, message=FALSE}
+data_sites <- readr::read_csv(
+  system.file("extdata", "data_example_sites.csv", package = "RESY"),
+  show_col_types = FALSE
+) |>
+  dplyr::select(PlotObservationID, Longitude, Latitude) |>
+  sf::st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) |>
+  sf::st_transform(terra::crs(altitude))
+```
+
+## Map
+
+We show the map with altitude data and the plots
+
+```{r map, message=FALSE}
+ggplot() +
+  tidyterra::geom_spatraster(data = altitude) +
+  tidyterra::scale_fill_whitebox_c(
+    palette = "high_relief",
+    na.value = "lightblue"
+    ) +
+  geom_sf(data = data_sites, color = "red", size = 1) +
+  labs(fill = "Altitude (m)") +
+  theme_minimal()
+```
+
+© EuroGeographics 2026, Istituto Geografico Militare (IGM), Italy; [Licence](https://www.mapsforeurope.org/licence)
+
+```{r}
+altitude_values <- terra::extract(altitude, terra::vect(data_sites))
+data_sites <- data_sites |>
+  mutate("Altitude (m)" = altitude_values$eurodem)
+data_sites
+```
+
+# Crop your own altitude data
+
+Download the elevation data from EuroDEM (European Digital Elevation Model) from <https://www.mapsforeurope.org/datasets/euro-dem> which is from EuroGeographics and the project is cofounded by the European Union.
+
+## Load and adapt EuroDEM data
+
+Save it in your data folder of your R project with your coordinates of your vegetation surveys (sites).
+
+```{r euroddem-data}
+# altitude <- terra::rast(
+#   here::here("data", "euro-dem-tif", "data", "eurodem.tif")
+# )
+```
+
+EuroDEM is in arcseconds and we have to rescale it to degrees.
+
+```{r transform-eurodem-data}
+# e <- terra::ext(altitude)
+# terra::ext(altitude) <- terra::ext(
+#   e[1] / 3600, e[2] / 3600, e[3] / 3600, e[4] / 3600
+# )
+```
+
+The altitude data needs the right coordination system: EPSG:4258 - ETRS89 (European Terrestrial Reference System 1989) in degrees.
+
+```{r assign-epsg-to-eurodem}
+# terra::crs(altitude) <- "EPSG:4258"  # geographic ETRS89, degrees
+```
+
+Get an overview of the status of the EuroDEM data.
+
+```{r overview-of-eurodem}
+# altitude
+```
+
+## Load example sites
+
+Now, we can load the sites data and transform it to an sf object and align the CRS to the raster altitude data.
+
+```{r load-data-sites}
+# data_sites <- readr::read_csv(
+#   here::here("data", "data_example_sites.csv", package = "RESY"),
+#   show_col_types = FALSE
+# ) |>
+#   sf::st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) |>
+#   sf::st_transform(terra::crs(altitude))
+```
+
+## Crop and save altitude data
+
+We can crop the altitude data to the region of our plots.
+
+```{r crop-data}
+# altitude_cropped <- data_sites |>
+#   sf::st_buffer(0.5) |> # degrees now, ~50 km
+#   sf::st_bbox() |>
+#   terra::crop(x = altitude, y = _) |>
+#   terra::project("EPSG:4326")
+```
+
+Save the smaller file for a latter use.
+
+```{r write-raster}
+# terra::writeRaster(
+#   altitude_cropped,
+#   here::here("data", "data_example_altitude.tif"),
+#   overwrite = TRUE
+# )
+```
