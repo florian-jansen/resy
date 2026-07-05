@@ -36,10 +36,10 @@ Authors@R: c(
       comment = c(ORCID = "0000-0001-6018-4022")
     ),
     person(
-      given = "Gilles", family = "Collins",
+      given = "Gilles", family = "Colling",
       email = "gilles.colling051@gmail.com",
       role = "aut",
-      comment = c(ORCID = "")
+      comment = c(ORCID = "0000-0003-3070-6066")
     )
   )
 License: file LICENSE
