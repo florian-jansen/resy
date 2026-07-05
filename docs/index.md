@@ -1,9 +1,10 @@
 # RESY
 
-The goal of RESY is to classify… The function
+The goal of RESY is to use so-called expert files to assign vegetation
+plots to types. The function
 [`resy_classify()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/resy_classify.md)
-does the classification of the vegation surveys including the sites
-data.
+is the core function to classify vegetation plots, which, depending on
+the rules need to include also site data.
 
 **Insert figure here. Perhaps of Europe**
 
@@ -35,7 +36,7 @@ library(RESY)
 
 We have written several vignettes to help you use the RESY R package:  
 
-- [`vignette("RESY")`](https://loe.gitlab.uni-rostock.de/publications/r-esy/articles/RESY.md)
+- [`vignette("EUNIS")`](https://loe.gitlab.uni-rostock.de/publications/r-esy/articles/EUNIS.md)
 - `vignette("Get altitude data")`
 
 ## 🖥️ Functions

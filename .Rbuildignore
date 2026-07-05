@@ -11,3 +11,4 @@
 ^\.claude$
 ^inst/shiny/\.positai$
 ^\.posit/assistant$
+^\.github$

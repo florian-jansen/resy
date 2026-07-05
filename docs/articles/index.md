@@ -4,5 +4,7 @@
 
 - [Altitude
   data](https://loe.gitlab.uni-rostock.de/publications/r-esy/articles/altitude-vignette.md):
-- [RESY
-  tutorial](https://loe.gitlab.uni-rostock.de/publications/r-esy/articles/RESY.md):
+- [RESY EUNIS habitat
+  classifications](https://loe.gitlab.uni-rostock.de/publications/r-esy/articles/EUNIS.md):
+- [Classifying vegetation surveys with
+  RESY](https://loe.gitlab.uni-rostock.de/publications/r-esy/articles/RESY.md):

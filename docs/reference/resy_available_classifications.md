@@ -1,21 +1,16 @@
 # List available classifications
 
-Lists available classifications and their versions. See
-\[resy_add_classification()\] if you want to add a new expert text file.
+Lists the classification schemes and versions bundled with the package
+(under \`inst/extdata/classifications/\`).
 
 ## Usage
 
 ``` r
-resy_available_classifications(locations = c("package", "user"))
+resy_available_classifications()
 ```
-
-## Arguments
-
-- locations:
-
-  Where to search (any of "user", "package").
 
 ## Value
 
-Data frame with columns: scheme, version, location, expert_json,
-expert_txt, expert_rds.
+A data frame with columns \`scheme\`, \`version\`, \`expert_json\`,
+\`expert_txt\`. The \`expert\_\*\` columns contain the full file path
+when the file exists, otherwise \`NA\`.

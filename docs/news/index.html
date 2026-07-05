@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">RESY</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,6 +20,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/altitude-vignette.html">Altitude data</a></li>
+    <li><a class="dropdown-item" href="../articles/EUNIS.html">RESY EUNIS habitat classifications</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -36,14 +37,57 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="resy-development-version">RESY (development version)<a class="anchor" aria-label="anchor" href="#resy-development-version"></a></h2>
-<ul><li>Initial CRAN submission.</li>
+<h2 class="pkg-version" data-toc-text="0.3" id="resy-03">RESY 0.3<a class="anchor" aria-label="anchor" href="#resy-03"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes--function-renames-0-3">Breaking changes — function renames<a class="anchor" aria-label="anchor" href="#breaking-changes--function-renames-0-3"></a></h3>
+<ul><li>
+<code>prepare_eunis()</code> split into <code><a href="../reference/resy_check_eunis.html">resy_check_eunis()</a></code> (pure validation) and <code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> (geographic enrichment + taxonomy).</li>
+<li>
+<code>check_taxonomy()</code> → <code><a href="../reference/resy_check_taxonomy.html">resy_check_taxonomy()</a></code>
+</li>
+<li>
+<code>check_format()</code> → <code><a href="../reference/resy_check_data.html">resy_check_data()</a></code>
+</li>
+<li>
+<code>resy_validate_expert()</code> → <code><a href="../reference/resy_validate_esy.html">resy_validate_esy()</a></code>
+</li>
 </ul></div>
-  </main></div>
+<div class="section level3">
+<h3 id="internal-changes-0-3">Internal changes<a class="anchor" aria-label="anchor" href="#internal-changes-0-3"></a></h3>
+<ul><li>
+<code>resy_parse_expert()</code>, <code><a href="../reference/resy_parse_json.html">resy_parse_json()</a></code>, <code>resy_show_vegtypes()</code> are now internal (unexported). Use <code><a href="../reference/resy_load_expert.html">resy_load_expert()</a></code> as the single entry point for loading any expert system.</li>
+<li>Geographic helpers (<code>check_ecoregions</code>, <code>check_country</code>, <code>check_coast_dunes</code>, <code>check_coordinates</code>) consolidated into internal functions in <code>internal_eunis_geo.R</code> under the <code>.resy_assign_*</code> / <code>.resy_check_*</code> naming convention.</li>
+<li>RDS format support removed. Expert systems are imported from <code>.txt</code> and stored as <code>.json</code>. <code><a href="../reference/resy_available_classifications.html">resy_available_classifications()</a></code> no longer returns an <code>expert_rds</code> column.</li>
+<li>
+<code><a href="../reference/resy_expert_path.html">resy_expert_path()</a></code> <code>format</code> argument is now <code>c("json", "txt")</code> only.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-0-3">New<a class="anchor" aria-label="anchor" href="#new-0-3"></a></h3>
+<ul><li>
+<code><a href="../reference/resy_check_eunis.html">resy_check_eunis()</a></code> — validates plot data against EUNIS structural requirements before harmonization, returning <code>list(ok, errors, warnings)</code>.</li>
+<li>New general vignette <code><a href="../articles/RESY.html">vignette("RESY")</a></code> covering classification with both EUNIS and Apennine-test expert systems without EUNIS-specific geographic steps.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2" id="resy-02">RESY 0.2<a class="anchor" aria-label="anchor" href="#resy-02"></a></h2>
+<ul><li>Added <code><a href="../reference/resy_read_expert.html">resy_read_expert()</a></code>, <code>resy_write_expert()</code>, <code><a href="../reference/resy_expert_tree.html">resy_expert_tree()</a></code>, <code><a href="../reference/resy_write_expert_html.html">resy_write_expert_html()</a></code>, <code><a href="../reference/resy_view_expert.html">resy_view_expert()</a></code>, and <code><a href="../reference/resy_eunis_names.html">resy_eunis_names()</a></code> for lossless reading, writing, and hierarchical inspection of expert-system files.</li>
+<li>Added <code><a href="../reference/resy_parse_json.html">resy_parse_json()</a></code> for direct parsing of structured JSON expert files.</li>
+<li>
+<code>prepare_eunis()</code> now returns a named list with <code>sites</code> and <code>species_checked</code>. A new <code>parsed</code> argument is required when <code>run_taxonomy = TRUE</code>.</li>
+<li>
+<code>check_taxonomy()</code> signature updated: <code>obs</code>, <code>parsed</code>, <code>col</code> replace the former <code>species</code> argument.</li>
+<li>
+<code><a href="../reference/resy_available_classifications.html">resy_available_classifications()</a></code> now discovers both package-bundled and user-added classification files.</li>
+<li>
+<code><a href="../reference/resy_expert_path.html">resy_expert_path()</a></code> gains <code>"json"</code> as a supported format.</li>
+<li>Bug fixes and documentation updates throughout.</li>
+</ul></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Florian Jansen, Markus Bauer, Mariasole Calbi.</p>
+  <p>Developed by Florian Jansen, Markus Bauer, Mariasole Calbi, Gilles Collins.</p>
 </div>
 
 <div class="pkgdown-footer-right">

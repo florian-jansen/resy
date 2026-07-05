@@ -28,14 +28,14 @@ altitude <- terra::rast(
 )
 altitude
 #> class       : SpatRaster
-#> size        : 3599, 4104, 1  (nrow, ncol, nlyr)
+#> size        : 63, 168, 1  (nrow, ncol, nlyr)
 #> resolution  : 0.0005555556, 0.0005555556  (x, y)
-#> extent      : 9.809486, 12.08949, 42.32496, 44.3244  (xmin, xmax, ymin, ymax)
+#> extent      : 10.69171, 10.78504, 44.12662, 44.16162  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326)
 #> source      : data_example_altitude.tif
 #> name        : eurodem
-#> min value   :       0
-#> max value   :    2162
+#> min value   :     771
+#> max value   :    1927
 ```
 
 We load the example plots.
@@ -46,7 +46,7 @@ data_sites <- readr::read_csv(
   system.file("extdata", "data_example_sites.csv", package = "RESY"),
   show_col_types = FALSE
 ) |>
-  dplyr::select(RELEVE_NR, Longitude, Latitude) |>
+  dplyr::select(PlotObservationID, Longitude, Latitude) |>
   sf::st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) |>
   sf::st_transform(terra::crs(altitude))
 ```
@@ -85,18 +85,18 @@ data_sites
 #> Bounding box:  xmin: 9.809499 ymin: 42.32483 xmax: 12.08963 ymax: 44.32464
 #> Geodetic CRS:  WGS 84
 #> # A tibble: 200 × 3
-#>    RELEVE_NR            geometry `Altitude (m)`
-#>  * <chr>             <POINT [°]>          <dbl>
-#>  1 JZ37       (9.93798 44.32464)             NA
-#>  2 FR49      (11.09287 43.91546)             86
-#>  3 PT45      (11.65339 43.09104)            399
-#>  4 ZH63      (10.53301 43.73897)            431
-#>  5 TF93      (10.40239 44.23978)           1688
-#>  6 KG68      (10.40203 44.24087)           1738
-#>  7 QJ27       (10.40635 44.2413)           1827
-#>  8 JN90      (10.40602 44.24296)           1897
-#>  9 ZM18      (10.66071 44.12734)           1462
-#> 10 BQ20       (10.6589 44.12456)           1405
+#>    PlotObservationID            geometry `Altitude (m)`
+#>  * <chr>                     <POINT [°]>          <dbl>
+#>  1 JZ37               (9.93798 44.32464)             NA
+#>  2 FR49              (11.09287 43.91546)             NA
+#>  3 PT45              (11.65339 43.09104)             NA
+#>  4 ZH63              (10.53301 43.73897)             NA
+#>  5 TF93              (10.40239 44.23978)             NA
+#>  6 KG68              (10.40203 44.24087)             NA
+#>  7 QJ27               (10.40635 44.2413)             NA
+#>  8 JN90              (10.40602 44.24296)             NA
+#>  9 ZM18              (10.66071 44.12734)             NA
+#> 10 BQ20               (10.6589 44.12456)             NA
 #> # ℹ 190 more rows
 ```
 
@@ -118,7 +118,7 @@ your vegetation surveys (sites).
 # )
 ```
 
-EuroDEM is in arcseconds and we have to rescale it to degrees
+EuroDEM is in arcseconds and we have to rescale it to degrees.
 
 ``` r
 
@@ -129,7 +129,7 @@ EuroDEM is in arcseconds and we have to rescale it to degrees
 ```
 
 The altitude data needs the right coordination system: EPSG:4258 -
-ETRS89 (European Terrestrial Reference System 1989) in degrees
+ETRS89 (European Terrestrial Reference System 1989) in degrees.
 
 ``` r
 

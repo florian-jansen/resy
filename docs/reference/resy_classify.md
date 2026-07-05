@@ -32,7 +32,7 @@ resy_classify(
 
 - expertfile:
 
-  Optional path to expert-system file (.rds/.json/.txt). If set, takes
+  Optional path to expert-system file (.json/.txt). If set, takes
   precedence.
 
 - scheme:
@@ -51,7 +51,7 @@ resy_classify(
 - id_col:
 
   Optional name of the plot id column. If NULL, tries PlotObservationID,
-  RELEVE_NR, then PlotID.
+  then PlotID.
 
 - mc:
 

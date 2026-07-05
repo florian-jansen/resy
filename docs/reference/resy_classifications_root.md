@@ -14,12 +14,13 @@ resy_classifications_root(location = c("user", "package"), create = FALSE)
 
 - location:
 
-  One of "user" or "package".
+  One of \`"user"\` or \`"package"\`.
 
 - create:
 
-  Logical; create directory (only applies to location="user").
+  Logical; if \`TRUE\` and \`location = "user"\`, create the directory
+  if it does not yet exist. Ignored for \`"package"\`.
 
 ## Value
 
-A path.
+A path string.

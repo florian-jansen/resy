@@ -1,46 +1,4 @@
-url: https://loe.gitlab.uni-rostock.de/publications/r-esy
+url: https://florian-jansen.github.io/resy/
 template:
   bootstrap: 5
 
-reference:
-- title: "Classification"
-  contents:
-  - resy_classify
-  - resy_candidates
-
-- title: "Result evaluation"
-  contents:
-  - resy_eval_plot
-  - resy_eval_type
-
-- title: "Data preparation (general)"
-  contents:
-  - resy_check_taxonomy
-  - resy_check_data
-
-- title: "Data preparation (EUNIS)"
-  contents:
-  - resy_check_eunis
-  - resy_harmonize_eunis
-  - resy_eunis_names
-
-- title: "Expert system files"
-  contents:
-  - resy_validate_esy
-  - resy_available_classifications
-  - resy_load_expert
-  - resy_add_classification
-  - resy_expert_path
-  - resy_read_expert
-  - resy_expert_tree
-  - resy_view_expert
-  - resy_write_expert_html
-
-- title: "Data"
-  contents:
-  - bohn
-  - bohn_25832
-  - co
-  - ecoregions2017_epsg25832
-  - europe_resolution_1_epsg25832
-  - europe_resolution_60_epsg25832

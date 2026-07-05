@@ -1,293 +1,235 @@
-# RESY tutorial
+# Classifying vegetation surveys with RESY
 
-This vignette illustrates a common use of the package: to classify
-European vegetation surveys to **EUNIS habitat types**
-([FloraVeg.EU](https://floraveg.eu/); Chytrý et
-al. [2024](https://doi.org/10.1111/avsc.12798); European Environment
-Agency EUNIS [Website](https://eunis.eea.europa.eu/index.jsp)) according
-to the **Expert System (ESy)** of Chytrý et
-al. ([2020](https://doi.org/10.1111/avsc.12519)) (see
-[FloraVeg.EU](https://floraveg.eu/habitat/)). The function
-[`prepare_eunis()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/prepare_eunis.md)
-incorporates several functions to collect geographic information about
-the vegetation survey like the country, ecoregion, or coastal position.
-Furthermore, the format of the coordinates and the taxonomy are checked
-and adjusted to the requirements for the expert system (ESy). The
-function
-[`resy_classify()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/resy_classify.md)
-does the classification of the vegation surveys including the sites
-data.
+## Introduction
 
-1.  **Prepare the format** of the sites including the right
-    **coordination system** and add information like **ecoregion**,
-    **country** or if it is on a **coast**.
-2.  **Check of taxonomy** of the species data
-3.  Evaluation of your vegetation surveys and **assigning EUNIS habitat
-    types**
-4.  **Present the results**
+RESY implements the **Expert System (ESy)** framework for vegetation
+classification (Bruelheide [1997](https://doi.org/10.1007/BF02803883);
+Chytrý et al. [2020](https://doi.org/10.1111/avsc.12519)). An ESy file
+encodes three sections:
 
-## Example
+1.  **Taxonomy** – species aggregations and synonyms  
+2.  **Taxon groups** – species assemblages referenced in classification
+    conditions  
+3.  **Vegetation types** – logical formulas that combine group
+    thresholds into named habitat types
 
-The following R packages are required to run the example of this
-vignette:
+The package can work with any ESy-compliant classification. This
+vignette uses two bundled systems:
+
+- **EUNIS** (European Nature Information System habitat types;
+  [FloraVeg.EU](https://floraveg.eu/))
+- **Apennine-test** (a simplified test system for the Italian Apennines)
+
+For EUNIS specifically, many formulas also require geographic columns
+(`Ecoreg`, `Country`, `Coast_EEA`, `Dunes_Bohn`) in a sites header
+table. Those preparation steps are covered in
+[`vignette("EUNIS")`](https://loe.gitlab.uni-rostock.de/publications/r-esy/articles/EUNIS.md).
 
 ``` r
 
 library(readr)
 library(dplyr)
-library(ggplot2)
-library(sf)
 library(RESY)
 ```
 
-### Load the example data.
+------------------------------------------------------------------------
 
-The example data include the species data with the vegetation surveys
-and the sites data with further information to the location of the
-surveys.
+## 1. Load and prepare species data
 
-First, the vegetation surveys:
+[`resy_classify()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/resy_classify.md)
+expects the observation table to have three columns:
+
+| Column              | Description                                   |
+|---------------------|-----------------------------------------------|
+| `PlotObservationID` | Plot identifier (auto-detected)               |
+| `TaxonName`         | Species name                                  |
+| `Cover_Perc`        | Cover value (percent or Braun-Blanquet scale) |
 
 ``` r
 
 data_species <- read_csv(
-  system.file("extdata", "data_example_species.csv", package = "RESY")
-  )
-data_species
-#> # A tibble: 3,580 × 4
-#>     ...1 RELEVE_NR cover species                                             
-#>    <dbl> <chr>     <dbl> <chr>                                               
-#>  1     1 HU32        0.1 Dryopteris filix-mas (L.) Schott                    
-#>  2     2 HU32        0.1 Cephalanthera longifolia (L.) Fritsch               
-#>  3     3 HU32        0.5 Prenanthes purpurea L.                              
-#>  4     4 HU32        0.5 Anemone nemorosa L.                                 
-#>  5     5 HU32        0.5 Epipactis helleborine (L.) Crantz subsp. helleborine
-#>  6     6 HU32        0.5 Sorbus aucuparia L. subsp. aucuparia                
-#>  7     7 HU32       87.5 Fagus sylvatica L.                                  
-#>  8     8 HU32        3   Rubus hirtus Waldst. & Kit.                         
-#>  9     9 HU32        3   Abies alba Mill.                                    
-#> 10    10 HU32        3   Oxalis acetosella L.                                
-#> # ℹ 3,570 more rows
+  system.file("extdata", "data_example_species.csv", package = "RESY"),
+  show_col_types = FALSE
+) |>
+  rename(TaxonName = species, Cover_Perc = cover)
+
+glimpse(data_species)
+#> Rows: 3,580
+#> Columns: 3
+#> $ PlotObservationID <chr> "HU32", "HU32", "HU32", "HU32", "HU32", "HU32", "HU3…
+#> $ Cover_Perc        <dbl> 0.1, 0.1, 0.5, 0.5, 0.5, 0.5, 87.5, 3.0, 3.0, 3.0, 0…
+#> $ TaxonName         <chr> "Dryopteris filix-mas (L.) Schott", "Cephalanthera l…
 ```
 
-Second, the sites data:
+A minimal **header** table (one row per plot) is required even when no
+geographic conditions are used. It must contain the same plot ID column
+as the observation table.
 
 ``` r
 
-data_sites <- read_csv(
-   system.file("extdata", "data_example_sites.csv", package = "RESY")
-   ) |>
-   select(-"cover") |>
-   st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
-data_sites
-#> Simple feature collection with 200 features and 2 fields
-#> Geometry type: POINT
-#> Dimension:     XY
-#> Bounding box:  xmin: 9.809499 ymin: 42.32483 xmax: 12.08963 ymax: 44.32464
-#> Geodetic CRS:  WGS 84
-#> # A tibble: 200 × 3
-#>     ...1 RELEVE_NR            geometry
-#>  * <dbl> <chr>             <POINT [°]>
-#>  1     1 JZ37       (9.93798 44.32464)
-#>  2     2 FR49      (11.09287 43.91546)
-#>  3     3 PT45      (11.65339 43.09104)
-#>  4     4 ZH63      (10.53301 43.73897)
-#>  5     5 TF93      (10.40239 44.23978)
-#>  6     6 KG68      (10.40203 44.24087)
-#>  7     7 QJ27       (10.40635 44.2413)
-#>  8     8 JN90      (10.40602 44.24296)
-#>  9     9 ZM18      (10.66071 44.12734)
-#> 10    10 BQ20       (10.6589 44.12456)
-#> # ℹ 190 more rows
+header <- data_species |>
+  distinct(PlotObservationID) |>
+  as.data.frame()
 ```
 
-### Map
+------------------------------------------------------------------------
 
-The vegetation surveys of the example dataset are in Tuscany in Italy.
+## 2. Load expert systems
 
-![](RESY_files/figure-html/base-map-1.png)
-
-We see a part of Italy, mainly Tuscany and the Mediterranean or more
-specific the Tyrrhenian Sea. The dots are the locations of the
-vegetation surveys. Some are on islands.
-
-## Preparation for classification
-
-### Apply `prepare_eunis()`
-
-First, we have to prepare the sites and the species data with
-[`prepare_eunis()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/prepare_eunis.md)
+[`resy_available_classifications()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/resy_available_classifications.md)
+lists all schemes and versions available (# function
+resy_available_classifications() only gives esy files bundled in the
+package so far. Either expand or delete the function.
 
 ``` r
 
-outcome <- RESY::prepare_eunis(
-   data = data_sites,
-   source_crs = 25832,
-   run_taxonomy = TRUE,
-   species_data = data_species,
-   run_coast_dunes = TRUE,
-   coast_buffer = 5000
-   )
-#> Warning in RESY::prepare_eunis(data = data_sites, source_crs = 25832,
-#> run_taxonomy = TRUE, : The column 'Altitude (m)' is missing.
-#> Warning in RESY::prepare_eunis(data = data_sites, source_crs = 25832,
-#> run_taxonomy = TRUE, : NAs in 'Ecoreg' after spatial lookup.
-#> Warning in RESY::prepare_eunis(data = data_sites, source_crs = 25832,
-#> run_taxonomy = TRUE, : NAs in 'Country' after spatial lookup.
-#> Warning: attribute variables are assumed to be spatially constant throughout
-#> all geometries
-#> Warning: attribute variables are assumed to be spatially constant throughout
-#> all geometries
-outcome_sites <- tibble(outcome$sites)
-outcome_species <- tibble(outcome$species)
+resy_available_classifications() |> select(scheme, version)
+#>          scheme    version
+#> 1 Apennine-test 2026-06-27
+#> 2         EUNIS 2025-10-03
 ```
 
-We have three warnings: The column `Altitude (m)` is missing and this
-could not be covered by
-[`prepare_eunis()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/prepare_eunis.md),
-but we provide a `vignette("altitude")`. `NAs` are in the
+To add a custom expert system, use
+[`resy_add_classification()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/resy_add_classification.md).
 
-ecoregions (`Ecoreg`) and country (`Country`) columns. This could be the
-vegetation surveys on islands which is not covered by the base map.
-
-### Additional info of ecoregions and countries
-
-Here are the additional information of ecoregions and countries which
-were successfully identified:
+[`resy_load_expert()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/resy_load_expert.md)
+parses a bundled classification into a `resy_parsed_expert` object, used
+here for taxonomy checking.
+[`resy_classify()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/resy_classify.md)
+loads the expert internally from `scheme`/`version`.
 
 ``` r
 
-outcome_sites
-#> # A tibble: 200 × 9
-#>    RELEVE_NR Coast_EEA Dunes_Bohn Ecoreg Ecoreg_name          Country Country_ID
-#>    <chr>     <chr>     <chr>       <dbl> <chr>                <chr>   <chr>     
-#>  1 JZ37      N_COAST   N_DUNES       795 Italian sclerophyll… Italy   IT        
-#>  2 FR49      N_COAST   N_DUNES       795 Italian sclerophyll… Italy   IT        
-#>  3 PT45      N_COAST   N_DUNES       795 Italian sclerophyll… Italy   IT        
-#>  4 ZH63      N_COAST   N_DUNES       795 Italian sclerophyll… Italy   IT        
-#>  5 TF93      N_COAST   N_DUNES       644 Appenine deciduous … Italy   IT        
-#>  6 KG68      N_COAST   N_DUNES       644 Appenine deciduous … Italy   IT        
-#>  7 QJ27      N_COAST   N_DUNES       644 Appenine deciduous … Italy   IT        
-#>  8 JN90      N_COAST   N_DUNES       644 Appenine deciduous … Italy   IT        
-#>  9 ZM18      N_COAST   N_DUNES       644 Appenine deciduous … Italy   IT        
-#> 10 BQ20      N_COAST   N_DUNES       644 Appenine deciduous … Italy   IT        
-#> # ℹ 190 more rows
-#> # ℹ 2 more variables: Longitude <dbl>, Latitude <dbl>
+parsed_apennine <- resy_load_expert(scheme = "Apennine-test")
 ```
 
-### Missing info
+## 3. Check taxonomy
 
-Let us see which vegetation surveys could not get an ecoregion and
-country:
+[`resy_check_taxonomy()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/resy_check_taxonomy.md)
+maps observation names against Section 1 of the expert system (canonical
+names + synonyms). This is classification-specific: a name may resolve
+in one system but not another.
 
 ``` r
 
-outcome_sites |>
-   filter(is.na(Ecoreg))
-#> # A tibble: 23 × 9
-#>    RELEVE_NR Coast_EEA Dunes_Bohn Ecoreg Ecoreg_name Country Country_ID
-#>    <chr>     <chr>     <chr>       <dbl> <chr>       <chr>   <chr>     
-#>  1 OR48      MED_COAST N_DUNES        NA NA          NA      NA        
-#>  2 EQ56      MED_COAST N_DUNES        NA NA          NA      NA        
-#>  3 IS69      MED_COAST N_DUNES        NA NA          NA      NA        
-#>  4 JP48      MED_COAST N_DUNES        NA NA          NA      NA        
-#>  5 MF17      MED_COAST N_DUNES        NA NA          NA      NA        
-#>  6 SA50      MED_COAST N_DUNES        NA NA          NA      NA        
-#>  7 DR59      MED_COAST N_DUNES        NA NA          NA      NA        
-#>  8 QI21      MED_COAST N_DUNES        NA NA          NA      NA        
-#>  9 PK58      MED_COAST N_DUNES        NA NA          NA      NA        
-#> 10 OY37      MED_COAST N_DUNES        NA NA          NA      NA        
-#> # ℹ 13 more rows
-#> # ℹ 2 more variables: Longitude <dbl>, Latitude <dbl>
+tax_apennine <- resy_check_taxonomy(
+  obs    = data_species,
+  parsed = parsed_apennine,
+  col    = "TaxonName"
+)
+cat("Apennine-test — matched:", sum(tax_apennine$matched),
+    "/ unmatched:", sum(!tax_apennine$matched), "\n")
+#> Apennine-test — matched: 1009 / unmatched: 0
 ```
 
-Species on the coast (‘MED_COAST’) often have `NAs` for ecoregion and
-country. This has to be corrected by yourself.
+## 4. Classify
 
-Here is the updated map with ecoregions as differetn colors
-
-![](RESY_files/figure-html/map-2-1.png)
-
-### Checked species names
-
-Let’s have a look on the checked and transformed species names. There
-are for example no author names anymore:
+[`resy_classify()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/resy_classify.md)
+evaluates all membership formulas and returns a `resy_result` object.
+Pass `scheme` to select the bundled expert system; it will be loaded
+automatically.
 
 ``` r
 
-outcome_species
-#> # A tibble: 3,580 × 6
-#>     ...1 RELEVE_NR cover species                      Name_matched Accepted_name
-#>    <dbl> <chr>     <dbl> <chr>                        <chr>        <chr>        
-#>  1     1 HU32        0.1 Dryopteris filix-mas (L.) S… Dryopteris … Dryopteris f…
-#>  2     2 HU32        0.1 Cephalanthera longifolia (L… Cephalanthe… Cephalanther…
-#>  3     3 HU32        0.5 Prenanthes purpurea L.       Prenanthes … Prenanthes p…
-#>  4     4 HU32        0.5 Anemone nemorosa L.          Anemone nem… Anemonoides …
-#>  5     5 HU32        0.5 Epipactis helleborine (L.) … Epipactis h… Epipactis he…
-#>  6     6 HU32        0.5 Sorbus aucuparia L. subsp. … Sorbus aucu… Sorbus aucup…
-#>  7     7 HU32       87.5 Fagus sylvatica L.           Fagus sylva… Fagus sylvat…
-#>  8     8 HU32        3   Rubus hirtus Waldst. & Kit.  Rubus hirtus Rubus hirtus 
-#>  9     9 HU32        3   Abies alba Mill.             Abies alba   Abies alba   
-#> 10    10 HU32        3   Oxalis acetosella L.         Oxalis acet… Oxalis aceto…
-#> # ℹ 3,570 more rows
+res_apennine <- resy_classify(
+  obs    = data_species,
+  header = header,
+  scheme = "Apennine-test"
+)
 ```
 
-## Classify the vegetation surveys to EUNIS habitat types
+------------------------------------------------------------------------
 
-### Preparation
+## 5. Inspect results
 
-Load the expert file which is the base for the evaluation.
+### Print classification hierarchy
 
 ``` r
 
-# paths <- RESY::resy_example_paths()
-# RESY::resy_validate_expert_txt(paths$expertfile_txt)
-# ex    <- RESY::resy_read_example_data()
+tree_filled <- resy_expert_tree(parsed_apennine, fill = TRUE)
+print(tree_filled)
+#> <resy_expert_tree> 5 node(s), 2 top-level
+#> F Forest
+#>   FB Beech-fir montane forest
+#> N Non-forest
+#>   NG Nardus acidic grassland
+#>   NS Sub-Mediterranean scrub and woodland
 ```
 
-### Apply `resy_classify()`
+To browse the type hierarchy of a loaded system, use
+[`resy_view_expert()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/resy_view_expert.md).
 
-Now, you can classify your vegetation surveys (`obs`) which includes
-sites data (`header`).
+### Vegetation type details
+
+[`resy_eval_type()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/resy_eval_type.md)
+shows conditiosn of a type is evaluated.
 
 ``` r
 
-# res   <- RESY::resy_classify(ex$obs, ex$header, paths$expertfile_json, id_col = 'PlotObservationID')
+resy_eval_type(res_apennine, t = "FB")
+#> FB    Beech-fir montane forest
+#> 
+#> (<#TC Beech-forest-trees GR 15> AND <#TC Beech-forest-herbs GR 10>)
+#> 
+#> (col2 & col3)
+#> 
+#>   expressions                 
+#> 2 #TC Beech-forest-trees GR 15
+#> 3 #TC Beech-forest-herbs GR 10
 ```
 
-### Print the results
+### Long table of candidates for all plots
+
+[`resy_candidates()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/resy_candidates.md)
+extracts ranked classification results. Use `top_n` to limit the number
+of types returned per plot.
 
 ``` r
 
-# print(table(res$result.classification))
-# resy_eval_plot(res, '100')
-# 
-# resy_candidates(res)
-# resy_candidates(res, plot_id = "1")
-# resy_candidates(res, min_priority = 4) # only assignments with at least priority 4
+cand_apennine <- resy_candidates(res_apennine, top_n = 3)
+head(cand_apennine)
+#>    plot_id   type priority priority_rank
+#>     <char> <char>    <ord>         <int>
+#> 1:    AM30      F        2             1
+#> 2:    AN57      F        2             1
+#> 3:    BE71      F        2             1
+#> 4:    BE71     FB        5             3
+#> 5:    BK34      N        2             1
+#> 6:    BK34     NS        3             2
 ```
 
-## References
+### Plot-level details
 
-Chytrý M, Řezníčková M, Novotný P et
-al. ([2024](https://doi.org/10.1111/avsc.12798)) FloraVeg.EU – an online
-database of European vegetation, habitats and flora. – *Applied
-Vegetation Science* 27, e12798. <https://doi.org/10.1111/avsc.12798>
+[`resy_eval_plot()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/resy_eval_plot.md)
+prints the full evidence for one plot: which species matched, which
+group conditions fired, and which vegetation-type formulas evaluated to
+`TRUE`.
 
-Bruelheide H, Tichý L, Chytrý M, Jansen F
-([2021](https://doi.org/10.1111/avsc.12562)) Implementing the formal
-language of the vegetation classification expert systems (ESy) in the
-statistical computing environment R. – *Applied Vegetation Science* 24,
-e12562 <https://doi.org/10.1111/avsc.12562>
+``` r
 
-Chytrý M, Tichý L, Hennekens SM et
-al. ([2020](https://doi.org/10.1111/avsc.12519)) EUNIS Habitat
-Classification: expert system, characteristic species combinations and
-distribution maps of European habitats. – *Applied Vegetation Science*
-23, 648–675. <https://doi.org/10.1111/avsc.12519>
+# Replace "AN57" with a PlotObservationID present in your data
+resy_eval_plot(res_apennine, p = "AN57")
+#> Plant observations for plot AN57 :
+#>     PlotObservationID Cover_Perc               TaxonName        group_names
+#>                <char>      <num>                  <char>             <char>
+#>  1:              AN57        0.1 Gymnocarpium dryopteris               <NA>
+#>  2:              AN57        0.1   Athyrium filix-femina               <NA>
+#>  3:              AN57        0.1     Prenanthes purpurea Beech-forest-herbs
+#>  4:              AN57        0.1      Dryopteris expansa               <NA>
+#>  5:              AN57        0.1      Polypodium vulgare               <NA>
+#>  6:              AN57        0.5       Oxalis acetosella Beech-forest-herbs
+#>  7:              AN57        0.5        Sorbus aucuparia               <NA>
+#>  8:              AN57        0.5              Abies alba Beech-forest-trees
+#>  9:              AN57       62.5         Fagus sylvatica Beech-forest-trees
+#> 10:              AN57       37.5     Vaccinium myrtillus   Nardus-grassland
+#> Possible types of plot "AN57" (135): F
+#> Priorities of these types: 1 
+#> Classified as: F
+```
 
-Mucina L, Bültmann H, Dierßen K et
-al. ([2016](https://doi.org/10.1111/avsc.12257)) Vegetation of Europe:
-hierarchical floristic classification system of vascular plant,
-bryophyte, lichen, and algal communities. – *Applied Vegetation Science*
-19(Suppl. 1), 3–264.<https://doi.org/10.1111/avsc.12257>
+## Next steps
+
+- For EUNIS with geographic enrichment (ecoregion, country, coast), see
+  [`vignette("EUNIS")`](https://loe.gitlab.uni-rostock.de/publications/r-esy/articles/EUNIS.md).
+- To validate an ESy text file before importing, use
+  [`resy_validate_esy()`](https://loe.gitlab.uni-rostock.de/publications/r-esy/reference/resy_validate_esy.md).

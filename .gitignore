@@ -9,3 +9,4 @@ pkgdown/
 *.tar.gz
 *.Rproj
 .claude/
+docs
