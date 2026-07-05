@@ -64,6 +64,7 @@ Suggests:
     readr,
     rmarkdown,
     ggplot2,
+    terra,
     tidyterra,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

@@ -25,7 +25,8 @@ This vignette illustrates how you can get altitude data for the wrapper function
 First, we illustrate the altitude data for our example dataset.
 
 ```{r libraries, message=FALSE}
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
 library(here)
 library(sf)
 library(terra)
