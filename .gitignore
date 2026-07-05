@@ -1,3 +1,11 @@
 .Rproj.user
 .Rhistory
 .posit/assistant
+.RData
+.Ruserdata
+.Rcheck/
+docs/
+pkgdown/
+*.tar.gz
+*.Rproj
+.claude/
