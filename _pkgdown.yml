@@ -32,7 +32,6 @@ reference:
   - resy_add_classification
   - resy_expert_path
   - resy_read_expert
-  - resy_write_expert
   - resy_expert_tree
   - resy_view_expert
   - resy_write_expert_html

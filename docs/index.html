@@ -16,8 +16,8 @@
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Vegetation type expert classification system">
-<meta name="description" content='A toolbox to classify plant species co-occurrence matrices, aka vegetation plot with formalised, rule based so-called "expert systems". Especially the expert system for the European Habitat Type (EUNIS), is supported. Expert systems use indicator species groups, their abundances, presence or the (relative) amount of species of an indicator group. Furthermore, header data like the geographical position can be used to identify e.g. the ecoregion, the country and if is located on a coast which is needed for the EUNIS expert system.'>
-<meta property="og:description" content='A toolbox to classify plant species co-occurrence matrices, aka vegetation plot with formalised, rule based so-called "expert systems". Especially the expert system for the European Habitat Type (EUNIS), is supported. Expert systems use indicator species groups, their abundances, presence or the (relative) amount of species of an indicator group. Furthermore, header data like the geographical position can be used to identify e.g. the ecoregion, the country and if is located on a coast which is needed for the EUNIS expert system.'>
+<meta name="description" content='A toolbox to classify plant species co-occurrence matrices, aka vegetation plots with formalised, rule based so-called "expert systems". The ideas for such rule-based assignments go back to the 1990th but the application has gained momentum with the development of an expert system for the European Habitat Type (EUNIS). This package aims at a general implementation of the expert-system logic, including tools to develop and check new expert systems. Expert systems use indicator species groups, their abundances, presence or the (relative) amount of species of an indicator group. Furthermore, header data like the geographic location can be used to identify e.g. an ecoregion, the country or if the plot is located on the coast, which is e.g. needed for the EUNIS expert system. The expert system for the plot assignment to European EUNIS habitat types is used as an example throughout the package and additional helper functions to prepare data for the EUNIS classification are included.'>
+<meta property="og:description" content='A toolbox to classify plant species co-occurrence matrices, aka vegetation plots with formalised, rule based so-called "expert systems". The ideas for such rule-based assignments go back to the 1990th but the application has gained momentum with the development of an expert system for the European Habitat Type (EUNIS). This package aims at a general implementation of the expert-system logic, including tools to develop and check new expert systems. Expert systems use indicator species groups, their abundances, presence or the (relative) amount of species of an indicator group. Furthermore, header data like the geographic location can be used to identify e.g. an ecoregion, the country or if the plot is located on the coast, which is e.g. needed for the EUNIS expert system. The expert system for the plot assignment to European EUNIS habitat types is used as an example throughout the package and additional helper functions to prepare data for the EUNIS classification are included.'>
 <meta property="og:image" content="https://loe.gitlab.uni-rostock.de/publications/r-esy/logo.png">
 </head>
 <body>
@@ -28,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">RESY</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.4.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +43,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/altitude-vignette.html">Altitude data</a></li>
+    <li><a class="dropdown-item" href="articles/EUNIS.html">RESY EUNIS habitat classifications</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -65,7 +66,7 @@
 </div>
 <!-- badges: start -->
 
-<p>The goal of RESY is to classify… The function <code><a href="reference/resy_classify.html">resy_classify()</a></code> does the classification of the vegation surveys including the sites data.</p>
+<p>The goal of RESY is to use so-called expert files to assign vegetation plots to types. The function <code><a href="reference/resy_classify.html">resy_classify()</a></code> is the core function to classify vegetation plots, which, depending on the rules need to include also site data.</p>
 <p><strong>Insert figure here. Perhaps of Europe</strong></p>
 <div class="section level2">
 <h2 id="arrow_double_down-installation">
@@ -90,7 +91,7 @@
 </h2>
 <p>We have written several vignettes to help you use the RESY R package: <br></p>
 <ul>
-<li><code><a href="articles/RESY.html">vignette("RESY")</a></code></li>
+<li><code><a href="articles/EUNIS.html">vignette("EUNIS")</a></code></li>
 <li><code>vignette("Get altitude data")</code></li>
 </ul>
 </div>
@@ -129,7 +130,7 @@
 <li>Florian Jansen <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-0331-5185" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>Markus Bauer <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-5372-4174" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 <li>Mariasole Calbi <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-6018-4022" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
-<li><a href="authors.html">More about authors...</a></li>
+<li>Gilles Collins <br><small class="roles"> Author </small>   </li>
 </ul>
 </div>
 
@@ -146,7 +147,7 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Florian Jansen, Markus Bauer, Mariasole Calbi.</p>
+  <p>Developed by Florian Jansen, Markus Bauer, Mariasole Calbi, Gilles Collins.</p>
 </div>
 
 <div class="pkgdown-footer-right">
