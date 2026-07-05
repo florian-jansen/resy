@@ -1,6 +1,6 @@
 ---
 title: "Classifying vegetation surveys with RESY"
-author: "Florian Jansen & Markus Bauer & Mariasole Calbi & Gilles Collins"
+author: "Florian Jansen & Markus Bauer & Mariasole Calbi & Gilles Colling"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
