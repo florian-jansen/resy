@@ -12,6 +12,9 @@ resy_classify(
   version = NULL,
   location = c("user", "package"),
   id_col = NULL,
+  species_col = "TaxonName",
+  by = c("canonical", "name"),
+  synonyms = NULL,
   mc = max(1L, floor(parallel::detectCores() * 0.75))
 )
 }
@@ -31,13 +34,32 @@ resy_classify(
 
 \item{id_col}{Optional name of the plot id column. If NULL, tries PlotObservationID, then PlotID.}
 
+\item{species_col}{Name of the column in `obs` holding the species name
+(default `"TaxonName"`). Only consulted when `by != "canonical"`.}
+
+\item{by}{How `species_col` is keyed. `"canonical"` (default) takes the species
+column as already-canonical ESy names and does no translation. `"name"` first
+resolves the column to canonical names via the taxonomy synonym table (see
+[resy_resolve_taxa]), accepting names from any major backbone. A name the
+expert system already knows passes through untouched; only names it lacks are
+resolved (to an expert canonical), and an unresolved taxon keeps its original
+value and is classified as an unknown species (never a best guess). What
+resolved is reported in the result's `taxon_resolution`.}
+
+\item{synonyms}{Synonym-table override passed to [resy_resolve_taxa] when
+`by = "name"`; `NULL` uses the shipped table.}
+
 \item{mc}{Number of CPU cores to use.}
 }
 \value{
-An object of class `resy_result`.
+An object of class `resy_result`. When `by != "canonical"` it also
+  carries a `taxon_resolution` summary from [resy_summarize_taxa].
 }
 \description{
 Convenience wrapper that loads an expert system (by file or by scheme/version),
 aggregates taxa, evaluates membership conditions/expressions, and returns plot
 classifications.
+}
+\seealso{
+[resy_resolve_taxa], [resy_summarize_taxa]
 }
