@@ -52,6 +52,25 @@ test_that(".resy_parse_definition_header: disabled line (---) returns NA", {
   expect_true(is.na(r$code))
 })
 
+test_that(".resy_parse_definition_header: single-space separator (non-canonical)", {
+  h <- "2 FB Beech-fir montane forest"
+  r <- RESY:::.resy_parse_definition_header(h)
+  expect_equal(r$priority,    "2")
+  expect_equal(r$code,        "FB")
+  expect_equal(r$description, "Beech-fir montane forest")
+})
+
+test_that(".resy_parse_definition_header: priority and code, no description", {
+  r1 <- RESY:::.resy_parse_definition_header("2 T")
+  expect_equal(r1$priority,    "2")
+  expect_equal(r1$code,        "T")
+  expect_equal(r1$description, "")
+
+  r2 <- RESY:::.resy_parse_definition_header("1  Wald")
+  expect_equal(r2$code,        "Wald")
+  expect_equal(r2$description, "")
+})
+
 # ---- .resy_build_parsed via resy_load_expert (JSON path) -------------------
 
 test_that("JSON parser: vegtype.formula.names.short correct for short codes", {

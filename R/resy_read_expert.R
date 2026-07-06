@@ -282,32 +282,29 @@ resy_read_expert <- function(file, entries = TRUE) {
 #   chars 12-16: vegetation-type code (5 characters, space-padded if shorter)
 #   chars 17+  : full name / description (preceded by a space)
 #
-# In practice the code field may be shorter than 5 characters (e.g. "BF" for a
-# 2-character code) and may or may not be space-padded.  To handle both cases
-# robustly, when the standard priority+spaces prefix is present we extract the
-# code as the first whitespace-delimited token starting at column 12 rather
-# than reading a fixed 5-character window.  The regex fallback covers lines
-# that lack the standard prefix.
+# The fields are separated by whitespace but the widths vary in practice: a code
+# may be shorter than five characters, may or may not be space-padded, and a
+# system may separate the fields with a single space rather than the canonical
+# ten. Splitting by token rather than by fixed column handles all of these: a
+# one-character priority, whitespace, the code (one token), whitespace, the
+# description. A header carrying only a priority and code (no description) keeps
+# its code; anything that does not begin with a priority character resolves to
+# NA fields.
 .resy_parse_definition_header <- function(header) {
-  if (grepl("^[0-9A-Za-z] {10}\\S", header, perl = TRUE)) {
-    rest <- substr(header, 12L, nchar(header))
-    code <- sub("^(\\S+).*$", "\\1", rest)
-    description <- trimws(sub("^\\S+\\s*", "", rest))
-    return(list(
-      priority    = substr(header, 1L, 1L),
-      code        = code,
-      description = description
-    ))
-  }
   m <- regmatches(header,
-                  regexec("^([0-9A-Za-z])\\s{2,}(\\S+)\\s+(.+?)\\s*$",
+                  regexec("^([0-9A-Za-z])\\s+(\\S+)\\s+(.*?)\\s*$",
                           header, perl = TRUE))[[1]]
   if (length(m) >= 4L) {
-    list(priority = m[2L], code = m[3L], description = m[4L])
-  } else {
-    list(priority = NA_character_, code = NA_character_,
-         description = trimws(header))
+    return(list(priority = m[2L], code = m[3L], description = m[4L]))
   }
+  m <- regmatches(header,
+                  regexec("^([0-9A-Za-z])\\s+(\\S+)\\s*$",
+                          header, perl = TRUE))[[1]]
+  if (length(m) >= 3L) {
+    return(list(priority = m[2L], code = m[3L], description = ""))
+  }
+  list(priority = NA_character_, code = NA_character_,
+       description = trimws(header))
 }
 
 # --- Section 4: Similarity --------------------------------------------------
