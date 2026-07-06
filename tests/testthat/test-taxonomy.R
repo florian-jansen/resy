@@ -83,7 +83,7 @@ test_that("summarize_taxa counts resolution and lists unresolved inputs", {
   expect_error(resy_summarize_taxa(data.frame(x = 1)), "taxon_confidence")
 })
 
-test_that("classify by = 'name' never corrupts names the expert already knows", {
+test_that("classify resolves taxa automatically and never corrupts known names", {
   expert <- resy_expert_path("EUNIS", "2025-10-03", "json", mustWork = FALSE)
   skip_if(is.na(expert) || !file.exists(expert), "EUNIS expert not installed")
   sp_path <- system.file("extdata", "data_example_species.csv", package = "RESY")
@@ -107,18 +107,15 @@ test_that("classify by = 'name' never corrupts names the expert already knows", 
   expect_true(all(res$canonical[known] == res$TaxonName[known]))
   expect_true(all(res$taxon_confidence[known] == "exact"))
 
-  # Causality: by = "name" changes the classification only on plots where a name
-  # was actually resolved; every other plot is byte-identical to the canonical path.
-  remapped <- unique(as.character(
-    res$PlotObservationID[res$taxon_confidence == "synonym"]))
-  base <- resy_classify(obs, header, expertfile = expert)
-  vianame <- resy_classify(obs, header, expertfile = expert,
-                           species_col = "TaxonName", by = "name")
-  b <- base$result.classification; v <- vianame$result.classification
-  keep <- setdiff(names(b), remapped)
-  expect_equal(b[keep], v[keep])
+  # Classification resolves names automatically and reports what it did.
+  cl <- resy_classify(obs, header, expertfile = expert)
+  expect_type(cl$taxon_resolution, "list")
+  expect_equal(cl$taxon_resolution$n, nrow(obs))
 
-  expect_null(base$taxon_resolution)
-  expect_type(vianame$taxon_resolution, "list")
-  expect_equal(vianame$taxon_resolution$n, nrow(obs))
+  # Consistency: feeding names that are already resolved classifies identically,
+  # so the automatic resolution matches an explicit pre-resolution (idempotent).
+  obs_pre <- obs
+  obs_pre$TaxonName <- ifelse(is.na(res$canonical), obs$TaxonName, res$canonical)
+  cl_pre <- resy_classify(obs_pre, header, expertfile = expert)
+  expect_equal(cl$result.classification, cl_pre$result.classification)
 })

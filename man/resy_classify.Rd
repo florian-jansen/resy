@@ -13,14 +13,13 @@ resy_classify(
   location = c("user", "package"),
   id_col = NULL,
   species_col = "TaxonName",
-  by = c("canonical", "name"),
   synonyms = NULL,
   mc = max(1L, floor(parallel::detectCores() * 0.75))
 )
 }
 \arguments{
 \item{obs}{Observations as `data.table` with at least columns describing plot id,
-`TaxonName`, and `Cover_Perc`.}
+the species name (see `species_col`), and `Cover_Perc`.}
 
 \item{header}{Plot header data.frame; required for evaluating $$C/$$N.}
 
@@ -35,30 +34,30 @@ resy_classify(
 \item{id_col}{Optional name of the plot id column. If NULL, tries PlotObservationID, then PlotID.}
 
 \item{species_col}{Name of the column in `obs` holding the species name
-(default `"TaxonName"`). Only consulted when `by != "canonical"`.}
+(default `"TaxonName"`). Resolved names are written back to `TaxonName`.}
 
-\item{by}{How `species_col` is keyed. `"canonical"` (default) takes the species
-column as already-canonical ESy names and does no translation. `"name"` first
-resolves the column to canonical names via the taxonomy synonym table (see
-[resy_resolve_taxa]), accepting names from any major backbone. A name the
-expert system already knows passes through untouched; only names it lacks are
-resolved (to an expert canonical), and an unresolved taxon keeps its original
-value and is classified as an unknown species (never a best guess). What
-resolved is reported in the result's `taxon_resolution`.}
-
-\item{synonyms}{Synonym-table override passed to [resy_resolve_taxa] when
-`by = "name"`; `NULL` uses the shipped table.}
+\item{synonyms}{Synonym-table override passed to [resy_resolve_taxa];
+`NULL` uses the shipped table.}
 
 \item{mc}{Number of CPU cores to use.}
 }
 \value{
-An object of class `resy_result`. When `by != "canonical"` it also
-  carries a `taxon_resolution` summary from [resy_summarize_taxa].
+An object of class `resy_result`, carrying a `taxon_resolution`
+summary from [resy_summarize_taxa].
 }
 \description{
-Convenience wrapper that loads an expert system (by file or by scheme/version),
-aggregates taxa, evaluates membership conditions/expressions, and returns plot
-classifications.
+Loads an expert system (by file or by scheme/version), resolves the species
+names in `obs` to the expert's vocabulary, aggregates taxa, evaluates the
+membership conditions, and returns plot classifications.
+
+Name resolution runs automatically. A name the expert system already knows is
+kept as is; a name it does not know is looked up in the taxonomy synonym table
+(see [resy_resolve_taxa]) and translated to an expert canonical name, so plot
+data keyed on any major backbone (GBIF, WFO, POWO, Euro+Med, national
+checklists) can be classified without manual harmonisation. A name that cannot
+be resolved keeps its original value and is classified as an unknown species,
+never a best guess. Data already in the expert's names is unaffected. What was
+resolved is reported in the result's `taxon_resolution`.
 }
 \seealso{
 [resy_resolve_taxa], [resy_summarize_taxa]
