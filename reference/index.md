@@ -4,8 +4,6 @@
 
 - [`dunes_bohn_500mbuffer_epsg25832`](https://florian-jansen.github.io/resy/reference/bohn.md)
   : Bohn dune layer with 500 m buffer (EPSG:25832)
-- [`dunes_bohn_500mbuffer_25832`](https://florian-jansen.github.io/resy/reference/bohn_25832.md)
-  : Bohn dune layer (unprojected)
 - [`coastline_regions_epsg25832`](https://florian-jansen.github.io/resy/reference/co.md)
   : EEA coastline regions of Europe (EPSG:25832)
 - [`ecoregions2017_epsg25832`](https://florian-jansen.github.io/resy/reference/ecoregions2017_epsg25832.md)
