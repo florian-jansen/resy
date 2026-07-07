@@ -10,11 +10,15 @@
 #' \code{s.lat.}) stand alone and are kept in place, including when they trail a
 #' name with no following epithet (\code{"Taraxacum officinale agg."}) or follow
 #' an infraspecific epithet (\code{"Aconitum napellus subsp. firmum s.l."}).
-#' A \code{sensu ...} concept qualifier and everything after it is dropped, to
-#' match the bare aggregate form the expert system uses as its canonical name.
-#' The hybrid sign (ASCII \code{x} or the multiplication sign) is kept, both for
-#' a nothospecies (\code{"Salix x rubens"}) and for a hybrid formula joining two
-#' taxa (\code{"Betula pendula x pubescens"},
+#' The \code{sensu lato} and \code{sensu stricto} qualifiers (in any of the
+#' forms \code{s.l.}, \code{s. l.}, \code{sens. lat.}, \code{sensu lato}, and the
+#' \code{stricto} equivalents) are normalised to \code{s.l.} / \code{s.str.} and
+#' kept; a \code{sensu <author>} concept attribution (for example
+#' \code{"aggr. sensu Buser"}) is dropped, to match the bare form the expert
+#' system uses as its canonical name. The hybrid sign (ASCII \code{x} or the
+#' multiplication sign) is kept: for a nothospecies (\code{"Salix x rubens"}), a
+#' leading nothogenus (\code{"x Ammocalamagrostis baltica"}), and a hybrid
+#' formula joining two taxa (\code{"Betula pendula x pubescens"},
 #' \code{"Elytrigia repens x Leymus arenarius"}), so a hybrid is never collapsed
 #' onto one of its parents. Names with fewer than two words are returned
 #' unchanged.
@@ -47,6 +51,11 @@ resy_clean_names <- function(x) {
   vapply(x, function(nm) {
     if (is.na(nm)) return(NA_character_)
     nm <- trimws(nm)
+    # Normalise sensu-lato / sensu-stricto qualifiers to the compact marker so
+    # they are kept, not dropped as a sensu-concept ("sens. lat." -> "s.l.",
+    # "sensu stricto" -> "s.str.").
+    nm <- gsub("\\bsens(?:u|\\.)?\\s+lat(?:o|\\.)",    "s.l.",   nm, perl = TRUE, ignore.case = TRUE)
+    nm <- gsub("\\bsens(?:u|\\.)?\\s+str(?:icto|\\.)", "s.str.", nm, perl = TRUE, ignore.case = TRUE)
     # Collapse spaced sensu-lato abbreviations so they survive tokenisation as
     # a single marker ("s. l." -> "s.l.").
     nm <- gsub("\\bs\\.\\s+l\\.",   "s.l.",   nm, perl = TRUE)
@@ -56,9 +65,10 @@ resy_clean_names <- function(x) {
     if (length(w) < 2L) return(nm)
 
     n <- length(w)
-    # Nothospecies with the hybrid sign between genus and epithet
-    # ("Salix x rubens"): the epithet is the third token.
-    if (n >= 3L && w[2L] %in% hybrid_marks) {
+    # Establish the core genus + epithet, keeping the hybrid sign whether it is
+    # a leading nothogenus sign ("x Ammocalamagrostis baltica") or sits between
+    # genus and epithet in a nothospecies ("Salix x rubens").
+    if (n >= 3L && (w[1L] %in% hybrid_marks || w[2L] %in% hybrid_marks)) {
       out <- w[1:3]
       i <- 4L
     } else {

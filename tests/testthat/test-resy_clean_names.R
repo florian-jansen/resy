@@ -40,10 +40,27 @@ test_that("clean_names strips authors but keeps ranks and aggregate markers", {
   expect_equal(resy_clean_names("Aconitum napellus subsp. firmum s.l."),
                "Aconitum napellus subsp. firmum s.l.")
 
-  # A sensu-concept qualifier is dropped, the aggregate form is kept -- matches
-  # the bare canonical the expert system uses.
+  # A sensu-<author> concept attribution is dropped, the aggregate form is kept
+  # -- matches the bare canonical the expert system uses.
   expect_equal(resy_clean_names("Alchemilla vulgaris aggr. sensu Buser"),
                "Alchemilla vulgaris aggr.")
+
+  # sensu lato / stricto are qualifiers, not author attributions: normalise to
+  # the compact marker and keep them (they must not be dropped).
+  expect_equal(resy_clean_names("Aconitum napellus sens. lat."),
+               "Aconitum napellus s.l.")
+  expect_equal(resy_clean_names("Achillea millefolium sens. str."),
+               "Achillea millefolium s.str.")
+  expect_equal(resy_clean_names("Agrostis canina sensu lato"),
+               "Agrostis canina s.l.")
+  expect_equal(resy_clean_names("Festuca ovina sensu stricto"),
+               "Festuca ovina s.str.")
+
+  # Leading nothogenus sign as a separate token: the epithet must survive.
+  expect_equal(resy_clean_names("x Ammocalamagrostis baltica"),
+               "x Ammocalamagrostis baltica")
+  expect_equal(resy_clean_names("x Triticosecale rimpaui Wittm."),
+               "x Triticosecale rimpaui")
 
   # Hybrid sign between genus and epithet: the epithet must survive, not be
   # dropped as an author (matches canonical "Mentha x verticillata aggr.").
