@@ -25,11 +25,15 @@ kept together with their epithet. Aggregate and collective markers
 \code{s.lat.}) stand alone and are kept in place, including when they trail a
 name with no following epithet (\code{"Taraxacum officinale agg."}) or follow
 an infraspecific epithet (\code{"Aconitum napellus subsp. firmum s.l."}).
-A \code{sensu ...} concept qualifier and everything after it is dropped, to
-match the bare aggregate form the expert system uses as its canonical name.
-The hybrid sign (ASCII \code{x} or the multiplication sign) is kept, both for
-a nothospecies (\code{"Salix x rubens"}) and for a hybrid formula joining two
-taxa (\code{"Betula pendula x pubescens"},
+The \code{sensu lato} and \code{sensu stricto} qualifiers (in any of the
+forms \code{s.l.}, \code{s. l.}, \code{sens. lat.}, \code{sensu lato}, and the
+\code{stricto} equivalents) are normalised to \code{s.l.} / \code{s.str.} and
+kept; a \code{sensu <author>} concept attribution (for example
+\code{"aggr. sensu Buser"}) is dropped, to match the bare form the expert
+system uses as its canonical name. The hybrid sign (ASCII \code{x} or the
+multiplication sign) is kept: for a nothospecies (\code{"Salix x rubens"}), a
+leading nothogenus (\code{"x Ammocalamagrostis baltica"}), and a hybrid
+formula joining two taxa (\code{"Betula pendula x pubescens"},
 \code{"Elytrigia repens x Leymus arenarius"}), so a hybrid is never collapsed
 onto one of its parents. Names with fewer than two words are returned
 unchanged.
