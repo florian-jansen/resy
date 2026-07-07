@@ -12,20 +12,36 @@ citations (for example \code{"Fagus sylvatica L."}).}
 }
 \value{
 A character vector the same length as \code{x} with author citations
-  removed. \code{NA} values are preserved.
+  removed and taxonomic structure preserved. \code{NA} values are preserved.
 }
 \description{
-Strips author citations from scientific plant names while keeping
-infraspecific ranks (\code{subsp.}, \code{var.}, \code{f.}, ...), so that
-names from different taxonomic backbones resolve against the canonical names
-and synonyms of an expert system. The genus and species epithet are always
-kept; when an infraspecific rank marker is present, the marker and its
-epithet are kept too. Names with fewer than two words are returned unchanged.
+Strips author citations from scientific plant names while keeping the
+taxonomic structure that expert-system names depend on, so that names from
+different taxonomic backbones resolve against the canonical names and
+synonyms of an expert system. The genus and species epithet are always kept.
+Infraspecific rank markers (\code{subsp.}, \code{var.}, \code{f.}, ...) are
+kept together with their epithet. Aggregate and collective markers
+(\code{agg.}, \code{aggr.}, \code{coll.}, \code{s.l.}, \code{s.str.},
+\code{s.lat.}) stand alone and are kept in place, including when they trail a
+name with no following epithet (\code{"Taraxacum officinale agg."}) or follow
+an infraspecific epithet (\code{"Aconitum napellus subsp. firmum s.l."}).
+A \code{sensu ...} concept qualifier and everything after it is dropped, to
+match the bare aggregate form the expert system uses as its canonical name.
+The hybrid sign (ASCII \code{x} or the multiplication sign) is kept, both for
+a nothospecies (\code{"Salix x rubens"}) and for a hybrid formula joining two
+taxa (\code{"Betula pendula x pubescens"},
+\code{"Elytrigia repens x Leymus arenarius"}), so a hybrid is never collapsed
+onto one of its parents. Names with fewer than two words are returned
+unchanged.
 }
 \examples{
 resy_clean_names(c(
   "Fagus sylvatica L.",
   "Epipactis helleborine (L.) Crantz subsp. helleborine",
-  "Senecio ovatus (G.Gaertn., B.Mey. & Scherb.) Willd."
+  "Senecio ovatus (G.Gaertn., B.Mey. & Scherb.) Willd.",
+  "Taraxacum officinale agg.",
+  "Festuca ovina s. l.",
+  "Alchemilla vulgaris aggr. sensu Buser",
+  "Mentha x verticillata aggr."
 ))
 }

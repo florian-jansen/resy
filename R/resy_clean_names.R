@@ -1,32 +1,94 @@
 #' Remove taxonomic authorities from scientific names
 #'
-#' Strips author citations from scientific plant names while keeping
-#' infraspecific ranks (\code{subsp.}, \code{var.}, \code{f.}, ...), so that
-#' names from different taxonomic backbones resolve against the canonical names
-#' and synonyms of an expert system. The genus and species epithet are always
-#' kept; when an infraspecific rank marker is present, the marker and its
-#' epithet are kept too. Names with fewer than two words are returned unchanged.
+#' Strips author citations from scientific plant names while keeping the
+#' taxonomic structure that expert-system names depend on, so that names from
+#' different taxonomic backbones resolve against the canonical names and
+#' synonyms of an expert system. The genus and species epithet are always kept.
+#' Infraspecific rank markers (\code{subsp.}, \code{var.}, \code{f.}, ...) are
+#' kept together with their epithet. Aggregate and collective markers
+#' (\code{agg.}, \code{aggr.}, \code{coll.}, \code{s.l.}, \code{s.str.},
+#' \code{s.lat.}) stand alone and are kept in place, including when they trail a
+#' name with no following epithet (\code{"Taraxacum officinale agg."}) or follow
+#' an infraspecific epithet (\code{"Aconitum napellus subsp. firmum s.l."}).
+#' A \code{sensu ...} concept qualifier and everything after it is dropped, to
+#' match the bare aggregate form the expert system uses as its canonical name.
+#' The hybrid sign (ASCII \code{x} or the multiplication sign) is kept, both for
+#' a nothospecies (\code{"Salix x rubens"}) and for a hybrid formula joining two
+#' taxa (\code{"Betula pendula x pubescens"},
+#' \code{"Elytrigia repens x Leymus arenarius"}), so a hybrid is never collapsed
+#' onto one of its parents. Names with fewer than two words are returned
+#' unchanged.
 #'
 #' @param x A character vector of scientific names, optionally carrying author
 #'   citations (for example \code{"Fagus sylvatica L."}).
 #' @return A character vector the same length as \code{x} with author citations
-#'   removed. \code{NA} values are preserved.
+#'   removed and taxonomic structure preserved. \code{NA} values are preserved.
 #' @examples
 #' resy_clean_names(c(
 #'   "Fagus sylvatica L.",
 #'   "Epipactis helleborine (L.) Crantz subsp. helleborine",
-#'   "Senecio ovatus (G.Gaertn., B.Mey. & Scherb.) Willd."
+#'   "Senecio ovatus (G.Gaertn., B.Mey. & Scherb.) Willd.",
+#'   "Taraxacum officinale agg.",
+#'   "Festuca ovina s. l.",
+#'   "Alchemilla vulgaris aggr. sensu Buser",
+#'   "Mentha x verticillata aggr."
 #' ))
 #' @export
 resy_clean_names <- function(x) {
-  ranks <- c("subsp.", "nothosubsp.", "nssp.", "var.", "f.", "cv.", "agg.")
+  # Infraspecific rank markers are followed by an epithet and kept with it.
+  infra_ranks <- c("subsp.", "nothosubsp.", "nssp.", "var.", "f.", "cv.")
+  # Aggregate and collective markers stand alone, denote a broader taxon
+  # concept, and are kept as-is (usually terminal, sometimes after an epithet).
+  agg_markers <- c("agg.", "aggr.", "coll.", "s.l.", "s.str.", "s.lat.")
+  # Botanical hybrid sign: ASCII "x" or the multiplication sign (built with
+  # intToUtf8 to keep this source file ASCII-only).
+  hybrid_marks <- c("x", intToUtf8(215L))
+
   vapply(x, function(nm) {
     if (is.na(nm)) return(NA_character_)
-    w <- strsplit(trimws(nm), "\\s+")[[1]]
+    nm <- trimws(nm)
+    # Collapse spaced sensu-lato abbreviations so they survive tokenisation as
+    # a single marker ("s. l." -> "s.l.").
+    nm <- gsub("\\bs\\.\\s+l\\.",   "s.l.",   nm, perl = TRUE)
+    nm <- gsub("\\bs\\.\\s+lat\\.", "s.lat.", nm, perl = TRUE)
+    nm <- gsub("\\bs\\.\\s+str\\.", "s.str.", nm, perl = TRUE)
+    w <- strsplit(nm, "\\s+")[[1]]
     if (length(w) < 2L) return(nm)
-    out <- w[1:2]
-    ri <- which(w %in% ranks)
-    if (length(ri) && ri[1] < length(w)) out <- c(out, w[ri[1]], w[ri[1] + 1L])
+
+    n <- length(w)
+    # Nothospecies with the hybrid sign between genus and epithet
+    # ("Salix x rubens"): the epithet is the third token.
+    if (n >= 3L && w[2L] %in% hybrid_marks) {
+      out <- w[1:3]
+      i <- 4L
+    } else {
+      out <- w[1:2]
+      i <- 3L
+    }
+    while (i <= n) {
+      if (w[i] %in% infra_ranks && i < n) {
+        out <- c(out, w[i], w[i + 1L])
+        i <- i + 2L
+      } else if (w[i] %in% agg_markers) {
+        out <- c(out, w[i])
+        i <- i + 1L
+      } else if (w[i] %in% hybrid_marks && i < n) {
+        # Hybrid formula connector joining a second taxon
+        # ("Betula pendula x pubescens", "Elytrigia repens x Leymus arenarius").
+        # An upper-case token after the sign is a second genus (keep it plus its
+        # epithet); a lower-case token is a partner epithet of the same genus.
+        if (grepl("^[A-Z]", w[i + 1L]) && i + 1L < n) {
+          out <- c(out, w[i], w[i + 1L], w[i + 2L])
+          i <- i + 3L
+        } else {
+          out <- c(out, w[i], w[i + 1L])
+          i <- i + 2L
+        }
+      } else {
+        # Author citation or sensu-concept token: drop it.
+        i <- i + 1L
+      }
+    }
     paste(out, collapse = " ")
   }, character(1), USE.NAMES = FALSE)
 }
