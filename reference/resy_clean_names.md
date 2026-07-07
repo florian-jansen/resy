@@ -9,12 +9,16 @@ are kept together with their epithet. Aggregate and collective markers
 (`agg.`, `aggr.`, `coll.`, `s.l.`, `s.str.`, `s.lat.`) stand alone and
 are kept in place, including when they trail a name with no following
 epithet (`"Taraxacum officinale agg."`) or follow an infraspecific
-epithet (`"Aconitum napellus subsp. firmum s.l."`). A `sensu ...`
-concept qualifier and everything after it is dropped, to match the bare
-aggregate form the expert system uses as its canonical name. The hybrid
-sign (ASCII `x` or the multiplication sign) is kept, both for a
-nothospecies (`"Salix x rubens"`) and for a hybrid formula joining two
-taxa (`"Betula pendula x pubescens"`,
+epithet (`"Aconitum napellus subsp. firmum s.l."`). The `sensu lato` and
+`sensu stricto` qualifiers (in any of the forms `s.l.`, `s. l.`,
+`sens. lat.`, `sensu lato`, and the `stricto` equivalents) are
+normalised to `s.l.` / `s.str.` and kept; a `sensu <author>` concept
+attribution (for example `"aggr. sensu Buser"`) is dropped, to match the
+bare form the expert system uses as its canonical name. The hybrid sign
+(ASCII `x` or the multiplication sign) is kept: for a nothospecies
+(`"Salix x rubens"`), a leading nothogenus
+(`"x Ammocalamagrostis baltica"`), and a hybrid formula joining two taxa
+(`"Betula pendula x pubescens"`,
 `"Elytrigia repens x Leymus arenarius"`), so a hybrid is never collapsed
 onto one of its parents. Names with fewer than two words are returned
 unchanged.
