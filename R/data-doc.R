@@ -7,15 +7,6 @@
 #' @usage data(dunes_bohn_500mbuffer_epsg25832)
 "bohn"
 
-#' Bohn dune layer (unprojected)
-#'
-#' Coastal dune regions from Udo Bohn in Projection EPSG:25832.
-#'
-#' @format An `sf` object.
-#' @source source?
-#' @usage data(dunes_bohn_500mbuffer_25832)
-"bohn_25832"
-
 #' EEA coastline regions of Europe (EPSG:25832)
 #'
 #' Coastline regions from the European Environment Agency in Projection EPSG:25832.

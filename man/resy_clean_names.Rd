@@ -11,8 +11,8 @@ resy_clean_names(x)
 citations (for example \code{"Fagus sylvatica L."}).}
 }
 \value{
-A character vector the same length as \code{x} with author citations removed.
-\code{NA} values are preserved.
+A character vector the same length as \code{x} with author citations
+  removed. \code{NA} values are preserved.
 }
 \description{
 Strips author citations from scientific plant names while keeping
