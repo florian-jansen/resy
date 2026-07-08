@@ -20,14 +20,16 @@ taxonomic structure that expert-system names depend on, so that names from
 different taxonomic backbones resolve against the canonical names and
 synonyms of an expert system. The genus and species epithet are always kept.
 Infraspecific rank markers (\code{subsp.}, \code{var.}, \code{f.}, ...) are
-kept together with their epithet. Aggregate and collective markers
+kept together with their epithet, and the \code{ssp.} abbreviation is
+normalised to \code{subsp.}. Aggregate and collective markers
 (\code{agg.}, \code{aggr.}, \code{coll.}, \code{s.l.}, \code{s.str.},
 \code{s.lat.}) stand alone and are kept in place, including when they trail a
 name with no following epithet (\code{"Taraxacum officinale agg."}) or follow
 an infraspecific epithet (\code{"Aconitum napellus subsp. firmum s.l."}).
 The \code{sensu lato} and \code{sensu stricto} qualifiers (in any of the
-forms \code{s.l.}, \code{s. l.}, \code{sens. lat.}, \code{sensu lato}, and the
-\code{stricto} equivalents) are normalised to \code{s.l.} / \code{s.str.} and
+forms \code{s.l.}, \code{s. l.}, \code{sens. lat.}, \code{sensu lato}, the
+\code{stricto} equivalents, and the compact \code{s.s.}) are normalised to
+\code{s.l.} / \code{s.str.} and
 kept; a \code{sensu <author>} concept attribution (for example
 \code{"aggr. sensu Buser"}) is dropped, to match the bare form the expert
 system uses as its canonical name. The hybrid sign (ASCII \code{x} or the
