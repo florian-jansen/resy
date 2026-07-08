@@ -40,6 +40,17 @@ test_that("clean_names strips authors but keeps ranks and aggregate markers", {
   expect_equal(resy_clean_names("Aconitum napellus subsp. firmum s.l."),
                "Aconitum napellus subsp. firmum s.l.")
 
+  # "ssp." is the subspecies rank abbreviation: normalise to "subsp." and keep
+  # the epithet, which was dropped when only "subsp." was recognised.
+  expect_equal(resy_clean_names("Armeria maritima ssp. elongata"),
+               "Armeria maritima subsp. elongata")
+
+  # "s.s." / "s. s." is sensu stricto: normalise to the compact "s.str." marker.
+  expect_equal(resy_clean_names("Angelica archangelica s.s."),
+               "Angelica archangelica s.str.")
+  expect_equal(resy_clean_names("Cardaminopsis arenosa s. s."),
+               "Cardaminopsis arenosa s.str.")
+
   # A sensu-<author> concept attribution is dropped, the aggregate form is kept
   # -- matches the bare canonical the expert system uses.
   expect_equal(resy_clean_names("Alchemilla vulgaris aggr. sensu Buser"),
