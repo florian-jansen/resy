@@ -1,6 +1,6 @@
 ---
 title: "Classifying vegetation surveys with RESY"
-author: "Florian Jansen & Markus Bauer & Mariasole Calbi & Gilles Colling"
+author: "Florian Jansen, Markus Bauer, Mariasole Calbi & Gilles Colling"
 date: "`r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
@@ -30,7 +30,7 @@ The package can work with any ESy-compliant classification. This vignette uses
 two bundled systems:
 
 - **EUNIS** (European Nature Information System habitat types;
-  [FloraVeg.EU](https://floraveg.eu/))
+  [FloraVeg.EU](https://floraveg.eu/habitat/))
 - **Apennine-test** (a simplified test system for the Italian Apennines)
 
 For EUNIS specifically, many formulas also require geographic columns

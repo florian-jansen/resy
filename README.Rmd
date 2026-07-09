@@ -38,7 +38,7 @@ RESY is still under active development. You can install the development version 
 ``` r
 # install.packages("devtools")
 remotes::install_github(
-   "https://gitlab.uni-rostock.de/loe/publications/r-esy",
+   "https://github.com/florian-jansen/resy",
    dependencies = TRUE
    )
 library(RESY)
@@ -49,7 +49,7 @@ library(RESY)
 We have written several vignettes to help you use the RESY R package: <br>
 
 - `vignette("RESY")`
-- `vignette("Get altitude data")`
+- `vignette("Altitude data")`
 
 ## :desktop_computer: Functions
 

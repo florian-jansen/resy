@@ -23,53 +23,75 @@
 #' @export
 resy_check_data <- function(data, source_crs) {
 
-  # Coordinates / CRS ----
+  # 1 Coordinates / CRS ----
+  
   data_sf <- .resy_check_coordinates(data = data, source_crs = source_crs)
 
   if (anyNA(data_sf$geometry))
     warning("Some sites have missing coordinates.")
 
-  # PlotObservationID ----
+  # 2 PlotObservationID ----
+  
   if (!rlang::has_name(data_sf, "PlotObservationID"))
     stop('The column "PlotObservationID" is missing. Please insert or rename your plot ID column.')
 
-  # Altitude ----
+  # 3 Altitude ----
+  
   if (rlang::has_name(data_sf, "Altitude (m)")) {
+    
     if (anyNA(data_sf$`Altitude (m)`))
       warning('NAs in "Altitude (m)". See mapsforeurope.org for a raster source.')
+    
   } else {
+    
     warning('The column "Altitude (m)" is missing. See mapsforeurope.org for a raster source.')
+    
   }
 
-  # Coast_EEA ----
+  # 4 Coast_EEA ----
+  
   if (!rlang::has_name(data_sf, "Coast_EEA"))
     warning('The column "Coast_EEA" is missing.')
 
-  # Dunes_Bohn ----
+  # 5 Dunes_Bohn ----
+  
   if (!rlang::has_name(data_sf, "Dunes_Bohn"))
     warning('The column "Dunes_Bohn" is missing.')
 
-  # Ecoreg ----
+  # 6 Ecoreg ----
+  
   if (rlang::has_name(data_sf, "Ecoreg")) {
+    
     if (anyNA(data_sf$Ecoreg))
       warning('NAs in "Ecoreg" from provided data.')
+    
   } else {
+    
     data_sf <- .resy_assign_ecoregions(data_sf)
+    
     if (anyNA(data_sf$Ecoreg))
       warning('NAs in "Ecoreg": some sites could not be matched to an ecoregion.')
+    
   }
 
-  # Country ----
+  # 7 Country ----
+  
   if (rlang::has_name(data_sf, "Country")) {
+    
     if (anyNA(data_sf$Country))
       warning('NAs in "Country" from provided data.')
+    
   } else {
+    
     data_sf <- .resy_assign_country(data_sf)
+    
     if (anyNA(data_sf$Country))
       warning('NAs in "Country": some sites could not be matched to a country.')
+    
   }
 
-  # Column order ----
+  # 8 Column order ----
+  
   data_sf |>
     dplyr::select(
       tidyselect::any_of(c(
@@ -78,4 +100,5 @@ resy_check_data <- function(data, source_crs) {
       )),
       tidyselect::everything()
     )
+  
 }
