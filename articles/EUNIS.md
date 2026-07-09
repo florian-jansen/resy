@@ -134,11 +134,10 @@ outcome <- RESY::resy_harmonize_eunis(
    coast_buffer = 5000
    )
 #> Warning in RESY::resy_harmonize_eunis(data = data_sites, source_crs = 25832, :
-#> "Altitude (m)" is missing. See mapsforeurope.org for a raster source.
+#> "Altitude (m)" is missing. See vignette "Altitude data" and mapsforeurope.org
+#> for a raster source.
 #> Warning in RESY::resy_harmonize_eunis(data = data_sites, source_crs = 25832, :
 #> NA values in "Ecoreg": some sites are outside the ecoregion base map.
-#> Warning in RESY::resy_harmonize_eunis(data = data_sites, source_crs = 25832, :
-#> NA values in "Country": some sites are outside the country base map.
 #> Warning: attribute variables are assumed to be spatially constant throughout
 #> all geometries
 #> Warning: attribute variables are assumed to be spatially constant throughout
@@ -165,16 +164,16 @@ outcome_sites
 #> # A tibble: 200 × 9
 #>    PlotObservationID Coast_EEA Dunes_Bohn Ecoreg Ecoreg_name  Country Country_ID
 #>    <chr>             <chr>     <chr>       <dbl> <chr>        <chr>   <chr>     
-#>  1 JZ37              N_COAST   N_DUNES       795 Italian scl… Italy   IT        
-#>  2 FR49              N_COAST   N_DUNES       795 Italian scl… Italy   IT        
-#>  3 PT45              N_COAST   N_DUNES       795 Italian scl… Italy   IT        
-#>  4 ZH63              N_COAST   N_DUNES       795 Italian scl… Italy   IT        
-#>  5 TF93              N_COAST   N_DUNES       644 Appenine de… Italy   IT        
-#>  6 KG68              N_COAST   N_DUNES       644 Appenine de… Italy   IT        
-#>  7 QJ27              N_COAST   N_DUNES       644 Appenine de… Italy   IT        
-#>  8 JN90              N_COAST   N_DUNES       644 Appenine de… Italy   IT        
-#>  9 ZM18              N_COAST   N_DUNES       644 Appenine de… Italy   IT        
-#> 10 BQ20              N_COAST   N_DUNES       644 Appenine de… Italy   IT        
+#>  1 JZ37              N_COAST   N_DUNES       795 Italian scl… Italia  IT        
+#>  2 FR49              N_COAST   N_DUNES       795 Italian scl… Italia  IT        
+#>  3 PT45              N_COAST   N_DUNES       795 Italian scl… Italia  IT        
+#>  4 ZH63              N_COAST   N_DUNES       795 Italian scl… Italia  IT        
+#>  5 TF93              N_COAST   N_DUNES       644 Appenine de… Italia  IT        
+#>  6 KG68              N_COAST   N_DUNES       644 Appenine de… Italia  IT        
+#>  7 QJ27              N_COAST   N_DUNES       644 Appenine de… Italia  IT        
+#>  8 JN90              N_COAST   N_DUNES       644 Appenine de… Italia  IT        
+#>  9 ZM18              N_COAST   N_DUNES       644 Appenine de… Italia  IT        
+#> 10 BQ20              N_COAST   N_DUNES       644 Appenine de… Italia  IT        
 #> # ℹ 190 more rows
 #> # ℹ 2 more variables: Longitude <dbl>, Latitude <dbl>
 ```
@@ -191,16 +190,16 @@ outcome_sites |>
 #> # A tibble: 23 × 9
 #>    PlotObservationID Coast_EEA Dunes_Bohn Ecoreg Ecoreg_name Country Country_ID
 #>    <chr>             <chr>     <chr>       <dbl> <chr>       <chr>   <chr>     
-#>  1 OR48              MED_COAST N_DUNES        NA NA          NA      NA        
-#>  2 EQ56              MED_COAST N_DUNES        NA NA          NA      NA        
-#>  3 IS69              MED_COAST N_DUNES        NA NA          NA      NA        
-#>  4 JP48              MED_COAST N_DUNES        NA NA          NA      NA        
-#>  5 MF17              MED_COAST N_DUNES        NA NA          NA      NA        
-#>  6 SA50              MED_COAST N_DUNES        NA NA          NA      NA        
-#>  7 DR59              MED_COAST N_DUNES        NA NA          NA      NA        
-#>  8 QI21              MED_COAST N_DUNES        NA NA          NA      NA        
-#>  9 PK58              MED_COAST N_DUNES        NA NA          NA      NA        
-#> 10 OY37              MED_COAST N_DUNES        NA NA          NA      NA        
+#>  1 OR48              MED_COAST N_DUNES        NA NA          Italia  IT        
+#>  2 EQ56              MED_COAST N_DUNES        NA NA          Italia  IT        
+#>  3 IS69              MED_COAST N_DUNES        NA NA          Italia  IT        
+#>  4 JP48              MED_COAST N_DUNES        NA NA          Italia  IT        
+#>  5 MF17              MED_COAST N_DUNES        NA NA          Italia  IT        
+#>  6 SA50              MED_COAST N_DUNES        NA NA          Italia  IT        
+#>  7 DR59              MED_COAST N_DUNES        NA NA          Italia  IT        
+#>  8 QI21              MED_COAST N_DUNES        NA NA          Italia  IT        
+#>  9 PK58              MED_COAST N_DUNES        NA NA          Italia  IT        
+#> 10 OY37              MED_COAST N_DUNES        NA NA          Italia  IT        
 #> # ℹ 13 more rows
 #> # ℹ 2 more variables: Longitude <dbl>, Latitude <dbl>
 ```
