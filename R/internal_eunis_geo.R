@@ -105,10 +105,10 @@
     stop("`data` must be an sf object.", call. = FALSE)
   
   utils::data(
-    "europe_resolution_60_epsg25832", package = "RESY", envir = environment()
+    "europe_resolution_1_epsg25832", package = "RESY", envir = environment()
     )
   
-  country_sf <- get("europe_resolution_60_epsg25832", inherits = FALSE)
+  country_sf <- get("europe_resolution_1_epsg25832", inherits = FALSE)
   
   data <- sf::st_transform(data, sf::st_crs(country_sf))
   
