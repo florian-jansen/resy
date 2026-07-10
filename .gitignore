@@ -10,3 +10,7 @@ pkgdown/
 *.Rproj
 .claude/
 docs
+renv/library/
+renv/staging/
+renv/sandbox/
+renv/local/
