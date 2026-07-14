@@ -26,7 +26,7 @@ version from the GitHub repository using the following commands:
 
 # install.packages("devtools")
 remotes::install_github(
-   "https://gitlab.uni-rostock.de/loe/publications/r-esy",
+   "https://github.com/florian-jansen/resy",
    dependencies = TRUE
    )
 library(RESY)
