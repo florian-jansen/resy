@@ -42,5 +42,3 @@
 #' @source source?
 #' @usage data(europe_resolution_60_epsg25832)
 "europe_resolution_60_epsg25832"
-
-
