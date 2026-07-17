@@ -34,7 +34,6 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 library(sf)
-# library(vegdata)  # not needed: taxon names are cleaned natively (see below)
 library(RESY)
 ```
 
@@ -64,7 +63,7 @@ data_sites <- read_csv(
 data_sites
 ```
 
-## Map
+## Map the sites
 
 The vegetation surveys of the example dataset are in Tuscany in Italy.
 
@@ -96,12 +95,20 @@ We see a part of Italy, mainly Tuscany and the Mediterranean or more specific th
 
 # Preparation for classification
 
+## Load the expert file
+
+We have to parse the expert file which is the base for every evaluation. We use `resy_load_expert`.
+
+```{r}
+parsed <- RESY::resy_load_expert(scheme = "EUNIS")
+```
+
+
 ## Apply `resy_harmonize_eunis()`
 
-First, we have to prepare the sites and the species data with `resy_harmonize_eunis()`
+We prepare the sites and the species data with `resy_harmonize_eunis()`.
 
 ```{r use-check-eunis}
-parsed <- RESY::resy_load_expert()
 outcome <- RESY::resy_harmonize_eunis(
    data = data_sites,
    source_crs = 25832,
@@ -117,7 +124,7 @@ outcome_species <- tibble(outcome$species_checked)
 
 We have three warnings: The column `Altitude (m)` is missing and this could not be covered by `resy_harmonize_eunis()`, but we provide a `vignette("Get altitude data")`. `NAs` are in the ecoregions (`Ecoreg`) and country (`Country`) columns. This could be the vegetation surveys on islands which is not covered by the base map.
 
-## Additional info of ecoregions and countries
+## Inspect additional data
 
 Here are the additional information of ecoregions and countries which were successfully identified:
 
@@ -165,35 +172,67 @@ Let's have a look on the checked and transformed species names. There are for ex
 outcome_species
 ```
 
-# Classify the vegetation surveys to EUNIS habitat types
-
-## Preparation
-
-Load the expert file which is the base for the evaluation.
-
-```{r prepare-for-resy-function}
-# paths <- RESY::resy_example_paths()
-# RESY::resy_validate_esy_txt(paths$expertfile_txt)
-# ex    <- RESY::resy_read_example_data()
+```{r}
+outcome_species2 <- data_species |>
+  left_join(outcome_species, by = c("species" = "TaxonName")) |>
+  select(PlotObservationID, canonical, cover) |>
+  rename(TaxonName = canonical, Cover_Perc = cover)
 ```
+
+
+# Classify the vegetation surveys
 
 ## Apply `resy_classify()`
 
 Now, you can classify your vegetation surveys (`obs`) which includes sites data (`header`). 
 
 ```{r apply-resy-classify}
-# res   <- RESY::resy_classify(ex$obs, ex$header, paths$expertfile_json, id_col = 'PlotObservationID')
+res <- RESY::resy_classify(
+  obs = outcome_species2,
+  header = outcome_sites,
+  scheme = "EUNIS"
+  )
 ```
 
-## Print the results
+## Inspect the results
+
+### Long table of candidates for all plots
+
+You can see that the plot AM30 was classified with two EUNIS habitat types, but with different priorities.
+
+```{r}
+cand <- resy_candidates(res, top_n = 3) |>
+  tibble()
+cand
+```
+
+### Plot-level details
+
+`resy_eval_plot()` prints the full evidence for one plot: which species
+matched, which group conditions fired, and which vegetation-type formulas
+evaluated to `TRUE`.
+
+```{r eval-plot}
+# Replace "AN57" with a PlotObservationID present in your data
+resy_eval_plot(res, p = "AM30")
+
+```
+
+### Vegetation type details
+
+`resy_eval_type()` shows conditions of a type which is evaluated.
+
+```{r}
+resy_eval_type(res, t = "R1A")
+```
+
+### Print classification hierarchy
+
+We can see all habitat types at once:
 
 ```{r print-results-of-classification}
-# print(table(res$result.classification))
-# resy_eval_plot(res, '100')
-# 
-# resy_candidates(res)
-# resy_candidates(res, plot_id = "1")
-# resy_candidates(res, min_priority = 4) # only assignments with at least priority 4
+tree_filled <- resy_expert_tree(parsed, fill = TRUE)
+print(tree_filled)
 ```
 
 # References
