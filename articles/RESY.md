@@ -77,9 +77,7 @@ header <- data_species |>
 ## 2. Load expert systems
 
 [`resy_available_classifications()`](https://florian-jansen.github.io/resy/reference/resy_available_classifications.md)
-lists all schemes and versions available (# function
-resy_available_classifications() only gives esy files bundled in the
-package so far. Either expand or delete the function.
+lists the schemes and versions bundled with the package.
 
 ``` r
 
