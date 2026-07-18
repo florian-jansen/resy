@@ -52,8 +52,8 @@ the front: \`PlotObservationID\`, \`Altitude (m)\`, \`Coast_EEA\`,
 #> Bounding box:  xmin: 701327 ymin: 5364375 xmax: 701327 ymax: 5364375
 #> Projected CRS: ETRS89 / UTM zone 32N
 #> # A tibble: 1 × 6
-#>   PlotObservationID Ecoreg Country     Country_ID Ecoreg_name                   
-#>               <int>  <dbl> <chr>       <chr>      <chr>                         
-#> 1                 1    686 Deutschland DE         Western European broadleaf fo…
+#>   PlotObservationID Ecoreg Country Country_ID Ecoreg_name                       
+#>               <int>  <dbl> <chr>   <chr>      <chr>                             
+#> 1                 1    686 Germany DE         Western European broadleaf forests
 #> # ℹ 1 more variable: geometry <POINT [m]>
 ```
