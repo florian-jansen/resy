@@ -116,7 +116,7 @@
     sf::st_join(country_sf, left = TRUE, largest = FALSE) |>
     dplyr::rename(Country_ID = "NUTS_ID", Country = "NUTS_NAME") |>
     dplyr::mutate(
-      Country = dplyr::recode(Country, !!!.country_map, .default = Country)
+      Country = dplyr::recode(toupper(Country), !!!.country_map, .default = Country)
       )
   
 }
