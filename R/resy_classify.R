@@ -46,6 +46,21 @@ resy_init_plot_conditions <- function(obs, membership.expressions) {
 #' @return An object of class `resy_result`, carrying a `taxon_resolution`
 #'   summary from [resy_summarize_taxa].
 #' @seealso [resy_resolve_taxa], [resy_summarize_taxa]
+#' @examples
+#' \donttest{
+#' # Classify the bundled example plots with the minimal Apennine-test scheme.
+#' species <- utils::read.csv(
+#'   system.file("extdata", "data_example_species.csv", package = "RESY")
+#' )
+#' names(species)[names(species) == "species"] <- "TaxonName"
+#' names(species)[names(species) == "cover"]   <- "Cover_Perc"
+#'
+#' # A one-row-per-plot header is required even without geographic conditions.
+#' header <- as.data.frame(unique(species["PlotObservationID"]))
+#'
+#' res <- resy_classify(species, header, scheme = "Apennine-test")
+#' head(res$result.classification)
+#' }
 #' @export
 resy_classify <- function(obs,
                           header,

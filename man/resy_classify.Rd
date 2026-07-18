@@ -29,7 +29,7 @@ the species name (see `species_col`), and `Cover_Perc`.}
 
 \item{version}{Version identifier. If NULL, uses latest available version for the scheme.}
 
-\item{location}{Where to look for scheme/version "user" or"package".}
+\item{location}{Where to look for scheme/version "user" or "package".}
 
 \item{id_col}{Optional name of the plot id column. If NULL, tries PlotObservationID, then PlotID.}
 
@@ -43,7 +43,7 @@ the species name (see `species_col`), and `Cover_Perc`.}
 }
 \value{
 An object of class `resy_result`, carrying a `taxon_resolution`
-summary from [resy_summarize_taxa].
+  summary from [resy_summarize_taxa].
 }
 \description{
 Loads an expert system (by file or by scheme/version), resolves the species
@@ -58,6 +58,22 @@ checklists) can be classified without manual harmonisation. A name that cannot
 be resolved keeps its original value and is classified as an unknown species,
 never a best guess. Data already in the expert's names is unaffected. What was
 resolved is reported in the result's `taxon_resolution`.
+}
+\examples{
+\donttest{
+# Classify the bundled example plots with the minimal Apennine-test scheme.
+species <- utils::read.csv(
+  system.file("extdata", "data_example_species.csv", package = "RESY")
+)
+names(species)[names(species) == "species"] <- "TaxonName"
+names(species)[names(species) == "cover"]   <- "Cover_Perc"
+
+# A one-row-per-plot header is required even without geographic conditions.
+header <- as.data.frame(unique(species["PlotObservationID"]))
+
+res <- resy_classify(species, header, scheme = "Apennine-test")
+head(res$result.classification)
+}
 }
 \seealso{
 [resy_resolve_taxa], [resy_summarize_taxa]

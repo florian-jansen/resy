@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 This vignette illustrates how you can get altitude data for the wrapper function `check_eunis`. Since the altitude data for Europe is too big for a R package, you have to get it on your own.
 
-# Example
+## Example
 
 First, we illustrate the altitude data for our example dataset.
 
@@ -33,7 +33,7 @@ library(terra)
 library(tidyterra)
 ```
 
-## Load the example data
+### Load the example data
 
 Load the altitude data for the area of our example.
 
@@ -56,7 +56,7 @@ data_sites <- readr::read_csv(
   sf::st_transform(terra::crs(altitude))
 ```
 
-## Map
+### Map
 
 We show the map with altitude data and the plots
 
@@ -81,11 +81,11 @@ data_sites <- data_sites |>
 data_sites
 ```
 
-# Crop your own altitude data
+## Crop your own altitude data
 
 Download the elevation data from EuroDEM (European Digital Elevation Model) from <https://www.mapsforeurope.org/datasets/euro-dem> which is from EuroGeographics and the project is cofounded by the European Union.
 
-## Load and adapt EuroDEM data
+### Load and adapt EuroDEM data
 
 Save it in your data folder of your R project with your coordinates of your vegetation surveys (sites).
 
@@ -116,7 +116,7 @@ Get an overview of the status of the EuroDEM data.
 # altitude
 ```
 
-## Load example sites
+### Load example sites
 
 Now, we can load the sites data and transform it to an sf object and align the CRS to the raster altitude data.
 
@@ -129,7 +129,7 @@ Now, we can load the sites data and transform it to an sf object and align the C
 #   sf::st_transform(terra::crs(altitude))
 ```
 
-## Crop and save altitude data
+### Crop and save altitude data
 
 We can crop the altitude data to the region of our plots.
 
