@@ -1,21 +1,21 @@
 Package: RESY
 Type: Package
 Title: Vegetation type expert classification system
-Version: 0.2
+Version: 0.3
 Description: A toolbox to classify plant species co-occurrence matrices, 
    aka vegetation plots with formalised, rule based so-called "expert systems". 
-   The ideas for such rule-based assignments go back to the 1990th but the application has gained
-   momentum with the development of an expert system for the European Habitat Type (EUNIS).
-   This package aims at a general implementation of the expert-system logic, 
-   including tools to develop and check new expert systems. 
-   Expert systems use indicator species groups, their abundances,
-   presence or the (relative) amount of species of an indicator group.
-   Furthermore, header data like the geographic location can be used to 
-   identify e.g. an ecoregion, the country or if the plot is located on the coast,
-   which is e.g. needed for the EUNIS expert system.
-   The expert system for the plot assignment to European EUNIS habitat types is used as an example 
-   throughout the package and additional helper functions 
-   to prepare data for the EUNIS classification are included.
+   The ideas for such rule-based assignments go back to the 1990th but the
+   application has gained momentum with the development of an expert system for
+   the European Habitat Type (EUNIS). This package aims at a general
+   implementation of the expert-system logic, including tools to develop and
+   check new expert systems. Expert systems use indicator species groups, their
+   abundances, presence or the (relative) amount of species of an indicator 
+   group. Furthermore, header data like the geographic location can be used to 
+   identify e.g. an ecoregion, the country or if the plot is located on the
+   coast, which is e.g. needed for the EUNIS expert system. The expert system
+   for the plot assignment to European EUNIS habitat types is used as an example 
+   throughout the package and additional helper functions to prepare data for
+   the EUNIS classification are included.
 Authors@R: c(
     person(
       given = "Florian", family = "Jansen",
