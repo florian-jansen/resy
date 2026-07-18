@@ -66,7 +66,28 @@ test_that("classification is deterministic", {
   expect_identical(r1$result.classification, r2$result.classification)
 })
 
-test_that("resy_classify reports taxon resolution and never guesses unknowns", {
+test_that("resy_classify is taxonomy-agnostic by default", {
+  obs <- data.table::data.table(
+    PlotObservationID = c("p1", "p1", "p2"),
+    TaxonName         = c("Fagus sylvatica",
+                          "Xxx nonexistentus",
+                          "Yyy alsoinvented"),
+    Cover_Perc        = c(40, 5, 30)
+  )
+  header <- data.frame(PlotObservationID = c("p1", "p2"))
+
+  res <- suppressMessages(
+    resy_classify(obs, header, scheme = "Apennine-test", mc = 1L)
+  )
+  # Default does not resolve: no resolution summary, names used as given.
+  expect_null(res$taxon_resolution)
+  expect_true(all(c("Xxx nonexistentus", "Yyy alsoinvented") %in%
+                    res$obs$TaxonName))
+  # A plot whose only taxa are unknown to the expert cannot match any type.
+  expect_equal(unname(res$result.classification[["p2"]]), "?")
+})
+
+test_that("resolve_taxa = TRUE reports resolution and never guesses unknowns", {
   obs <- data.table::data.table(
     PlotObservationID = c("p1", "p1", "p2"),
     TaxonName         = c("Fagus sylvatica",
@@ -77,7 +98,8 @@ test_that("resy_classify reports taxon resolution and never guesses unknowns", {
   header <- data.frame(PlotObservationID = c("p1", "p2"))
 
   res <- suppressMessages(
-    resy_classify(obs, header, scheme = "Apennine-test", mc = 1L)
+    resy_classify(obs, header, scheme = "Apennine-test",
+                  resolve_taxa = TRUE, mc = 1L)
   )
   tr <- res$taxon_resolution
   expect_type(tr, "list")

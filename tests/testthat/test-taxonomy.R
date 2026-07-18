@@ -83,7 +83,7 @@ test_that("summarize_taxa counts resolution and lists unresolved inputs", {
   expect_error(resy_summarize_taxa(data.frame(x = 1)), "taxon_confidence")
 })
 
-test_that("classify resolves taxa automatically and never corrupts known names", {
+test_that("classify with resolve_taxa = TRUE resolves and never corrupts known names", {
   expert <- resy_expert_path("EUNIS", "2025-10-03", "json", mustWork = FALSE)
   skip_if(is.na(expert) || !file.exists(expert), "EUNIS expert not installed")
   sp_path <- system.file("extdata", "data_example_species.csv", package = "RESY")
@@ -107,13 +107,13 @@ test_that("classify resolves taxa automatically and never corrupts known names",
   expect_true(all(res$canonical[known] == res$TaxonName[known]))
   expect_true(all(res$taxon_confidence[known] == "exact"))
 
-  # Classification resolves names automatically and reports what it did.
-  cl <- resy_classify(obs, header, expertfile = expert)
+  # With resolve_taxa = TRUE the classifier resolves names and reports what it did.
+  cl <- resy_classify(obs, header, expertfile = expert, resolve_taxa = TRUE)
   expect_type(cl$taxon_resolution, "list")
   expect_equal(cl$taxon_resolution$n, nrow(obs))
 
-  # Consistency: feeding names that are already resolved classifies identically,
-  # so the automatic resolution matches an explicit pre-resolution (idempotent).
+  # Consistency: the in-classifier resolution matches an explicit pre-resolution
+  # followed by an agnostic classify (idempotent).
   obs_pre <- obs
   obs_pre$TaxonName <- ifelse(is.na(res$canonical), obs$TaxonName, res$canonical)
   cl_pre <- resy_classify(obs_pre, header, expertfile = expert)
