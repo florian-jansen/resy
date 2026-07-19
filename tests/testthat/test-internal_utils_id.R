@@ -3,16 +3,24 @@
 # across observation and header data frames.
 
 test_that(".resy_guess_id_col detects PlotObservationID when present", {
-  obs <- data.frame(PlotObservationID = c("P1", "P2", "P3"), species = c("Oak", "Birch", "Pine"))
-  header <- data.frame(PlotObservationID = c("P1", "P2", "P3"), elevation = c(100, 200, 300))
+  obs <- data.frame(
+    PlotObservationID = c("P1", "P2", "P3"), species = c("Oak", "Birch", "Pine")
+    )
+  header <- data.frame(
+    PlotObservationID = c("P1", "P2", "P3"), elevation = c(100, 200, 300)
+    )
   
   result <- .resy_guess_id_col(obs, header)
   expect_equal(result, "PlotObservationID")
 })
 
 test_that(".resy_guess_id_col detects PlotID when PlotObservationID absent", {
-  obs <- data.frame(PlotID = c("P1", "P2", "P3"), species = c("Oak", "Birch", "Pine"))
-  header <- data.frame(PlotID = c("P1", "P2", "P3"), elevation = c(100, 200, 300))
+  obs <- data.frame(
+    PlotID = c("P1", "P2", "P3"), species = c("Oak", "Birch", "Pine")
+    )
+  header <- data.frame(
+    PlotID = c("P1", "P2", "P3"), elevation = c(100, 200, 300)
+    )
   
   result <- .resy_guess_id_col(obs, header)
   expect_equal(result, "PlotID")
@@ -43,7 +51,9 @@ test_that(".resy_guess_id_col returns NULL when no standard column found", {
 })
 
 test_that(".resy_guess_id_col returns NULL when column missing from one data frame", {
-  obs <- data.frame(PlotObservationID = c("P1", "P2"), species = c("Oak", "Birch"))
+  obs <- data.frame(
+    PlotObservationID = c("P1", "P2"), species = c("Oak", "Birch")
+    )
   header <- data.frame(PlotID = c("P1", "P2"), elevation = c(100, 200))
   
   result <- .resy_guess_id_col(obs, header)
@@ -51,8 +61,12 @@ test_that(".resy_guess_id_col returns NULL when column missing from one data fra
 })
 
 test_that(".resy_standardize_plot_id with explicit id_col parameter", {
-  obs <- data.table::data.table(CustomID = c("P1", "P2", "P3"), species = c("Oak", "Birch", "Pine"))
-  header <- data.frame(CustomID = c("P1", "P2", "P3"), elevation = c(100, 200, 300))
+  obs <- data.table::data.table(
+    CustomID = c("P1", "P2", "P3"), species = c("Oak", "Birch", "Pine")
+    )
+  header <- data.frame(
+    CustomID = c("P1", "P2", "P3"), elevation = c(100, 200, 300)
+    )
   
   result <- .resy_standardize_plot_id(obs, header, id_col = "CustomID")
   
@@ -62,8 +76,12 @@ test_that(".resy_standardize_plot_id with explicit id_col parameter", {
 })
 
 test_that(".resy_standardize_plot_id auto-detects PlotObservationID", {
-  obs <- data.table::data.table(PlotObservationID = c("P1", "P2"), species = c("Oak", "Birch"))
-  header <- data.frame(PlotObservationID = c("P1", "P2"), elevation = c(100, 200))
+  obs <- data.table::data.table(
+    PlotObservationID = c("P1", "P2"), species = c("Oak", "Birch")
+    )
+  header <- data.frame(
+    PlotObservationID = c("P1", "P2"), elevation = c(100, 200)
+    )
   
   result <- .resy_standardize_plot_id(obs, header)
   
@@ -73,7 +91,9 @@ test_that(".resy_standardize_plot_id auto-detects PlotObservationID", {
 })
 
 test_that(".resy_standardize_plot_id auto-detects PlotID", {
-  obs <- data.table::data.table(PlotID = c("P1", "P2"), species = c("Oak", "Birch"))
+  obs <- data.table::data.table(
+    PlotID = c("P1", "P2"), species = c("Oak", "Birch")
+    )
   header <- data.frame(PlotID = c("P1", "P2"), elevation = c(100, 200))
   
   result <- .resy_standardize_plot_id(obs, header)
@@ -84,7 +104,9 @@ test_that(".resy_standardize_plot_id auto-detects PlotID", {
 })
 
 test_that(".resy_standardize_plot_id converts numeric IDs to character", {
-  obs <- data.table::data.table(PlotID = c(1, 2, 3), species = c("Oak", "Birch", "Pine"))
+  obs <- data.table::data.table(
+    PlotID = c(1, 2, 3), species = c("Oak", "Birch", "Pine")
+    )
   header <- data.frame(PlotID = c(1, 2, 3), elevation = c(100, 200, 300))
   
   result <- .resy_standardize_plot_id(obs, header)
@@ -106,7 +128,9 @@ test_that(".resy_standardize_plot_id errors when id_col not in obs", {
 })
 
 test_that(".resy_standardize_plot_id errors when id_col not in header", {
-  obs <- data.table::data.table(CustomID = c("P1", "P2"), species = c("Oak", "Birch"))
+  obs <- data.table::data.table(
+    CustomID = c("P1", "P2"), species = c("Oak", "Birch")
+    )
   header <- data.frame(elevation = c(100, 200))
   
   expect_error(
@@ -127,7 +151,9 @@ test_that(".resy_standardize_plot_id errors when no ID column found", {
 
 test_that(".resy_get_id_col returns PlotObservationID with priority", {
   obs <- data.frame(PlotObservationID = c("P1", "P2"), PlotID = c("Q1", "Q2"))
-  header <- data.frame(PlotObservationID = c("P1", "P2"), PlotID = c("Q1", "Q2"))
+  header <- data.frame(
+    PlotObservationID = c("P1", "P2"), PlotID = c("Q1", "Q2")
+    )
   
   result <- .resy_get_id_col(obs, header)
   
@@ -182,7 +208,9 @@ test_that(".resy_normalize_ids_obs converts to character PlotObservationID", {
 })
 
 test_that(".resy_normalize_ids_obs preserves existing PlotObservationID", {
-  obs <- data.frame(PlotID = c("P1", "P2"), PlotObservationID = c("old1", "old2"))
+  obs <- data.frame(
+    PlotID = c("P1", "P2"), PlotObservationID = c("old1", "old2")
+    )
   
   result <- .resy_normalize_ids_obs(obs, "PlotID")
   
@@ -190,7 +218,9 @@ test_that(".resy_normalize_ids_obs preserves existing PlotObservationID", {
 })
 
 test_that(".resy_normalize_ids_obs maintains data.table class", {
-  obs <- data.table::data.table(PlotID = c("P1", "P2"), species = c("Oak", "Birch"))
+  obs <- data.table::data.table(
+    PlotID = c("P1", "P2"), species = c("Oak", "Birch")
+    )
   
   result <- .resy_normalize_ids_obs(obs, "PlotID")
   
@@ -207,7 +237,9 @@ test_that(".resy_normalize_ids_header converts to character PlotObservationID", 
 })
 
 test_that(".resy_normalize_ids_header preserves other columns", {
-  header <- data.frame(PlotID = c("P1", "P2"), elevation = c(100, 200), aspect = c("N", "S"))
+  header <- data.frame(
+    PlotID = c("P1", "P2"), elevation = c(100, 200), aspect = c("N", "S")
+    )
   
   result <- .resy_normalize_ids_header(header, "PlotID")
   
