@@ -37,6 +37,7 @@ trim <- function(x) gsub("^\\s+|\\s+$", "", x)
 #' trim.trailing("text  ")      # Returns "text"
 #' trim.trailing("text- 1")    # Returns "text-"
 #' trim.trailing("text 123")   # Returns "text"
+#' @seealso [trim()], [trim.leading()]
 #' @keywords internal
 trim.trailing <- function(x) sub("\\s+$|\\s+\\d$|\\s+\\-\\s+\\d$", "", x)
 
