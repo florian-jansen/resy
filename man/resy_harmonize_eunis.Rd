@@ -47,9 +47,9 @@ A named list:
 }
 \description{
 Prepares vegetation plot header data for EUNIS habitat classification.
-Converts coordinates to EPSG:25832, assigns WWF ecoregions and country
-identifiers, optionally computes coast/dune flags, and optionally checks
-and harmonizes species taxonomy.
+Converts coordinates to EPSG:25832 (ETRS89 / UTM zone 32N), assigns WWF
+ecoregions and country identifiers, optionally computes coast/dune flags,
+and optionally checks and harmonizes species taxonomy.
 
 Use [resy_check_eunis()] first to verify that the input data meets all
 requirements before running this function.
