@@ -17,25 +17,9 @@
 #'     and `expert.txt` files.
 #' }
 #' 
-#' If a classification file doesn't exist, the corresponding column contains `NA`.
-#' If the classifications directory doesn't exist or is empty, an empty data frame
-#' with the correct structure is returned.
-#' 
 #' @examples
-#' # List all available classifications
-#' classifications <- resy_available_classifications()
-#' print(classifications)
-#'
-#' # View unique schemes
-#' unique(classifications$scheme)
-#'
-#' # Filter for EUNIS classification
-#' eunis_classifications <- classifications[
-#'   classifications$scheme == "EUNIS", 
-#' ]
-#'
-#' # Get the path to the first available expert.json file
-#' expert_path <- classifications$expert_json[1]
+#' # List all available classifications and their paths
+#' resy_available_classifications()
 #'
 #' @seealso
 #' [resy_load_expert()], [resy_add_classification()], [resy_classify()]
