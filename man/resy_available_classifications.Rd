@@ -15,3 +15,36 @@ A data frame with columns `scheme`, `version`, `expert_json`,
 Lists the classification schemes and versions bundled with the package
 (under `inst/extdata/classifications/`).
 }
+\details{
+The function scans the package's classification store directory structure:
+\itemize{
+  \item Top-level directories represent classification schemes (e.g., "EUNIS").
+  \item Second-level directories represent versions within each scheme.
+  \item Within each version directory, the function looks for `expert.json`
+    and `expert.txt` files.
+}
+
+If a classification file doesn't exist, the corresponding column contains `NA`.
+If the classifications directory doesn't exist or is empty, an empty data frame
+with the correct structure is returned.
+}
+\examples{
+# List all available classifications
+classifications <- resy_available_classifications()
+print(classifications)
+
+# View unique schemes
+unique(classifications$scheme)
+
+# Filter for EUNIS classification
+eunis_classifications <- classifications[
+  classifications$scheme == "EUNIS", 
+]
+
+# Get the path to the first available expert.json file
+expert_path <- classifications$expert_json[1]
+
+}
+\seealso{
+[resy_load_expert()], [resy_add_classification()], [resy_classify()]
+}
