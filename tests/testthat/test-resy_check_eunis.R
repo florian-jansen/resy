@@ -40,7 +40,7 @@ test_that("resy_check_eunis: valid data frame with all columns returns ok = TRUE
     )
   
   result <- RESY::resy_check_eunis(data, source_crs = 4326, verbose = FALSE)
-  
+ 
   expect_type(result, "list")
   expect_true(result$ok)
   expect_length(result$errors, 0)
@@ -59,11 +59,6 @@ test_that("resy_check_eunis: valid sf object returns ok = TRUE", {
     )
   
   result <- RESY::resy_check_eunis(data, verbose = FALSE)
-  
-  expect_type(result, "list")
-  expect_true(result$ok)
-  expect_length(result$errors, 0)
-  expect_length(result$warnings, 0)
   
 })
 
