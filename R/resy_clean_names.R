@@ -56,8 +56,14 @@ resy_clean_names <- function(x) {
     # Normalise sensu-lato / sensu-stricto qualifiers to the compact marker so
     # they are kept, not dropped as a sensu-concept ("sens. lat." -> "s.l.",
     # "sensu stricto" -> "s.str.").
-    nm <- gsub("\\bsens(?:u|\\.)?\\s+lat(?:o|\\.)",    "s.l.",   nm, perl = TRUE, ignore.case = TRUE)
-    nm <- gsub("\\bsens(?:u|\\.)?\\s+str(?:icto|\\.)", "s.str.", nm, perl = TRUE, ignore.case = TRUE)
+    nm <- gsub(
+      "\\bsens(?:u|\\.)?\\s+lat(?:o|\\.)",    "s.l.",   nm,
+      perl = TRUE, ignore.case = TRUE
+      )
+    nm <- gsub(
+      "\\bsens(?:u|\\.)?\\s+str(?:icto|\\.)", "s.str.", nm,
+      perl = TRUE, ignore.case = TRUE
+      )
     # Collapse spaced sensu-lato abbreviations so they survive tokenisation as
     # a single marker ("s. l." -> "s.l.").
     nm <- gsub("\\bs\\.\\s+l\\.",   "s.l.",   nm, perl = TRUE)
