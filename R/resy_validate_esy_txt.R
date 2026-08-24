@@ -1,5 +1,37 @@
-# Validator for ESy expert files in TXT format
-
+#' Validator for ESy expert files in TXT format
+#'
+#' @description
+#' Validates the structure and content of an ESy expert file in plain-text format.
+#' Checks for required sections, correct ordering, group definitions, vegetation type codes,
+#' formula syntax, and references to undefined groups.
+#'
+#' @param path A character string, the path to the ESy expert file (TXT format).
+#' @param strict A logical. If `TRUE`, warnings are treated as errors and the validation fails.
+#'   If `FALSE`, warnings are collected but do not cause failure.
+#' @return A list with the following elements:
+#'   - `ok`: Logical, `TRUE` if no errors were found.
+#'   - `errors`: Character vector of error messages.
+#'   - `warnings`: Character vector of warning messages.
+#'   - `meta`: A list with metadata:
+#'     - `path`: The input file path.
+#'     - `tabs_present`: Logical, `TRUE` if the file contains tab characters.
+#'     - `groups_defined`: Integer, number of group headers found in SECTION 2.
+#'     - `vegtypes_defined`: Integer, number of unique vegetation type codes found in SECTION 3.
+#'
+#' @details
+#' The function expects the file to have at least SECTION 1, 2, and 3 headers in that order.
+#' SECTION 2 should contain group headers (e.g., `###`, `#TC`, `#SC`, `##D`, `$$C`, `$$N`).
+#' SECTION 3 should contain vegetation type definitions, each with a header line and a formula.
+#' Formulas are checked for balanced brackets, dangling logical operators, and undefined group references.
+#' Relational operators (e.g., `GR`, `GE`, `LE`, `LR`, `EQ`, `UP`) are only allowed inside `<...>` conditions.
+#'
+#' @examples
+#' # Assuming 'expert.txt' is a valid ESy expert file:
+#' result <- .resy_validate_esy_txt("path/to/expert.txt", strict = FALSE)
+#' if (!result$ok) print(result$errors)
+#' if (length(result$warnings)) print(result$warnings)
+#'
+#' @noRd
 .resy_validate_esy_txt <- function(path, strict = FALSE) {
   trim    <- function(x) sub("^\\s+|\\s+$", "", x)
   norm_ws <- function(x) gsub("\\s+", " ", trim(x))

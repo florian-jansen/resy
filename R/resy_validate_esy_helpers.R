@@ -1,13 +1,16 @@
 # Shared helper functions for ESy expert file validation
-#
-# This module contains utility functions used by both TXT and JSON format
-# validators. These helpers provide core validation logic for:
-# - Bracket balancing in formulas
-# - Formula parsing and normalization
-# - Group reference extraction from conditions
-# - Formula validation with strict/lenient modes
 
-# Check that every opening bracket has a matching closer of the same type.
+#' Check that every opening bracket has a matching closer of the same type.
+#'
+#' @description
+#' Checks that every opening bracket (`(`, `[`, `{`) in a string has a corresponding closing bracket of the same type.
+#'
+#' @param s A character string to check for balanced brackets.
+#' @return A logical value: `TRUE` if all brackets are balanced, `FALSE` otherwise.
+#' @examples
+#' .resy_esy_balanced_brackets("(a + [b * {c}])") # TRUE
+#' .resy_esy_balanced_brackets("(a + [b * c)")    # FALSE
+#' @noRd
 .resy_esy_balanced_brackets <- function(s) {
   pairs <- list("(" = ")", "[" = "]", "{" = "}")
   stack <- character()
@@ -23,8 +26,19 @@
   !length(stack)
 }
 
-# Rewrite a formula so it can be tested with parse(): replace <...> conditions
-# with colN tokens and translate logical keywords to R operators.
+#' Rewrite a formula so it can be tested with parse(): replace <...> conditions
+#' with colN tokens and translate logical keywords to R operators.
+#'
+#' @description
+#' Rewrites a formula string so it can be tested with `parse()`:
+#' replaces `<...>` conditions with `colN` tokens and translates logical keywords (`AND`, `OR`, `NOT`) to R operators (`&`, `|`, `&!`).
+#'
+#' @param formula A character string representing a formula, possibly containing `<...>` conditions and logical keywords.
+#' @return A character string, the rewritten formula.
+#' @examples
+#' .resy_esy_make_parseable("<A> AND <B> OR NOT <C>")
+#' # Returns: "col1 & col2 | &!col3"
+#' @noRd
 .resy_esy_make_parseable <- function(formula) {
   f    <- gsub("\\s+", " ", trimws(formula))
   conds <- unique(unlist(regmatches(f, gregexpr("<[^>]+>", f, perl = TRUE))))
@@ -43,8 +57,19 @@
   trimws(gsub("\\s+", " ", f))
 }
 
-# Extract all group names referenced inside the <...> conditions of a formula.
-# Returns a character vector of bare group names (without the prefix token).
+#' Extract all group names referenced inside the <...> conditions of a formula.
+#' Returns a character vector of bare group names (without the prefix token).
+#'
+#' @description
+#' Extracts all group names referenced inside the `<...>` conditions of a formula.
+#' Returns a character vector of bare group names (without the prefix token).
+#'
+#' @param formula A character string representing a formula, possibly containing `<...>` conditions.
+#' @return A character vector of unique group names.
+#' @examples
+#' .resy_esy_extract_group_refs("<#TC MyGroup> AND <### OtherGroup>")
+#' # Returns: c("MyGroup", "OtherGroup")
+#' @noRd
 .resy_esy_extract_group_refs <- function(formula) {
   conds <- unlist(regmatches(formula, gregexpr("<[^>]+>", formula, perl = TRUE)))
   # Match prefix token then the group name (first word after the prefix)
@@ -69,9 +94,25 @@
   unique(refs)
 }
 
-# Validate a single formula string. Returns an error message or NA_character_.
-# 'warnings' is an environment holding a character vector so warnings can be
-# appended from inside (avoiding <<- in the main validators).
+#' Validate a single formula string. Returns an error message or NA_character_.
+#' 'warnings' is an environment holding a character vector so warnings can be
+#' appended from inside (avoiding <<- in the main validators).
+#'
+#' @description
+#' Validates a single formula string for syntax and structure.
+#' Returns an error message as a character string if validation fails, or `NA_character_` if valid.
+#'
+#' @param formula A character string representing the formula to validate.
+#' @param ctx A character string describing the context (used in error messages).
+#' @param strict A logical: if `TRUE`, legacy operators (like `UP`) cause an error; if `FALSE`, a warning is appended to `warn_env`.
+#' @param warn_env An environment containing a character vector `w` to which warnings can be appended.
+#' @return A character string (error message) or `NA_character_` if the formula is valid.
+#' @examples
+#' warn_env <- new.env(hash = TRUE)
+#' warn_env$w <- character(0)
+#' .resy_esy_check_formula("<A> AND <B>", "test", TRUE, warn_env) # NA_character_
+#' .resy_esy_check_formula("A AND", "test", TRUE, warn_env) # Error message
+#' @noRd
 .resy_esy_check_formula <- function(formula, ctx, strict, warn_env) {
   f <- trimws(gsub("\\s+", " ", formula))
   if (!nzchar(f))

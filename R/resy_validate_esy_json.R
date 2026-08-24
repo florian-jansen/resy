@@ -1,5 +1,42 @@
-# Validator for ESy expert files in JSON format
-
+#' Validate an ESy Expert File in JSON Format
+#'
+#' @description
+#' Validates the structure and content of an ESy expert file in JSON format.
+#' Checks for required top-level keys (`synonyms`, `groups`, `rules`), metadata completeness,
+#' group definitions, rule syntax, and references to undefined groups.
+#'
+#' @param path A character string, the path to the ESy expert file (JSON format).
+#' @param strict A logical. If `TRUE`, warnings are treated as errors and the validation fails.
+#'   If `FALSE`, warnings are collected but do not cause failure.
+#'
+#' @return A list with the following elements:
+#'   - `ok`: Logical, `TRUE` if no errors were found.
+#'   - `errors`: Character vector of error messages.
+#'   - `warnings`: Character vector of warning messages.
+#'   - `meta`: A list with metadata:
+#'     - `path`: The input file path.
+#'     - `groups_defined`: Integer, number of group names defined in the `groups` section.
+#'     - `vegtypes_defined`: Integer, number of unique vegetation type codes defined in the `rules` section.
+#'
+#' @details
+#' The function expects the JSON file to contain:
+#' - A `metadata` object (advisory) with recommended fields: `scheme`, `version`, and `description`.
+#' - A `groups` object where keys must start with valid prefixes (`###`, `##D`, `#TC`, `#SC`, `$$C`, `$$N`).
+#' - A `rules` array of objects, each with required keys: `priority`, `code`, `description`, and `expression`.
+#'
+#' **Validation Rules:**
+#' - `priority` must be a single character in `0-9`, `A-Z`, or `a-z`.
+#' - `code` must be a non-empty string without whitespace.
+#' - `expression` is checked for balanced brackets, dangling logical operators, and undefined group references.
+#' - Duplicate vegetation type codes (`code`) are flagged as errors or warnings based on `strict`.
+#'
+#' @examples
+#' # Assuming 'expert.json' is a valid ESy expert file:
+#' result <- .resy_validate_esy_json("path/to/expert.json", strict = FALSE)
+#' if (!result$ok) print(result$errors)
+#' if (length(result$warnings)) print(result$warnings)
+#'
+#' @noRd
 .resy_validate_esy_json <- function(path, strict = FALSE) {
   if (!requireNamespace("jsonlite", quietly = TRUE))
     stop("Package 'jsonlite' is required to validate JSON expert files.")
