@@ -1,4 +1,4 @@
-# Altitude data
+# Get altitude data
 
 This vignette illustrates how you can get altitude data for the wrapper
 function `check_eunis`. Since the altitude data for Europe is too big

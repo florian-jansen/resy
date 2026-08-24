@@ -2,7 +2,7 @@
 
 ### All vignettes
 
-- [Altitude
+- [Get altitude
   data](https://florian-jansen.github.io/resy/articles/altitude-vignette.md):
 - [RESY EUNIS habitat
   classifications](https://florian-jansen.github.io/resy/articles/EUNIS.md):
