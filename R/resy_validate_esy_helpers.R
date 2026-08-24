@@ -71,25 +71,37 @@
 #' # Returns: c("MyGroup", "OtherGroup")
 #' @noRd
 .resy_esy_extract_group_refs <- function(formula) {
+  
   conds <- unlist(regmatches(formula, gregexpr("<[^>]+>", formula, perl = TRUE)))
   # Match prefix token then the group name (first word after the prefix)
-  prefix_re <- "^(?:#TC|###|#SC|##D|##C|##Q|#\\d{2})\\s+(\\S+)"
+  prefix_re <- "^(?:#TC|###|#SC|##D|##C|##Q|#\\d{2}|\\$\\$C|\\$\\$N)\\s*(\\S+)"
   refs <- character()
+  
   for (cond in conds) {
+    
     inner <- substring(cond, 2L, nchar(cond) - 1L)
     m <- regexpr(prefix_re, inner, perl = TRUE)
+    
     if (m > 0L) {
+      
       cap_start  <- attr(m, "capture.start")[1L]
       cap_length <- attr(m, "capture.length")[1L]
       refs <- c(refs, substring(inner, cap_start, cap_start + cap_length - 1L))
+      
     }
+    
   }
+  
   # Also catch names after EXCEPT / | (pipe merges) — simple word extraction
   # for names that follow EXCEPT inside <...>
   for (cond in conds) {
+    
     inner <- substring(cond, 2L, nchar(cond) - 1L)
-    exc <- regmatches(inner, gregexpr("(?<=EXCEPT\\s)\\S+", inner, perl = TRUE))[[1L]]
+    exc <- regmatches(
+      inner, gregexpr("(?<=EXCEPT\\s)\\S+", inner, perl = TRUE)
+      )[[1L]]
     refs <- c(refs, exc[!grepl("^(#|\\$)", exc)])  # skip special tokens
+    
   }
   unique(refs)
 }
@@ -114,24 +126,34 @@
 #' .resy_esy_check_formula("A AND", "test", TRUE, warn_env) # Error message
 #' @noRd
 .resy_esy_check_formula <- function(formula, ctx, strict, warn_env) {
+  
   f <- trimws(gsub("\\s+", " ", formula))
   if (!nzchar(f))
     return(paste0("Empty formula for ", ctx))
+  
   if (!grepl("<[^>]+>", f, perl = TRUE))
     return(paste0("No membership conditions <...> for ", ctx))
+  
   if (!.resy_esy_balanced_brackets(f))
     return(paste0("Unbalanced brackets in formula for ", ctx, ":\n  ", f))
+  
   if (grepl("\\b(AND|OR|NOT)\\s*$|^\\s*(AND|OR|NOT)\\b", f, perl = TRUE))
     return(paste0("Dangling logical operator in formula for ", ctx))
+  
   if (grepl("\\bUP\\b", f, perl = TRUE)) {
     msg <- paste0("Legacy relational operator UP in formula for ", ctx)
     if (strict) return(msg) else warn_env$w <- c(warn_env$w, msg)
+    
   }
+  
   perr <- tryCatch(
     { parse(text = .resy_esy_make_parseable(f)); NULL },
     error = function(e) conditionMessage(e)
   )
+  
   if (!is.null(perr))
     return(paste0("Invalid logical formula for ", ctx, ":\n  ", perr))
+  
   NA_character_
+  
 }
