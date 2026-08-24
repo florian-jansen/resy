@@ -6,7 +6,7 @@ output:
    rmarkdown::html_vignette:
       toc: true
 vignette: >
-  %\VignetteIndexEntry{RESY EUNIS tutorial}
+  %\VignetteIndexEntry{RESY EUNIS habitat classifications}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
