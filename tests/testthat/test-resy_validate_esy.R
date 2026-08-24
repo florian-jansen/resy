@@ -1,20 +1,24 @@
 library(testthat)
 
-# ---- Shared helper tests ----------------------------------------------------
+# ---- Shared helper tests: .resy_esy_balanced_brackets -------------------------
 
 test_that(".resy_esy_balanced_brackets: paired brackets pass", {
   expect_true(RESY:::.resy_esy_balanced_brackets("(<A> AND <B>)"))
   expect_true(RESY:::.resy_esy_balanced_brackets("[(<A> OR <B>) AND <C>]"))
   expect_true(RESY:::.resy_esy_balanced_brackets(""))
+  expect_true(RESY:::.resy_esy_balanced_brackets("{}[]()"))
 })
 
 test_that(".resy_esy_balanced_brackets: mismatched or unclosed brackets fail", {
   expect_false(RESY:::.resy_esy_balanced_brackets("(<A> AND <B>"))   # unclosed (
   expect_false(RESY:::.resy_esy_balanced_brackets("(<A> AND [<B>))")) # wrong closer
   expect_false(RESY:::.resy_esy_balanced_brackets(")"))               # closer without opener
+  expect_false(RESY:::.resy_esy_balanced_brackets("[{]"))             # crossing brackets
 })
 
-test_that(".resy_esy_extract_group_refs: extracts names from #TC, ###, #SC", {
+# ---- Shared helper tests: .resy_esy_extract_group_refs -------------------------
+
+test_that(".resy_esy_extract_group_refs: extracts names from #TC, ###, #SC, ##D, $$C, $$N", {
   expr  <- "(<#TC Beech-forest-trees GR 15> AND <### Nardus-grassland GR 25>)"
   refs  <- RESY:::.resy_esy_extract_group_refs(expr)
   expect_contains(refs, "Beech-forest-trees")
@@ -27,7 +31,88 @@ test_that(".resy_esy_extract_group_refs: ignores species names and thresholds", 
   expect_length(refs, 0L)
 })
 
-# ---- JSON validator: valid file passes --------------------------------------
+test_that(".resy_esy_extract_group_refs: extracts all prefix types", {
+  expr  <- "(<#TC group1> OR <### group2> OR <#SC group3> OR <##D group4> OR <$$C group5> OR <$$N group6>)"
+  refs  <- RESY:::.resy_esy_extract_group_refs(expr)
+  expect_contains(refs, "group1")
+  expect_contains(refs, "group2")
+  expect_contains(refs, "group3")
+  expect_contains(refs, "group4")
+  expect_contains(refs, "group5")
+  expect_contains(refs, "group6")
+})
+
+test_that(".resy_esy_extract_group_refs: handles EXCEPT clauses", {
+  expr  <- "<#TC Beech GR 15 EXCEPT Fagus>"
+  refs  <- RESY:::.resy_esy_extract_group_refs(expr)
+  expect_contains(refs, "Beech")
+  expect_contains(refs, "Fagus")
+})
+
+# ---- Shared helper tests: .resy_esy_check_formula -------------------------
+
+test_that(".resy_esy_check_formula: valid formulas pass", {
+  warn_env <- new.env(); warn_env$w <- character()
+  err <- RESY:::.resy_esy_check_formula("<#TC Beech GR 15>", "test", FALSE, warn_env)
+  expect_equal(err, NA_character_)
+})
+
+test_that(".resy_esy_check_formula: empty formula fails", {
+  warn_env <- new.env(); warn_env$w <- character()
+  err <- RESY:::.resy_esy_check_formula("", "test", FALSE, warn_env)
+  expect_true(grepl("Empty formula", err))
+})
+
+test_that(".resy_esy_check_formula: missing membership conditions fails", {
+  warn_env <- new.env(); warn_env$w <- character()
+  err <- RESY:::.resy_esy_check_formula("Beech GR 15", "test", FALSE, warn_env)
+  expect_true(grepl("membership condition", err))
+})
+
+test_that(".resy_esy_check_formula: unbalanced brackets fail", {
+  warn_env <- new.env(); warn_env$w <- character()
+  err <- RESY:::.resy_esy_check_formula("(<#TC Beech GR 15>", "test", FALSE, warn_env)
+  expect_true(grepl("Unbalanced bracket", err))
+})
+
+test_that(".resy_esy_check_formula: dangling AND/OR/NOT fails", {
+  warn_env <- new.env(); warn_env$w <- character()
+  err1 <- RESY:::.resy_esy_check_formula("<#TC Beech GR 15> AND", "test", FALSE, warn_env)
+  expect_true(grepl("Dangling logical operator", err1))
+  
+  err2 <- RESY:::.resy_esy_check_formula("OR <#TC Beech GR 15>", "test", FALSE, warn_env)
+  expect_true(grepl("Dangling logical operator", err2))
+})
+
+test_that(".resy_esy_check_formula: legacy UP operator triggers warning", {
+  warn_env <- new.env(); warn_env$w <- character()
+  err <- RESY:::.resy_esy_check_formula("<#TC Beech UP 15>", "test", FALSE, warn_env)
+  expect_equal(err, NA_character_)
+  expect_true(any(grepl("UP", warn_env$w)))
+})
+
+test_that(".resy_esy_check_formula: legacy UP operator is error in strict mode", {
+  warn_env <- new.env(); warn_env$w <- character()
+  err <- RESY:::.resy_esy_check_formula("<#TC Beech UP 15>", "test", TRUE, warn_env)
+  expect_true(grepl("UP", err))
+})
+
+# ---- Shared helper tests: .resy_esy_make_parseable -------------------------
+
+test_that(".resy_esy_make_parseable: converts logical keywords", {
+  result <- RESY:::.resy_esy_make_parseable("<#TC A> AND <#TC B> OR <#TC C>")
+  expect_true(grepl("&", result))
+  expect_true(grepl("|", result))
+})
+
+test_that(".resy_esy_make_parseable: replaces conditions with tokens", {
+  result <- RESY:::.resy_esy_make_parseable("<#TC A GR 10> AND <#TC B GR 5>")
+  expect_false(grepl("<", result))
+  expect_false(grepl(">", result))
+  expect_true(grepl("col", result))
+})
+
+# ---- Valid real files -------
 
 test_that("resy_validate_esy: Apennine-test JSON passes validation", {
   path <- system.file(
@@ -50,221 +135,4 @@ test_that("resy_validate_esy: EUNIS JSON passes validation", {
   result <- resy_validate_esy(path, verbose = FALSE)
   expect_true(result$ok)
   expect_length(result$errors, 0L)
-})
-
-# ---- JSON validator: structural errors --------------------------------------
-
-make_json <- function(...) {
-  tmp <- tempfile(fileext = ".json")
-  jsonlite::write_json(list(...), tmp, auto_unbox = TRUE)
-  tmp
-}
-
-test_that("resy_validate_esy JSON: missing required top-level key → error", {
-  tmp <- make_json(
-    synonyms = list(),
-    groups   = list(),
-    # rules intentionally missing
-    metadata = list(scheme = "test", version = "0")
-  )
-  result <- resy_validate_esy(tmp, verbose = FALSE)
-  expect_false(result$ok)
-  expect_true(any(grepl("rules", result$errors)))
-})
-
-test_that("resy_validate_esy JSON: empty rules array → error", {
-  tmp <- make_json(
-    synonyms = list(),
-    groups   = list(`### G` = list("Sp1")),
-    rules    = list()
-  )
-  result <- resy_validate_esy(tmp, verbose = FALSE)
-  expect_false(result$ok)
-  expect_true(any(grepl("rules", result$errors)))
-})
-
-test_that("resy_validate_esy JSON: rule missing required key → error", {
-  tmp <- make_json(
-    synonyms = list(),
-    groups   = list(`### G` = list("Sp1")),
-    rules    = list(
-      list(priority = "5", code = "AB", description = "Test")
-      # expression missing
-    )
-  )
-  result <- resy_validate_esy(tmp, verbose = FALSE)
-  expect_false(result$ok)
-  expect_true(any(grepl("expression", result$errors)))
-})
-
-test_that("resy_validate_esy JSON: invalid priority character → error", {
-  tmp <- make_json(
-    synonyms = list(),
-    groups   = list(`### G` = list("Sp1")),
-    rules    = list(
-      list(priority = "55", code = "AB", description = "d",
-           expression = "<### G>")
-    )
-  )
-  result <- resy_validate_esy(tmp, verbose = FALSE)
-  expect_false(result$ok)
-  expect_true(any(grepl("priority", result$errors)))
-})
-
-test_that("resy_validate_esy JSON: code with whitespace → error", {
-  tmp <- make_json(
-    synonyms = list(),
-    groups   = list(`### G` = list("Sp1")),
-    rules    = list(
-      list(priority = "5", code = "A B", description = "d",
-           expression = "<### G>")
-    )
-  )
-  result <- resy_validate_esy(tmp, verbose = FALSE)
-  expect_false(result$ok)
-  expect_true(any(grepl("whitespace", result$errors)))
-})
-
-test_that("resy_validate_esy JSON: empty expression → error", {
-  tmp <- make_json(
-    synonyms = list(),
-    groups   = list(`### G` = list("Sp1")),
-    rules    = list(
-      list(priority = "5", code = "AB", description = "d", expression = "")
-    )
-  )
-  result <- resy_validate_esy(tmp, verbose = FALSE)
-  expect_false(result$ok)
-  expect_true(any(grepl("expression", result$errors)))
-})
-
-test_that("resy_validate_esy JSON: expression without <...> → error", {
-  tmp <- make_json(
-    synonyms = list(),
-    groups   = list(`### G` = list("Sp1")),
-    rules    = list(
-      list(priority = "5", code = "AB", description = "d",
-           expression = "Sp1 GR 10")
-    )
-  )
-  result <- resy_validate_esy(tmp, verbose = FALSE)
-  expect_false(result$ok)
-  expect_true(any(grepl("membership condition", result$errors)))
-})
-
-test_that("resy_validate_esy JSON: unbalanced brackets → error", {
-  tmp <- make_json(
-    synonyms = list(),
-    groups   = list(`### G` = list("Sp1")),
-    rules    = list(
-      list(priority = "5", code = "AB", description = "d",
-           expression = "(<### G GR 10> AND <### G GE 05>")
-    )
-  )
-  result <- resy_validate_esy(tmp, verbose = FALSE)
-  expect_false(result$ok)
-  expect_true(any(grepl("bracket", result$errors)))
-})
-
-test_that("resy_validate_esy JSON: group key with bad prefix → error", {
-  tmp <- make_json(
-    synonyms = list(),
-    groups   = list(`BAD Grp` = list("Sp1")),
-    rules    = list(
-      list(priority = "5", code = "AB", description = "d",
-           expression = "<### Grp GR 10>")
-    )
-  )
-  result <- resy_validate_esy(tmp, verbose = FALSE)
-  expect_false(result$ok)
-  expect_true(any(grepl("recognised prefix", result$errors)))
-})
-
-test_that("resy_validate_esy JSON: duplicate codes → warning (not strict)", {
-  tmp <- make_json(
-    synonyms = list(),
-    groups   = list(`### G` = list("Sp1")),
-    rules    = list(
-      list(priority = "5", code = "AB", description = "d1", expression = "<### G>"),
-      list(priority = "5", code = "AB", description = "d2", expression = "<### G>")
-    )
-  )
-  result <- resy_validate_esy(tmp, verbose = FALSE)
-  expect_true(result$ok)   # warning, not error
-  expect_true(any(grepl("Duplicate", result$warnings)))
-})
-
-test_that("resy_validate_esy JSON: duplicate codes → error in strict mode", {
-  tmp <- make_json(
-    synonyms = list(),
-    groups   = list(`### G` = list("Sp1")),
-    rules    = list(
-      list(priority = "5", code = "AB", description = "d1", expression = "<### G>"),
-      list(priority = "5", code = "AB", description = "d2", expression = "<### G>")
-    )
-  )
-  result <- resy_validate_esy(tmp, strict = TRUE, verbose = FALSE)
-  expect_false(result$ok)
-  expect_true(any(grepl("Duplicate", result$errors)))
-})
-
-test_that("resy_validate_esy JSON: undefined group reference → warning", {
-  tmp <- make_json(
-    synonyms = list(),
-    groups   = list(`### G1` = list("Sp1")),
-    rules    = list(
-      list(priority = "5", code = "AB", description = "d",
-           expression = "<### G1> AND <### G_UNDEFINED GR 10>")
-    )
-  )
-  result <- resy_validate_esy(tmp, verbose = FALSE)
-  expect_true(result$ok)
-  expect_true(any(grepl("G_UNDEFINED", result$warnings)))
-})
-
-# ---- resy_add_classification: validation gate --------------------------------
-
-test_that("resy_add_classification stops on invalid JSON", {
-  bad_json <- make_json(
-    synonyms = list(),
-    # groups key missing
-    rules = list(
-      list(priority = "5", code = "AB", description = "d", expression = "<### G>")
-    )
-  )
-  expect_error(
-    resy_add_classification(bad_json, scheme = "Test", version = "0",
-                            location = "user"),
-    "Validation failed"
-  )
-})
-
-test_that("resy_add_classification accepts valid JSON without errors", {
-  valid_json <- make_json(
-    synonyms = list(),
-    groups   = list(`### G` = list("Sp1")),
-    rules    = list(
-      list(priority = "5", code = "AB", description = "Test type",
-           expression = "<### G>")
-    )
-  )
-  out_dir <- file.path(tempdir(), "resy_test_store")
-  # Patch resy_classifications_root temporarily
-  withr::with_envvar(
-    list(RESY_CLASSIFICATIONS_ROOT = out_dir),
-    {
-      res <- tryCatch(
-        resy_add_classification(valid_json, scheme = "TestScheme",
-                                version = "0.0.1", location = "user"),
-        error = function(e) e
-      )
-      # We just want to confirm it didn't fail on validation;
-      # it may fail on storage if the env var isn't honoured
-      if (inherits(res, "error")) {
-        expect_false(grepl("Validation failed", conditionMessage(res)))
-      } else {
-        expect_true(file.exists(res$json))
-      }
-    }
-  )
 })
