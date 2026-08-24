@@ -1,4 +1,11 @@
-# Shared helpers for ESy validation (txt and json)
+# Shared helper functions for ESy expert file validation
+#
+# This module contains utility functions used by both TXT and JSON format
+# validators. These helpers provide core validation logic for:
+# - Bracket balancing in formulas
+# - Formula parsing and normalization
+# - Group reference extraction from conditions
+# - Formula validation with strict/lenient modes
 
 # Check that every opening bracket has a matching closer of the same type.
 .resy_esy_balanced_brackets <- function(s) {
