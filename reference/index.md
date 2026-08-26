@@ -20,6 +20,8 @@
   : List available classifications
 - [`resy_candidates()`](https://florian-jansen.github.io/resy/reference/resy_candidates.md)
   : List possible assignments per plot
+- [`resy_canonical_species()`](https://florian-jansen.github.io/resy/reference/resy_canonical_species.md)
+  : Export the canonical ESy species list
 - [`resy_check_data()`](https://florian-jansen.github.io/resy/reference/resy_check_data.md)
   : Check the format of plot data for ESy classification
 - [`resy_check_eunis()`](https://florian-jansen.github.io/resy/reference/resy_check_eunis.md)
@@ -46,9 +48,17 @@
   : Load a classification
 - [`resy_read_expert()`](https://florian-jansen.github.io/resy/reference/resy_read_expert.md)
   : Read an expert-system file losslessly
+- [`resy_read_synonyms()`](https://florian-jansen.github.io/resy/reference/resy_read_synonyms.md)
+  : Read the taxonomy synonym table
+- [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
+  : Resolve plot species names to canonical ESy names
+- [`resy_summarize_taxa()`](https://florian-jansen.github.io/resy/reference/resy_summarize_taxa.md)
+  : Summarise a taxonomy-resolution result
 - [`resy_validate_esy()`](https://florian-jansen.github.io/resy/reference/resy_validate_esy.md)
   : Validate an expert classification file
 - [`resy_view_expert()`](https://florian-jansen.github.io/resy/reference/resy_view_expert.md)
   : Render an expert-system hierarchy and open it in a browser
+- [`resy_write_expert()`](https://florian-jansen.github.io/resy/reference/resy_write_expert.md)
+  : Write an expert-system file
 - [`resy_write_expert_html()`](https://florian-jansen.github.io/resy/reference/resy_write_expert_html.md)
   : Write an expert-system hierarchy to a self-contained HTML page

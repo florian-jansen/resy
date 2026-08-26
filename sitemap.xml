@@ -5,6 +5,7 @@
 <url><loc>https://florian-jansen.github.io/resy/articles/RESY.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/articles/altitude-vignette.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/articles/index.html</loc></url>
+<url><loc>https://florian-jansen.github.io/resy/articles/taxonomy.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/authors.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/discussion.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/index.html</loc></url>
@@ -20,6 +21,7 @@
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_aggregate_taxa.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_available_classifications.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_candidates.html</loc></url>
+<url><loc>https://florian-jansen.github.io/resy/reference/resy_canonical_species.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_check_data.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_check_eunis.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.html</loc></url>
@@ -35,8 +37,12 @@
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_load_expert.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_parse_json.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_read_expert.html</loc></url>
+<url><loc>https://florian-jansen.github.io/resy/reference/resy_read_synonyms.html</loc></url>
+<url><loc>https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.html</loc></url>
+<url><loc>https://florian-jansen.github.io/resy/reference/resy_summarize_taxa.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_validate_esy.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_view_expert.html</loc></url>
+<url><loc>https://florian-jansen.github.io/resy/reference/resy_write_expert.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_write_expert_html.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/trim.trailing.html</loc></url>
 </urlset>

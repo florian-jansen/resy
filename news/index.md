@@ -44,11 +44,20 @@
   covering classification with both EUNIS and Apennine-test expert
   systems without EUNIS-specific geographic steps.
 
+### Package size
+
+- GIS reference layers (`coastline_regions`, `ecoregions2017`,
+  `europe_resolution_1`, `dunes_bohn_*`) simplified with `rmapshaper`
+  (`data-raw/simplify_gis.R`), cutting `data/` from 9.5 MB to 2.1 MB and
+  the source tarball below the CRAN 5 MB limit. Per-layer simplification
+  was chosen so coast, ecoregion, country and dune assignments on the
+  bundled 200-plot example are unchanged.
+
 ## RESY 0.2
 
 - Added
   [`resy_read_expert()`](https://florian-jansen.github.io/resy/reference/resy_read_expert.md),
-  `resy_write_expert()`,
+  [`resy_write_expert()`](https://florian-jansen.github.io/resy/reference/resy_write_expert.md),
   [`resy_expert_tree()`](https://florian-jansen.github.io/resy/reference/resy_expert_tree.md),
   [`resy_write_expert_html()`](https://florian-jansen.github.io/resy/reference/resy_write_expert_html.md),
   [`resy_view_expert()`](https://florian-jansen.github.io/resy/reference/resy_view_expert.md),
