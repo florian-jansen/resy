@@ -58,7 +58,7 @@ Imports:
     jsonlite,
     parallel,
     stringi
-Suggests: 
+Suggests:
     here,
     knitr,
     readr,
@@ -66,6 +66,7 @@ Suggests:
     ggplot2,
     terra,
     tidyterra,
+    rmapshaper,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr

@@ -10,6 +10,7 @@ pkgdown/
 *.Rproj
 .claude/
 docs
+data-raw/gis_full/
 renv/library/
 renv/staging/
 renv/sandbox/

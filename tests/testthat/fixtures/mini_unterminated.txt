@@ -1,0 +1,6 @@
+SECTION 1: Species aggregation
+Fagus sylvatica                                           -  0
+SECTION 1: End
+SECTION 2: Species groups
+### Beech-forest-trees
+     Fagus sylvatica

@@ -23,3 +23,10 @@ A file path string, or `NA` (invisibly) when `mustWork = FALSE` and
 \description{
 Returns the full path to an expert-system file bundled with the package.
 }
+\examples{
+# Path to the bundled EUNIS expert system (JSON by default).
+resy_expert_path("EUNIS", "2025-10-03")
+
+# Probe without erroring when a scheme/version is not installed.
+resy_expert_path("EUNIS", "1900-01-01", mustWork = FALSE)
+}

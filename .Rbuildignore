@@ -1,3 +1,4 @@
+^data-raw$
 ^renv$
 ^renv\.lock$
 .*\.Rproj$

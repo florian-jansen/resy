@@ -1,0 +1,3 @@
+# Round-trip fixtures must keep their exact bytes (line endings included) so the
+# read/write byte-identity test is meaningful on every platform.
+tests/testthat/fixtures/*.txt -text
