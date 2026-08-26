@@ -1,5 +1,5 @@
 ---
-title: "Altitude data"
+title: "Get altitude data"
 author: "Markus Bauer"
 date: "`r Sys.Date()`"
 output:
