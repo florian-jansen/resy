@@ -20,13 +20,40 @@
 #' @param validate Logical; run [resy_validate_esy()] before storing. Defaults
 #'   to `TRUE`. Set to `FALSE` only if you are certain the file is valid.
 #'
-#' @return A named list with the paths of the files written:
+#' @details
+#' The file is stored as `<root>/<scheme>/<version>/expert.txt` or
+#' `expert.json`, where `<root>` is `tools::R_user_dir("RESY", "data")` for
+#' `location = "user"`. A `.txt` file is stored unchanged, together with a
+#' `metadata.json` sidecar recording the scheme, version, source path and
+#' time of storage. Replacing a classification with `overwrite = TRUE` removes
+#' the files of the previous one, so a `.txt` never sits beside a stale
+#' `.json` that [resy_load_expert()] would read first.
+#'
+#' @return Invisibly, a named list with the paths of the files written:
 #'   \describe{
 #'     \item{`txt`}{Path to the stored `.txt` file, or `NULL` for JSON input.}
-#'     \item{`json`}{Path to the stored `.json` file.}
+#'     \item{`json`}{Path to the stored `.json` file, or `NULL` for `.txt`
+#'       input.}
 #'   }
 #' @seealso [resy_validate_esy()], [resy_load_expert()],
 #'   [resy_available_classifications()]
+#' @examples
+#' # Store the bundled Apennine-test system under a new name. The store is
+#' # redirected to a temporary directory here; by default it lives in
+#' # tools::R_user_dir("RESY", "data").
+#' old <- Sys.getenv("R_USER_DATA_DIR")
+#' Sys.setenv(R_USER_DATA_DIR = tempfile("resy_store"))
+#'
+#' src   <- resy_expert_path("Apennine-test", "2026-06-27")
+#' paths <- resy_add_classification(src, scheme = "MyApennine",
+#'                                  version = "2026-09-21")
+#' basename(paths$json)
+#'
+#' # The stored system is now found by scheme and version.
+#' parsed <- resy_load_expert(scheme = "MyApennine", version = "2026-09-21")
+#' parsed$vegtype.formula.names.short
+#'
+#' Sys.setenv(R_USER_DATA_DIR = old)
 #' @export
 resy_add_classification <- function(file,
                                     scheme,
@@ -56,7 +83,7 @@ resy_add_classification <- function(file,
     result <- resy_validate_esy(file, strict = FALSE, verbose = FALSE)
     if (!result$ok) {
       stop(
-        "Validation failed for '", basename(file), "' — ",
+        "Validation failed for '", basename(file), "' \u2014 ",
         length(result$errors), " error(s) found:\n",
         paste0("  \u2022 ", result$errors, collapse = "\n"),
         if (length(result$warnings))
@@ -88,35 +115,28 @@ resy_add_classification <- function(file,
 
   out_txt  <- file.path(out_dir, "expert.txt")
   out_json <- file.path(out_dir, "expert.json")
+  out_meta <- file.path(out_dir, "metadata.json")
 
   if (!overwrite && (file.exists(out_txt) || file.exists(out_json)))
     stop("Classification '", scheme, "/", version, "' already exists at:\n  ",
          out_dir, "\nSet overwrite = TRUE to replace it.", call. = FALSE)
 
-  # --- Copy and (for .txt) write a JSON metadata sidecar ---------------------
-  if (!requireNamespace("jsonlite", quietly = TRUE))
-    stop("Package 'jsonlite' is required. Install it with install.packages('jsonlite').",
-         call. = FALSE)
+  unlink(c(out_txt, out_json, out_meta))
 
   if (ext == "txt") {
     ok <- file.copy(file, out_txt, overwrite = TRUE)
     if (!isTRUE(ok)) stop("Failed to copy file to: ", out_txt, call. = FALSE)
 
-    lines <- readLines(out_txt, warn = FALSE, encoding = "UTF-8")
-    sidecar <- list(
-      metadata = list(
-        scheme      = scheme,
-        version     = version,
-        source_file = normalizePath(file, winslash = "/", mustWork = FALSE),
-        created_utc = format(as.POSIXct(Sys.time(), tz = "UTC"), "%Y-%m-%dT%H:%M:%SZ")
-      ),
-      expert_lines = lines
+    metadata <- list(
+      scheme      = scheme,
+      version     = version,
+      source_file = normalizePath(file, winslash = "/", mustWork = FALSE),
+      created_utc = format(as.POSIXct(Sys.time(), tz = "UTC"), "%Y-%m-%dT%H:%M:%SZ")
     )
-    jsonlite::write_json(sidecar, out_json, auto_unbox = TRUE, pretty = FALSE)
-    return(invisible(list(txt = out_txt, json = out_json)))
+    jsonlite::write_json(metadata, out_meta, auto_unbox = TRUE, pretty = TRUE)
+    return(invisible(list(txt = out_txt, json = NULL)))
   }
 
-  # .json
   ok <- file.copy(file, out_json, overwrite = TRUE)
   if (!isTRUE(ok)) stop("Failed to copy file to: ", out_json, call. = FALSE)
   invisible(list(txt = NULL, json = out_json))

@@ -31,6 +31,21 @@ Returns a per-taxon summary of matches and canonical name mappings.
 This is a purely offline check; no external name-resolution service is
 called.
 }
+\examples{
+parsed <- resy_load_expert(scheme = "Apennine-test")
+
+obs <- data.frame(
+  PlotObservationID = c("p1", "p1", "p2"),
+  TaxonName = c("Fagus sylvatica",     # canonical name
+                "Abies alba Mill.",    # listed synonym of "Abies alba"
+                "Planta inventa")      # unknown to the expert system
+)
+resy_check_taxonomy(obs, parsed)
+
+# Names held in a differently named column
+names(obs)[2] <- "species"
+resy_check_taxonomy(obs, parsed, col = "species")
+}
 \seealso{
 [resy_load_expert()], [resy_harmonize_eunis()]
 }

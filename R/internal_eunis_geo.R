@@ -1,6 +1,38 @@
 # Internal geographic helper functions for the EUNIS workflow.
 # Called by resy_check_data() and resy_harmonize_eunis().
 
+# ---- Bundled GIS layers ------------------------------------------------------
+
+# Dataset in data/ -> name of the sf object it holds.
+.resy_gis_layers <- c(
+  coastline_regions_epsg25832     = "co",
+  dunes_bohn_500mbuffer_epsg25832 = "bohn",
+  ecoregions2017_epsg25832        = "ecoregions2017_epsg25832",
+  europe_resolution_1_epsg25832   = "europe_resolution_1_epsg25832",
+  europe_resolution_60_epsg25832  = "europe_resolution_60_epsg25832"
+)
+
+.resy_gis_cache <- new.env(parent = emptyenv())
+
+# Return a bundled GIS layer. Each layer is read from data/ on first use and
+# kept for the rest of the session, so attaching the package reads nothing and
+# repeated calls do not re-read the file.
+.resy_gis <- function(dataset) {
+  if (!dataset %in% names(.resy_gis_layers))
+    stop("Unknown GIS layer: '", dataset, "'.", call. = FALSE)
+
+  if (!exists(dataset, envir = .resy_gis_cache, inherits = FALSE)) {
+    env <- new.env(parent = emptyenv())
+    utils::data(list = dataset, package = "RESY", envir = env)
+    obj <- .resy_gis_layers[[dataset]]
+    if (!exists(obj, envir = env, inherits = FALSE))
+      stop("Object `", obj, "` not found after loading `", dataset, "`.",
+           call. = FALSE)
+    assign(dataset, get(obj, envir = env), envir = .resy_gis_cache)
+  }
+  get(dataset, envir = .resy_gis_cache, inherits = FALSE)
+}
+
 # ---- Coordinate transformation -----------------------------------------------
 
 #' @keywords internal
@@ -37,11 +69,7 @@
 #' @keywords internal
 .resy_assign_ecoregions <- function(data) {
   
-  utils::data(
-    "ecoregions2017_epsg25832", package = "RESY", envir = environment()
-    )
-  
-  ecoregions_sf <- get("ecoregions2017_epsg25832", inherits = FALSE)
+  ecoregions_sf <- .resy_gis("ecoregions2017_epsg25832")
 
   data |>
     sf::st_join(ecoregions_sf, left = TRUE, largest = FALSE) |>
@@ -104,11 +132,7 @@
   if (!inherits(data, "sf"))
     stop("`data` must be an sf object.", call. = FALSE)
   
-  utils::data(
-    "europe_resolution_1_epsg25832", package = "RESY", envir = environment()
-    )
-  
-  country_sf <- get("europe_resolution_1_epsg25832", inherits = FALSE)
+  country_sf <- .resy_gis("europe_resolution_1_epsg25832")
   
   data <- sf::st_transform(data, sf::st_crs(country_sf))
   
@@ -141,24 +165,10 @@
 
   bbox <- sf::st_bbox(data_sf)
 
-  coast_env <- new.env(parent = emptyenv())
-  
-  utils::data("coastline_regions_epsg25832", package = "RESY", envir = coast_env)
-  
-  if (!exists("co", envir = coast_env, inherits = FALSE))
-    stop('Object `co` not found after loading `coastline_regions_epsg25832`.')
-  
-  coastline <- get("co", envir = coast_env) |>
+  coastline <- .resy_gis("coastline_regions_epsg25832") |>
     sf::st_zm() |> sf::st_crop(bbox) |> sf::st_buffer(dist = buffer_dist)
 
-  dune_env <- new.env(parent = emptyenv())
-  
-  utils::data("dunes_bohn_500mbuffer_epsg25832", package = "RESY", envir = dune_env)
-  
-  if (!exists("bohn", envir = dune_env, inherits = FALSE))
-    stop('Object `bohn` not found after loading `dunes_bohn_500mbuffer_epsg25832`.')
-  
-  dunes <- get("bohn", envir = dune_env) |> sf::st_crop(bbox)
+  dunes <- .resy_gis("dunes_bohn_500mbuffer_epsg25832") |> sf::st_crop(bbox)
 
   coast_join <- sf::st_join(data_sf, coastline, left = TRUE)
   

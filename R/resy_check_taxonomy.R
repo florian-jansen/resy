@@ -20,6 +20,20 @@
 #'     \item{`canonical`}{The canonical name, or `NA` when unmatched.}
 #'   }
 #' @seealso [resy_load_expert()], [resy_harmonize_eunis()]
+#' @examples
+#' parsed <- resy_load_expert(scheme = "Apennine-test")
+#'
+#' obs <- data.frame(
+#'   PlotObservationID = c("p1", "p1", "p2"),
+#'   TaxonName = c("Fagus sylvatica",     # canonical name
+#'                 "Abies alba Mill.",    # listed synonym of "Abies alba"
+#'                 "Planta inventa")      # unknown to the expert system
+#' )
+#' resy_check_taxonomy(obs, parsed)
+#'
+#' # Names held in a differently named column
+#' names(obs)[2] <- "species"
+#' resy_check_taxonomy(obs, parsed, col = "species")
 #' @export
 resy_check_taxonomy <- function(obs, parsed, col = "TaxonName") {
   if (!inherits(parsed, "resy_parsed_expert"))
@@ -30,7 +44,7 @@ resy_check_taxonomy <- function(obs, parsed, col = "TaxonName") {
   aggs        <- parsed$aggs
   canon_names <- names(aggs)
 
-  # Build lookup: synonym → canonical, canonical → itself
+  # Build lookup: synonym -> canonical, canonical -> itself
   synonyms <- unlist(aggs, use.names = FALSE)
   sources  <- rep(canon_names, lengths(aggs))
   lookup   <- c(

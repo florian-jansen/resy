@@ -1,8 +1,32 @@
 
 #' Evaluate and print details for a vegetation type
 #'
+#' @description
+#' Prints the definition of one vegetation type of the expert system used in
+#' a classification: its full name, its membership formula as written in the
+#' expert file, the compiled formula over membership-condition columns, and a
+#' table of the membership conditions it refers to.
+#'
 #' @param res A `resy_result` returned by [resy_classify()].
 #' @param t Vegetation-type short code (e.g. "R55") or numeric index.
+#' @return `NULL`, invisibly. Called for the printed output; prints
+#'   "Type not defined." when `t` is not a type code of the expert system.
+#' @seealso [resy_eval_plot()], [resy_classify()]
+#' @examples
+#' \donttest{
+#' species <- utils::read.csv(
+#'   system.file("extdata", "data_example_species.csv", package = "RESY")
+#' )
+#' names(species)[names(species) == "species"] <- "TaxonName"
+#' names(species)[names(species) == "cover"]   <- "Cover_Perc"
+#' header <- as.data.frame(unique(species["PlotObservationID"]))
+#'
+#' res <- resy_classify(species, header, scheme = "Apennine-test", mc = 1L)
+#'
+#' # By short code or by position in the expert system
+#' resy_eval_type(res, "FB")
+#' resy_eval_type(res, 1)
+#' }
 #' @export
 resy_eval_type <- function(res, t) {
   stopifnot(inherits(res, "resy_result"))

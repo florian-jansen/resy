@@ -30,7 +30,8 @@ the species name (see `species_col`), and `Cover_Perc`.}
 
 \item{version}{Version identifier. If NULL, uses latest available version for the scheme.}
 
-\item{location}{Where to look for scheme/version "user" or "package".}
+\item{location}{Where to look for `scheme`/`version`, in search order; see
+[resy_load_expert()]. Defaults to both `"user"` and `"package"`.}
 
 \item{id_col}{Optional name of the plot id column. If NULL, tries PlotObservationID, then PlotID.}
 

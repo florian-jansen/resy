@@ -38,7 +38,8 @@ resy_init_plot_conditions <- function(obs, membership.expressions) {
 #' @param expertfile Optional path to expert-system file (.json/.txt). If set, takes precedence.
 #' @param scheme Scheme name (default: "EUNIS").
 #' @param version Version identifier. If NULL, uses latest available version for the scheme.
-#' @param location Where to look for scheme/version "user" or "package".
+#' @param location Where to look for `scheme`/`version`, in search order; see
+#'   [resy_load_expert()]. Defaults to both `"user"` and `"package"`.
 #' @param id_col Optional name of the plot id column. If NULL, tries PlotObservationID, then PlotID.
 #' @param species_col Name of the column in `obs` holding the species name
 #'   (default `"TaxonName"`). Resolved names are written back to `TaxonName`.
@@ -82,7 +83,8 @@ resy_classify <- function(obs,
                           mc = max(1L, floor(parallel::detectCores() * 0.75))) {
   if (!inherits(obs, "data.table")) obs <- data.table::as.data.table(obs)
 
-  parsed <- resy_load_expert(expertfile = expertfile, scheme = scheme, version = version)
+  parsed <- resy_load_expert(expertfile = expertfile, scheme = scheme,
+                             version = version, location = location)
 
   # Optional convenience: resolve species names to the expert's vocabulary. The
   # expert system carries its own synonymy (aggregation targets + members), so a
