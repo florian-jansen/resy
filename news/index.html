@@ -72,6 +72,10 @@
 <code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> matches a name a second time with its author citation removed (<code><a href="../reference/resy_clean_names.html">resy_clean_names()</a></code>) when it does not match as given. These matches are labelled <code>"cleaned_exact"</code> and <code>"cleaned_synonym"</code> in <code>taxon_confidence</code>.</li>
 </ul></div>
 <div class="section level3">
+<h3 id="fixes-0-3">Fixes<a class="anchor" aria-label="anchor" href="#fixes-0-3"></a></h3>
+<ul><li>The <code>.txt</code> expert-file parser keeps the last member of the last group in section 2 when the section ends on it, and no longer stores blank lines as group or aggregation members. An aggregation without members is now an empty character vector. Classifications from the EUNIS-ESy releases of 2020, 2021 and 2025 are unchanged.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="package-size-0-3">Package size<a class="anchor" aria-label="anchor" href="#package-size-0-3"></a></h3>
 <ul><li>GIS reference layers (<code>coastline_regions</code>, <code>ecoregions2017</code>, <code>europe_resolution_1</code>, <code>dunes_bohn_*</code>) simplified with <code>rmapshaper</code> (<code>data-raw/simplify_gis.R</code>), cutting <code>data/</code> from 9.5 MB to 2.1 MB and the source tarball below the CRAN 5 MB limit. Per-layer simplification was chosen so coast, ecoregion, country and dune assignments on the bundled 200-plot example are unchanged.</li>
 </ul></div>

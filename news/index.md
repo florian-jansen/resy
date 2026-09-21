@@ -57,6 +57,14 @@
   when it does not match as given. These matches are labelled
   `"cleaned_exact"` and `"cleaned_synonym"` in `taxon_confidence`.
 
+### Fixes
+
+- The `.txt` expert-file parser keeps the last member of the last group
+  in section 2 when the section ends on it, and no longer stores blank
+  lines as group or aggregation members. An aggregation without members
+  is now an empty character vector. Classifications from the EUNIS-ESy
+  releases of 2020, 2021 and 2025 are unchanged.
+
 ### Package size
 
 - GIS reference layers (`coastline_regions`, `ecoregions2017`,
