@@ -44,6 +44,38 @@ test_that("unmatched input stays NA and flagged, never substituted", {
   expect_equal(res$taxon_confidence[1], "unresolved")
 })
 
+test_that("author citations are removed for matching when the name does not match as given", {
+  obs <- data.frame(
+    TaxonName = c("Genus species L.", "Old name (L.) Schult.", "Other taxon",
+                  "Notareal sp. Smith", NA),
+    stringsAsFactors = FALSE
+  )
+  res <- resy_resolve_taxa(obs, "TaxonName",
+                           synonyms = mini_syn(), canonical = mini_canon())
+  expect_equal(res$canonical,
+               c("Genus species", "Genus species", "Other taxon", NA, NA))
+  expect_equal(res$taxon_confidence,
+               c("cleaned_exact", "cleaned_synonym", "exact",
+                 "unresolved", "unresolved"))
+  expect_equal(res$TaxonName, obs$TaxonName)
+})
+
+test_that("a name that matches as given is not cleaned", {
+  res <- resy_resolve_taxa(data.frame(TaxonName = "Genus species L."),
+                           "TaxonName", synonyms = mini_syn(),
+                           canonical = data.frame(esy_canonical = "Genus species L."))
+  expect_equal(res$canonical, "Genus species L.")
+  expect_equal(res$taxon_confidence, "exact")
+})
+
+test_that("cleaning does not merge distinct names", {
+  res <- resy_resolve_taxa(data.frame(TaxonName = "Taraxacum sect. Arctica"),
+                           "TaxonName", synonyms = mini_syn(),
+                           canonical = data.frame(esy_canonical = "Taraxacum sect. Alpina"))
+  expect_true(is.na(res$canonical))
+  expect_equal(res$taxon_confidence, "unresolved")
+})
+
 test_that("ambiguous synonyms resolve to nothing (no silent pick)", {
   amb <- data.frame(synonym = c("Shared syn", "Shared syn"),
                     esy_canonical = c("Genus species", "Other taxon"),

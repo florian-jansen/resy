@@ -1,8 +1,9 @@
 # Taxonomy name resolution: map plot species names -- as they arrive from any
 # major backbone (GBIF, WFO, POWO, Euro+Med, ITIS, NCBI, national checklists) --
-# to the canonical ESy species names the expert system aggregates over. Resolution
-# is exact-match first, then a synonym fallback from the shipped table. Input that
-# matches nothing stays NA and is flagged; it is never replaced with a best guess.
+# to the canonical ESy species names the expert system aggregates over. A name is
+# matched as given (exact, then synonym table); names still unmatched are matched
+# again with author citations removed by resy_clean_names(). Input that matches
+# nothing stays NA and is flagged; it is never replaced with a best guess.
 
 # Required schema for the synonym table.
 .RESY_SYNONYM_COLUMNS <- c("synonym", "esy_canonical", "source")
@@ -77,6 +78,25 @@ resy_read_synonyms <- function(path = NULL) {
   data.frame(key = key[keep], canonical = canon[keep], stringsAsFactors = FALSE)
 }
 
+# Match normalised names against the canonical vocabulary (exact) and the synonym
+# lookup. Returns the canonical name (NA when unmatched) and the confidence label
+# per element.
+.resy_match_taxa <- function(probe, canon, lookup) {
+  resolved <- rep(NA_character_, length(probe))
+  conf <- rep("unresolved", length(probe))
+
+  is_exact <- probe %in% canon
+  resolved[is_exact] <- probe[is_exact]
+  conf[is_exact] <- "exact"
+
+  miss <- !is_exact
+  hit <- lookup$canonical[match(probe[miss], lookup$key)]
+  resolved[miss] <- hit
+  conf[miss][!is.na(hit)] <- "synonym"
+
+  list(canonical = resolved, confidence = conf)
+}
+
 #' Export the canonical ESy species list
 #'
 #' Returns the canonical ESy species names -- the set the expert system aggregates
@@ -124,8 +144,12 @@ resy_canonical_species <- function(path = NULL) {
 #' expert system, so the result can be classified with \code{\link{resy_classify}}
 #' without hand-harmonising names. A name already equal to a canonical ESy name
 #' resolves to itself (\code{"exact"}); otherwise it is looked up in the synonym
-#' table (\code{"synonym"}); a name matching neither is left \code{NA} and flagged
-#' \code{"unresolved"} -- never replaced with a best guess.
+#' table (\code{"synonym"}). A name that matches neither as given is tried again
+#' with its author citation removed by \code{\link{resy_clean_names}}
+#' (\code{"cleaned_exact"}, \code{"cleaned_synonym"}); the cleaned form is used
+#' only for matching, so a name is never altered when it already matches. A name
+#' that still matches nothing is left \code{NA} and flagged \code{"unresolved"};
+#' it is never replaced with a best guess.
 #'
 #' The synonym table pools synonymy from six backbones (Euro+Med, WFO, GBIF, COL,
 #' ITIS, NCBI), so plot data named under any of them resolves without the caller
@@ -142,7 +166,8 @@ resy_canonical_species <- function(path = NULL) {
 #'   vocabulary here, so any name the expert already knows is left untouched).
 #' @return \code{obs} with two appended columns: \code{canonical} (the resolved
 #'   ESy name, \code{NA} when unresolved) and \code{taxon_confidence}
-#'   (\code{"exact"}, \code{"synonym"}, or \code{"unresolved"}).
+#'   (\code{"exact"}, \code{"synonym"}, \code{"cleaned_exact"},
+#'   \code{"cleaned_synonym"}, or \code{"unresolved"}).
 #' @seealso \code{\link{resy_read_synonyms}}, \code{\link{resy_summarize_taxa}},
 #'   \code{\link{resy_classify}}
 #' @export
@@ -167,17 +192,28 @@ resy_resolve_taxa <- function(obs, species_col = "TaxonName",
 
   raw <- as.character(obs[[species_col]])
   probe <- .resy_normalize_name(raw)
-  resolved <- rep(NA_character_, length(probe))
-  conf <- rep("unresolved", length(probe))
 
-  is_exact <- probe %in% canon
+  m <- .resy_match_taxa(probe, canon, lookup)
+  resolved <- m$canonical
+  conf <- m$confidence
+  is_exact <- conf == "exact"
   resolved[is_exact] <- raw[is_exact]   # keep the original string for passthrough
-  conf[is_exact] <- "exact"
 
-  miss <- !is_exact
-  hit <- lookup$canonical[match(probe[miss], lookup$key)]
-  resolved[miss] <- hit
-  conf[miss][!is.na(hit)] <- "synonym"
+  # Names still unmatched are matched once more with author citations removed.
+  # Only the unique unmatched strings are cleaned, and only for matching: a name
+  # that already matched is never altered.
+  todo <- which(conf == "unresolved" & !is.na(probe))
+  if (length(todo) > 0L) {
+    uniq <- unique(probe[todo])
+    cleaned <- resy_clean_names(uniq)
+    changed <- cleaned != uniq
+    m2 <- .resy_match_taxa(cleaned[changed], canon, lookup)
+    pos <- match(probe[todo], uniq[changed])
+    hit2 <- m2$canonical[pos]
+    sel <- !is.na(hit2)
+    resolved[todo[sel]] <- hit2[sel]
+    conf[todo[sel]] <- paste0("cleaned_", m2$confidence[pos][sel])
+  }
 
   out <- as.data.frame(obs, stringsAsFactors = FALSE)
   out$canonical <- resolved

@@ -28,15 +28,20 @@ vocabulary here, so any name the expert already knows is left untouched).}
 \value{
 \code{obs} with two appended columns: \code{canonical} (the resolved
   ESy name, \code{NA} when unresolved) and \code{taxon_confidence}
-  (\code{"exact"}, \code{"synonym"}, or \code{"unresolved"}).
+  (\code{"exact"}, \code{"synonym"}, \code{"cleaned_exact"},
+  \code{"cleaned_synonym"}, or \code{"unresolved"}).
 }
 \description{
 Maps a column of plot species names to the canonical ESy names used by the
 expert system, so the result can be classified with \code{\link{resy_classify}}
 without hand-harmonising names. A name already equal to a canonical ESy name
 resolves to itself (\code{"exact"}); otherwise it is looked up in the synonym
-table (\code{"synonym"}); a name matching neither is left \code{NA} and flagged
-\code{"unresolved"} -- never replaced with a best guess.
+table (\code{"synonym"}). A name that matches neither as given is tried again
+with its author citation removed by \code{\link{resy_clean_names}}
+(\code{"cleaned_exact"}, \code{"cleaned_synonym"}); the cleaned form is used
+only for matching, so a name is never altered when it already matches. A name
+that still matches nothing is left \code{NA} and flagged \code{"unresolved"};
+it is never replaced with a best guess.
 }
 \details{
 The synonym table pools synonymy from six backbones (Euro+Med, WFO, GBIF, COL,

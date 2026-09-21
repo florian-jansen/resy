@@ -28,6 +28,9 @@
   requirements before harmonization, returning `list(ok, errors, warnings)`.
 * New general vignette `vignette("RESY")` covering classification with both
   EUNIS and Apennine-test expert systems without EUNIS-specific geographic steps.
+* `resy_resolve_taxa()` matches a name a second time with its author citation
+  removed (`resy_clean_names()`) when it does not match as given. These matches
+  are labelled `"cleaned_exact"` and `"cleaned_synonym"` in `taxon_confidence`.
 
 ## Package size
 

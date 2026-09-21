@@ -1,10 +1,12 @@
 ---
-title: "Harmonising taxonomy before classification"
+title: "RESY taxonomy"
+author: "Gilles Colling"
+date: "`r Sys.Date()`"
 output:
    rmarkdown::html_vignette:
       toc: true
 vignette: >
-  %\VignetteIndexEntry{Harmonising taxonomy before classification}
+  %\VignetteIndexEntry{RESY taxonomy}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,6 +20,7 @@ knitr::opts_chunk$set(
 
 ```{r setup, message=FALSE}
 library(RESY)
+library(ggplot2)
 ```
 
 ## Why a separate step
@@ -30,9 +33,8 @@ for data drawn from the European Vegetation Archive.
 Plot data named under a general backbone (GBIF, World Flora Online, POWO,
 Euro+Med, a national checklist) will often use different strings for the same
 taxon: an accepted-name synonym, an author citation, or a spelling variant. Those
-names have to be harmonised to the expert vocabulary first. RESY keeps that as an
-explicit step rather than hiding it inside the classifier, so the taxonomic
-decisions stay visible and you can check them before they affect a
+names have to be harmonised to the expert vocabulary first. RESY treats this as
+a separate step, so you can check the taxonomic decisions before they affect a
 classification.
 
 The workflow is: resolve names, inspect the result, then classify.
@@ -54,12 +56,51 @@ Each row is one alternate spelling (`synonym`), the canonical ESy name it
 resolves to (`esy_canonical`), and the backbone(s) that support the pairing
 (`source`).
 
+A pair is listed under every backbone that supports it, so the counts per
+backbone add up to more than the number of rows.
+
+```{r support-table}
+per_backbone <- table(unlist(strsplit(syn$source, ";", fixed = TRUE)))
+support <- data.frame(
+  backbone = names(per_backbone),
+  pairs    = as.integer(per_backbone),
+  share    = round(100 * as.integer(per_backbone) / nrow(syn), 1)
+)
+support <- support[order(-support$pairs), ]
+
+knitr::kable(
+  support,
+  row.names   = FALSE,
+  col.names   = c("Backbone", "Synonym pairs", "% of table"),
+  format.args = list(big.mark = ",")
+)
+```
+
+Most pairs are supported by more than one backbone:
+
+```{r support-plot, fig.width=6, fig.height=3}
+per_pair <- table(lengths(strsplit(syn$source, ";", fixed = TRUE)))
+support_n <- data.frame(
+  n_backbones = names(per_pair),
+  pairs       = as.integer(per_pair)
+)
+
+ggplot(support_n, aes(x = n_backbones, y = pairs)) +
+  geom_col() +
+  scale_y_continuous(labels = function(x) format(x, big.mark = ",")) +
+  labs(x = "Number of backbones supporting a pair", y = "Synonym pairs") +
+  theme_classic()
+```
+
 ## Resolve names
 
 `resy_resolve_taxa()` maps a column of names to the canonical vocabulary. A name
 already equal to a canonical name resolves to itself (`"exact"`); otherwise it is
-looked up in the synonym table (`"synonym"`); a name matching neither stays `NA`
-and is flagged `"unresolved"`. Nothing is ever replaced with a best guess.
+looked up in the synonym table (`"synonym"`). A name that matches neither is
+matched again with its author citation removed by `resy_clean_names()`
+(`"cleaned_exact"`, `"cleaned_synonym"`); the name in your data is left as it
+is. A name that still matches nothing stays `NA` and is flagged `"unresolved"`.
+Nothing is ever replaced with a best guess.
 
 ```{r resolve}
 plots <- data.frame(
@@ -67,6 +108,7 @@ plots <- data.frame(
     "Hibiscus praecox",        # a synonym in the shipped table
     "Abelmoschus longifolius",  # another synonym
     "Fagus sylvatica",          # already a canonical name
+    "Anemone nemorosa L.",      # canonical name with an author citation
     "Not a real species 123"    # resolves to nothing
   ),
   stringsAsFactors = FALSE
@@ -83,14 +125,13 @@ confidence, and the distinct names that stayed unresolved.
 resy_summarize_taxa(resolved, species_col = "TaxonName")
 ```
 
-The unresolved names are yours to handle: correct a spelling, add a row to your
-own crosswalk, or leave them out. The package will not decide for you.
+Unresolved names can be fixed by correcting a spelling, adding a row to your own
+crosswalk, or leaving them out.
 
 ## Bring your own crosswalk
 
-You are not tied to the shipped table. `resy_resolve_taxa()` accepts any
-crosswalk with three columns: `synonym`, `esy_canonical`, and `source`. A small
-example ships with the package.
+`resy_resolve_taxa()` also accepts your own crosswalk, with three columns:
+`synonym`, `esy_canonical`, and `source`. A small example ships with the package.
 
 ```{r own-csv}
 cw_path <- system.file("extdata", "example_crosswalk.csv", package = "RESY")
@@ -116,8 +157,8 @@ resy_resolve_taxa(
 ```
 
 If your crosswalk lives in an Excel sheet, read it yourself and pass the data
-frame. RESY validates the columns and uses it directly, so no Excel package is
-added as a dependency and the file stays in a format you can review:
+frame. RESY validates the columns and uses it directly, so it needs no Excel
+package as a dependency:
 
 ```{r excel, eval=FALSE}
 crosswalk <- readxl::read_excel("my_crosswalk.xlsx")
@@ -125,15 +166,15 @@ resy_resolve_taxa(my_plots, synonyms = crosswalk,
                   canonical = unique(crosswalk$esy_canonical))
 ```
 
-A synonym that maps to more than one canonical name is dropped rather than
-resolved to an arbitrary pick, so an ambiguous table never produces a silent
-substitution.
+A synonym that maps to more than one canonical name is dropped, so an ambiguous
+table cannot produce a silent substitution.
 
 ## Classify the resolved data
 
-Once names are in the expert vocabulary, classify as usual. Write the resolved
-canonical name back to the name column, keeping the original where a name did not
-resolve, and pass it to `resy_classify()`.
+Once names are in the expert vocabulary, classify as usual. Resolve them against
+the vocabulary of the expert system you classify with (here `Apennine-test`),
+write the resolved canonical name back to the name column, keeping the original
+where a name did not resolve, and pass the result to `resy_classify()`.
 
 ```{r classify, message=FALSE}
 library(readr)
@@ -150,6 +191,18 @@ obs <- data.frame(
   Cover_Perc        = species$cover,
   stringsAsFactors  = FALSE
 )
+expert <- resy_load_expert(scheme = "Apennine-test")
+expert_vocab <- unique(c(names(expert$aggs), unlist(expert$aggs, use.names = FALSE)))
+
+resolved_obs <- resy_resolve_taxa(
+  obs, species_col = "TaxonName", canonical = expert_vocab
+)
+table(resolved_obs$taxon_confidence)
+
+resolved_obs$TaxonName <- ifelse(
+  is.na(resolved_obs$canonical), resolved_obs$TaxonName, resolved_obs$canonical
+)
+obs <- resolved_obs[c("PlotObservationID", "TaxonName", "Cover_Perc")]
 header <- as.data.frame(unique(obs["PlotObservationID"]))
 
 res <- resy_classify(obs, header, scheme = "Apennine-test")
@@ -158,14 +211,14 @@ head(res$result.classification)
 
 For a quick pass, `resy_classify(..., resolve_taxa = TRUE)` runs the resolution
 against the expert vocabulary and then classifies in a single call, and reports
-what it did in `res$taxon_resolution`. Doing it in two steps, as above, is the
-recommended route: it keeps the resolution result in your hands so you can check
-the unresolved names before they reach the classifier.
+what it did in `res$taxon_resolution`. The two-step route above is recommended,
+since it lets you check the unresolved names before they reach the classifier.
 
 ## Building a crosswalk with taxify
 
 To assemble a crosswalk from offline backbone tables (no API calls), the
 [taxify](https://github.com/gcol33/taxify) package matches names against
 Euro+Med, WFO, GBIF, Catalogue of Life, ITIS, and NCBI and records the supporting
-backbone for each match. Its output maps to the `synonym` / `esy_canonical` /
-`source` schema `resy_resolve_taxa()` expects.
+backbone for each match. A table with the columns `synonym`, `esy_canonical`, and
+`source` built from those matches can be passed to `resy_resolve_taxa()` as
+`synonyms=`.
