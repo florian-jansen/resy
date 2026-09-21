@@ -58,3 +58,16 @@ test_that("aggregation is idempotent", {
   twice <- RESY:::resy_aggregate_taxa(once, aggs)
   expect_equal(twice$TaxonName, once$TaxonName)
 })
+
+test_that("an expert without aggregations leaves obs unchanged", {
+  obs <- make_obs(c("Fagus sylvatica", "Abies alba"))
+  expect_equal(resy_aggregate_taxa(obs, list())$TaxonName,
+               c("Fagus sylvatica", "Abies alba"))
+})
+
+test_that("aggregates without members keep their own name and cause no error", {
+  obs <- make_obs(c("Fagus sylvatica", "Abies alba"))
+  aggs <- list(`Fagus sylvatica` = character(0), `Abies alba` = character(0))
+  expect_equal(resy_aggregate_taxa(obs, aggs)$TaxonName,
+               c("Fagus sylvatica", "Abies alba"))
+})

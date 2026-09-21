@@ -4,7 +4,7 @@
     "version": "2026-09-21",
     "description": "Two types decided by header data only"
   },
-  "synonyms": {"Fagus sylvatica": ["Fagus sylvatica L."]},
+  "synonyms": {},
   "groups": {
     "### Trees": ["Fagus sylvatica"]
   },

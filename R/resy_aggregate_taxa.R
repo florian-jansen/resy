@@ -9,9 +9,12 @@
 #' @return Modified `obs` as `data.table`.
 resy_aggregate_taxa <- function(obs, aggs) {
   if (!inherits(obs, "data.table")) obs <- data.table::as.data.table(obs)
-  
-  agg_stack <- data.table::as.data.table(stack(aggs))
-  agg_stack[, ind := as.character(ind)]
+  if (!length(aggs)) return(obs)
+
+  agg_stack <- data.table::data.table(
+    values = as.character(unlist(aggs, use.names = FALSE)),
+    ind    = rep(names(aggs), lengths(aggs))
+  )
   agg_id <- data.table::data.table(values = names(aggs), ind = names(aggs))
   AGG <- data.table::rbindlist(list(agg_stack, agg_id), use.names = TRUE, fill = TRUE)
   AGG <- AGG[values != "" & !is.na(values)]
