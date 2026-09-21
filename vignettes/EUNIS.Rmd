@@ -219,12 +219,12 @@ resy_eval_plot(res, p = "AM30")
 
 ```
 
-### Vegetation type details
+Passing `type` adds, for each named type, its formula as written in the expert
+file and the membership conditions it uses, whether each holds for this plot,
+and the plot's taxa responsible for it:
 
-`resy_eval_type()` shows conditions of a type which is evaluated.
-
-```{r}
-resy_eval_type(res, t = "R1A")
+```{r eval-plot-type}
+resy_eval_plot(res, p = "AM30", type = "T17")
 ```
 
 ### Print classification hierarchy

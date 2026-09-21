@@ -153,15 +153,6 @@ print(tree_filled)
 To browse the type hierarchy of a loaded system, use `resy_view_expert()`.
 
 
-### Vegetation type details
-
-`resy_eval_type()` shows conditiosn of a type is evaluated.
-
-```{r eval-type}
-resy_eval_type(res_apennine, t = "FB")
-```
-
-
 ### Long table of candidates for all plots
 
 `resy_candidates()` extracts ranked classification results. Use `top_n` to
@@ -183,6 +174,14 @@ evaluated to `TRUE`.
 # Replace "AN57" with a PlotObservationID present in your data
 resy_eval_plot(res_apennine, p = "AN57")
 
+```
+
+Passing `type` adds, for each named type, its formula as written in the expert
+file and the membership conditions it uses, whether each holds for this plot,
+and the plot's taxa responsible for it:
+
+```{r eval-plot-type}
+resy_eval_plot(res_apennine, p = "AN57", type = "F")
 ```
 
 

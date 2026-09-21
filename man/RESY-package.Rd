@@ -25,8 +25,7 @@ the ESy `.txt` or `.json` format can be added.
     columns EUNIS-ESy needs.
   \item Classify with [resy_classify()].
   \item Inspect the result: [resy_candidates()] lists the candidate types per
-    plot, [resy_eval_plot()] and [resy_eval_type()] show why a plot or type
-    matched, and [resy_expert_tree()] shows the type hierarchy.
+    plot, [resy_eval_plot()] shows why a plot matched, and [resy_expert_tree()] shows the type hierarchy.
 }
 }
 

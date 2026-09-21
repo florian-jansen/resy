@@ -38,6 +38,47 @@
   unique(c(taxa, species))
 }
 
+# Taxa that one membership condition (an element of `parsed$conditions`) refers
+# to, resolved the way the solver resolves them: the leading code token
+# ("###", "##Q", "#TC", "#05", ...) is dropped, "|" joins groups, "A EXCEPT B"
+# removes the taxa of B from those of A, a "NON" comparison refers to the group
+# it names, and a condition without a code is a single species. Header
+# conditions ("$$C", "$$N") and whole-plot cover ("#T$", "#$$", "$05") without a
+# group return no taxa.
+#' @keywords internal
+.resy_condition_taxa <- function(condition, groups, groups.names) {
+  x <- trimws(condition)
+  if (startsWith(x, "NON ")) x <- trimws(substring(x, 5L))
+  if (startsWith(x, "$")) return(character())
+  if (!startsWith(x, "#")) return(x)
+  code <- substr(x, 1L, 3L)
+  x <- trimws(substring(x, 4L))
+  if (!nzchar(x)) return(character())
+  parts <- trimws(strsplit(x, "EXCEPT", fixed = TRUE)[[1]])
+  taxa <- .resy_group_taxa_or_species(parts[1], groups, groups.names, prefix = code)
+  if (length(parts) > 1L) {
+    taxa <- setdiff(taxa, .resy_group_taxa_or_species(parts[2], groups, groups.names,
+                                                      prefix = code))
+  }
+  taxa
+}
+
+# The conditions of `conditions` that occur in a membership expression, found
+# longest first with each match removed before the next, the order in which the
+# solver substitutes conditions by their columns.
+#' @keywords internal
+.resy_expression_conditions <- function(expression, conditions) {
+  rest <- expression
+  hit <- character()
+  for (cond in conditions[order(nchar(conditions), decreasing = TRUE)]) {
+    if (grepl(cond, rest, fixed = TRUE)) {
+      hit <- c(hit, cond)
+      rest <- gsub(cond, " ", rest, fixed = TRUE)
+    }
+  }
+  hit
+}
+
 #' @keywords internal
 .resy_solve_membership <- function(obs, header, parsed, plot.cond, mc = 1L) {
   # parsed <- resy_load_expert(expertfile = NULL, scheme = "VegformMV", version = '2026-03-05')

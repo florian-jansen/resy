@@ -34,6 +34,6 @@ test_that("every function the help page links to is exported", {
   links <- c("resy_available_classifications", "resy_add_classification",
              "resy_load_expert", "resy_check_taxonomy", "resy_resolve_taxa",
              "resy_harmonize_eunis", "resy_classify", "resy_candidates",
-             "resy_eval_plot", "resy_eval_type", "resy_expert_tree")
+             "resy_eval_plot", "resy_expert_tree")
   expect_true(all(links %in% getNamespaceExports("RESY")))
 })

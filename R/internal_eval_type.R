@@ -11,28 +11,12 @@
 #' @param t Vegetation-type short code (e.g. "R55") or numeric index.
 #' @return `NULL`, invisibly. Called for the printed output; prints
 #'   "Type not defined." when `t` is not a type code of the expert system.
-#' @seealso [resy_eval_plot()], [resy_classify()]
-#' @examples
-#' \donttest{
-#' species <- utils::read.csv(
-#'   system.file("extdata", "data_example_species.csv", package = "RESY")
-#' )
-#' names(species)[names(species) == "species"] <- "TaxonName"
-#' names(species)[names(species) == "cover"]   <- "Cover_Perc"
-#' header <- as.data.frame(unique(species["PlotObservationID"]))
-#'
-#' res <- resy_classify(species, header, scheme = "Apennine-test", mc = 1L)
-#'
-#' # By short code or by position in the expert system
-#' resy_eval_type(res, "FB")
-#' resy_eval_type(res, 1)
-#' }
-#' @export
-resy_eval_type <- function(res, t) {
+#' @keywords internal
+#' @noRd
+.resy_eval_type <- function(res, t) {
   stopifnot(inherits(res, "resy_result"))
   vegtype.formula.names <- res$parsed$vegtype.formula.names
   vegtype.formula.names.short <- res$parsed$vegtype.formula.names.short
-  vegtype.formulas <- res$parsed$vegtype.formulas
   vegtype.formulas.p <- res$parsed$vegtype.formulas.p
   membership.expressions <- res$parsed$membership.expressions
   groups <- res$parsed$groups
@@ -43,7 +27,8 @@ resy_eval_type <- function(res, t) {
     return(invisible(NULL))
   }
   
-  cat(vegtype.formula.names[t], '\n\n', vegtype.formulas[t], '\n\n', vegtype.formulas.p[t], '\n\n', sep='')
+  .resy_print_type_definition(res$parsed, t)
+  cat(vegtype.formulas.p[t], '\n\n', sep='')
   col <- unique(as.numeric(stringr::str_extract_all(vegtype.formulas.p[t], "(?<=col\\s{0,1})[-0-9.]+")[[1]]))
   print(data.frame(row.names = col, expressions = membership.expressions[col], check.names = FALSE), right = FALSE)
   
@@ -54,6 +39,12 @@ resy_eval_type <- function(res, t) {
   if (target %in% group_keys) {
     print(groups[[fastmatch::fmatch(target, group_keys)]])
   }
-  
+
   invisible(NULL)
+}
+
+# Prints the full name of vegetation type `t` (an index into the parsed expert
+# system) followed by its membership formula as written in the expert file.
+.resy_print_type_definition <- function(parsed, t) {
+  cat(parsed$vegtype.formula.names[t], '\n\n', parsed$vegtype.formulas[t], '\n\n', sep='')
 }
