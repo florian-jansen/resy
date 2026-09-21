@@ -1,6 +1,6 @@
 ---
 title: "RESY EUNIS habitat classifications"
-author: "Markus Bauer & Mariasole Calbi"
+author: "Markus Bauer, Mariasole Calbi & Gilles Colling"
 date: "`r Sys.Date()`"
 output:
    rmarkdown::html_vignette:
