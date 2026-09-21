@@ -1,27 +1,39 @@
 # RESY taxonomy
 
+This vignette illustrates how to harmonise the species names of a
+vegetation survey before it is classified with
+[`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
+RESY implements the **Expert System (ESy)** framework (Chytrý et al.
+[2020](https://doi.org/10.1111/avsc.12519); Bruelheide et al.
+[2021](https://doi.org/10.1111/avsc.12562)), and
+[`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
+matches the species names it is given against the vocabulary of the
+expert system. That works directly for data from the European Vegetation
+Archive. Plot data named under a general backbone (GBIF, World Flora
+Online, POWO, Euro+Med, a national checklist) often uses different
+strings for the same taxon: an accepted-name synonym, an author
+citation, or a spelling variant. Those names have to be harmonised to
+the expert vocabulary first. RESY treats this as a separate step, so you
+can check the taxonomic decisions before they affect a classification.
+
+1.  **Resolve** the species names to the vocabulary of the expert system
+    with
+    [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md).
+2.  **Inspect** the result with
+    [`resy_summarize_taxa()`](https://florian-jansen.github.io/resy/reference/resy_summarize_taxa.md).
+3.  **Classify** the resolved data with
+    [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
+
+## Example
+
+The following R packages are required to run the example of this
+vignette:
+
 ``` r
 
 library(RESY)
 library(ggplot2)
 ```
-
-## Why a separate step
-
-[`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
-is taxonomy-agnostic: it classifies the species names it is given,
-matching them against the vocabulary of the expert system. It works best
-when the names in your plot data already match that vocabulary, which is
-the case for data drawn from the European Vegetation Archive.
-
-Plot data named under a general backbone (GBIF, World Flora Online,
-POWO, Euro+Med, a national checklist) will often use different strings
-for the same taxon: an accepted-name synonym, an author citation, or a
-spelling variant. Those names have to be harmonised to the expert
-vocabulary first. RESY treats this as a separate step, so you can check
-the taxonomic decisions before they affect a classification.
-
-The workflow is: resolve names, inspect the result, then classify.
 
 ## The shipped synonym table
 
@@ -282,3 +294,17 @@ supporting backbone for each match. A table with the columns `synonym`,
 `esy_canonical`, and `source` built from those matches can be passed to
 [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
 as `synonyms=`.
+
+## References
+
+Bruelheide H, Tichý L, Chytrý M, Jansen F
+([2021](https://doi.org/10.1111/avsc.12562)) Implementing the formal
+language of the vegetation classification expert systems (ESy) in the
+statistical computing environment R. – *Applied Vegetation Science* 24,
+e12562 <https://doi.org/10.1111/avsc.12562>
+
+Chytrý M, Tichý L, Hennekens SM et
+al. ([2020](https://doi.org/10.1111/avsc.12519)) EUNIS Habitat
+Classification: expert system, characteristic species combinations and
+distribution maps of European habitats. – *Applied Vegetation Science*
+23, 648–675. <https://doi.org/10.1111/avsc.12519>
