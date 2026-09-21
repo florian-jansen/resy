@@ -13,3 +13,6 @@
 ^inst/shiny/\.positai$
 ^\.posit/assistant$
 ^\.github$
+^\.\.Rcheck$
+^discussion\.md$
+^nonmatching\.xlsx$

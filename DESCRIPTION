@@ -47,19 +47,21 @@ Encoding: UTF-8
 Depends: R (>= 4.1.0)
 Imports: 
     dplyr (>= 1.1.4),
-    methods,
     rlang (>= 1.1.6),
     sf (>= 1.0-21),
     stringr (>= 1.5.2),
-    tibble (>= 3.3.0),
     tidyselect (>= 1.2.1),
     data.table,
     fastmatch,
     jsonlite,
     parallel,
-    stringi
+    stats,
+    stringi,
+    tools,
+    utils
 Suggests:
     here,
+    tibble,
     knitr,
     readr,
     rmarkdown,
