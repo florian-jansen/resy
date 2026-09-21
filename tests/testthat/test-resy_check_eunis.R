@@ -84,9 +84,11 @@ test_that("resy_check_eunis: verbose = TRUE prints message on success", {
 
 # ---- resy_check_eunis: Coordinate errors ----
 
-test_that("resy_check_eunis: missing source_crs for non-sf data errors", {
+test_that("resy_check_eunis: projected coordinates without source_crs error", {
 
   data <- .create_valid_data()
+  data$Longitude <- 700000
+  data$Latitude  <- 5000000
 
   result <- RESY::resy_check_eunis(data, verbose = FALSE)
 
@@ -379,7 +381,7 @@ test_that("resy_check_eunis: verbose prints FAILED message on coordinate error",
 
   expect_message(
     RESY::resy_check_eunis(data, source_crs = 4326, verbose = TRUE),
-    "EUNIS check: FAILED.*coordinate"
+    "EUNIS check: FAILED.*Coordinate error"
   )
 
 })

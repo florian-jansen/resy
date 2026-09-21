@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Validates that the input data frame or sf object meets the structural
-#' requirements for EUNIS habitat classification. This is a pure check — it
+#' requirements for EUNIS habitat classification. This is a pure check: it
 #' reports issues without modifying data. Use [resy_harmonize_eunis()] to
 #' actually enrich and prepare the data.
 #'
@@ -17,8 +17,10 @@
 #' }
 #'
 #' @param data A data frame, tibble, or point `sf` object.
-#' @param source_crs Integer EPSG code of the input CRS. Required when `data`
-#'   is not an `sf` object.
+#' @param source_crs Integer EPSG code of the coordinates in a plain data
+#'   frame. When `NULL` (default), coordinates that are all valid longitudes and
+#'   latitudes are read as degrees (EPSG:4326); other coordinates need the code.
+#'   Ignored when `data` is an `sf` object, which carries its own CRS.
 #' @param verbose Logical; if `TRUE` (default), print a summary of issues.
 #' @return A list with:
 #'   \describe{
@@ -30,84 +32,31 @@
 #' @seealso [resy_harmonize_eunis()]
 #' @export
 resy_check_eunis <- function(data, source_crs = NULL, verbose = TRUE) {
-  
-  errors   <- character()
-  warnings <- character()
+
+  errors <- character()
 
   # --- Coordinates / CRS
-  
+
   data_sf <- tryCatch(
-    
-    .resy_check_coordinates(
-      data, source_crs = if (is.null(source_crs)) missing else source_crs
-      ),
-    
+    suppressMessages(.resy_check_coordinates(data, source_crs = source_crs)),
     error = function(e) {
-      
       errors <<- c(errors, paste0("Coordinate error: ", conditionMessage(e)))
       NULL
-      
     }
   )
 
-  if (is.null(data_sf)) {
-    
-    ok <- FALSE
-    if (verbose) message("EUNIS check: FAILED (coordinate conversion error)")
-    return(list(ok = ok, errors = errors, warnings = warnings))
-    
+  if (!is.null(data_sf)) {
+
+    if (anyNA(sf::st_coordinates(data_sf)))
+      errors <- c(errors, "Some sites have missing coordinates (NA in geometry).")
+
+    if (!rlang::has_name(data_sf, "PlotObservationID"))
+      errors <- c(errors, 'Column "PlotObservationID" is missing.')
   }
 
-  if (anyNA(sf::st_coordinates(data_sf)))
-    errors <- c(errors, "Some sites have missing coordinates (NA in geometry).")
-
-  # --- PlotObservationID
-  
-  if (!rlang::has_name(data_sf, "PlotObservationID"))
-    errors <- c(errors, 'Column "PlotObservationID" is missing.')
-
-  # --- Altitude
-  
-  if (!rlang::has_name(data_sf, "Altitude (m)"))
-    warnings <- c(warnings, '"Altitude (m)" is missing. See mapsforeurope.org.')
-  
-  else if (anyNA(data_sf$`Altitude (m)`))
-    warnings <- c(warnings, '"Altitude (m)" contains NA values.')
-
-  # --- Ecoreg
-  
-  if (!rlang::has_name(data_sf, "Ecoreg"))
-    warnings <- c(warnings, '"Ecoreg" is missing and will be assigned by resy_harmonize_eunis().')
-  
-  else if (anyNA(data_sf$Ecoreg))
-    warnings <- c(warnings, '"Ecoreg" contains NA values (likely sites outside the base map).')
-
-  # --- Country
-  
-  if (!rlang::has_name(data_sf, "Country"))
-    warnings <- c(warnings, '"Country" is missing and will be assigned by resy_harmonize_eunis().')
-  
-  else if (anyNA(data_sf$Country))
-    warnings <- c(warnings, '"Country" contains NA values (likely sites outside the base map).')
-
-  # --- Coast / dunes (optional but noted)
-  
-  if (!rlang::has_name(data_sf, "Coast_EEA"))
-    warnings <- c(warnings, '"Coast_EEA" is missing. Use run_coast_dunes = TRUE in resy_harmonize_eunis().')
-  
-  if (!rlang::has_name(data_sf, "Dunes_Bohn"))
-    warnings <- c(warnings, '"Dunes_Bohn" is missing. Use run_coast_dunes = TRUE in resy_harmonize_eunis().')
-
-  ok <- !length(errors)
-  
-  if (verbose) {
-    message(
-      "EUNIS check: ", if (ok) "OK" else "FAILED",
-      " (", length(errors), " error(s), ", length(warnings), " warning(s))"
-    )
-    
-  }
-  
-  list(ok = ok, errors = unique(errors), warnings = unique(warnings))
-  
+  warnings <- if (is.null(data_sf)) character() else .resy_site_warnings(data_sf)
+  report <- .resy_report(errors, warnings)
+  report$meta <- NULL
+  if (verbose) .resy_report_message("EUNIS check", report)
+  report
 }
