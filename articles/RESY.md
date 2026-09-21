@@ -106,7 +106,11 @@ parsed_apennine <- resy_load_expert(scheme = "Apennine-test")
 [`resy_check_taxonomy()`](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md)
 maps observation names against Section 1 of the expert system (canonical
 names + synonyms). This is classification-specific: a name may resolve
-in one system but not another.
+in one system but not another. The result has one row per distinct name:
+`scientificName` is the name as submitted, `TaxonName` the canonical
+name the classifier uses (`NA` when unmatched), and `matched` whether it
+was found. Printing it lists what each column holds and how many names
+matched.
 
 ``` r
 
@@ -115,9 +119,45 @@ tax_apennine <- resy_check_taxonomy(
   parsed = parsed_apennine,
   col    = "TaxonName"
 )
-cat("Apennine-test — matched:", sum(tax_apennine$matched),
-    "/ unmatched:", sum(!tax_apennine$matched), "\n")
-#> Apennine-test — matched: 1009 / unmatched: 0
+tax_apennine
+#> <resy_taxa> 1009 name(s) from column `TaxonName` checked against 950 Section 1 species
+#>   scientificName  name as submitted
+#>   TaxonName       canonical name used by resy_classify(); NA when unmatched
+#>   matched         TRUE if found as a canonical name or Section 1 synonym
+#> 1009 matched (100.0%), 0 unmatched
+#> 
+#>                                          scientificName
+#> 1                      Dryopteris filix-mas (L.) Schott
+#> 2                 Cephalanthera longifolia (L.) Fritsch
+#> 3                                Prenanthes purpurea L.
+#> 4                                   Anemone nemorosa L.
+#> 5  Epipactis helleborine (L.) Crantz subsp. helleborine
+#> 6                  Sorbus aucuparia L. subsp. aucuparia
+#> 7                                    Fagus sylvatica L.
+#> 8                           Rubus hirtus Waldst. & Kit.
+#> 9                                      Abies alba Mill.
+#> 10                                 Oxalis acetosella L.
+#>                   TaxonName matched
+#> 1      Dryopteris filix-mas    TRUE
+#> 2  Cephalanthera longifolia    TRUE
+#> 3       Prenanthes purpurea    TRUE
+#> 4          Anemone nemorosa    TRUE
+#> 5     Epipactis helleborine    TRUE
+#> 6          Sorbus aucuparia    TRUE
+#> 7           Fagus sylvatica    TRUE
+#> 8              Rubus hirtus    TRUE
+#> 9                Abies alba    TRUE
+#> 10        Oxalis acetosella    TRUE
+#> # ... 999 more row(s)
+```
+
+[`summary()`](https://rspatial.github.io/terra/reference/summary.html)
+gives the match counts and lists the names that did not match:
+
+``` r
+
+summary(tax_apennine)
+#> 1009 name(s): 1009 matched (100.0%), 0 unmatched (0.0%)
 ```
 
 ## 4. Classify

@@ -50,12 +50,12 @@ source repository rebuild it from these versions.
 
 | Backbone | Release | Upstream data | Downloaded | Content id |
 |:---------|--------:|:--------------|:-----------|:-----------|
-| euromed  | 2026.08 |               | 2026-08-27 | 06668202   |
-| wfo      | 2026.06 |               | 2026-09-15 | 0db73976   |
+| euromed  | 2026.08 | 2026-07-11    | 2026-08-27 | 06668202   |
+| wfo      | 2026.06 | 2026-06-21    | 2026-09-15 | 0db73976   |
 | gbif     | 2026.08 | 2023-08-28    | 2026-08-30 | 4ecece7e   |
-| col      | 2026.09 |               | 2026-09-14 | c2999654   |
-| itis     | 2026.09 |               | 2026-09-14 | c506652f   |
-| ncbi     | 2026.09 |               | 2026-09-14 | 7553eb41   |
+| col      | 2026.09 | 2026-09-11    | 2026-09-14 | c2999654   |
+| itis     | 2026.09 | 2026-08-27    | 2026-09-14 | c506652f   |
+| ncbi     | 2026.09 | 2026-09       | 2026-09-14 | 7553eb41   |
 
 The synonyms are binomials (genus and species epithet). Infraspecific
 names, hybrid formulas, and bare genera are not in the table, so a name
