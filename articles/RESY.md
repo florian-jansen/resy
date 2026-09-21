@@ -157,7 +157,7 @@ gives the match counts and lists the names that did not match:
 ``` r
 
 summary(tax_apennine)
-#> 1009 name(s): 1009 matched (100.0%), 0 unmatched (0.0%)
+#> 1009 names checked: 1009 matched (100.0%), 0 not matched (0.0%).
 ```
 
 ## 4. Classify

@@ -63,8 +63,8 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>RESY EUNIS habitat classifications</h1>
-                        <h4 data-toc-skip class="author">Markus Bauer
-&amp; Mariasole Calbi</h4>
+                        <h4 data-toc-skip class="author">Markus Bauer,
+Mariasole Calbi &amp; Gilles Colling</h4>
             
             <h4 data-toc-skip class="date">2026-09-21</h4>
       
@@ -228,7 +228,7 @@ covered by the base map.</p>
 were successfully identified:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outcome_sites</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 200 × 9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 200 × 11</span></span></span>
 <span><span class="co">#&gt;    PlotObservationID Coast_EEA Dunes_Bohn Ecoreg Ecoreg_name  Country Country_ID</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> JZ37              N_COAST   N_DUNES       795 Italian scl… Italy   IT        </span></span>
@@ -242,7 +242,8 @@ were successfully identified:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> ZM18              N_COAST   N_DUNES       644 Appenine de… Italy   IT        </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> BQ20              N_COAST   N_DUNES       644 Appenine de… Italy   IT        </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 190 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: Longitude &lt;dbl&gt;, Latitude &lt;dbl&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: Longitude &lt;dbl&gt;, Latitude &lt;dbl&gt;, DEG_LON &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   DEG_LAT &lt;dbl&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="missing-info">Missing info<a class="anchor" aria-label="anchor" href="#missing-info"></a>
@@ -252,7 +253,7 @@ country:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outcome_sites</span> <span class="op">|&gt;</span></span>
 <span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Ecoreg</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 23 × 9</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 23 × 11</span></span></span>
 <span><span class="co">#&gt;    PlotObservationID Coast_EEA Dunes_Bohn Ecoreg Ecoreg_name Country Country_ID</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> OR48              MED_COAST N_DUNES        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>          Italy   IT        </span></span>
@@ -266,7 +267,8 @@ country:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> PK58              MED_COAST N_DUNES        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>          Italy   IT        </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> OY37              MED_COAST N_DUNES        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>          Italy   IT        </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 13 more rows</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 more variables: Longitude &lt;dbl&gt;, Latitude &lt;dbl&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: Longitude &lt;dbl&gt;, Latitude &lt;dbl&gt;, DEG_LON &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   DEG_LAT &lt;dbl&gt;</span></span></span></code></pre></div>
 <p>Species on the coast (‘MED_COAST’) often have <code>NAs</code> for
 ecoregion and country. This has to be corrected by yourself.</p>
 <p>Here is the updated map with ecoregions as differetn colors</p>
@@ -298,79 +300,29 @@ are for example no author names anymore:</p>
 <span><span class="co">#&gt; 10                        Oxalis acetosella           Oxalis acetosella    TRUE</span></span>
 <span><span class="co">#&gt; # ... 996 more row(s)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">outcome_species</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 1006 name(s): 935 matched (92.9%), 71 unmatched (7.1%)</span></span>
-<span><span class="co">#&gt; Unmatched names:</span></span>
-<span><span class="co">#&gt;   Aegopodium podagraria</span></span>
-<span><span class="co">#&gt;   Allium sp.</span></span>
-<span><span class="co">#&gt;   Anthoxanthum sp.</span></span>
-<span><span class="co">#&gt;   Anthyllis barba-jovis</span></span>
-<span><span class="co">#&gt;   Artemisia caerulescens var. palmata</span></span>
-<span><span class="co">#&gt;   Asparagus sp.</span></span>
-<span><span class="co">#&gt;   Borago officinalis</span></span>
-<span><span class="co">#&gt;   Cardamine chelidonia</span></span>
-<span><span class="co">#&gt;   Cardamine monteluccii</span></span>
-<span><span class="co">#&gt;   Carex macrolepis</span></span>
-<span><span class="co">#&gt;   Carex mucronata</span></span>
-<span><span class="co">#&gt;   Carex sp.</span></span>
-<span><span class="co">#&gt;   Centaurea triumfetti</span></span>
-<span><span class="co">#&gt;   Cerastium arvense var. etruscum</span></span>
-<span><span class="co">#&gt;   Cirsium sp.</span></span>
-<span><span class="co">#&gt;   Crithmum maritimum</span></span>
-<span><span class="co">#&gt;   Crocus neglectus</span></span>
-<span><span class="co">#&gt;   Crocus sp.</span></span>
-<span><span class="co">#&gt;   Cuscuta sp.</span></span>
-<span><span class="co">#&gt;   Dianthus sp.</span></span>
-<span><span class="co">#&gt;   Echinophora spinosa</span></span>
-<span><span class="co">#&gt;   Eryngium maritimum</span></span>
-<span><span class="co">#&gt;   Erysimum pseudorhaeticum</span></span>
-<span><span class="co">#&gt;   Festuca arundinacea subsp. arundinacea</span></span>
-<span><span class="co">#&gt;   Festuca riccerii</span></span>
-<span><span class="co">#&gt;   Festuca sp.</span></span>
-<span><span class="co">#&gt;   Flavoparmelia caperata</span></span>
-<span><span class="co">#&gt;   Galium sp.</span></span>
-<span><span class="co">#&gt;   Hieracium sp.</span></span>
-<span><span class="co">#&gt;   Humulus lupulus</span></span>
-<span><span class="co">#&gt;   Juglans regia</span></span>
-<span><span class="co">#&gt;   Juniperus communis subsp. saxatilis</span></span>
-<span><span class="co">#&gt;   Laurus nobilis</span></span>
-<span><span class="co">#&gt;   Leopoldia comosa</span></span>
-<span><span class="co">#&gt;   Linaria sp.</span></span>
-<span><span class="co">#&gt;   Marrubium incanum</span></span>
-<span><span class="co">#&gt;   Medicago sp.</span></span>
-<span><span class="co">#&gt;   Melica minuta var. arrecta</span></span>
-<span><span class="co">#&gt;   Melica uniflora</span></span>
-<span><span class="co">#&gt;   Narcissus poëticus</span></span>
-<span><span class="co">#&gt;   Odontites rubra</span></span>
-<span><span class="co">#&gt;   Odontites sp.</span></span>
-<span><span class="co">#&gt;   Ononis variegata</span></span>
-<span><span class="co">#&gt;   Orchis sp.</span></span>
-<span><span class="co">#&gt;   Oreojuncus trifidus</span></span>
-<span><span class="co">#&gt;   Paris quadrifolia</span></span>
-<span><span class="co">#&gt;   Phyteuma italicum</span></span>
-<span><span class="co">#&gt;   Plantago maritima subsp. serpentina</span></span>
-<span><span class="co">#&gt;   Potentilla sp.</span></span>
-<span><span class="co">#&gt;   Ranunculus sp.</span></span>
-<span><span class="co">#&gt;   Ranunculus velutinus</span></span>
-<span><span class="co">#&gt;   Rosa sp.</span></span>
-<span><span class="co">#&gt;   Rubus sp.</span></span>
-<span><span class="co">#&gt;   Scleropodium tourretti</span></span>
-<span><span class="co">#&gt;   Sherardia arvensis</span></span>
-<span><span class="co">#&gt;   Silene paradoxa</span></span>
-<span><span class="co">#&gt;   Silene pichiana</span></span>
-<span><span class="co">#&gt;   Spartium junceum</span></span>
-<span><span class="co">#&gt;   Staphylea pinnata</span></span>
-<span><span class="co">#&gt;   Stipellula capensis</span></span>
-<span><span class="co">#&gt;   Tanacetum corymbosum var. tenuifolium</span></span>
-<span><span class="co">#&gt;   Taraxacum erythrosperma</span></span>
-<span><span class="co">#&gt;   Taraxacum sp.</span></span>
-<span><span class="co">#&gt;   Thesium sommieri</span></span>
-<span><span class="co">#&gt;   Tordylium apulum</span></span>
-<span><span class="co">#&gt;   Tragopogon sp.</span></span>
-<span><span class="co">#&gt;   Trifolium sp.</span></span>
-<span><span class="co">#&gt;   Usnea sp.</span></span>
-<span><span class="co">#&gt;   Vicia sp.</span></span>
-<span><span class="co">#&gt;   Viola ferrarinii</span></span>
-<span><span class="co">#&gt;   Viola sp.</span></span></code></pre></div>
+<span><span class="co">#&gt; 1006 names checked: 935 matched (92.9%), 71 not matched (7.1%).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Not matched:</span></span>
+<span><span class="co">#&gt;   genus only (25): Allium, Anthoxanthum, Asparagus, Carex, Cirsium, Crocus,</span></span>
+<span><span class="co">#&gt;     Cuscuta, Dianthus, Festuca, Galium, Hieracium, Linaria, Medicago, Odontites,</span></span>
+<span><span class="co">#&gt;     Orchis, Potentilla, Ranunculus, Rosa, Rubus, Taraxacum, Tragopogon,</span></span>
+<span><span class="co">#&gt;     Trifolium, Usnea, Vicia, Viola</span></span>
+<span><span class="co">#&gt;   below species level (7): Artemisia caerulescens var. palmata,</span></span>
+<span><span class="co">#&gt;     Cerastium arvense var. etruscum, Festuca arundinacea subsp. arundinacea,</span></span>
+<span><span class="co">#&gt;     Juniperus communis subsp. saxatilis, Melica minuta var. arrecta,</span></span>
+<span><span class="co">#&gt;     Plantago maritima subsp. serpentina, Tanacetum corymbosum var. tenuifolium</span></span>
+<span><span class="co">#&gt;   species (39): Aegopodium podagraria, Anthyllis barba-jovis,</span></span>
+<span><span class="co">#&gt;     Borago officinalis, Cardamine chelidonia, Cardamine monteluccii,</span></span>
+<span><span class="co">#&gt;     Carex macrolepis, Carex mucronata, Centaurea triumfetti, Crithmum maritimum,</span></span>
+<span><span class="co">#&gt;     Crocus neglectus, Echinophora spinosa, Eryngium maritimum,</span></span>
+<span><span class="co">#&gt;     Erysimum pseudorhaeticum, Festuca riccerii, Flavoparmelia caperata,</span></span>
+<span><span class="co">#&gt;     Humulus lupulus, Juglans regia, Laurus nobilis, Leopoldia comosa,</span></span>
+<span><span class="co">#&gt;     Marrubium incanum, Melica uniflora, Narcissus poëticus, Odontites rubra,</span></span>
+<span><span class="co">#&gt;     Ononis variegata, Oreojuncus trifidus, Paris quadrifolia, Phyteuma italicum,</span></span>
+<span><span class="co">#&gt;     Ranunculus velutinus, Scleropodium tourretti, Sherardia arvensis,</span></span>
+<span><span class="co">#&gt;     Silene paradoxa, Silene pichiana, Spartium junceum, Staphylea pinnata,</span></span>
+<span><span class="co">#&gt;     Stipellula capensis, Taraxacum erythrosperma, Thesium sommieri,</span></span>
+<span><span class="co">#&gt;     Tordylium apulum, Viola ferrarinii</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outcome_species2</span> <span class="op">&lt;-</span> <span class="va">data_species</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">outcome_species</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"species"</span> <span class="op">=</span> <span class="st">"scientificName"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -392,22 +344,24 @@ which includes sites data (<code>header</code>).</p>
 <span>  header <span class="op">=</span> <span class="va">outcome_sites</span>,</span>
 <span>  scheme <span class="op">=</span> <span class="st">"EUNIS"</span></span>
 <span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: The expert system uses header columns that `header` does not have:</span></span>
+<span><span class="co">#&gt; Dataset, Altitude (m). Conditions on them are evaluated as if the value were 0.</span></span>
 <span><span class="co">#&gt; Step 5.1  Number of conditions with number of species of a group: 15</span></span>
 <span><span class="co">#&gt; Step 5.2  Number of conditions with minimum number of species: 127</span></span>
 <span><span class="co">#&gt; Step 5.3  Number of conditions with sum of square rooted Cover_Perc of species: 140</span></span>
 <span><span class="co">#&gt; Step 5.4  Number of conditions with total Cover_Perc of the group: 0</span></span>
 <span><span class="co">#&gt; Step 5.5  Number of conditions with total Cover_Perc of all other species: 1</span></span>
-<span><span class="co">#&gt;           Number of conditions with total Cover_Perc of all other species except those on the left-hand side: 32</span></span>
+<span><span class="co">#&gt;           Number of conditions with total Cover_Perc of all other species except those on the left-hand side: 31</span></span>
 <span><span class="co">#&gt;           Number of conditions with $05, $25 etc.: 4</span></span>
 <span><span class="co">#&gt; Step 5.6  Number of conditions with maximum cover of the group: 81</span></span>
-<span><span class="co">#&gt; Step 5.7  Number of conditions with single species, header levels (e.g. country names): 114</span></span>
+<span><span class="co">#&gt; Step 5.7  Number of conditions with single species, header levels (e.g. country names): 94</span></span>
 <span><span class="co">#&gt; Step 5.8  Number of conditions with maximum Cover_Perc in plot: 1</span></span>
 <span><span class="co">#&gt;           Number of conditions with maximum Cover_Perc in plot EXCEPT species of target group: 0</span></span>
 <span><span class="co">#&gt; Step 5.9  Number of T$ NON conditions: 140</span></span>
 <span><span class="co">#&gt; Step 5.10  Header conditions with numeric values: 4</span></span>
 <span><span class="co">#&gt;   Header conditions with character values: 4</span></span>
-<span><span class="co">#&gt; adapt conditions 2026-09-21 15:20:57.649478</span></span>
-<span><span class="co">#&gt; classification from here on 2026-09-21 15:20:57.744591</span></span></code></pre></div>
+<span><span class="co">#&gt; adapt conditions 2026-09-21 15:39:21.201222</span></span>
+<span><span class="co">#&gt; classification from here on 2026-09-21 15:39:21.294666</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="inspect-the-results">Inspect the results<a class="anchor" aria-label="anchor" href="#inspect-the-results"></a>
@@ -421,7 +375,7 @@ types, but with different priorities.</p>
 <code class="sourceCode R"><span><span class="va">cand</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res</span>, top_n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">cand</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 321 × 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 305 × 4</span></span></span>
 <span><span class="co">#&gt;    plot_id type  priority priority_rank</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;ord&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AE28    R     1                    1</span></span>
@@ -434,7 +388,7 @@ types, but with different priorities.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> BK34    R     1                    1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> BK70    P     1                    1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> BK70    P3b   2                    2</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 311 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 295 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="plot-level-details">Plot-level details<a class="anchor" aria-label="anchor" href="#plot-level-details"></a>
@@ -550,44 +504,44 @@ it:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Relevant expressions for T17 :</span></span>
 <span><span class="co">#&gt;     expressions                                                                      </span></span>
-<span><span class="co">#&gt; 621 #TC Fagus-sylvatica-orientalis GR 30                                             </span></span>
-<span><span class="co">#&gt; 622 Fagus sylvatica GR #SC Trees EXCEPT Fagus sylvatica                              </span></span>
-<span><span class="co">#&gt; 623 Fagus orientalis GR #SC Trees EXCEPT Fagus orientalis                            </span></span>
-<span><span class="co">#&gt; 624 ### +11 Eutrophic-deciduous-forest-species GR ### +11 Acidophilous-forest-species</span></span>
-<span><span class="co">#&gt; 625 #TC +11 Acidophilous-forest-species GR 25                                        </span></span>
-<span><span class="co">#&gt; 180 $$C Country EQ Ireland                                                           </span></span>
-<span><span class="co">#&gt; 179 $$C Country EQ United Kingdom                                                    </span></span>
-<span><span class="co">#&gt; 626 $$N DEG_LAT GR 53                                                                </span></span>
-<span><span class="co">#&gt; 627 $$N DEG_LAT GR 48                                                                </span></span>
-<span><span class="co">#&gt; 628 $$N DEG_LON GR 26.5                                                              </span></span>
-<span><span class="co">#&gt; 323 $$N DEG_LAT GR 55                                                                </span></span>
-<span><span class="co">#&gt; 629 $$N DEG_LON GR 19                                                                </span></span>
+<span><span class="co">#&gt; 606 #TC Fagus-sylvatica-orientalis GR 30                                             </span></span>
+<span><span class="co">#&gt; 607 Fagus sylvatica GR #SC Trees EXCEPT Fagus sylvatica                              </span></span>
+<span><span class="co">#&gt; 608 Fagus orientalis GR #SC Trees EXCEPT Fagus orientalis                            </span></span>
+<span><span class="co">#&gt; 609 ### +11 Eutrophic-deciduous-forest-species GR ### +11 Acidophilous-forest-species</span></span>
+<span><span class="co">#&gt; 610 #TC +11 Acidophilous-forest-species GR 25                                        </span></span>
+<span><span class="co">#&gt; 177 $$C Country EQ Ireland                                                           </span></span>
+<span><span class="co">#&gt; 176 $$C Country EQ United Kingdom                                                    </span></span>
+<span><span class="co">#&gt; 611 $$N DEG_LAT GR 53                                                                </span></span>
+<span><span class="co">#&gt; 612 $$N DEG_LAT GR 48                                                                </span></span>
+<span><span class="co">#&gt; 613 $$N DEG_LON GR 26.5                                                              </span></span>
+<span><span class="co">#&gt; 318 $$N DEG_LAT GR 55                                                                </span></span>
+<span><span class="co">#&gt; 614 $$N DEG_LON GR 19                                                                </span></span>
 <span><span class="co">#&gt;     result</span></span>
-<span><span class="co">#&gt; 621 TRUE  </span></span>
-<span><span class="co">#&gt; 622 TRUE  </span></span>
-<span><span class="co">#&gt; 623 FALSE </span></span>
-<span><span class="co">#&gt; 624 TRUE  </span></span>
-<span><span class="co">#&gt; 625 FALSE </span></span>
-<span><span class="co">#&gt; 180 FALSE </span></span>
-<span><span class="co">#&gt; 179 FALSE </span></span>
-<span><span class="co">#&gt; 626 FALSE </span></span>
-<span><span class="co">#&gt; 627 FALSE </span></span>
-<span><span class="co">#&gt; 628 FALSE </span></span>
-<span><span class="co">#&gt; 323 FALSE </span></span>
-<span><span class="co">#&gt; 629 FALSE </span></span>
+<span><span class="co">#&gt; 606 TRUE  </span></span>
+<span><span class="co">#&gt; 607 TRUE  </span></span>
+<span><span class="co">#&gt; 608 FALSE </span></span>
+<span><span class="co">#&gt; 609 TRUE  </span></span>
+<span><span class="co">#&gt; 610 FALSE </span></span>
+<span><span class="co">#&gt; 177 FALSE </span></span>
+<span><span class="co">#&gt; 176 FALSE </span></span>
+<span><span class="co">#&gt; 611 FALSE </span></span>
+<span><span class="co">#&gt; 612 FALSE </span></span>
+<span><span class="co">#&gt; 613 FALSE </span></span>
+<span><span class="co">#&gt; 318 FALSE </span></span>
+<span><span class="co">#&gt; 614 FALSE </span></span>
 <span><span class="co">#&gt;     responsible_taxa                                                                                          </span></span>
-<span><span class="co">#&gt; 621 Fagus sylvatica                                                                                           </span></span>
-<span><span class="co">#&gt; 622 Acer pseudoplatanus | Sorbus aucuparia | Abies alba | Fagus sylvatica                                     </span></span>
-<span><span class="co">#&gt; 623 Acer pseudoplatanus | Sorbus aucuparia | Abies alba | Fagus sylvatica                                     </span></span>
-<span><span class="co">#&gt; 624 Luzula nivea | Hieracium murorum | Veronica urticifolia | Dryopteris filix-mas aggr. | Prenanthes purpurea</span></span>
-<span><span class="co">#&gt; 625 Luzula nivea | Hieracium murorum                                                                          </span></span>
-<span><span class="co">#&gt; 180 &lt;NA&gt;                                                                                                      </span></span>
-<span><span class="co">#&gt; 179 &lt;NA&gt;                                                                                                      </span></span>
-<span><span class="co">#&gt; 626 &lt;NA&gt;                                                                                                      </span></span>
-<span><span class="co">#&gt; 627 &lt;NA&gt;                                                                                                      </span></span>
-<span><span class="co">#&gt; 628 &lt;NA&gt;                                                                                                      </span></span>
-<span><span class="co">#&gt; 323 &lt;NA&gt;                                                                                                      </span></span>
-<span><span class="co">#&gt; 629 &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; 606 Fagus sylvatica                                                                                           </span></span>
+<span><span class="co">#&gt; 607 Acer pseudoplatanus | Sorbus aucuparia | Abies alba | Fagus sylvatica                                     </span></span>
+<span><span class="co">#&gt; 608 Acer pseudoplatanus | Sorbus aucuparia | Abies alba | Fagus sylvatica                                     </span></span>
+<span><span class="co">#&gt; 609 Luzula nivea | Hieracium murorum | Veronica urticifolia | Dryopteris filix-mas aggr. | Prenanthes purpurea</span></span>
+<span><span class="co">#&gt; 610 Luzula nivea | Hieracium murorum                                                                          </span></span>
+<span><span class="co">#&gt; 177 &lt;NA&gt;                                                                                                      </span></span>
+<span><span class="co">#&gt; 176 &lt;NA&gt;                                                                                                      </span></span>
+<span><span class="co">#&gt; 611 &lt;NA&gt;                                                                                                      </span></span>
+<span><span class="co">#&gt; 612 &lt;NA&gt;                                                                                                      </span></span>
+<span><span class="co">#&gt; 613 &lt;NA&gt;                                                                                                      </span></span>
+<span><span class="co">#&gt; 318 &lt;NA&gt;                                                                                                      </span></span>
+<span><span class="co">#&gt; 614 &lt;NA&gt;</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="print-classification-hierarchy">Print classification hierarchy<a class="anchor" aria-label="anchor" href="#print-classification-hierarchy"></a>

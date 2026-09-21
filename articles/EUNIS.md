@@ -169,7 +169,7 @@ were successfully identified:
 ``` r
 
 outcome_sites
-#> # A tibble: 200 × 9
+#> # A tibble: 200 × 11
 #>    PlotObservationID Coast_EEA Dunes_Bohn Ecoreg Ecoreg_name  Country Country_ID
 #>    <chr>             <chr>     <chr>       <dbl> <chr>        <chr>   <chr>     
 #>  1 JZ37              N_COAST   N_DUNES       795 Italian scl… Italy   IT        
@@ -183,7 +183,8 @@ outcome_sites
 #>  9 ZM18              N_COAST   N_DUNES       644 Appenine de… Italy   IT        
 #> 10 BQ20              N_COAST   N_DUNES       644 Appenine de… Italy   IT        
 #> # ℹ 190 more rows
-#> # ℹ 2 more variables: Longitude <dbl>, Latitude <dbl>
+#> # ℹ 4 more variables: Longitude <dbl>, Latitude <dbl>, DEG_LON <dbl>,
+#> #   DEG_LAT <dbl>
 ```
 
 ### Missing info
@@ -195,7 +196,7 @@ country:
 
 outcome_sites |>
    filter(is.na(Ecoreg))
-#> # A tibble: 23 × 9
+#> # A tibble: 23 × 11
 #>    PlotObservationID Coast_EEA Dunes_Bohn Ecoreg Ecoreg_name Country Country_ID
 #>    <chr>             <chr>     <chr>       <dbl> <chr>       <chr>   <chr>     
 #>  1 OR48              MED_COAST N_DUNES        NA NA          Italy   IT        
@@ -209,7 +210,8 @@ outcome_sites |>
 #>  9 PK58              MED_COAST N_DUNES        NA NA          Italy   IT        
 #> 10 OY37              MED_COAST N_DUNES        NA NA          Italy   IT        
 #> # ℹ 13 more rows
-#> # ℹ 2 more variables: Longitude <dbl>, Latitude <dbl>
+#> # ℹ 4 more variables: Longitude <dbl>, Latitude <dbl>, DEG_LON <dbl>,
+#> #   DEG_LAT <dbl>
 ```
 
 Species on the coast (‘MED_COAST’) often have `NAs` for ecoregion and
@@ -246,79 +248,29 @@ outcome_species
 #> 10                        Oxalis acetosella           Oxalis acetosella    TRUE
 #> # ... 996 more row(s)
 summary(outcome_species)
-#> 1006 name(s): 935 matched (92.9%), 71 unmatched (7.1%)
-#> Unmatched names:
-#>   Aegopodium podagraria
-#>   Allium sp.
-#>   Anthoxanthum sp.
-#>   Anthyllis barba-jovis
-#>   Artemisia caerulescens var. palmata
-#>   Asparagus sp.
-#>   Borago officinalis
-#>   Cardamine chelidonia
-#>   Cardamine monteluccii
-#>   Carex macrolepis
-#>   Carex mucronata
-#>   Carex sp.
-#>   Centaurea triumfetti
-#>   Cerastium arvense var. etruscum
-#>   Cirsium sp.
-#>   Crithmum maritimum
-#>   Crocus neglectus
-#>   Crocus sp.
-#>   Cuscuta sp.
-#>   Dianthus sp.
-#>   Echinophora spinosa
-#>   Eryngium maritimum
-#>   Erysimum pseudorhaeticum
-#>   Festuca arundinacea subsp. arundinacea
-#>   Festuca riccerii
-#>   Festuca sp.
-#>   Flavoparmelia caperata
-#>   Galium sp.
-#>   Hieracium sp.
-#>   Humulus lupulus
-#>   Juglans regia
-#>   Juniperus communis subsp. saxatilis
-#>   Laurus nobilis
-#>   Leopoldia comosa
-#>   Linaria sp.
-#>   Marrubium incanum
-#>   Medicago sp.
-#>   Melica minuta var. arrecta
-#>   Melica uniflora
-#>   Narcissus poëticus
-#>   Odontites rubra
-#>   Odontites sp.
-#>   Ononis variegata
-#>   Orchis sp.
-#>   Oreojuncus trifidus
-#>   Paris quadrifolia
-#>   Phyteuma italicum
-#>   Plantago maritima subsp. serpentina
-#>   Potentilla sp.
-#>   Ranunculus sp.
-#>   Ranunculus velutinus
-#>   Rosa sp.
-#>   Rubus sp.
-#>   Scleropodium tourretti
-#>   Sherardia arvensis
-#>   Silene paradoxa
-#>   Silene pichiana
-#>   Spartium junceum
-#>   Staphylea pinnata
-#>   Stipellula capensis
-#>   Tanacetum corymbosum var. tenuifolium
-#>   Taraxacum erythrosperma
-#>   Taraxacum sp.
-#>   Thesium sommieri
-#>   Tordylium apulum
-#>   Tragopogon sp.
-#>   Trifolium sp.
-#>   Usnea sp.
-#>   Vicia sp.
-#>   Viola ferrarinii
-#>   Viola sp.
+#> 1006 names checked: 935 matched (92.9%), 71 not matched (7.1%).
+#> 
+#> Not matched:
+#>   genus only (25): Allium, Anthoxanthum, Asparagus, Carex, Cirsium, Crocus,
+#>     Cuscuta, Dianthus, Festuca, Galium, Hieracium, Linaria, Medicago, Odontites,
+#>     Orchis, Potentilla, Ranunculus, Rosa, Rubus, Taraxacum, Tragopogon,
+#>     Trifolium, Usnea, Vicia, Viola
+#>   below species level (7): Artemisia caerulescens var. palmata,
+#>     Cerastium arvense var. etruscum, Festuca arundinacea subsp. arundinacea,
+#>     Juniperus communis subsp. saxatilis, Melica minuta var. arrecta,
+#>     Plantago maritima subsp. serpentina, Tanacetum corymbosum var. tenuifolium
+#>   species (39): Aegopodium podagraria, Anthyllis barba-jovis,
+#>     Borago officinalis, Cardamine chelidonia, Cardamine monteluccii,
+#>     Carex macrolepis, Carex mucronata, Centaurea triumfetti, Crithmum maritimum,
+#>     Crocus neglectus, Echinophora spinosa, Eryngium maritimum,
+#>     Erysimum pseudorhaeticum, Festuca riccerii, Flavoparmelia caperata,
+#>     Humulus lupulus, Juglans regia, Laurus nobilis, Leopoldia comosa,
+#>     Marrubium incanum, Melica uniflora, Narcissus poëticus, Odontites rubra,
+#>     Ononis variegata, Oreojuncus trifidus, Paris quadrifolia, Phyteuma italicum,
+#>     Ranunculus velutinus, Scleropodium tourretti, Sherardia arvensis,
+#>     Silene paradoxa, Silene pichiana, Spartium junceum, Staphylea pinnata,
+#>     Stipellula capensis, Taraxacum erythrosperma, Thesium sommieri,
+#>     Tordylium apulum, Viola ferrarinii
 ```
 
 ``` r
@@ -343,22 +295,24 @@ res <- RESY::resy_classify(
   header = outcome_sites,
   scheme = "EUNIS"
   )
+#> Warning: The expert system uses header columns that `header` does not have:
+#> Dataset, Altitude (m). Conditions on them are evaluated as if the value were 0.
 #> Step 5.1  Number of conditions with number of species of a group: 15
 #> Step 5.2  Number of conditions with minimum number of species: 127
 #> Step 5.3  Number of conditions with sum of square rooted Cover_Perc of species: 140
 #> Step 5.4  Number of conditions with total Cover_Perc of the group: 0
 #> Step 5.5  Number of conditions with total Cover_Perc of all other species: 1
-#>           Number of conditions with total Cover_Perc of all other species except those on the left-hand side: 32
+#>           Number of conditions with total Cover_Perc of all other species except those on the left-hand side: 31
 #>           Number of conditions with $05, $25 etc.: 4
 #> Step 5.6  Number of conditions with maximum cover of the group: 81
-#> Step 5.7  Number of conditions with single species, header levels (e.g. country names): 114
+#> Step 5.7  Number of conditions with single species, header levels (e.g. country names): 94
 #> Step 5.8  Number of conditions with maximum Cover_Perc in plot: 1
 #>           Number of conditions with maximum Cover_Perc in plot EXCEPT species of target group: 0
 #> Step 5.9  Number of T$ NON conditions: 140
 #> Step 5.10  Header conditions with numeric values: 4
 #>   Header conditions with character values: 4
-#> adapt conditions 2026-09-21 15:20:57.649478
-#> classification from here on 2026-09-21 15:20:57.744591
+#> adapt conditions 2026-09-21 15:39:21.201222
+#> classification from here on 2026-09-21 15:39:21.294666
 ```
 
 ### Inspect the results
@@ -373,7 +327,7 @@ types, but with different priorities.
 cand <- resy_candidates(res, top_n = 3) |>
   tibble()
 cand
-#> # A tibble: 321 × 4
+#> # A tibble: 305 × 4
 #>    plot_id type  priority priority_rank
 #>    <chr>   <chr> <ord>            <int>
 #>  1 AE28    R     1                    1
@@ -386,7 +340,7 @@ cand
 #>  8 BK34    R     1                    1
 #>  9 BK70    P     1                    1
 #> 10 BK70    P3b   2                    2
-#> # ℹ 311 more rows
+#> # ℹ 295 more rows
 ```
 
 #### Plot-level details
@@ -508,44 +462,44 @@ resy_eval_plot(res, p = "AM30", type = "T17")
 #> 
 #> Relevant expressions for T17 :
 #>     expressions                                                                      
-#> 621 #TC Fagus-sylvatica-orientalis GR 30                                             
-#> 622 Fagus sylvatica GR #SC Trees EXCEPT Fagus sylvatica                              
-#> 623 Fagus orientalis GR #SC Trees EXCEPT Fagus orientalis                            
-#> 624 ### +11 Eutrophic-deciduous-forest-species GR ### +11 Acidophilous-forest-species
-#> 625 #TC +11 Acidophilous-forest-species GR 25                                        
-#> 180 $$C Country EQ Ireland                                                           
-#> 179 $$C Country EQ United Kingdom                                                    
-#> 626 $$N DEG_LAT GR 53                                                                
-#> 627 $$N DEG_LAT GR 48                                                                
-#> 628 $$N DEG_LON GR 26.5                                                              
-#> 323 $$N DEG_LAT GR 55                                                                
-#> 629 $$N DEG_LON GR 19                                                                
+#> 606 #TC Fagus-sylvatica-orientalis GR 30                                             
+#> 607 Fagus sylvatica GR #SC Trees EXCEPT Fagus sylvatica                              
+#> 608 Fagus orientalis GR #SC Trees EXCEPT Fagus orientalis                            
+#> 609 ### +11 Eutrophic-deciduous-forest-species GR ### +11 Acidophilous-forest-species
+#> 610 #TC +11 Acidophilous-forest-species GR 25                                        
+#> 177 $$C Country EQ Ireland                                                           
+#> 176 $$C Country EQ United Kingdom                                                    
+#> 611 $$N DEG_LAT GR 53                                                                
+#> 612 $$N DEG_LAT GR 48                                                                
+#> 613 $$N DEG_LON GR 26.5                                                              
+#> 318 $$N DEG_LAT GR 55                                                                
+#> 614 $$N DEG_LON GR 19                                                                
 #>     result
-#> 621 TRUE  
-#> 622 TRUE  
-#> 623 FALSE 
-#> 624 TRUE  
-#> 625 FALSE 
-#> 180 FALSE 
-#> 179 FALSE 
-#> 626 FALSE 
-#> 627 FALSE 
-#> 628 FALSE 
-#> 323 FALSE 
-#> 629 FALSE 
+#> 606 TRUE  
+#> 607 TRUE  
+#> 608 FALSE 
+#> 609 TRUE  
+#> 610 FALSE 
+#> 177 FALSE 
+#> 176 FALSE 
+#> 611 FALSE 
+#> 612 FALSE 
+#> 613 FALSE 
+#> 318 FALSE 
+#> 614 FALSE 
 #>     responsible_taxa                                                                                          
-#> 621 Fagus sylvatica                                                                                           
-#> 622 Acer pseudoplatanus | Sorbus aucuparia | Abies alba | Fagus sylvatica                                     
-#> 623 Acer pseudoplatanus | Sorbus aucuparia | Abies alba | Fagus sylvatica                                     
-#> 624 Luzula nivea | Hieracium murorum | Veronica urticifolia | Dryopteris filix-mas aggr. | Prenanthes purpurea
-#> 625 Luzula nivea | Hieracium murorum                                                                          
-#> 180 <NA>                                                                                                      
-#> 179 <NA>                                                                                                      
-#> 626 <NA>                                                                                                      
-#> 627 <NA>                                                                                                      
-#> 628 <NA>                                                                                                      
-#> 323 <NA>                                                                                                      
-#> 629 <NA>
+#> 606 Fagus sylvatica                                                                                           
+#> 607 Acer pseudoplatanus | Sorbus aucuparia | Abies alba | Fagus sylvatica                                     
+#> 608 Acer pseudoplatanus | Sorbus aucuparia | Abies alba | Fagus sylvatica                                     
+#> 609 Luzula nivea | Hieracium murorum | Veronica urticifolia | Dryopteris filix-mas aggr. | Prenanthes purpurea
+#> 610 Luzula nivea | Hieracium murorum                                                                          
+#> 177 <NA>                                                                                                      
+#> 176 <NA>                                                                                                      
+#> 611 <NA>                                                                                                      
+#> 612 <NA>                                                                                                      
+#> 613 <NA>                                                                                                      
+#> 318 <NA>                                                                                                      
+#> 614 <NA>
 ```
 
 #### Print classification hierarchy

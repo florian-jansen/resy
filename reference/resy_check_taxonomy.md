@@ -79,9 +79,10 @@ checked
 #> 2 Abies alba Mill.      Abies alba    TRUE
 #> 3   Planta inventa            <NA>   FALSE
 summary(checked)
-#> 3 name(s): 2 matched (66.7%), 1 unmatched (33.3%)
-#> Unmatched names:
-#>   Planta inventa
+#> 3 names checked: 2 matched (66.7%), 1 not matched (33.3%).
+#> 
+#> Not matched:
+#>   species (1): Planta inventa
 
 # Names held in a differently named column
 names(obs)[2] <- "species"

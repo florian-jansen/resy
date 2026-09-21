@@ -31,8 +31,12 @@ resy_harmonize_eunis(
 
 - source_crs:
 
-  Integer EPSG code of the input CRS. Required when \`data\` is a plain
-  data frame; ignored when \`data\` is already an \`sf\` object.
+  Integer EPSG code of the coordinates in a plain data frame, in any
+  coordinate reference system; they are converted as needed. When
+  \`NULL\` (default), coordinates that are all valid longitudes and
+  latitudes are read as degrees (EPSG:4326); other coordinates need the
+  code. Ignored when \`data\` is an \`sf\` object, which carries its own
+  CRS.
 
 - run_taxonomy:
 
@@ -65,7 +69,8 @@ A named list:
 - \`sites\`:
 
   Data frame of harmonised plot data, geometry dropped, WGS84
-  \`Longitude\` and \`Latitude\` added.
+  \`Longitude\` and \`Latitude\` added, and the same values as
+  \`DEG_LON\` and \`DEG_LAT\`, the header fields EUNIS-ESy reads.
 
 - \`species_checked\`:
 

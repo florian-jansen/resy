@@ -80,8 +80,11 @@ requirements before running this function.</p>
 
 
 <dt id="arg-source-crs">source_crs<a class="anchor" aria-label="anchor" href="#arg-source-crs"></a></dt>
-<dd><p>Integer EPSG code of the input CRS. Required when `data`
-is a plain data frame; ignored when `data` is already an `sf` object.</p></dd>
+<dd><p>Integer EPSG code of the coordinates in a plain data
+frame, in any coordinate reference system; they are converted as needed.
+When `NULL` (default), coordinates that are all valid longitudes and
+latitudes are read as degrees (EPSG:4326); other coordinates need the code.
+Ignored when `data` is an `sf` object, which carries its own CRS.</p></dd>
 
 
 <dt id="arg-run-taxonomy">run_taxonomy<a class="anchor" aria-label="anchor" href="#arg-run-taxonomy"></a></dt>
@@ -113,7 +116,8 @@ Required when `run_taxonomy = TRUE`.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list:</p><dl><dt>`sites`</dt>
 <dd><p>Data frame of harmonised plot data, geometry dropped,
-      WGS84 `Longitude` and `Latitude` added.</p></dd>
+      WGS84 `Longitude` and `Latitude` added, and the same values as
+      `DEG_LON` and `DEG_LAT`, the header fields EUNIS-ESy reads.</p></dd>
 
     <dt>`species_checked`</dt>
 <dd><p>Output from [resy_check_taxonomy()] when

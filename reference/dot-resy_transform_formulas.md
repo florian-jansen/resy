@@ -3,8 +3,10 @@
 Takes raw aggregations, groups, membership formulas and formula names
 (as produced by either the text or JSON section parsers) and applies all
 transformations needed by the solver: \#T\$ completion, GR NON insertion
-for bare \##D/##C/##Q expressions, EXCEPT completion for \#SC
-conditions, and OR-prefix expansion.
+for bare \##D/##C/##Q expressions, and EXCEPT completion for \#SC
+conditions. Groups combined with "\|" (for example "#TC Trees\|#TC
+Shrubs") are left as one condition; the solver evaluates them on the
+union of the groups.
 
 ## Usage
 
