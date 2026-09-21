@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Harmonising taxonomy before classification • RESY</title>
+<title>RESY taxonomy • RESY</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Harmonising taxonomy before classification">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="RESY taxonomy">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -41,7 +41,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/altitude-vignette.html">Get altitude data</a></li>
     <li><a class="dropdown-item" href="../articles/EUNIS.html">RESY EUNIS habitat classifications</a></li>
-    <li><a class="dropdown-item" href="../articles/taxonomy.html">Harmonising taxonomy before classification</a></li>
+    <li><a class="dropdown-item" href="../articles/taxonomy.html">RESY taxonomy</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -62,8 +62,11 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Harmonising taxonomy before classification</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>RESY taxonomy</h1>
+                        <h4 data-toc-skip class="author">Gilles
+Colling</h4>
             
+            <h4 data-toc-skip class="date">2026-09-21</h4>
       
 
       <div class="d-none name"><code>taxonomy.Rmd</code></div>
@@ -72,7 +75,8 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://florian-jansen.github.io/resy/">RESY</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://florian-jansen.github.io/resy/">RESY</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="why-a-separate-step">Why a separate step<a class="anchor" aria-label="anchor" href="#why-a-separate-step"></a>
 </h2>
@@ -85,9 +89,8 @@ European Vegetation Archive.</p>
 POWO, Euro+Med, a national checklist) will often use different strings
 for the same taxon: an accepted-name synonym, an author citation, or a
 spelling variant. Those names have to be harmonised to the expert
-vocabulary first. RESY keeps that as an explicit step rather than hiding
-it inside the classifier, so the taxonomic decisions stay visible and
-you can check them before they affect a classification.</p>
+vocabulary first. RESY treats this as a separate step, so you can check
+the taxonomic decisions before they affect a classification.</p>
 <p>The workflow is: resolve names, inspect the result, then
 classify.</p>
 </div>
@@ -114,6 +117,76 @@ which backbone it came from.</p>
 <p>Each row is one alternate spelling (<code>synonym</code>), the
 canonical ESy name it resolves to (<code>esy_canonical</code>), and the
 backbone(s) that support the pairing (<code>source</code>).</p>
+<p>A pair is listed under every backbone that supports it, so the counts
+per backbone add up to more than the number of rows.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">per_backbone</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span><span class="va">syn</span><span class="op">$</span><span class="va">source</span>, <span class="st">";"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">support</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  backbone <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">per_backbone</span><span class="op">)</span>,</span>
+<span>  pairs    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">per_backbone</span><span class="op">)</span>,</span>
+<span>  share    <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">per_backbone</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">syn</span><span class="op">)</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">support</span> <span class="op">&lt;-</span> <span class="va">support</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">support</span><span class="op">$</span><span class="va">pairs</span><span class="op">)</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span></span>
+<span>  <span class="va">support</span>,</span>
+<span>  row.names   <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  col.names   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Backbone"</span>, <span class="st">"Synonym pairs"</span>, <span class="st">"% of table"</span><span class="op">)</span>,</span>
+<span>  format.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>big.mark <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Backbone</th>
+<th align="right">Synonym pairs</th>
+<th align="right">% of table</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">gbif</td>
+<td align="right">50,877</td>
+<td align="right">83.5</td>
+</tr>
+<tr class="even">
+<td align="left">wfo</td>
+<td align="right">44,678</td>
+<td align="right">73.3</td>
+</tr>
+<tr class="odd">
+<td align="left">col</td>
+<td align="right">44,004</td>
+<td align="right">72.2</td>
+</tr>
+<tr class="even">
+<td align="left">itis</td>
+<td align="right">3,923</td>
+<td align="right">6.4</td>
+</tr>
+<tr class="odd">
+<td align="left">euromed</td>
+<td align="right">2,200</td>
+<td align="right">3.6</td>
+</tr>
+<tr class="even">
+<td align="left">ncbi</td>
+<td align="right">812</td>
+<td align="right">1.3</td>
+</tr>
+</tbody>
+</table>
+<p>Most pairs are supported by more than one backbone:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">per_pair</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span><span class="va">syn</span><span class="op">$</span><span class="va">source</span>, <span class="st">";"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">support_n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  n_backbones <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">per_pair</span><span class="op">)</span>,</span>
+<span>  pairs       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">per_pair</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">support_n</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">n_backbones</span>, y <span class="op">=</span> <span class="va">pairs</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_continuous</a></span><span class="op">(</span>labels <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="va">x</span>, big.mark <span class="op">=</span> <span class="st">","</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Number of backbones supporting a pair"</span>, y <span class="op">=</span> <span class="st">"Synonym pairs"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="taxonomy_files/figure-html/support-plot-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level2">
 <h2 id="resolve-names">Resolve names<a class="anchor" aria-label="anchor" href="#resolve-names"></a>
@@ -121,15 +194,20 @@ backbone(s) that support the pairing (<code>source</code>).</p>
 <p><code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> maps a column of names to the
 canonical vocabulary. A name already equal to a canonical name resolves
 to itself (<code>"exact"</code>); otherwise it is looked up in the
-synonym table (<code>"synonym"</code>); a name matching neither stays
-<code>NA</code> and is flagged <code>"unresolved"</code>. Nothing is
-ever replaced with a best guess.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+synonym table (<code>"synonym"</code>). A name that matches neither is
+matched again with its author citation removed by
+<code><a href="../reference/resy_clean_names.html">resy_clean_names()</a></code> (<code>"cleaned_exact"</code>,
+<code>"cleaned_synonym"</code>); the name in your data is left as it is.
+A name that still matches nothing stays <code>NA</code> and is flagged
+<code>"unresolved"</code>. Nothing is ever replaced with a best
+guess.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  TaxonName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Hibiscus praecox"</span>,        <span class="co"># a synonym in the shipped table</span></span>
 <span>    <span class="st">"Abelmoschus longifolius"</span>,  <span class="co"># another synonym</span></span>
 <span>    <span class="st">"Fagus sylvatica"</span>,          <span class="co"># already a canonical name</span></span>
+<span>    <span class="st">"Anemone nemorosa L."</span>,      <span class="co"># canonical name with an author citation</span></span>
 <span>    <span class="st">"Not a real species 123"</span>    <span class="co"># resolves to nothing</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -141,41 +219,41 @@ ever replaced with a best guess.</p>
 <span><span class="co">#&gt; 1        Hibiscus praecox Abelmoschus esculentus          synonym</span></span>
 <span><span class="co">#&gt; 2 Abelmoschus longifolius Abelmoschus esculentus          synonym</span></span>
 <span><span class="co">#&gt; 3         Fagus sylvatica        Fagus sylvatica            exact</span></span>
-<span><span class="co">#&gt; 4  Not a real species 123                   &lt;NA&gt;       unresolved</span></span></code></pre></div>
+<span><span class="co">#&gt; 4     Anemone nemorosa L.       Anemone nemorosa    cleaned_exact</span></span>
+<span><span class="co">#&gt; 5  Not a real species 123                   &lt;NA&gt;       unresolved</span></span></code></pre></div>
 <p><code><a href="../reference/resy_summarize_taxa.html">resy_summarize_taxa()</a></code> reports how many names resolved,
 the breakdown by confidence, and the distinct names that stayed
 unresolved.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_summarize_taxa.html">resy_summarize_taxa</a></span><span class="op">(</span><span class="va">resolved</span>, species_col <span class="op">=</span> <span class="st">"TaxonName"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $n</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
+<span><span class="co">#&gt; [1] 5</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $resolved</span></span>
-<span><span class="co">#&gt; [1] 3</span></span>
+<span><span class="co">#&gt; [1] 4</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $unresolved</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $by_confidence</span></span>
-<span><span class="co">#&gt;   confidence n prop</span></span>
-<span><span class="co">#&gt; 1      exact 1 0.25</span></span>
-<span><span class="co">#&gt; 2    synonym 2 0.50</span></span>
-<span><span class="co">#&gt; 3 unresolved 1 0.25</span></span>
+<span><span class="co">#&gt;      confidence n prop</span></span>
+<span><span class="co">#&gt; 1 cleaned_exact 1  0.2</span></span>
+<span><span class="co">#&gt; 2         exact 1  0.2</span></span>
+<span><span class="co">#&gt; 3       synonym 2  0.4</span></span>
+<span><span class="co">#&gt; 4    unresolved 1  0.2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $unresolved_taxa</span></span>
 <span><span class="co">#&gt; [1] "Not a real species 123"</span></span></code></pre></div>
-<p>The unresolved names are yours to handle: correct a spelling, add a
-row to your own crosswalk, or leave them out. The package will not
-decide for you.</p>
+<p>Unresolved names can be fixed by correcting a spelling, adding a row
+to your own crosswalk, or leaving them out.</p>
 </div>
 <div class="section level2">
 <h2 id="bring-your-own-crosswalk">Bring your own crosswalk<a class="anchor" aria-label="anchor" href="#bring-your-own-crosswalk"></a>
 </h2>
-<p>You are not tied to the shipped table.
-<code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> accepts any crosswalk with three
-columns: <code>synonym</code>, <code>esy_canonical</code>, and
-<code>source</code>. A small example ships with the package.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> also accepts your own crosswalk,
+with three columns: <code>synonym</code>, <code>esy_canonical</code>,
+and <code>source</code>. A small example ships with the package.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cw_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_crosswalk.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span></span>
 <span><span class="va">crosswalk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_read_synonyms.html">resy_read_synonyms</a></span><span class="op">(</span><span class="va">cw_path</span><span class="op">)</span></span>
 <span><span class="va">crosswalk</span></span>
@@ -187,7 +265,7 @@ columns: <code>synonym</code>, <code>esy_canonical</code>, and
 <span><span class="co">#&gt; 5 Anemone nemorosa L. Anemone nemorosa      author citation</span></span></code></pre></div>
 <p>Pass it to <code>synonyms=</code>, and give the target names to
 <code>canonical=</code> so resolution uses your table alone:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  TaxonName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Fagus silvatica"</span>, <span class="st">"Abies pectinata"</span>, <span class="st">"Quercus robur"</span><span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -204,25 +282,24 @@ columns: <code>synonym</code>, <code>esy_canonical</code>, and
 <span><span class="co">#&gt; 2 Abies pectinata      Abies alba          synonym</span></span>
 <span><span class="co">#&gt; 3   Quercus robur            &lt;NA&gt;       unresolved</span></span></code></pre></div>
 <p>If your crosswalk lives in an Excel sheet, read it yourself and pass
-the data frame. RESY validates the columns and uses it directly, so no
-Excel package is added as a dependency and the file stays in a format
-you can review:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+the data frame. RESY validates the columns and uses it directly, so it
+needs no Excel package as a dependency:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">crosswalk</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu">read_excel</span><span class="op">(</span><span class="st">"my_crosswalk.xlsx"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa</a></span><span class="op">(</span><span class="va">my_plots</span>, synonyms <span class="op">=</span> <span class="va">crosswalk</span>,</span>
 <span>                  canonical <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">crosswalk</span><span class="op">$</span><span class="va">esy_canonical</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>A synonym that maps to more than one canonical name is dropped rather
-than resolved to an arbitrary pick, so an ambiguous table never produces
-a silent substitution.</p>
+<p>A synonym that maps to more than one canonical name is dropped, so an
+ambiguous table cannot produce a silent substitution.</p>
 </div>
 <div class="section level2">
 <h2 id="classify-the-resolved-data">Classify the resolved data<a class="anchor" aria-label="anchor" href="#classify-the-resolved-data"></a>
 </h2>
-<p>Once names are in the expert vocabulary, classify as usual. Write the
-resolved canonical name back to the name column, keeping the original
-where a name did not resolve, and pass it to
-<code><a href="../reference/resy_classify.html">resy_classify()</a></code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>Once names are in the expert vocabulary, classify as usual. Resolve
+them against the vocabulary of the expert system you classify with (here
+<code>Apennine-test</code>), write the resolved canonical name back to
+the name column, keeping the original where a name did not resolve, and
+pass the result to <code><a href="../reference/resy_classify.html">resy_classify()</a></code>.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
@@ -237,6 +314,21 @@ where a name did not resolve, and pass it to
 <span>  Cover_Perc        <span class="op">=</span> <span class="va">species</span><span class="op">$</span><span class="va">cover</span>,</span>
 <span>  stringsAsFactors  <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
+<span><span class="va">expert</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_load_expert.html">resy_load_expert</a></span><span class="op">(</span>scheme <span class="op">=</span> <span class="st">"Apennine-test"</span><span class="op">)</span></span>
+<span><span class="va">expert_vocab</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">expert</span><span class="op">$</span><span class="va">aggs</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">expert</span><span class="op">$</span><span class="va">aggs</span>, use.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resolved_obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa</a></span><span class="op">(</span></span>
+<span>  <span class="va">obs</span>, species_col <span class="op">=</span> <span class="st">"TaxonName"</span>, canonical <span class="op">=</span> <span class="va">expert_vocab</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">resolved_obs</span><span class="op">$</span><span class="va">taxon_confidence</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; exact </span></span>
+<span><span class="co">#&gt;   200</span></span>
+<span></span>
+<span><span class="va">resolved_obs</span><span class="op">$</span><span class="va">TaxonName</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">resolved_obs</span><span class="op">$</span><span class="va">canonical</span><span class="op">)</span>, <span class="va">resolved_obs</span><span class="op">$</span><span class="va">TaxonName</span>, <span class="va">resolved_obs</span><span class="op">$</span><span class="va">canonical</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">obs</span> <span class="op">&lt;-</span> <span class="va">resolved_obs</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PlotObservationID"</span>, <span class="st">"TaxonName"</span>, <span class="st">"Cover_Perc"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="va">header</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">obs</span><span class="op">[</span><span class="st">"PlotObservationID"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_classify.html">resy_classify</a></span><span class="op">(</span><span class="va">obs</span>, <span class="va">header</span>, scheme <span class="op">=</span> <span class="st">"Apennine-test"</span><span class="op">)</span></span>
@@ -246,10 +338,9 @@ where a name did not resolve, and pass it to
 <p>For a quick pass,
 <code>resy_classify(..., resolve_taxa = TRUE)</code> runs the resolution
 against the expert vocabulary and then classifies in a single call, and
-reports what it did in <code>res$taxon_resolution</code>. Doing it in
-two steps, as above, is the recommended route: it keeps the resolution
-result in your hands so you can check the unresolved names before they
-reach the classifier.</p>
+reports what it did in <code>res$taxon_resolution</code>. The two-step
+route above is recommended, since it lets you check the unresolved names
+before they reach the classifier.</p>
 </div>
 <div class="section level2">
 <h2 id="building-a-crosswalk-with-taxify">Building a crosswalk with taxify<a class="anchor" aria-label="anchor" href="#building-a-crosswalk-with-taxify"></a>
@@ -257,9 +348,10 @@ reach the classifier.</p>
 <p>To assemble a crosswalk from offline backbone tables (no API calls),
 the <a href="https://github.com/gcol33/taxify" class="external-link">taxify</a> package
 matches names against Euro+Med, WFO, GBIF, Catalogue of Life, ITIS, and
-NCBI and records the supporting backbone for each match. Its output maps
-to the <code>synonym</code> / <code>esy_canonical</code> /
-<code>source</code> schema <code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> expects.</p>
+NCBI and records the supporting backbone for each match. A table with
+the columns <code>synonym</code>, <code>esy_canonical</code>, and
+<code>source</code> built from those matches can be passed to
+<code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> as <code>synonyms=</code>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

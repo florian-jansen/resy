@@ -5,8 +5,13 @@ the expert system, so the result can be classified with
 [`resy_classify`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
 without hand-harmonising names. A name already equal to a canonical ESy
 name resolves to itself (`"exact"`); otherwise it is looked up in the
-synonym table (`"synonym"`); a name matching neither is left `NA` and
-flagged `"unresolved"` – never replaced with a best guess.
+synonym table (`"synonym"`). A name that matches neither as given is
+tried again with its author citation removed by
+[`resy_clean_names`](https://florian-jansen.github.io/resy/reference/resy_clean_names.md)
+(`"cleaned_exact"`, `"cleaned_synonym"`); the cleaned form is used only
+for matching, so a name is never altered when it already matches. A name
+that still matches nothing is left `NA` and flagged `"unresolved"`; it
+is never replaced with a best guess.
 
 ## Usage
 
@@ -47,8 +52,8 @@ resy_resolve_taxa(
 ## Value
 
 `obs` with two appended columns: `canonical` (the resolved ESy name,
-`NA` when unresolved) and `taxon_confidence` (`"exact"`, `"synonym"`, or
-`"unresolved"`).
+`NA` when unresolved) and `taxon_confidence` (`"exact"`, `"synonym"`,
+`"cleaned_exact"`, `"cleaned_synonym"`, or `"unresolved"`).
 
 ## Details
 

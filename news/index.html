@@ -21,7 +21,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/altitude-vignette.html">Get altitude data</a></li>
     <li><a class="dropdown-item" href="../articles/EUNIS.html">RESY EUNIS habitat classifications</a></li>
-    <li><a class="dropdown-item" href="../articles/taxonomy.html">Harmonising taxonomy before classification</a></li>
+    <li><a class="dropdown-item" href="../articles/taxonomy.html">RESY taxonomy</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -67,6 +67,8 @@
 <ul><li>
 <code><a href="../reference/resy_check_eunis.html">resy_check_eunis()</a></code> — validates plot data against EUNIS structural requirements before harmonization, returning <code>list(ok, errors, warnings)</code>.</li>
 <li>New general vignette <code><a href="../articles/RESY.html">vignette("RESY")</a></code> covering classification with both EUNIS and Apennine-test expert systems without EUNIS-specific geographic steps.</li>
+<li>
+<code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> matches a name a second time with its author citation removed (<code><a href="../reference/resy_clean_names.html">resy_clean_names()</a></code>) when it does not match as given. These matches are labelled <code>"cleaned_exact"</code> and <code>"cleaned_synonym"</code> in <code>taxon_confidence</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="package-size-0-3">Package size<a class="anchor" aria-label="anchor" href="#package-size-0-3"></a></h3>

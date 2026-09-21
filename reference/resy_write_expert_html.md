@@ -2,11 +2,10 @@
 
 Writes the classification hierarchy built by
 [`resy_expert_tree`](https://florian-jansen.github.io/resy/reference/resy_expert_tree.md)
-to a single, self-contained HTML file: a collapsible tree built from
-native `<details>` elements, with an in-page filter and expand/collapse
-controls. The page has no external dependencies – no JavaScript library,
-no web fonts, no separate asset files – so it opens identically in any
-browser and can be shared as one file.
+to a single HTML file. The tree is made of native `<details>` elements,
+with an in-page filter and expand/collapse controls. The file loads no
+JavaScript library, web fonts, or other assets, so it can be shared as
+one file.
 
 ## Usage
 

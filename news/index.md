@@ -43,6 +43,11 @@
   [`vignette("RESY")`](https://florian-jansen.github.io/resy/articles/RESY.md)
   covering classification with both EUNIS and Apennine-test expert
   systems without EUNIS-specific geographic steps.
+- [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
+  matches a name a second time with its author citation removed
+  ([`resy_clean_names()`](https://florian-jansen.github.io/resy/reference/resy_clean_names.md))
+  when it does not match as given. These matches are labelled
+  `"cleaned_exact"` and `"cleaned_synonym"` in `taxon_confidence`.
 
 ### Package size
 
