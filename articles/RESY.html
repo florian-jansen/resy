@@ -265,29 +265,12 @@ select the bundled expert system; it will be loaded automatically.</p>
 <code><a href="../reference/resy_view_expert.html">resy_view_expert()</a></code>.</p>
 </div>
 <div class="section level3">
-<h3 id="vegetation-type-details">Vegetation type details<a class="anchor" aria-label="anchor" href="#vegetation-type-details"></a>
-</h3>
-<p><code><a href="../reference/resy_eval_type.html">resy_eval_type()</a></code> shows conditiosn of a type is
-evaluated.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_eval_type.html">resy_eval_type</a></span><span class="op">(</span><span class="va">res_apennine</span>, t <span class="op">=</span> <span class="st">"FB"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; FB    Beech-fir montane forest</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; (&lt;#TC Beech-forest-trees GR 15&gt; AND &lt;#TC Beech-forest-herbs GR 10&gt;)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; (col2 &amp; col3)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   expressions                 </span></span>
-<span><span class="co">#&gt; 2 #TC Beech-forest-trees GR 15</span></span>
-<span><span class="co">#&gt; 3 #TC Beech-forest-herbs GR 10</span></span></code></pre></div>
-</div>
-<div class="section level3">
 <h3 id="long-table-of-candidates-for-all-plots">Long table of candidates for all plots<a class="anchor" aria-label="anchor" href="#long-table-of-candidates-for-all-plots"></a>
 </h3>
 <p><code><a href="../reference/resy_candidates.html">resy_candidates()</a></code> extracts ranked classification
 results. Use <code>top_n</code> to limit the number of types returned
 per plot.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cand_apennine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res_apennine</span>, top_n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cand_apennine</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    plot_id   type priority priority_rank</span></span>
@@ -305,7 +288,7 @@ per plot.</p>
 <p><code><a href="../reference/resy_eval_plot.html">resy_eval_plot()</a></code> prints the full evidence for one plot:
 which species matched, which group conditions fired, and which
 vegetation-type formulas evaluated to <code>TRUE</code>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Replace "AN57" with a PlotObservationID present in your data</span></span>
 <span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res_apennine</span>, p <span class="op">=</span> <span class="st">"AN57"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Plant observations for plot AN57 :</span></span>
@@ -324,6 +307,36 @@ vegetation-type formulas evaluated to <code>TRUE</code>.</p>
 <span><span class="co">#&gt; Possible types of plot "AN57" (135): F</span></span>
 <span><span class="co">#&gt; Priorities of these types: 1 </span></span>
 <span><span class="co">#&gt; Classified as: F</span></span></code></pre></div>
+<p>Passing <code>type</code> adds, for each named type, its formula as
+written in the expert file and the membership conditions it uses,
+whether each holds for this plot, and the plot’s taxa responsible for
+it:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res_apennine</span>, p <span class="op">=</span> <span class="st">"AN57"</span>, type <span class="op">=</span> <span class="st">"F"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Plant observations for plot AN57 :</span></span>
+<span><span class="co">#&gt;     PlotObservationID Cover_Perc               TaxonName        group_names</span></span>
+<span><span class="co">#&gt;                &lt;char&gt;      &lt;num&gt;                  &lt;char&gt;             &lt;char&gt;</span></span>
+<span><span class="co">#&gt;  1:              AN57        0.1 Gymnocarpium dryopteris               &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  2:              AN57        0.1   Athyrium filix-femina               &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  3:              AN57        0.1     Prenanthes purpurea Beech-forest-herbs</span></span>
+<span><span class="co">#&gt;  4:              AN57        0.1      Dryopteris expansa               &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  5:              AN57        0.1      Polypodium vulgare               &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  6:              AN57        0.5       Oxalis acetosella Beech-forest-herbs</span></span>
+<span><span class="co">#&gt;  7:              AN57        0.5        Sorbus aucuparia               &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  8:              AN57        0.5              Abies alba Beech-forest-trees</span></span>
+<span><span class="co">#&gt;  9:              AN57       62.5         Fagus sylvatica Beech-forest-trees</span></span>
+<span><span class="co">#&gt; 10:              AN57       37.5     Vaccinium myrtillus   Nardus-grassland</span></span>
+<span><span class="co">#&gt; Possible types of plot "AN57" (135): F</span></span>
+<span><span class="co">#&gt; Priorities of these types: 1 </span></span>
+<span><span class="co">#&gt; Classified as: F </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; F     Forest</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; &lt;#TC Beech-forest-trees GR 10&gt;</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Relevant expressions for F :</span></span>
+<span><span class="co">#&gt;   expressions                  result responsible_taxa            </span></span>
+<span><span class="co">#&gt; 1 #TC Beech-forest-trees GR 10 TRUE   Abies alba | Fagus sylvatica</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

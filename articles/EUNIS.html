@@ -406,8 +406,8 @@ which includes sites data (<code>header</code>).</p>
 <span><span class="co">#&gt; Step 5.9  Number of T$ NON conditions: 140</span></span>
 <span><span class="co">#&gt; Step 5.10  Header conditions with numeric values: 4</span></span>
 <span><span class="co">#&gt;   Header conditions with character values: 4</span></span>
-<span><span class="co">#&gt; adapt conditions 2026-09-21 14:22:56.578989</span></span>
-<span><span class="co">#&gt; classification from here on 2026-09-21 14:22:56.653566</span></span></code></pre></div>
+<span><span class="co">#&gt; adapt conditions 2026-09-21 14:42:04.945762</span></span>
+<span><span class="co">#&gt; classification from here on 2026-09-21 14:42:05.041437</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="inspect-the-results">Inspect the results<a class="anchor" aria-label="anchor" href="#inspect-the-results"></a>
@@ -488,29 +488,106 @@ vegetation-type formulas evaluated to <code>TRUE</code>.</p>
 <span><span class="co">#&gt; 10:        0.5</span></span>
 <span><span class="co">#&gt; 11:       87.5</span></span>
 <span><span class="co">#&gt; 12:        3.0</span></span>
-<span><span class="co">#&gt; Possible types of plot "AM30" (60): R</span></span>
-<span><span class="co">#&gt; Priorities of these types: 1 </span></span>
-<span><span class="co">#&gt; Classified as: R</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="vegetation-type-details">Vegetation type details<a class="anchor" aria-label="anchor" href="#vegetation-type-details"></a>
-</h4>
-<p><code><a href="../reference/resy_eval_type.html">resy_eval_type()</a></code> shows conditions of a type which is
-evaluated.</p>
+<span><span class="co">#&gt; Possible types of plot "AM30" (18): T17, T</span></span>
+<span><span class="co">#&gt; Priorities of these types: 4 3 </span></span>
+<span><span class="co">#&gt; Classified as: T17</span></span></code></pre></div>
+<p>Passing <code>type</code> adds, for each named type, its formula as
+written in the expert file and the membership conditions it uses,
+whether each holds for this plot, and the plot’s taxa responsible for
+it:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_eval_type.html">resy_eval_type</a></span><span class="op">(</span><span class="va">res</span>, t <span class="op">=</span> <span class="st">"R1A"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R1A   Semi-dry perennial calcareous grassland (meadow steppe)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res</span>, p <span class="op">=</span> <span class="st">"AM30"</span>, type <span class="op">=</span> <span class="st">"T17"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Plant observations for plot AM30 :</span></span>
+<span><span class="co">#&gt;     PlotObservationID                  TaxonName</span></span>
+<span><span class="co">#&gt;                &lt;char&gt;                     &lt;char&gt;</span></span>
+<span><span class="co">#&gt;  1:              AM30               Luzula nivea</span></span>
+<span><span class="co">#&gt;  2:              AM30          Cicerbita muralis</span></span>
+<span><span class="co">#&gt;  3:              AM30          Hieracium murorum</span></span>
+<span><span class="co">#&gt;  4:              AM30       Veronica urticifolia</span></span>
+<span><span class="co">#&gt;  5:              AM30        Acer pseudoplatanus</span></span>
+<span><span class="co">#&gt;  6:              AM30           Sorbus aucuparia</span></span>
+<span><span class="co">#&gt;  7:              AM30                 Abies alba</span></span>
+<span><span class="co">#&gt;  8:              AM30         Solidago virgaurea</span></span>
+<span><span class="co">#&gt;  9:              AM30 Dryopteris filix-mas aggr.</span></span>
+<span><span class="co">#&gt; 10:              AM30      Athyrium filix-femina</span></span>
+<span><span class="co">#&gt; 11:              AM30            Fagus sylvatica</span></span>
+<span><span class="co">#&gt; 12:              AM30        Prenanthes purpurea</span></span>
+<span><span class="co">#&gt;                                                                                                                                                                                                                  group_names</span></span>
+<span><span class="co">#&gt;                                                                                                                                                                                                                       &lt;char&gt;</span></span>
+<span><span class="co">#&gt;  1:                                                                                                                                                                       Hemicryptophytes | +11 Acidophilous-forest-species</span></span>
+<span><span class="co">#&gt;  2:                                             Hemicryptophytes | +04 R55-Lowland-moist-or-wet-tall-herb-and-fern-fringe | +04 R57-Herbaceous-forest-clearing-vegetation | +12 Grassland-species | +12 Synanthropic-species</span></span>
+<span><span class="co">#&gt;  3:                                                                                                                     Chamaephytes | +04 R52-Forest-fringe-of-acidic-nutrient-poor-soils | +11 Acidophilous-forest-species</span></span>
+<span><span class="co">#&gt;  4:                                                                                                                                                                Hemicryptophytes | +11 Eutrophic-deciduous-forest-species</span></span>
+<span><span class="co">#&gt;  5:                                                                               Native-broadleaf-trees | Native-trees | Noble-hardwood-trees | Noble-hardwood-trees-ravine-specialists | Ravine-forest-specialists | Trees</span></span>
+<span><span class="co">#&gt;  6:                                                     Forest-clearing-trees-and-shrubs | Native-broadleaf-trees | Native-trees | Shrubs | Temperate-deciduous-shrubs | Temperate-submediterranean-deciduous-shrubs | Trees</span></span>
+<span><span class="co">#&gt;  7:                                                                                                                                                            Native-conifer-trees | Native-trees | Temperate-Abies | Trees</span></span>
+<span><span class="co">#&gt;  8: Hemicryptophytes | +03 U2a-Siliceous-high-mountain-scree | +03 U2b-Siliceous-lowland-scree | +04 R52-Forest-fringe-of-acidic-nutrient-poor-soils | +12 Grassland-species | +12 Inland-sparsely-vegetated-habitat-species</span></span>
+<span><span class="co">#&gt;  9:                                                                                                                          +04 R55-Lowland-moist-or-wet-tall-herb-and-fern-fringe | +11 Eutrophic-deciduous-forest-species</span></span>
+<span><span class="co">#&gt; 10:                                                                                                                                                                                                                     &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 11:                                                                                                                                               Fagus-sylvatica-orientalis | Native-broadleaf-trees | Native-trees | Trees</span></span>
+<span><span class="co">#&gt; 12:                                                                                                                                                                Hemicryptophytes | +11 Eutrophic-deciduous-forest-species</span></span>
+<span><span class="co">#&gt;     Cover_Perc</span></span>
+<span><span class="co">#&gt;          &lt;num&gt;</span></span>
+<span><span class="co">#&gt;  1:        0.1</span></span>
+<span><span class="co">#&gt;  2:        0.1</span></span>
+<span><span class="co">#&gt;  3:        0.5</span></span>
+<span><span class="co">#&gt;  4:        0.5</span></span>
+<span><span class="co">#&gt;  5:        0.5</span></span>
+<span><span class="co">#&gt;  6:        0.5</span></span>
+<span><span class="co">#&gt;  7:        0.5</span></span>
+<span><span class="co">#&gt;  8:        0.5</span></span>
+<span><span class="co">#&gt;  9:        0.5</span></span>
+<span><span class="co">#&gt; 10:        0.5</span></span>
+<span><span class="co">#&gt; 11:       87.5</span></span>
+<span><span class="co">#&gt; 12:        3.0</span></span>
+<span><span class="co">#&gt; Possible types of plot "AM30" (18): T17, T</span></span>
+<span><span class="co">#&gt; Priorities of these types: 4 3 </span></span>
+<span><span class="co">#&gt; Classified as: T17 </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ((&lt;##Q +04 R1A-Semi-dry-perennial-calcareous-grassland GR NON ##Q +04 R1A-Semi-dry-perennial-calcareous-grassland&gt; AND &lt;#03 +04 R1A-Semi-dry-perennial-calcareous-grassland&gt;) AND &lt;#T$ GR 30&gt;) NOT &lt;#TC Trees GR 15&gt; OR &lt;TC Shrubs GR 15&gt;</span></span>
+<span><span class="co">#&gt; T17   Fagus forest on non-acid soils</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ((col217 &amp; col218) &amp; col219) &amp;! col4 | col5</span></span>
+<span><span class="co">#&gt; (((&lt;#TC Fagus-sylvatica-orientalis GR 30&gt; AND (&lt;Fagus sylvatica GR #SC Trees EXCEPT Fagus sylvatica&gt; OR &lt;Fagus orientalis GR #SC Trees EXCEPT Fagus orientalis&gt;)) AND &lt;### +11 Eutrophic-deciduous-forest-species GR ### +11 Acidophilous-forest-species&gt;) NOT &lt;#TC +11 Acidophilous-forest-species GR 25&gt;) NOT ((&lt;$$C Country EQ Ireland&gt; OR (&lt;$$C Country EQ United Kingdom&gt; AND &lt;$$N DEG_LAT GR 53&gt;)) OR ((&lt;$$N DEG_LAT GR 48&gt; AND &lt;$$N DEG_LON GR 26.5&gt;) OR (&lt;$$N DEG_LAT GR 55&gt; AND &lt;$$N DEG_LON GR 19&gt;)))</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     expressions                                                                                                   </span></span>
-<span><span class="co">#&gt; 217 ##Q +04 R1A-Semi-dry-perennial-calcareous-grassland GR NON ##Q +04 R1A-Semi-dry-perennial-calcareous-grassland</span></span>
-<span><span class="co">#&gt; 218 #03 +04 R1A-Semi-dry-perennial-calcareous-grassland                                                           </span></span>
-<span><span class="co">#&gt; 219 #T$ GR 30                                                                                                     </span></span>
-<span><span class="co">#&gt; 4   #TC Trees GR 15                                                                                               </span></span>
-<span><span class="co">#&gt; 5   TC Shrubs GR 15</span></span></code></pre></div>
+<span><span class="co">#&gt; Relevant expressions for T17 :</span></span>
+<span><span class="co">#&gt;     expressions                                                                      </span></span>
+<span><span class="co">#&gt; 621 #TC Fagus-sylvatica-orientalis GR 30                                             </span></span>
+<span><span class="co">#&gt; 622 Fagus sylvatica GR #SC Trees EXCEPT Fagus sylvatica                              </span></span>
+<span><span class="co">#&gt; 623 Fagus orientalis GR #SC Trees EXCEPT Fagus orientalis                            </span></span>
+<span><span class="co">#&gt; 624 ### +11 Eutrophic-deciduous-forest-species GR ### +11 Acidophilous-forest-species</span></span>
+<span><span class="co">#&gt; 625 #TC +11 Acidophilous-forest-species GR 25                                        </span></span>
+<span><span class="co">#&gt; 180 $$C Country EQ Ireland                                                           </span></span>
+<span><span class="co">#&gt; 179 $$C Country EQ United Kingdom                                                    </span></span>
+<span><span class="co">#&gt; 626 $$N DEG_LAT GR 53                                                                </span></span>
+<span><span class="co">#&gt; 627 $$N DEG_LAT GR 48                                                                </span></span>
+<span><span class="co">#&gt; 628 $$N DEG_LON GR 26.5                                                              </span></span>
+<span><span class="co">#&gt; 323 $$N DEG_LAT GR 55                                                                </span></span>
+<span><span class="co">#&gt; 629 $$N DEG_LON GR 19                                                                </span></span>
+<span><span class="co">#&gt;     result</span></span>
+<span><span class="co">#&gt; 621 TRUE  </span></span>
+<span><span class="co">#&gt; 622 TRUE  </span></span>
+<span><span class="co">#&gt; 623 FALSE </span></span>
+<span><span class="co">#&gt; 624 TRUE  </span></span>
+<span><span class="co">#&gt; 625 FALSE </span></span>
+<span><span class="co">#&gt; 180 FALSE </span></span>
+<span><span class="co">#&gt; 179 FALSE </span></span>
+<span><span class="co">#&gt; 626 FALSE </span></span>
+<span><span class="co">#&gt; 627 FALSE </span></span>
+<span><span class="co">#&gt; 628 FALSE </span></span>
+<span><span class="co">#&gt; 323 FALSE </span></span>
+<span><span class="co">#&gt; 629 FALSE </span></span>
+<span><span class="co">#&gt;     responsible_taxa                                                                                          </span></span>
+<span><span class="co">#&gt; 621 Fagus sylvatica                                                                                           </span></span>
+<span><span class="co">#&gt; 622 Acer pseudoplatanus | Sorbus aucuparia | Abies alba | Fagus sylvatica                                     </span></span>
+<span><span class="co">#&gt; 623 Acer pseudoplatanus | Sorbus aucuparia | Abies alba | Fagus sylvatica                                     </span></span>
+<span><span class="co">#&gt; 624 Luzula nivea | Hieracium murorum | Veronica urticifolia | Dryopteris filix-mas aggr. | Prenanthes purpurea</span></span>
+<span><span class="co">#&gt; 625 Luzula nivea | Hieracium murorum                                                                          </span></span>
+<span><span class="co">#&gt; 180 &lt;NA&gt;                                                                                                      </span></span>
+<span><span class="co">#&gt; 179 &lt;NA&gt;                                                                                                      </span></span>
+<span><span class="co">#&gt; 626 &lt;NA&gt;                                                                                                      </span></span>
+<span><span class="co">#&gt; 627 &lt;NA&gt;                                                                                                      </span></span>
+<span><span class="co">#&gt; 628 &lt;NA&gt;                                                                                                      </span></span>
+<span><span class="co">#&gt; 323 &lt;NA&gt;                                                                                                      </span></span>
+<span><span class="co">#&gt; 629 &lt;NA&gt;</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="print-classification-hierarchy">Print classification hierarchy<a class="anchor" aria-label="anchor" href="#print-classification-hierarchy"></a>

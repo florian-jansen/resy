@@ -197,25 +197,6 @@ print(tree_filled)
 To browse the type hierarchy of a loaded system, use
 [`resy_view_expert()`](https://florian-jansen.github.io/resy/reference/resy_view_expert.md).
 
-### Vegetation type details
-
-[`resy_eval_type()`](https://florian-jansen.github.io/resy/reference/resy_eval_type.md)
-shows conditiosn of a type is evaluated.
-
-``` r
-
-resy_eval_type(res_apennine, t = "FB")
-#> FB    Beech-fir montane forest
-#> 
-#> (<#TC Beech-forest-trees GR 15> AND <#TC Beech-forest-herbs GR 10>)
-#> 
-#> (col2 & col3)
-#> 
-#>   expressions                 
-#> 2 #TC Beech-forest-trees GR 15
-#> 3 #TC Beech-forest-herbs GR 10
-```
-
 ### Long table of candidates for all plots
 
 [`resy_candidates()`](https://florian-jansen.github.io/resy/reference/resy_candidates.md)
@@ -263,6 +244,39 @@ resy_eval_plot(res_apennine, p = "AN57")
 #> Possible types of plot "AN57" (135): F
 #> Priorities of these types: 1 
 #> Classified as: F
+```
+
+Passing `type` adds, for each named type, its formula as written in the
+expert file and the membership conditions it uses, whether each holds
+for this plot, and the plot’s taxa responsible for it:
+
+``` r
+
+resy_eval_plot(res_apennine, p = "AN57", type = "F")
+#> Plant observations for plot AN57 :
+#>     PlotObservationID Cover_Perc               TaxonName        group_names
+#>                <char>      <num>                  <char>             <char>
+#>  1:              AN57        0.1 Gymnocarpium dryopteris               <NA>
+#>  2:              AN57        0.1   Athyrium filix-femina               <NA>
+#>  3:              AN57        0.1     Prenanthes purpurea Beech-forest-herbs
+#>  4:              AN57        0.1      Dryopteris expansa               <NA>
+#>  5:              AN57        0.1      Polypodium vulgare               <NA>
+#>  6:              AN57        0.5       Oxalis acetosella Beech-forest-herbs
+#>  7:              AN57        0.5        Sorbus aucuparia               <NA>
+#>  8:              AN57        0.5              Abies alba Beech-forest-trees
+#>  9:              AN57       62.5         Fagus sylvatica Beech-forest-trees
+#> 10:              AN57       37.5     Vaccinium myrtillus   Nardus-grassland
+#> Possible types of plot "AN57" (135): F
+#> Priorities of these types: 1 
+#> Classified as: F 
+#> 
+#> F     Forest
+#> 
+#> <#TC Beech-forest-trees GR 10>
+#> 
+#> Relevant expressions for F :
+#>   expressions                  result responsible_taxa            
+#> 1 #TC Beech-forest-trees GR 10 TRUE   Abies alba | Fagus sylvatica
 ```
 
 ## Next steps

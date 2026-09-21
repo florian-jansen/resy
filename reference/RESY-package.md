@@ -22,9 +22,8 @@ can be added.
 3.  Classify with \[resy_classify()\].
 
 4.  Inspect the result: \[resy_candidates()\] lists the candidate types
-    per plot, \[resy_eval_plot()\] and \[resy_eval_type()\] show why a
-    plot or type matched, and \[resy_expert_tree()\] shows the type
-    hierarchy.
+    per plot, \[resy_eval_plot()\] shows why a plot matched, and
+    \[resy_expert_tree()\] shows the type hierarchy.
 
 ## References
 

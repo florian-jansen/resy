@@ -39,8 +39,6 @@
   : Official EUNIS habitat names
 - [`resy_eval_plot()`](https://florian-jansen.github.io/resy/reference/resy_eval_plot.md)
   : Evaluate and print details for a single plot
-- [`resy_eval_type()`](https://florian-jansen.github.io/resy/reference/resy_eval_type.md)
-  : Evaluate and print details for a vegetation type
 - [`resy_expert_path()`](https://florian-jansen.github.io/resy/reference/resy_expert_path.md)
   : Get the path to a bundled classification file
 - [`resy_expert_tree()`](https://florian-jansen.github.io/resy/reference/resy_expert_tree.md)
