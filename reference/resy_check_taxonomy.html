@@ -95,6 +95,31 @@ called.</p>
     <div class="dont-index"><p>[resy_load_expert()], [resy_harmonize_eunis()]</p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">parsed</span> <span class="op">&lt;-</span> <span class="fu"><a href="resy_load_expert.html">resy_load_expert</a></span><span class="op">(</span>scheme <span class="op">=</span> <span class="st">"Apennine-test"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  PlotObservationID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p1"</span>, <span class="st">"p1"</span>, <span class="st">"p2"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  TaxonName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Fagus sylvatica"</span>,     <span class="co"># canonical name</span></span></span>
+<span class="r-in"><span>                <span class="st">"Abies alba Mill."</span>,    <span class="co"># listed synonym of "Abies alba"</span></span></span>
+<span class="r-in"><span>                <span class="st">"Planta inventa"</span><span class="op">)</span>      <span class="co"># unknown to the expert system</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">resy_check_taxonomy</span><span class="op">(</span><span class="va">obs</span>, <span class="va">parsed</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          TaxonName matched       canonical</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  Fagus sylvatica    TRUE Fagus sylvatica</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 Abies alba Mill.    TRUE      Abies alba</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   Planta inventa   FALSE            &lt;NA&gt;</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Names held in a differently named column</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">obs</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"species"</span></span></span>
+<span class="r-in"><span><span class="fu">resy_check_taxonomy</span><span class="op">(</span><span class="va">obs</span>, <span class="va">parsed</span>, col <span class="op">=</span> <span class="st">"species"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          TaxonName matched       canonical</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  Fagus sylvatica    TRUE Fagus sylvatica</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 Abies alba Mill.    TRUE      Abies alba</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   Planta inventa   FALSE            &lt;NA&gt;</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

@@ -48,3 +48,29 @@ A data frame with one row per unique taxon name in \`obs\`:
 ## See also
 
 \[resy_load_expert()\], \[resy_harmonize_eunis()\]
+
+## Examples
+
+``` r
+parsed <- resy_load_expert(scheme = "Apennine-test")
+
+obs <- data.frame(
+  PlotObservationID = c("p1", "p1", "p2"),
+  TaxonName = c("Fagus sylvatica",     # canonical name
+                "Abies alba Mill.",    # listed synonym of "Abies alba"
+                "Planta inventa")      # unknown to the expert system
+)
+resy_check_taxonomy(obs, parsed)
+#>          TaxonName matched       canonical
+#> 1  Fagus sylvatica    TRUE Fagus sylvatica
+#> 2 Abies alba Mill.    TRUE      Abies alba
+#> 3   Planta inventa   FALSE            <NA>
+
+# Names held in a differently named column
+names(obs)[2] <- "species"
+resy_check_taxonomy(obs, parsed, col = "species")
+#>          TaxonName matched       canonical
+#> 1  Fagus sylvatica    TRUE Fagus sylvatica
+#> 2 Abies alba Mill.    TRUE      Abies alba
+#> 3   Planta inventa   FALSE            <NA>
+```

@@ -52,7 +52,7 @@ resy_add_classification(
 
 ## Value
 
-A named list with the paths of the files written:
+Invisibly, a named list with the paths of the files written:
 
 - \`txt\`:
 
@@ -60,9 +60,43 @@ A named list with the paths of the files written:
 
 - \`json\`:
 
-  Path to the stored \`.json\` file.
+  Path to the stored \`.json\` file, or \`NULL\` for \`.txt\` input.
+
+## Details
+
+The file is stored as \`\<root\>/\<scheme\>/\<version\>/expert.txt\` or
+\`expert.json\`, where \`\<root\>\` is \`tools::R_user_dir("RESY",
+"data")\` for \`location = "user"\`. A \`.txt\` file is stored
+unchanged, together with a \`metadata.json\` sidecar recording the
+scheme, version, source path and time of storage. Replacing a
+classification with \`overwrite = TRUE\` removes the files of the
+previous one, so a \`.txt\` never sits beside a stale \`.json\` that
+\[resy_load_expert()\] would read first.
 
 ## See also
 
 \[resy_validate_esy()\], \[resy_load_expert()\],
 \[resy_available_classifications()\]
+
+## Examples
+
+``` r
+# Store the bundled Apennine-test system under a new name. The store is
+# redirected to a temporary directory here; by default it lives in
+# tools::R_user_dir("RESY", "data").
+old <- Sys.getenv("R_USER_DATA_DIR")
+Sys.setenv(R_USER_DATA_DIR = tempfile("resy_store"))
+
+src   <- resy_expert_path("Apennine-test", "2026-06-27")
+paths <- resy_add_classification(src, scheme = "MyApennine",
+                                 version = "2026-09-21")
+basename(paths$json)
+#> [1] "expert.json"
+
+# The stored system is now found by scheme and version.
+parsed <- resy_load_expert(scheme = "MyApennine", version = "2026-09-21")
+parsed$vegtype.formula.names.short
+#> [1] "F"  "FB" "N"  "NG" "NS"
+
+Sys.setenv(R_USER_DATA_DIR = old)
+```

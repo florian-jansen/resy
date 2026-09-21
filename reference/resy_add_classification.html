@@ -105,20 +105,53 @@ to `TRUE`. Set to `FALSE` only if you are certain the file is valid.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list with the paths of the files written:</p><dl><dt>`txt`</dt>
+    <p>Invisibly, a named list with the paths of the files written:</p><dl><dt>`txt`</dt>
 <dd><p>Path to the stored `.txt` file, or `NULL` for JSON input.</p></dd>
 
     <dt>`json`</dt>
-<dd><p>Path to the stored `.json` file.</p></dd>
+<dd><p>Path to the stored `.json` file, or `NULL` for `.txt`
+      input.</p></dd>
 
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The file is stored as `&lt;root&gt;/&lt;scheme&gt;/&lt;version&gt;/expert.txt` or
+`expert.json`, where `&lt;root&gt;` is `tools::R_user_dir("RESY", "data")` for
+`location = "user"`. A `.txt` file is stored unchanged, together with a
+`metadata.json` sidecar recording the scheme, version, source path and
+time of storage. Replacing a classification with `overwrite = TRUE` removes
+the files of the previous one, so a `.txt` never sits beside a stale
+`.json` that [resy_load_expert()] would read first.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>[resy_validate_esy()], [resy_load_expert()],
   [resy_available_classifications()]</p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Store the bundled Apennine-test system under a new name. The store is</span></span></span>
+<span class="r-in"><span><span class="co"># redirected to a temporary directory here; by default it lives in</span></span></span>
+<span class="r-in"><span><span class="co"># tools::R_user_dir("RESY", "data").</span></span></span>
+<span class="r-in"><span><span class="va">old</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"R_USER_DATA_DIR"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_USER_DATA_DIR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"resy_store"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">src</span>   <span class="op">&lt;-</span> <span class="fu"><a href="resy_expert_path.html">resy_expert_path</a></span><span class="op">(</span><span class="st">"Apennine-test"</span>, <span class="st">"2026-06-27"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">paths</span> <span class="op">&lt;-</span> <span class="fu">resy_add_classification</span><span class="op">(</span><span class="va">src</span>, scheme <span class="op">=</span> <span class="st">"MyApennine"</span>,</span></span>
+<span class="r-in"><span>                                 version <span class="op">=</span> <span class="st">"2026-09-21"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">basename</a></span><span class="op">(</span><span class="va">paths</span><span class="op">$</span><span class="va">json</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "expert.json"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The stored system is now found by scheme and version.</span></span></span>
+<span class="r-in"><span><span class="va">parsed</span> <span class="op">&lt;-</span> <span class="fu"><a href="resy_load_expert.html">resy_load_expert</a></span><span class="op">(</span>scheme <span class="op">=</span> <span class="st">"MyApennine"</span>, version <span class="op">=</span> <span class="st">"2026-09-21"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">parsed</span><span class="op">$</span><span class="va">vegtype.formula.names.short</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "F"  "FB" "N"  "NG" "NS"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>R_USER_DATA_DIR <span class="op">=</span> <span class="va">old</span><span class="op">)</span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

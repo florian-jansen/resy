@@ -54,6 +54,9 @@ to get to it as soon as possible!
 
 ## All functions
 
+- [`RESY`](https://florian-jansen.github.io/resy/reference/RESY-package.md)
+  [`RESY-package`](https://florian-jansen.github.io/resy/reference/RESY-package.md)
+  : RESY: rule-based expert classification of vegetation plots
 - [`dunes_bohn_500mbuffer_epsg25832`](https://florian-jansen.github.io/resy/reference/bohn.md)
   : Bohn dune layer with 500 m buffer (EPSG:25832)
 - [`coastline_regions_epsg25832`](https://florian-jansen.github.io/resy/reference/co.md)
