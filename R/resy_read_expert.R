@@ -6,7 +6,7 @@
 #
 # This is the lossless counterpart to resy_parse_expert(): that parser rewrites
 # the formulas into the solver's internal form (inserting GR NON, EXCEPT, #T$
-# group names, expanding OR-prefixes) and is therefore one-way. The reader here
+# group names) and is therefore one-way. The reader here
 # retains the file verbatim for inspection or conversion.
 
 #' Read an expert-system file losslessly

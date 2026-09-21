@@ -4,12 +4,14 @@
   parts <- parts[nzchar(parts)]
   if (!length(parts)) return(character())
   
+  # "|" combines groups: "#TC A|#TC B" is the union of A and B. Every part after
+  # the first repeats the condition code, so the code is removed from each part.
   normalize_part <- function(p) {
     p <- trimws(p)
     if (!is.null(prefix) && startsWith(p, prefix)) {
       p <- trimws(substring(p, nchar(prefix) + 1L))
     }
-    p
+    trimws(sub("^(###|##[QCDN]|#TC|#T\\$|#SC|#\\$\\$|#[0-9]{2})\\s+", "", p))
   }
   parts <- vapply(parts, normalize_part, character(1), USE.NAMES = FALSE)
   parts[nzchar(parts)]

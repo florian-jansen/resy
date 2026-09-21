@@ -3,42 +3,15 @@
 # JSON parser (resy_parse_json). Takes raw aggs, groups, formula strings and
 # formula names; returns the intermediate list consumed by resy_parse_expert().
 
-#' @keywords internal
-.resy_expand_side_or <- function(side) {
-  side <- trimws(side)
-  parts.exc <- strsplit(side, "EXCEPT", fixed = TRUE)[[1]]
-  core <- trimws(parts.exc[1])
-  suffix <- if (length(parts.exc) > 1) paste0(" EXCEPT ", trimws(paste(parts.exc[-1], collapse = " EXCEPT "))) else ""
-  parts <- trimws(unlist(strsplit(core, "|#", fixed = TRUE), use.names = FALSE))
-  parts <- parts[nzchar(parts)]
-  if (length(parts) <= 1) return(side)
-  pref <- regmatches(parts, regexpr("^(###|##[QCD]|#TC|#T\\$|#SC|#\\$\\$|#\\d{2}|\\$\\$[CN])(?=\\s)", parts, perl = TRUE))
-  if (!all(nzchar(pref))) return(side)
-  paste0(parts, suffix)
-}
-
-#' @keywords internal
-.resy_expand_or_membership_expression <- function(expr) {
-  m <- regexec("^(.*?)\\s+(GR|GE|EQ)\\s+(.*?)$", trimws(expr), perl = TRUE)
-  parts <- regmatches(trimws(expr), m)[[1]]
-  if (length(parts) != 4) return(expr)
-  lhs <- .resy_expand_side_or(parts[2])
-  rhs <- .resy_expand_side_or(parts[4])
-  lhs <- if (length(lhs) == 1L) lhs else trimws(lhs)
-  rhs <- if (length(rhs) == 1L) rhs else trimws(rhs)
-  if (length(lhs) == 1L && length(rhs) == 1L) return(expr)
-  atoms <- as.vector(outer(lhs, rhs, function(l, r) paste(trimws(l), parts[3], trimws(r))))
-  paste(atoms, collapse = " OR ")
-}
-
 #' Apply solver-required formula transformations to a parsed expert system
 #'
 #' @description
 #' Takes raw aggregations, groups, membership formulas and formula names (as
 #' produced by either the text or JSON section parsers) and applies all
 #' transformations needed by the solver: #T$ completion, GR NON insertion for
-#' bare ##D/##C/##Q expressions, EXCEPT completion for #SC conditions, and
-#' OR-prefix expansion.
+#' bare ##D/##C/##Q expressions, and EXCEPT completion for #SC conditions.
+#' Groups combined with "|" (for example "#TC Trees|#TC Shrubs") are left as one
+#' condition; the solver evaluates them on the union of the groups.
 #'
 #' @param aggs Named list of species aggregations (Section 1).
 #' @param groups Named list of species groups (Section 2). Names must carry the
@@ -167,27 +140,6 @@
           membership.formulas[index5], fixed = TRUE
         )
       }
-    }
-  }
-
-  # ---- Step 4: Expand repeated-prefix OR syntax
-  if (length(membership.expressions) > 0) {
-    expanded <- vapply(membership.expressions,
-                       .resy_expand_or_membership_expression, character(1))
-    changed <- which(expanded != membership.expressions)
-    if (length(changed) > 0) {
-      for (i in changed) {
-        membership.formulas <- gsub(
-          paste0("<", membership.expressions[i], ">"),
-          paste0("<", gsub(" OR ", "> OR <", expanded[i], fixed = TRUE), ">"),
-          membership.formulas, fixed = TRUE
-        )
-      }
-      membership.expressions <- unlist(
-        regmatches(membership.formulas,
-                   gregexpr("(?<=<)[^<>]+(?=>)", membership.formulas, perl = TRUE)),
-        use.names = FALSE
-      )
     }
   }
 

@@ -122,3 +122,29 @@ test_that("header conditions use each plot's own header row, whatever the row or
   expect_equal(res$logi2$EC[match(c("p1", "p2", "p3", "p4"), names(res$types))],
                c(FALSE, TRUE, FALSE, TRUE))
 })
+
+test_that(".resy_membership_parts removes the repeated condition code from every part", {
+  expect_equal(.resy_membership_parts("Trees|### Shrubs"), c("Trees", "Shrubs"))
+  expect_equal(.resy_membership_parts("#TC Trees|#TC Shrubs", prefix = "#TC"),
+               c("Trees", "Shrubs"))
+  expect_equal(.resy_membership_parts("A|#02 +04 B"), c("A", "+04 B"))
+})
+
+test_that("groups combined with | are one condition on the union of the groups", {
+  parsed <- resy_load_expert(expertfile = test_path("fixtures", "group-union.json"))
+  expect_true("#TC Trees|#TC Shrubs" %in% parsed$conditions)
+  expect_false(any(parsed$conditions %in% c("TC Shrubs", "#TC Trees", "#TC Shrubs")))
+
+  obs <- data.frame(
+    PlotObservationID = c("both", "both", "trees"),
+    TaxonName = c("Fagus sylvatica", "Corylus avellana", "Fagus sylvatica"),
+    Cover_Perc = c(10, 10, 10)
+  )
+  header <- data.frame(PlotObservationID = c("both", "trees"))
+  res <- suppressMessages(resy_classify(
+    obs, header, expertfile = test_path("fixtures", "group-union.json"), mc = 1L
+  ))
+  i <- match(c("both", "trees"), names(res$types))
+  expect_equal(res$logi2$W[i], c(TRUE, FALSE))
+  expect_equal(res$logi2$N2[i], c(TRUE, FALSE))
+})
