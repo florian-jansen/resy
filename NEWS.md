@@ -76,6 +76,14 @@
   level and species. `resy_summarize_taxa()` is removed; use `summary()` on the
   result of `resy_resolve_taxa()`. With `resolve_taxa = TRUE`,
   `resy_classify()` stores that summary as `taxon_resolution`.
+* `resy_eval_plot()` explains a plot's classification in plain words: the types
+  whose rules hold with their priorities, the type chosen, and the plot's species
+  with cover. It then lists the lower-level types the plot did not reach, closest
+  first, and shows the closest in full: its rule with numbered conditions, and
+  for each condition whether it is met, the plot's value, the required value and
+  the species behind it. `type =` shows any type the same way; `lower = FALSE`
+  turns the list off. The `group_names` column is no longer added to the species
+  output.
 
 ## Fixes
 

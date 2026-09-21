@@ -4,7 +4,7 @@
 \alias{resy_eval_plot}
 \title{Evaluate and print details for a single plot}
 \usage{
-resy_eval_plot(res, p, type)
+resy_eval_plot(res, p, type, lower = TRUE)
 }
 \arguments{
 \item{res}{A `resy_result` returned by [resy_classify()].}
@@ -12,11 +12,25 @@ resy_eval_plot(res, p, type)
 \item{p}{Plot identifier (`PlotObservationID`) as character; if numeric, treated as
 row index in `header`.}
 
-\item{type}{Optional vegetation-type short code(s). For each, the type's name
-and formula as written in the expert file are printed, followed by the
-membership conditions it uses, whether each holds for the plot, and the
-plot's taxa responsible for it.}
+\item{type}{Optional vegetation-type short code(s) to show in the same way,
+whether or not their rules hold for the plot.}
+
+\item{lower}{Logical; if `TRUE` (default), list the lower-level types the
+plot did not reach, with their conditions.}
+}
+\value{
+`NULL`, invisibly. Called for the printed output.
 }
 \description{
-Evaluate and print details for a single plot
+Prints, in plain words, why one plot is classified as it is: the
+vegetation types whose rules hold for it with their priorities, the type it
+is classified as, and its species. Below that it lists the lower-level types of the
+classified type that the plot did not reach. Each is shown with its rule and
+with every condition the rule uses: whether the condition is met, the value
+the plot has, the value the condition requires, and the plot's species that
+count towards it. This shows, for example, why a plot is `R2` and not `R22`.
+A plot that matches no type is shown against the top-level types.
+
+In a rule, `[1]`, `[2]`, ... stand for the numbered conditions listed under
+it, combined with `and`, `or` and `not` as the expert system combines them.
 }
