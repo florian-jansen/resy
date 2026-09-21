@@ -2,6 +2,9 @@
 
 S3method(print,resy_expert)
 S3method(print,resy_expert_tree)
+S3method(print,resy_taxa)
+S3method(print,summary.resy_taxa)
+S3method(summary,resy_taxa)
 export(resy_add_classification)
 export(resy_available_classifications)
 export(resy_candidates)

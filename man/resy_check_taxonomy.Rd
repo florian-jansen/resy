@@ -15,21 +15,26 @@ resy_check_taxonomy(obs, parsed, col = "TaxonName")
 (default `"TaxonName"`).}
 }
 \value{
-A data frame with one row per unique taxon name in `obs`:
+A `resy_taxa` data frame with one row per unique taxon name in `obs`:
   \describe{
-    \item{`TaxonName`}{The name as it appears in `obs`.}
+    \item{`scientificName`}{The name as submitted in `obs`.}
+    \item{`TaxonName`}{The canonical name used by [resy_classify()], or `NA`
+      when unmatched.}
     \item{`matched`}{`TRUE` if the name was found as a canonical name or
       synonym in Section 1 of the expert system.}
-    \item{`canonical`}{The canonical name, or `NA` when unmatched.}
   }
 }
 \description{
 Validates taxon names in a plot observation table against the canonical
 names and synonyms declared in Section 1 of the loaded expert system.
-Returns a per-taxon summary of matches and canonical name mappings.
+Returns a per-taxon table of matches and canonical name mappings.
 
 This is a purely offline check; no external name-resolution service is
 called.
+
+The result is a `resy_taxa` data frame. Printing it shows what each column
+holds and how many names matched; [summary()] returns the match counts and
+the unmatched names.
 }
 \examples{
 parsed <- resy_load_expert(scheme = "Apennine-test")
@@ -40,7 +45,9 @@ obs <- data.frame(
                 "Abies alba Mill.",    # listed synonym of "Abies alba"
                 "Planta inventa")      # unknown to the expert system
 )
-resy_check_taxonomy(obs, parsed)
+checked <- resy_check_taxonomy(obs, parsed)
+checked
+summary(checked)
 
 # Names held in a differently named column
 names(obs)[2] <- "species"
