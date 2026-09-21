@@ -101,3 +101,24 @@ test_that(".resy_solve_membership classifies a plot from a parsed expert", {
   expect_equal(res$result.classification[["p1"]], "GR")
   expect_equal(res$result.classification[["p2"]], "FO")
 })
+
+test_that("header conditions use each plot's own header row, whatever the row order", {
+  obs <- data.frame(
+    PlotObservationID = c("p1", "p2", "p3", "p4"),
+    TaxonName = "Fagus sylvatica",
+    Cover_Perc = 50
+  )
+  header <- data.frame(
+    PlotObservationID = c("p4", "p3", "p2", "p1"),
+    Country = c("Italy", "Ireland", "Italy", "Ireland"),
+    Ecoreg = c(9, 1, 7, 2)
+  )
+  res <- suppressMessages(resy_classify(
+    obs, header, expertfile = test_path("fixtures", "header-conditions.json"), mc = 1L
+  ))
+
+  expect_equal(res$logi2$IE[match(c("p1", "p2", "p3", "p4"), names(res$types))],
+               c(TRUE, FALSE, TRUE, FALSE))
+  expect_equal(res$logi2$EC[match(c("p1", "p2", "p3", "p4"), names(res$types))],
+               c(FALSE, TRUE, FALSE, TRUE))
+})

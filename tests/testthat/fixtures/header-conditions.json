@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "scheme": "header-conditions",
+    "version": "2026-09-21",
+    "description": "Two types decided by header data only"
+  },
+  "synonyms": {"Fagus sylvatica": ["Fagus sylvatica L."]},
+  "groups": {
+    "### Trees": ["Fagus sylvatica"]
+  },
+  "rules": [
+    {"priority": 1, "code": "IE", "description": "Trees in Ireland",
+     "expression": "<#TC Trees GR 10> AND <$$C Country EQ Ireland>"},
+    {"priority": 1, "code": "EC", "description": "Trees in ecoregion above 5",
+     "expression": "<#TC Trees GR 10> AND <$$N Ecoreg GR 5>"}
+  ]
+}

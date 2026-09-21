@@ -95,6 +95,9 @@
   # Make sure PlotObservationID are character indices
   obs[, PlotObservationID := as.character(PlotObservationID)]
   header$PlotObservationID <- as.character(header$PlotObservationID)
+  # Header conditions ($$C, $$N) are filled row by row, so the header must be in
+  # the plot order of plot.cond; a plot missing from the header gets an NA row.
+  header <- header[match(dimnames(plot.cond)[[1]], header$PlotObservationID), , drop = FALSE]
 
   ###  R code for Expert system vegetation classification
   ###  Bruelheide H, Chytry M,  Tichý L & Jansen F  2021
