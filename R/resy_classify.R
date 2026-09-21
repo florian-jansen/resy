@@ -114,6 +114,18 @@ resy_classify <- function(obs,
   obs <- tmp$obs
   header <- tmp$header
 
+  # Header conditions ($$C, $$N) on a column the header lacks are evaluated as
+  # 0 by the solver, so say which columns are missing.
+  header_conds <- parsed$conditions[startsWith(parsed$conditions, "$$C") |
+                                      startsWith(parsed$conditions, "$$N")]
+  missing_cols <- setdiff(unique(trimws(substring(header_conds, 4L))), names(header))
+  if (length(missing_cols)) {
+    warning("The expert system uses header columns that `header` does not have: ",
+            paste(missing_cols, collapse = ", "),
+            ". Conditions on them are evaluated as if the value were 0.",
+            call. = FALSE)
+  }
+
   obs2 <- resy_aggregate_taxa(obs, parsed$aggs)
   plot.cond <- resy_init_plot_conditions(obs2, parsed$conditions)
   

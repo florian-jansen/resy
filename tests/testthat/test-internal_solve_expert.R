@@ -148,3 +148,14 @@ test_that("groups combined with | are one condition on the union of the groups",
   expect_equal(res$logi2$W[i], c(TRUE, FALSE))
   expect_equal(res$logi2$N2[i], c(TRUE, FALSE))
 })
+
+test_that("resy_classify warns about header columns the expert system uses but header lacks", {
+  obs <- data.frame(PlotObservationID = "p1", TaxonName = "Fagus sylvatica", Cover_Perc = 50)
+  header <- data.frame(PlotObservationID = "p1", Country = "Ireland")
+  expect_warning(
+    suppressMessages(resy_classify(
+      obs, header, expertfile = test_path("fixtures", "header-conditions.json"), mc = 1L
+    )),
+    "does not have: Ecoreg"
+  )
+})

@@ -11,8 +11,11 @@
 #'
 #' @param data A data frame or `sf` object containing plot data. If not an
 #'   `sf` object, columns `Longitude` and `Latitude` must be present.
-#' @param source_crs Integer EPSG code of the input CRS. Required when `data`
-#'   is a plain data frame; ignored when `data` is already an `sf` object.
+#' @param source_crs Integer EPSG code of the coordinates in a plain data
+#'   frame, in any coordinate reference system; they are converted as needed.
+#'   When `NULL` (default), coordinates that are all valid longitudes and
+#'   latitudes are read as degrees (EPSG:4326); other coordinates need the code.
+#'   Ignored when `data` is an `sf` object, which carries its own CRS.
 #' @param run_taxonomy Logical; if `TRUE`, runs [resy_check_taxonomy()] on
 #'   `species_data`.
 #' @param species_data A data frame with a column `species`. Required when
@@ -26,7 +29,8 @@
 #' @return A named list:
 #'   \describe{
 #'     \item{`sites`}{Data frame of harmonised plot data, geometry dropped,
-#'       WGS84 `Longitude` and `Latitude` added.}
+#'       WGS84 `Longitude` and `Latitude` added, and the same values as
+#'       `DEG_LON` and `DEG_LAT`, the header fields EUNIS-ESy reads.}
 #'     \item{`species_checked`}{Output from [resy_check_taxonomy()] when
 #'       `run_taxonomy = TRUE`, otherwise `NULL`.}
 #'   }
@@ -49,9 +53,18 @@ resy_harmonize_eunis <- function(
     if (!all(c("Longitude", "Latitude") %in% names(data)))
       stop('Data frame must contain columns "Longitude" and "Latitude".')
     
-    if (is.null(source_crs))
-      stop("source_crs must be provided for plain data frames.")
-    
+    if (is.null(source_crs)) {
+      lon <- suppressWarnings(as.numeric(data$Longitude))
+      lat <- suppressWarnings(as.numeric(data$Latitude))
+      in_degrees <- all(abs(lon) <= 180 & abs(lat) <= 90, na.rm = TRUE)
+      if (!in_degrees)
+        stop("The coordinates are not longitude/latitude in degrees; ",
+             "give their EPSG code as `source_crs`.", call. = FALSE)
+      message("`source_crs` not given; the coordinates are read as ",
+              "longitude/latitude in degrees (EPSG:4326).")
+      source_crs <- 4326
+    }
+
     data_sf <- sf::st_as_sf(
       data,
       coords = c("Longitude", "Latitude"),
@@ -93,7 +106,10 @@ resy_harmonize_eunis <- function(
     
     data_sf <- .resy_assign_ecoregions(data_sf)
     
-    if (anyNA(data_sf$Ecoreg))
+    if (all(is.na(data_sf$Ecoreg)))
+      warning('No site falls inside the ecoregion base map. Check that `source_crs` ',
+              'matches the coordinates (longitude/latitude in degrees is 4326).')
+    else if (anyNA(data_sf$Ecoreg))
       warning('NA values in "Ecoreg": some sites are outside the ecoregion base map.')
     
   } else if (anyNA(data_sf$Ecoreg)) {
@@ -108,7 +124,10 @@ resy_harmonize_eunis <- function(
     
     data_sf <- .resy_assign_country(data_sf)
     
-    if (anyNA(data_sf$Country))
+    if (all(is.na(data_sf$Country)))
+      warning('No site falls inside the country base map. Check that `source_crs` ',
+              'matches the coordinates (longitude/latitude in degrees is 4326).')
+    else if (anyNA(data_sf$Country))
       warning('NA values in "Country": some sites are outside the country base map.')
     
   } else if (anyNA(data_sf$Country)) {
@@ -155,6 +174,9 @@ resy_harmonize_eunis <- function(
   coords_mat         <- sf::st_coordinates(coords_wgs84)
   data_sf$Longitude  <- coords_mat[, 1]
   data_sf$Latitude   <- coords_mat[, 2]
+  # EUNIS-ESy reads the plot position from the header fields DEG_LON and DEG_LAT.
+  data_sf$DEG_LON    <- coords_mat[, 1]
+  data_sf$DEG_LAT    <- coords_mat[, 2]
 
   sites_output <- as.data.frame(sf::st_drop_geometry(data_sf)) |>
     dplyr::select(-dplyr::any_of("...1"))
