@@ -29,7 +29,7 @@
   
   .resy_print_type_definition(res$parsed, t)
   cat(vegtype.formulas.p[t], '\n\n', sep='')
-  col <- unique(as.numeric(stringr::str_extract_all(vegtype.formulas.p[t], "(?<=col\\s{0,1})[-0-9.]+")[[1]]))
+  col <- as.integer(sub("^col", "", all.vars(res$parsed$logexpr.formula[[t]])))
   print(data.frame(row.names = col, expressions = membership.expressions[col], check.names = FALSE), right = FALSE)
   
   # If there is a species group with same (normalized) name, print it.

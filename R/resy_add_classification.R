@@ -101,14 +101,14 @@ resy_add_classification <- function(file,
 
   # --- Resolve output location ------------------------------------------------
   if (location == "package") {
-    pkg_root <- resy_classifications_root("package")
+    pkg_root <- .resy_classifications_root("package")
     if (file.access(pkg_root, 2L) != 0L)
       stop("The package classification directory is not writable. ",
            "Use location = 'user' instead.", call. = FALSE)
   }
 
   out_dir <- file.path(
-    resy_classifications_root(location, create = TRUE), scheme, version
+    .resy_classifications_root(location, create = TRUE), scheme, version
   )
   if (!dir.exists(out_dir))
     dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)

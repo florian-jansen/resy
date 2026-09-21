@@ -12,8 +12,8 @@ test_that("data.table NSE pipelines relying on registered globals run", {
     TaxonName         = c("Sp1", "Sp3"),
     Cover_Perc        = c(10, 20)
   )
-  # resy_aggregate_taxa uses the `ind`/`values` NSE columns registered in zzz.R.
-  expect_silent(out <- RESY:::resy_aggregate_taxa(obs, aggs))
+  # .resy_aggregate_taxa rewrites TaxonName through the aggregation lookup.
+  expect_silent(out <- RESY:::.resy_aggregate_taxa(obs, aggs))
   expect_equal(out$TaxonName, c("Grp", "Sp3"))
 })
 

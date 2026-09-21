@@ -1,6 +1,6 @@
 
-#' @keywords internal
-resy_init_plot_conditions <- function(obs, membership.expressions) {
+#' @noRd
+.resy_init_plot_conditions <- function(obs, membership.expressions) {
   if (!inherits(obs, "data.table")) obs <- data.table::as.data.table(obs)
   if (!"PlotObservationID" %in% names(obs)) stop("obs must contain PlotObservationID")
   plots <- as.character(unique(obs$PlotObservationID))
@@ -126,8 +126,8 @@ resy_classify <- function(obs,
             call. = FALSE)
   }
 
-  obs2 <- resy_aggregate_taxa(obs, parsed$aggs)
-  plot.cond <- resy_init_plot_conditions(obs2, parsed$conditions)
+  obs2 <- .resy_aggregate_taxa(obs, parsed$aggs)
+  plot.cond <- .resy_init_plot_conditions(obs2, parsed$conditions)
   
   res <- .resy_solve_membership(
     obs = obs2,

@@ -48,17 +48,8 @@ resy_check_taxonomy <- function(obs, parsed, col = "TaxonName") {
   if (!col %in% names(obs))
     stop("Column '", col, "' not found in `obs`.")
 
-  aggs        <- parsed$aggs
-  canon_names <- names(aggs)
-
-  # Build lookup: synonym -> canonical, canonical -> itself
-  synonyms <- unlist(aggs, use.names = FALSE)
-  sources  <- rep(canon_names, lengths(aggs))
-  lookup   <- c(
-    stats::setNames(sources,     synonyms),
-    stats::setNames(canon_names, canon_names)
-  )
-  lookup <- lookup[!duplicated(names(lookup))]
+  canon_names <- names(parsed$aggs)
+  lookup      <- .resy_agg_lookup(parsed$aggs)
 
   taxa      <- unique(as.character(obs[[col]]))
   taxa      <- taxa[!is.na(taxa)]

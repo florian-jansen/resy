@@ -4,7 +4,7 @@
 # alongside the raw lines for inspection; it does not affect the lossless
 # representation, and can be skipped with `entries = FALSE`.
 #
-# This is the lossless counterpart to resy_parse_expert(): that parser rewrites
+# This is the lossless counterpart to resy_load_expert(): that parser rewrites
 # the formulas into the solver's internal form (inserting GR NON, EXCEPT, #T$
 # group names) and is therefore one-way. The reader here
 # retains the file verbatim for inspection or conversion.
@@ -16,8 +16,8 @@
 #' compatible expert systems) into a structured tree that preserves the source
 #' byte-for-byte.
 #'
-#' This is the lossless counterpart to \code{\link{resy_parse_expert}}. Where
-#' \code{resy_parse_expert} rewrites the formulas into the solver's internal
+#' This is the lossless counterpart to \code{\link{resy_load_expert}}. Where
+#' \code{resy_load_expert} rewrites the formulas into the solver's internal
 #' form (and is therefore one-way), \code{resy_read_expert} retains the file's
 #' structure verbatim for inspection or conversion to other formats.
 #'
@@ -45,7 +45,7 @@
 #'       structured view of the section content.}
 #'   }
 #'
-#' @seealso \code{\link{resy_parse_expert}} for the solver-form parser.
+#' @seealso \code{\link{resy_load_expert}} for the solver-form parser.
 #' @export
 #' @examples
 #' \dontrun{
@@ -239,21 +239,17 @@ resy_read_expert <- function(file, entries = TRUE) {
 # --- Section 2: Species groups ----------------------------------------------
 
 # Block = one header line declaring a group, followed by indented member lines.
-# Known header prefixes: `###` (sociological/functional group), `##D`
-# (discriminating group), `$$C` (categorical site variable), `$$N` (numeric
-# site variable). Unknown prefixes are tolerated and recorded with NA fields.
+# The header starts with one of .resy_group_prefixes; unknown prefixes are
+# tolerated and recorded with NA fields.
 .resy_parse_groups <- function(lines) {
-  prefix_re <- "^(###|##D|\\$\\$C|\\$\\$N)\\s*"
   lapply(.resy_split_blocks(lines), function(block) {
     header <- block[1L]
-    m <- regmatches(header, regexec(prefix_re, header, perl = TRUE))[[1]]
+    prefix <- substr(header, 1L, 3L)
     members <- if (length(block) > 1L) trimws(block[-1L]) else character(0)
-    if (length(m) < 2L) {
+    if (!prefix %in% .resy_group_prefixes) {
       list(prefix = NA_character_, name = NA_character_, members = members)
     } else {
-      list(prefix = m[2L],
-           name = trimws(sub(prefix_re, "", header, perl = TRUE)),
-           members = members)
+      list(prefix = prefix, name = trimws(substring(header, 4L)), members = members)
     }
   })
 }

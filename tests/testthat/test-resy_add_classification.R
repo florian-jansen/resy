@@ -72,7 +72,7 @@ test_that("a .json file is stored byte-identical under scheme/version", {
   expect_equal(basename(dirname(dirname(out$json))), "MyScheme")
   expect_equal(
     normalizePath(dirname(dirname(dirname(out$json)))),
-    normalizePath(RESY:::resy_classifications_root("user"))
+    normalizePath(RESY:::.resy_classifications_root("user"))
   )
   expect_identical(md5(out$json), md5(src))
 })

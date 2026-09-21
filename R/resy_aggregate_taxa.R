@@ -1,3 +1,18 @@
+# Lookup from every name an expert system knows to the aggregate it belongs to:
+# each member of an aggregation maps to the aggregate, and each aggregate to
+# itself. Empty and missing names are dropped; a name listed under several
+# aggregates keeps the first.
+.resy_agg_lookup <- function(aggs) {
+  canon <- names(aggs)
+  lookup <- c(
+    stats::setNames(rep(canon, lengths(aggs)), as.character(unlist(aggs, use.names = FALSE))),
+    stats::setNames(canon, canon)
+  )
+  keep <- !is.na(names(lookup)) & nzchar(names(lookup)) & !is.na(lookup) & nzchar(lookup)
+  lookup <- lookup[keep]
+  lookup[!duplicated(names(lookup))]
+}
+
 #' Aggregate taxa to expert-system aggregation level
 #'
 #' @description
@@ -5,26 +20,17 @@
 #' mapping of the expert system. If you use GermanSl or EuroSL, use `taxval` instead.
 #'
 #' @param obs A `data.table` with column `TaxonName`.
-#' @param aggs Named list of aggregations as returned by [resy_parse_expert()].
+#' @param aggs Named list of aggregations, the `aggs` element of
+#'   [resy_load_expert()].
 #' @return Modified `obs` as `data.table`.
-resy_aggregate_taxa <- function(obs, aggs) {
+#' @noRd
+.resy_aggregate_taxa <- function(obs, aggs) {
   if (!inherits(obs, "data.table")) obs <- data.table::as.data.table(obs)
   if (!length(aggs)) return(obs)
 
-  agg_stack <- data.table::data.table(
-    values = as.character(unlist(aggs, use.names = FALSE)),
-    ind    = rep(names(aggs), lengths(aggs))
-  )
-  agg_id <- data.table::data.table(values = names(aggs), ind = names(aggs))
-  AGG <- data.table::rbindlist(list(agg_stack, agg_id), use.names = TRUE, fill = TRUE)
-  AGG <- AGG[values != "" & !is.na(values)]
-  AGG <- AGG[ind != "" & !is.na(ind)]
-  AGG <- unique(AGG, by = c("values", "ind"))
-  
-  index1 <- fastmatch::fmatch(obs$TaxonName, AGG$values)
-  if (any(!is.na(index1))) {
-    obs$TaxonName[!is.na(index1)] <- AGG$ind[index1[!is.na(index1)]]
-  }
+  lookup <- .resy_agg_lookup(aggs)
+  index1 <- fastmatch::fmatch(obs$TaxonName, names(lookup))
+  hit <- !is.na(index1)
+  if (any(hit)) obs$TaxonName[hit] <- unname(lookup[index1[hit]])
   obs
 }
-

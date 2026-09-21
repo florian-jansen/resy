@@ -1,33 +1,21 @@
 # Build the resy_parsed_expert object from a raw parsing result list.
-# Called by the text parser path (below) and resy_parse_json().
+# Called by the text parser path (below) and .resy_parse_json().
 .resy_build_parsed <- function(parsing.result) {
   aggs                   <- parsing.result$aggs
   groups                 <- parsing.result$groups
-  groups.names           <- substr(names(groups), 5, nchar(names(groups)))
+  groups.names           <- .resy_group_name(names(groups))
   membership.expressions <- unique(parsing.result$membership.expressions)
   conditions             <- parsing.result$group.defs
   vegtype.formulas       <- parsing.result$formulas
   vegtype.priority       <- parsing.result$membership.priority
 
-  vegtype.formula.names       <- trimws(substr(names(vegtype.formulas), 12, nchar(names(vegtype.formulas))))
-  # Extract the code as the first whitespace-delimited token. This is robust to
-  # any code length (the spec says 5 chars, but actual files may differ).
+  # Name of a type: its header line without the priority character, i.e. the
+  # code followed by the description.
+  vegtype.formula.names <- trimws(sub("^[0-9A-Za-z]\\s+", "", names(vegtype.formulas), perl = TRUE))
   vegtype.formula.names.short <- sub("^(\\S+).*$", "\\1", vegtype.formula.names)
 
   # Replace inner expressions with col1, col2, ... to make formulas parseable in R
-  o <- order(nchar(membership.expressions), decreasing = TRUE)
-  vegtype.formulas.p <- stringi::stri_replace_all_fixed(
-    vegtype.formulas,
-    pattern       = membership.expressions[o],
-    replacement   = paste0("col", seq_along(membership.expressions))[o],
-    vectorize_all = FALSE
-  )
-
-  vegtype.formulas.p <- gsub("<",   "",   vegtype.formulas.p)
-  vegtype.formulas.p <- gsub(">",   "",   vegtype.formulas.p)
-  vegtype.formulas.p <- gsub("AND", "&",  vegtype.formulas.p)
-  vegtype.formulas.p <- gsub("OR",  "|",  vegtype.formulas.p)
-  vegtype.formulas.p <- gsub("NOT", "&!", vegtype.formulas.p)
+  vegtype.formulas.p <- .resy_formula_to_r(vegtype.formulas, membership.expressions)
   logexpr.formula <- lapply(vegtype.formulas.p, function(x) parse(text = x)[[1]])
 
   structure(
@@ -51,9 +39,9 @@
 
 # ---- Low-level text parser ---------------------------------------------------
 
-parse.classification.expert.file <- function(expertfile) {
+.resy_parse_expert_file <- function(expertfile) {
   expert <- readLines(expertfile, warn = FALSE, encoding = "UTF-8")
-  parse.classification.expert.vector(expert)
+  .resy_parse_expert_lines(expert)
 }
 
 # Members of each header-led block of a section: the non-blank lines after a
@@ -64,39 +52,44 @@ parse.classification.expert.file <- function(expertfile) {
   lapply(seq_along(header_idx), function(i) {
     n <- max(0L, ends[i] - header_idx[i])
     block <- lines[seq.int(header_idx[i] + 1L, length.out = n)]
-    trim.leading(block[nzchar(trimws(block))])
+    .resy_trim_leading(block[nzchar(trimws(block))])
   })
 }
 
-parse.classification.expert.vector <- function(expert) {
+# Body of section `n`: the lines between its opener and its "SECTION n: End".
+.resy_section_body <- function(lines, n) {
+  at <- .resy_section_rows(lines, n)
+  lines[(at[1] + 1):(at[2] - 1)]
+}
+
+.resy_parse_expert_lines <- function(expert) {
   # Drop everything after the first tab (TSV compatibility) and '---' lines
   expert <- sub("\t.*$", "", expert)
   expert <- expert[!grepl("---", expert)]
 
   # ---- Section 1: Species aggregation
-  section1        <- grep("SECTION 1", expert)
-  species.agg     <- expert[(section1[1] + 1):(section1[2] - 1)]
+  species.agg     <- .resy_section_body(expert, 1)
   index.agg.names <- which(
     substr(species.agg, 1, 1) != " " &
     nzchar(trimws(species.agg)) &
     !grepl("^SECTION\\s+\\d", trimws(species.agg))
   )
   aggs <- .resy_block_members(species.agg, index.agg.names)
-  names(aggs) <- trim.trailing(species.agg[index.agg.names])
+  names(aggs) <- .resy_trim_trailing(species.agg[index.agg.names])
   if (any(!nzchar(names(aggs)))) aggs <- aggs[nzchar(names(aggs))]
   for (i in seq_along(aggs))
-    aggs[[i]] <- vapply(aggs[[i]], trim.trailing, character(1), USE.NAMES = FALSE)
+    aggs[[i]] <- vapply(aggs[[i]], .resy_trim_trailing, character(1), USE.NAMES = FALSE)
 
   # ---- Section 2: Species groups
-  section2          <- grep("SECTION 2", expert)
-  species.groups    <- expert[(section2[1] + 1):(section2[2] - 1)]
+  species.groups    <- .resy_section_body(expert, 2)
   index.group.names <- which(substr(species.groups, 1, 1) != " " & nzchar(trimws(species.groups)))
   groups            <- .resy_block_members(species.groups, index.group.names)
   names(groups) <- species.groups[index.group.names]
 
-  if (!all(substr(names(groups), 1, 3) %in% c("###", "##D", "##Q", "##C", "$$C", "$$N")))
+  if (!all(substr(names(groups), 1, 3) %in% .resy_group_prefixes))
     stop(paste(
-      'Only "###", "##D", "##Q", "##C", "$$N", and "$$C" are known group prefixes. Found:',
+      "Only", paste0('"', .resy_group_prefixes, '"', collapse = ", "),
+      "are known group prefixes. Found:",
       paste(unique(substr(names(groups), 1, 3)), collapse = ", ")
     ))
 
@@ -104,12 +97,11 @@ parse.classification.expert.vector <- function(expert) {
   if (any(table(discr) < 2))
     stop(paste("Discriminating set", names(table(discr)[table(discr) < 2]), "occurs only once!"))
 
-  # ---- Section 3: Parse raw formulas
-  section3          <- grep("SECTION 3", expert)
-  group.definitions <- expert[(section3[1] + 1):(section3[2] - 1)]
+  # ---- Section 3: Formula headers and formulas. A header starts with its
+  # priority digit; the lines after it, up to the next header, are its formula.
+  group.definitions <- .resy_section_body(expert, 3)
 
   membership.formula.names <- NULL
-  membership.expressions   <- NULL
   membership.formulas      <- NULL
   i <- 0
   while (i < length(group.definitions)) {
@@ -119,21 +111,15 @@ parse.classification.expert.vector <- function(expert) {
           !grepl("[^0-9]", substr(group.definitions[i], 1, 1))) {
         membership.formula.names <- c(membership.formula.names, group.definitions[i])
       } else {
-        c <- group.definitions[i]
+        formula <- group.definitions[i]
         while (grepl("[^0-9]", substr(group.definitions[i + 1], 1, 1)) &&
                substr(group.definitions[i + 1], 1, 1) != "-" &&
                i < length(group.definitions)) {
           i <- i + 1
-          c <- paste(c, group.definitions[i], sep = " ")
+          formula <- paste(formula, group.definitions[i], sep = " ")
         }
-        a <- gregexpr("<", c, fixed = TRUE)[[1]]
-        b <- gregexpr(">", c, fixed = TRUE)[[1]]
-        if (a[1] > 0) {
-          membership.formulas <- c(membership.formulas, c)
-          exprs2 <- character(length(a))
-          for (j in seq_along(a)) exprs2[j] <- substr(c, a[j] + 1, b[j] - 1)
-          membership.expressions <- c(membership.expressions, exprs2)
-        }
+        if (grepl("<", formula, fixed = TRUE))
+          membership.formulas <- c(membership.formulas, formula)
       }
     }
   }

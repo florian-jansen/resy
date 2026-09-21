@@ -1,4 +1,4 @@
-# resy_aggregate_taxa() rewrites obs$TaxonName to the expert system's
+# .resy_aggregate_taxa() rewrites obs$TaxonName to the expert system's
 # aggregation level: a member species is replaced by its aggregate name, an
 # aggregate name is kept, and a species the mapping does not mention is left
 # untouched. Getting this wrong silently mis-counts species per group in the
@@ -16,7 +16,7 @@ test_that("member species are replaced by their aggregate name", {
   aggs <- list(`Achillea millefolium agg.` =
                  c("Achillea millefolium", "Achillea pratensis"))
   obs  <- make_obs(c("Achillea millefolium", "Achillea pratensis"))
-  out  <- RESY:::resy_aggregate_taxa(obs, aggs)
+  out  <- RESY:::.resy_aggregate_taxa(obs, aggs)
   expect_equal(out$TaxonName,
                c("Achillea millefolium agg.", "Achillea millefolium agg."))
 })
@@ -24,14 +24,14 @@ test_that("member species are replaced by their aggregate name", {
 test_that("an aggregate name is kept as itself", {
   aggs <- list(`Achillea millefolium agg.` = c("Achillea millefolium"))
   obs  <- make_obs("Achillea millefolium agg.")
-  out  <- RESY:::resy_aggregate_taxa(obs, aggs)
+  out  <- RESY:::.resy_aggregate_taxa(obs, aggs)
   expect_equal(out$TaxonName, "Achillea millefolium agg.")
 })
 
 test_that("species outside the mapping are left untouched", {
   aggs <- list(`Achillea millefolium agg.` = c("Achillea millefolium"))
   obs  <- make_obs(c("Achillea millefolium", "Fagus sylvatica"))
-  out  <- RESY:::resy_aggregate_taxa(obs, aggs)
+  out  <- RESY:::.resy_aggregate_taxa(obs, aggs)
   expect_equal(out$TaxonName,
                c("Achillea millefolium agg.", "Fagus sylvatica"))
 })
@@ -44,7 +44,7 @@ test_that("a data.frame input is coerced to data.table without losing rows", {
     Cover_Perc        = 10,
     stringsAsFactors  = FALSE
   )
-  out <- RESY:::resy_aggregate_taxa(obs, aggs)
+  out <- RESY:::.resy_aggregate_taxa(obs, aggs)
   expect_s3_class(out, "data.table")
   expect_equal(nrow(out), 3L)
   expect_equal(out$TaxonName, c("Grp", "Grp", "Sp3"))
@@ -54,20 +54,20 @@ test_that("aggregation is idempotent", {
   aggs <- list(`Achillea millefolium agg.` =
                  c("Achillea millefolium", "Achillea pratensis"))
   obs  <- make_obs(c("Achillea millefolium", "Achillea pratensis"))
-  once  <- RESY:::resy_aggregate_taxa(obs, aggs)
-  twice <- RESY:::resy_aggregate_taxa(once, aggs)
+  once  <- RESY:::.resy_aggregate_taxa(obs, aggs)
+  twice <- RESY:::.resy_aggregate_taxa(once, aggs)
   expect_equal(twice$TaxonName, once$TaxonName)
 })
 
 test_that("an expert without aggregations leaves obs unchanged", {
   obs <- make_obs(c("Fagus sylvatica", "Abies alba"))
-  expect_equal(resy_aggregate_taxa(obs, list())$TaxonName,
+  expect_equal(.resy_aggregate_taxa(obs, list())$TaxonName,
                c("Fagus sylvatica", "Abies alba"))
 })
 
 test_that("aggregates without members keep their own name and cause no error", {
   obs <- make_obs(c("Fagus sylvatica", "Abies alba"))
   aggs <- list(`Fagus sylvatica` = character(0), `Abies alba` = character(0))
-  expect_equal(resy_aggregate_taxa(obs, aggs)$TaxonName,
+  expect_equal(.resy_aggregate_taxa(obs, aggs)$TaxonName,
                c("Fagus sylvatica", "Abies alba"))
 })

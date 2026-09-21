@@ -38,7 +38,7 @@ resy_load_expert <- function(expertfile = NULL,
 
   location <- match.arg(location, several.ok = TRUE)
   avail <- do.call(rbind, lapply(location, function(loc)
-    .resy_scan_classifications(resy_classifications_root(loc))))
+    .resy_scan_classifications(.resy_classifications_root(loc))))
   avail <- avail[avail$scheme == scheme, , drop = FALSE]
   if (nrow(avail) == 0L)
     stop("No classifications found for scheme: '", scheme, "'.")
@@ -61,7 +61,7 @@ resy_load_expert <- function(expertfile = NULL,
 # Dispatch to the correct parser based on file extension.
 .resy_parse_by_ext <- function(path) {
   if (grepl("\\.json$", path, ignore.case = TRUE))
-    return(resy_parse_json(path))
+    return(.resy_parse_json(path))
   # Treat anything else as a .txt expert file
-  .resy_build_parsed(parse.classification.expert.file(path))
+  .resy_build_parsed(.resy_parse_expert_file(path))
 }

@@ -80,7 +80,7 @@ test_that("JSON parser: vegtype.formula.names.short correct for short codes", {
   )
   skip_if(!nzchar(path), "Apennine-test JSON not found")
 
-  parsed <- RESY:::resy_parse_json(path)
+  parsed <- RESY:::.resy_parse_json(path)
 
   # All short codes should be the raw code, not code+description prefix
   expect_true(all(nchar(parsed$vegtype.formula.names.short) <= 5))
@@ -99,7 +99,7 @@ test_that("JSON parser: vegtype.formula.names contains full description", {
   )
   skip_if(!nzchar(path), "Apennine-test JSON not found")
 
-  parsed <- RESY:::resy_parse_json(path)
+  parsed <- RESY:::.resy_parse_json(path)
 
   fb_name <- parsed$vegtype.formula.names[
     parsed$vegtype.formula.names.short == "FB"
@@ -114,7 +114,7 @@ test_that("JSON parser: formula name format round-trips priority correctly", {
   )
   skip_if(!nzchar(path), "Apennine-test JSON not found")
 
-  parsed <- RESY:::resy_parse_json(path)
+  parsed <- RESY:::.resy_parse_json(path)
   prio   <- as.character(parsed$vegtype.priority)
 
   # FB and NG have priority 5, NS has priority 3
@@ -148,7 +148,7 @@ test_that(".resy_build_parsed: short code extracted for various lengths", {
     tmp, auto_unbox = TRUE
   )
 
-  parsed <- RESY:::resy_parse_json(tmp)
+  parsed <- RESY:::.resy_parse_json(tmp)
   short  <- parsed$vegtype.formula.names.short
 
   expect_equal(short[1L], "AB")

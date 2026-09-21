@@ -9,7 +9,7 @@
 #'   file exists, otherwise `NA`.
 #' @export
 resy_available_classifications <- function() {
-  .resy_scan_classifications(resy_classifications_root("package"))
+  .resy_scan_classifications(.resy_classifications_root("package"))
 }
 
 # One row per <scheme>/<version> directory under a classification root.
