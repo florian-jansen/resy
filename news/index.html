@@ -67,6 +67,7 @@
 <ul><li>
 <code><a href="../reference/resy_check_eunis.html">resy_check_eunis()</a></code> — validates plot data against EUNIS structural requirements before harmonization, returning <code>list(ok, errors, warnings)</code>.</li>
 <li>New general vignette <code><a href="../articles/RESY.html">vignette("RESY")</a></code> covering classification with both EUNIS and Apennine-test expert systems without EUNIS-specific geographic steps.</li>
+<li>The shipped synonym table is built by <code>data-raw/build_synonyms.R</code> from six taxify backbones. Its build date, the taxify release, and the version and content id of each backbone are shipped in <code>inst/extdata/esy_synonyms_build.csv</code> and <code>esy_synonyms_backbones.csv</code>, and the taxify lockfile is in <code>data-raw/</code>. The table has an <code>accepted_in</code> column naming the backbones that list the synonym as an accepted name under the same author as the supporting synonym rows.</li>
 <li>
 <code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> matches a name a second time with its author citation removed (<code><a href="../reference/resy_clean_names.html">resy_clean_names()</a></code>) when it does not match as given. These matches are labelled <code>"cleaned_exact"</code> and <code>"cleaned_synonym"</code> in <code>taxon_confidence</code>.</li>
 </ul></div>

@@ -43,6 +43,14 @@
   [`vignette("RESY")`](https://florian-jansen.github.io/resy/articles/RESY.md)
   covering classification with both EUNIS and Apennine-test expert
   systems without EUNIS-specific geographic steps.
+- The shipped synonym table is built by `data-raw/build_synonyms.R` from
+  six taxify backbones. Its build date, the taxify release, and the
+  version and content id of each backbone are shipped in
+  `inst/extdata/esy_synonyms_build.csv` and
+  `esy_synonyms_backbones.csv`, and the taxify lockfile is in
+  `data-raw/`. The table has an `accepted_in` column naming the
+  backbones that list the synonym as an accepted name under the same
+  author as the supporting synonym rows.
 - [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
   matches a name a second time with its author citation removed
   ([`resy_clean_names()`](https://florian-jansen.github.io/resy/reference/resy_clean_names.md))

@@ -43,24 +43,56 @@ from six backbones (Euro+Med, WFO, GBIF, Catalogue of Life, ITIS, NCBI),
 so a name coming from any of them can resolve without you having to say
 which backbone it came from.
 
+The table was built on 2026-09-21 with taxify 0.5.5, against the EUNIS
+expert system 2025-10-03, from the backbone releases below.
+`data-raw/build_synonyms.R` and the taxify lockfile next to it in the
+source repository rebuild it from these versions.
+
+| Backbone | Release | Upstream data | Downloaded | Content id |
+|:---------|--------:|:--------------|:-----------|:-----------|
+| euromed  | 2026.08 |               | 2026-08-27 | 06668202   |
+| wfo      | 2026.06 |               | 2026-09-15 | 0db73976   |
+| gbif     | 2026.08 | 2023-08-28    | 2026-08-30 | 4ecece7e   |
+| col      | 2026.09 |               | 2026-09-14 | c2999654   |
+| itis     | 2026.09 |               | 2026-09-14 | c506652f   |
+| ncbi     | 2026.09 |               | 2026-09-14 | 7553eb41   |
+
+The synonyms are binomials (genus and species epithet). Infraspecific
+names, hybrid formulas, and bare genera are not in the table, so a name
+of that kind is not resolved through it.
+
 ``` r
 
 syn <- resy_read_synonyms()
 nrow(syn)
-#> [1] 60911
+#> [1] 64808
 head(syn)
-#>                    synonym          esy_canonical       source
-#> 1       Abelmoschus bammia Abelmoschus esculentus col;gbif;wfo
-#> 2  Abelmoschus longifolius Abelmoschus esculentus col;gbif;wfo
-#> 3      Abelmoschus praecox Abelmoschus esculentus col;gbif;wfo
-#> 4 Abelmoschus tuberculatus Abelmoschus esculentus col;gbif;wfo
-#> 5          Hibiscus bammia Abelmoschus esculentus col;gbif;wfo
-#> 6   Hibiscus hispidissimus Abelmoschus esculentus col;gbif;wfo
+#>                    synonym          esy_canonical       source accepted_in
+#> 1       Abelmoschus bammia Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 2  Abelmoschus longifolius Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 3      Abelmoschus praecox Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 4 Abelmoschus tuberculatus Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 5          Hibiscus bammia Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 6      Hibiscus ficifolius Abelmoschus esculentus col;gbif;wfo        <NA>
 ```
 
 Each row is one alternate spelling (`synonym`), the canonical ESy name
 it resolves to (`esy_canonical`), and the backbone(s) that support the
-pairing (`source`).
+pairing (`source`). The column `accepted_in` names the backbones that
+list the synonym as an accepted name under the same author as the
+synonym rows supporting the pair. A backbone appears in both `source`
+and `accepted_in` when it holds an accepted row and a synonym row for
+the name. The column is empty for 89% of the pairs.
+
+``` r
+
+head(syn[!is.na(syn$accepted_in), ], 4)
+#>                 synonym     esy_canonical       source accepted_in
+#> 32       Abies hudsonia    Abies balsamea      col;wfo         wfo
+#> 40     Abies panachaica Abies cephalonica col;gbif;wfo        gbif
+#> 41 Abies peloponnesiaca Abies cephalonica col;gbif;wfo        gbif
+#> 45    Picea cephalonica Abies cephalonica col;gbif;wfo         wfo
+```
 
 A pair is listed under every backbone that supports it, so the counts
 per backbone add up to more than the number of rows.
@@ -85,12 +117,12 @@ knitr::kable(
 
 | Backbone | Synonym pairs | % of table |
 |:---------|--------------:|-----------:|
-| gbif     |        50,877 |       83.5 |
-| wfo      |        44,678 |       73.3 |
-| col      |        44,004 |       72.2 |
-| itis     |         3,923 |        6.4 |
-| euromed  |         2,200 |        3.6 |
-| ncbi     |           812 |        1.3 |
+| gbif     |        53,530 |       82.6 |
+| wfo      |        46,970 |       72.5 |
+| col      |        46,180 |       71.3 |
+| itis     |         4,050 |        6.2 |
+| ncbi     |           864 |        1.3 |
+| euromed  |           588 |        0.9 |
 
 Most pairs are supported by more than one backbone:
 

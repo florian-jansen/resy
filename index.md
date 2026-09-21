@@ -38,6 +38,7 @@ We have written several vignettes to help you use the RESY R package:
 
 - [`vignette("EUNIS")`](https://florian-jansen.github.io/resy/articles/EUNIS.md)
 - `vignette("Get altitude data")`
+- [`vignette("taxonomy")`](https://florian-jansen.github.io/resy/articles/taxonomy.md)
 
 ## 🖥️ Functions
 

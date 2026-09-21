@@ -115,24 +115,96 @@ canonical name used by the EUNIS-ESy expert system. It pools synonymy
 from six backbones (Euro+Med, WFO, GBIF, Catalogue of Life, ITIS, NCBI),
 so a name coming from any of them can resolve without you having to say
 which backbone it came from.</p>
+<p>The table was built on 2026-09-21 with taxify 0.5.5, against the
+EUNIS expert system 2025-10-03, from the backbone releases below.
+<code>data-raw/build_synonyms.R</code> and the taxify lockfile next to
+it in the source repository rebuild it from these versions.</p>
+<table class="table">
+<thead><tr class="header">
+<th align="left">Backbone</th>
+<th align="right">Release</th>
+<th align="left">Upstream data</th>
+<th align="left">Downloaded</th>
+<th align="left">Content id</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">euromed</td>
+<td align="right">2026.08</td>
+<td align="left"></td>
+<td align="left">2026-08-27</td>
+<td align="left">06668202</td>
+</tr>
+<tr class="even">
+<td align="left">wfo</td>
+<td align="right">2026.06</td>
+<td align="left"></td>
+<td align="left">2026-09-15</td>
+<td align="left">0db73976</td>
+</tr>
+<tr class="odd">
+<td align="left">gbif</td>
+<td align="right">2026.08</td>
+<td align="left">2023-08-28</td>
+<td align="left">2026-08-30</td>
+<td align="left">4ecece7e</td>
+</tr>
+<tr class="even">
+<td align="left">col</td>
+<td align="right">2026.09</td>
+<td align="left"></td>
+<td align="left">2026-09-14</td>
+<td align="left">c2999654</td>
+</tr>
+<tr class="odd">
+<td align="left">itis</td>
+<td align="right">2026.09</td>
+<td align="left"></td>
+<td align="left">2026-09-14</td>
+<td align="left">c506652f</td>
+</tr>
+<tr class="even">
+<td align="left">ncbi</td>
+<td align="right">2026.09</td>
+<td align="left"></td>
+<td align="left">2026-09-14</td>
+<td align="left">7553eb41</td>
+</tr>
+</tbody>
+</table>
+<p>The synonyms are binomials (genus and species epithet). Infraspecific
+names, hybrid formulas, and bare genera are not in the table, so a name
+of that kind is not resolved through it.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">syn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_read_synonyms.html">resy_read_synonyms</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">syn</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 60911</span></span>
+<span><span class="co">#&gt; [1] 64808</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">syn</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                    synonym          esy_canonical       source</span></span>
-<span><span class="co">#&gt; 1       Abelmoschus bammia Abelmoschus esculentus col;gbif;wfo</span></span>
-<span><span class="co">#&gt; 2  Abelmoschus longifolius Abelmoschus esculentus col;gbif;wfo</span></span>
-<span><span class="co">#&gt; 3      Abelmoschus praecox Abelmoschus esculentus col;gbif;wfo</span></span>
-<span><span class="co">#&gt; 4 Abelmoschus tuberculatus Abelmoschus esculentus col;gbif;wfo</span></span>
-<span><span class="co">#&gt; 5          Hibiscus bammia Abelmoschus esculentus col;gbif;wfo</span></span>
-<span><span class="co">#&gt; 6   Hibiscus hispidissimus Abelmoschus esculentus col;gbif;wfo</span></span></code></pre></div>
+<span><span class="co">#&gt;                    synonym          esy_canonical       source accepted_in</span></span>
+<span><span class="co">#&gt; 1       Abelmoschus bammia Abelmoschus esculentus col;gbif;wfo        &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2  Abelmoschus longifolius Abelmoschus esculentus col;gbif;wfo        &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 3      Abelmoschus praecox Abelmoschus esculentus col;gbif;wfo        &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 4 Abelmoschus tuberculatus Abelmoschus esculentus col;gbif;wfo        &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 5          Hibiscus bammia Abelmoschus esculentus col;gbif;wfo        &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 6      Hibiscus ficifolius Abelmoschus esculentus col;gbif;wfo        &lt;NA&gt;</span></span></code></pre></div>
 <p>Each row is one alternate spelling (<code>synonym</code>), the
 canonical ESy name it resolves to (<code>esy_canonical</code>), and the
-backbone(s) that support the pairing (<code>source</code>).</p>
+backbone(s) that support the pairing (<code>source</code>). The column
+<code>accepted_in</code> names the backbones that list the synonym as an
+accepted name under the same author as the synonym rows supporting the
+pair. A backbone appears in both <code>source</code> and
+<code>accepted_in</code> when it holds an accepted row and a synonym row
+for the name. The column is empty for 89% of the pairs.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">syn</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">syn</span><span class="op">$</span><span class="va">accepted_in</span><span class="op">)</span>, <span class="op">]</span>, <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                 synonym     esy_canonical       source accepted_in</span></span>
+<span><span class="co">#&gt; 32       Abies hudsonia    Abies balsamea      col;wfo         wfo</span></span>
+<span><span class="co">#&gt; 40     Abies panachaica Abies cephalonica col;gbif;wfo        gbif</span></span>
+<span><span class="co">#&gt; 41 Abies peloponnesiaca Abies cephalonica col;gbif;wfo        gbif</span></span>
+<span><span class="co">#&gt; 45    Picea cephalonica Abies cephalonica col;gbif;wfo         wfo</span></span></code></pre></div>
 <p>A pair is listed under every backbone that supports it, so the counts
 per backbone add up to more than the number of rows.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">per_backbone</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span><span class="va">syn</span><span class="op">$</span><span class="va">source</span>, <span class="st">";"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">support</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  backbone <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">per_backbone</span><span class="op">)</span>,</span>
@@ -156,38 +228,38 @@ per backbone add up to more than the number of rows.</p>
 <tbody>
 <tr class="odd">
 <td align="left">gbif</td>
-<td align="right">50,877</td>
-<td align="right">83.5</td>
+<td align="right">53,530</td>
+<td align="right">82.6</td>
 </tr>
 <tr class="even">
 <td align="left">wfo</td>
-<td align="right">44,678</td>
-<td align="right">73.3</td>
+<td align="right">46,970</td>
+<td align="right">72.5</td>
 </tr>
 <tr class="odd">
 <td align="left">col</td>
-<td align="right">44,004</td>
-<td align="right">72.2</td>
+<td align="right">46,180</td>
+<td align="right">71.3</td>
 </tr>
 <tr class="even">
 <td align="left">itis</td>
-<td align="right">3,923</td>
-<td align="right">6.4</td>
+<td align="right">4,050</td>
+<td align="right">6.2</td>
 </tr>
 <tr class="odd">
-<td align="left">euromed</td>
-<td align="right">2,200</td>
-<td align="right">3.6</td>
+<td align="left">ncbi</td>
+<td align="right">864</td>
+<td align="right">1.3</td>
 </tr>
 <tr class="even">
-<td align="left">ncbi</td>
-<td align="right">812</td>
-<td align="right">1.3</td>
+<td align="left">euromed</td>
+<td align="right">588</td>
+<td align="right">0.9</td>
 </tr>
 </tbody>
 </table>
 <p>Most pairs are supported by more than one backbone:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">per_pair</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span><span class="va">syn</span><span class="op">$</span><span class="va">source</span>, <span class="st">";"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">support_n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  n_backbones <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">per_pair</span><span class="op">)</span>,</span>
@@ -214,7 +286,7 @@ matched again with its author citation removed by
 A name that still matches nothing stays <code>NA</code> and is flagged
 <code>"unresolved"</code>. Nothing is ever replaced with a best
 guess.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  TaxonName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>    <span class="st">"Hibiscus praecox"</span>,        <span class="co"># a synonym in the shipped table</span></span>
@@ -237,7 +309,7 @@ guess.</p>
 <p><code><a href="../reference/resy_summarize_taxa.html">resy_summarize_taxa()</a></code> reports how many names resolved,
 the breakdown by confidence, and the distinct names that stayed
 unresolved.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_summarize_taxa.html">resy_summarize_taxa</a></span><span class="op">(</span><span class="va">resolved</span>, species_col <span class="op">=</span> <span class="st">"TaxonName"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $n</span></span>
 <span><span class="co">#&gt; [1] 5</span></span>
@@ -266,7 +338,7 @@ to your own crosswalk, or leaving them out.</p>
 <p><code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> also accepts your own crosswalk,
 with three columns: <code>synonym</code>, <code>esy_canonical</code>,
 and <code>source</code>. A small example ships with the package.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cw_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_crosswalk.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span></span>
 <span><span class="va">crosswalk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_read_synonyms.html">resy_read_synonyms</a></span><span class="op">(</span><span class="va">cw_path</span><span class="op">)</span></span>
 <span><span class="va">crosswalk</span></span>
@@ -278,7 +350,7 @@ and <code>source</code>. A small example ships with the package.</p>
 <span><span class="co">#&gt; 5 Anemone nemorosa L. Anemone nemorosa      author citation</span></span></code></pre></div>
 <p>Pass it to <code>synonyms=</code>, and give the target names to
 <code>canonical=</code> so resolution uses your table alone:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  TaxonName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Fagus silvatica"</span>, <span class="st">"Abies pectinata"</span>, <span class="st">"Quercus robur"</span><span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -297,7 +369,7 @@ and <code>source</code>. A small example ships with the package.</p>
 <p>If your crosswalk lives in an Excel sheet, read it yourself and pass
 the data frame. RESY validates the columns and uses it directly, so it
 needs no Excel package as a dependency:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">crosswalk</span> <span class="op">&lt;-</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu">read_excel</span><span class="op">(</span><span class="st">"my_crosswalk.xlsx"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa</a></span><span class="op">(</span><span class="va">my_plots</span>, synonyms <span class="op">=</span> <span class="va">crosswalk</span>,</span>
 <span>                  canonical <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">crosswalk</span><span class="op">$</span><span class="va">esy_canonical</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -312,7 +384,7 @@ them against the vocabulary of the expert system you classify with (here
 <code>Apennine-test</code>), write the resolved canonical name back to
 the name column, keeping the original where a name did not resolve, and
 pass the result to <code><a href="../reference/resy_classify.html">resy_classify()</a></code>.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
