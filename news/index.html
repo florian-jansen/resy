@@ -57,27 +57,71 @@
 <h3 id="internal-changes-0-3">Internal changes<a class="anchor" aria-label="anchor" href="#internal-changes-0-3"></a></h3>
 <ul><li>
 <code>resy_parse_expert()</code>, <code>resy_parse_json()</code>, <code>resy_show_vegtypes()</code> are now internal (unexported). Use <code><a href="../reference/resy_load_expert.html">resy_load_expert()</a></code> as the single entry point for loading any expert system.</li>
+<li>
+<code>resy_eval_type()</code> is now internal. Use <code>resy_eval_plot(res, p, type = )</code> to evaluate one type on one plot.</li>
 <li>Geographic helpers (<code>check_ecoregions</code>, <code>check_country</code>, <code>check_coast_dunes</code>, <code>check_coordinates</code>) consolidated into internal functions in <code>internal_eunis_geo.R</code> under the <code>.resy_assign_*</code> / <code>.resy_check_*</code> naming convention.</li>
 <li>RDS format support removed. Expert systems are imported from <code>.txt</code> and stored as <code>.json</code>. <code><a href="../reference/resy_available_classifications.html">resy_available_classifications()</a></code> no longer returns an <code>expert_rds</code> column.</li>
 <li>
 <code><a href="../reference/resy_expert_path.html">resy_expert_path()</a></code> <code>format</code> argument is now <code>c("json", "txt")</code> only.</li>
+<li>The GIS layers in <code>data/</code> are read on first use and kept for the session. Attaching the package reads none of them, and repeated <code><a href="../reference/resy_check_data.html">resy_check_data()</a></code> calls on the 200 example plots take 0.07 s instead of 0.17 s.</li>
+<li>The shiny app’s Classify button calls <code><a href="../reference/resy_classify.html">resy_classify()</a></code>.</li>
+<li>
+<code>tibble</code> moved from Imports to Suggests; <code>methods</code> is no longer imported.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-0-3">New<a class="anchor" aria-label="anchor" href="#new-0-3"></a></h3>
 <ul><li>
 <code><a href="../reference/resy_check_eunis.html">resy_check_eunis()</a></code> — validates plot data against EUNIS structural requirements before harmonization, returning <code>list(ok, errors, warnings)</code>.</li>
 <li>New general vignette <code><a href="../articles/RESY.html">vignette("RESY")</a></code> covering classification with both EUNIS and Apennine-test expert systems without EUNIS-specific geographic steps.</li>
+<li>Package help page <code><a href="../reference/RESY-package.html">?RESY</a></code> with an overview of the workflow.</li>
+<li>Taxonomy crosswalk for plot data named under a general backbone: <code><a href="../reference/resy_read_synonyms.html">resy_read_synonyms()</a></code> reads the shipped synonym table or your own crosswalk, <code><a href="../reference/resy_canonical_species.html">resy_canonical_species()</a></code> returns the canonical ESy names, and <code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> maps a name column to them. A name that resolves to nothing stays <code>NA</code> and is flagged, never replaced by a guess. <code>resy_classify(resolve_taxa = TRUE)</code> runs the resolution before classifying; the default <code>FALSE</code> classifies the names as given. See <code><a href="../articles/taxonomy.html">vignette("taxonomy")</a></code>.</li>
+<li>
+<code><a href="../reference/resy_clean_names.html">resy_clean_names()</a></code> removes author citations from taxon names.</li>
+<li>
+<code><a href="../reference/resy_load_expert.html">resy_load_expert()</a></code> and <code><a href="../reference/resy_classify.html">resy_classify()</a></code> gain <code>location</code>. By default a classification is looked up first in the user store, where <code><a href="../reference/resy_add_classification.html">resy_add_classification()</a></code> puts it, then among the shipped classifications.</li>
+<li>
+<code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> writes <code>DEG_LAT</code> and <code>DEG_LON</code>. <code>source_crs</code> can be left out for coordinates in degrees (read as EPSG:4326), and coordinates in any other CRS are converted. It warns when no site falls inside the country base map. <code><a href="../reference/resy_check_eunis.html">resy_check_eunis()</a></code> and <code><a href="../reference/resy_check_data.html">resy_check_data()</a></code> read degree coordinates the same way.</li>
+<li>
+<code><a href="../reference/resy_classify.html">resy_classify()</a></code> warns when the expert system has conditions on header columns that <code>header</code> lacks; those conditions are evaluated as if the value were 0.</li>
+<li>
+<code><a href="../reference/resy_validate_esy.html">resy_validate_esy()</a></code> resolves group references the way the classifier does. The EUNIS-ESy release of 2025-10-03 now gives 3 warnings instead of 234.</li>
 <li>The shipped synonym table is built by <code>data-raw/build_synonyms.R</code> from six taxify backbones. Its build date, the taxify release, and the version and content id of each backbone are shipped in <code>inst/extdata/esy_synonyms_build.csv</code> and <code>esy_synonyms_backbones.csv</code>, and the taxify lockfile is in <code>data-raw/</code>. The table has an <code>accepted_in</code> column naming the backbones that list the synonym as an accepted name under the same author as the supporting synonym rows.</li>
 <li>
 <code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> matches a name a second time with its author citation removed (<code><a href="../reference/resy_clean_names.html">resy_clean_names()</a></code>) when it does not match as given. These matches are labelled <code>"cleaned_exact"</code> and <code>"cleaned_synonym"</code> in <code>taxon_confidence</code>.</li>
+<li>
+<code><a href="../reference/resy_check_taxonomy.html">resy_check_taxonomy()</a></code> and <code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> both return a <code>resy_taxa</code> data frame with a logical <code>matched</code> column. <code><a href="../reference/resy_check_taxonomy.html">resy_check_taxonomy()</a></code> names its columns <code>scientificName</code> (as submitted), <code>TaxonName</code> (canonical) and <code>matched</code>. Printing a <code>resy_taxa</code> table describes its columns and counts the matches; <code><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary()</a></code> gives the counts per name and per record, the records by match type, and the unmatched names grouped into genus only, below species level and species. <code>resy_summarize_taxa()</code> is removed; use <code><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary()</a></code> on the result of <code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code>. With <code>resolve_taxa = TRUE</code>, <code><a href="../reference/resy_classify.html">resy_classify()</a></code> stores that summary as <code>taxon_resolution</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="fixes-0-3">Fixes<a class="anchor" aria-label="anchor" href="#fixes-0-3"></a></h3>
 <ul><li>The <code>.txt</code> expert-file parser keeps the last member of the last group in section 2 when the section ends on it, and no longer stores blank lines as group or aggregation members. An aggregation without members is now an empty character vector. Classifications from the EUNIS-ESy releases of 2020, 2021 and 2025 are unchanged.</li>
+<li>Header conditions (<code>$$C</code>, <code>$$N</code>) are evaluated on each plot’s own header row. Before, the header rows were used in the order of <code>header</code>, so a plot read another plot’s header values unless <code>header</code> and <code>obs</code> listed the plots in the same order. On the 200-plot EUNIS example 13 plots change type.</li>
+<li>Total cover (<code>#T$</code>) and highest cover (<code>#$$</code>) conditions are filled by plot id. Before, their values landed on the wrong plots when <code>obs</code> was not sorted by plot id.</li>
+<li>Groups combined with <code>|</code> (e.g. <code>#TC Trees|#TC Shrubs GR 15</code>) are evaluated as one condition on the union of the groups, not as separate conditions joined by OR. On the 200-plot EUNIS example 11 plots change type.</li>
+<li>Before, EUNIS conditions on <code>DEG_LAT</code> and <code>DEG_LON</code> read 0 because <code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> did not write these columns. On the 200-plot EUNIS example 15 plots change type.</li>
+<li>
+<code><a href="../reference/resy_eval_plot.html">resy_eval_plot()</a></code> looks up a plot in the classifier’s plot order, not in the row order of <code>header</code>, and reports the responsible taxa of <code>#TC ... GR n</code> conditions, which were <code>NA</code>.</li>
+<li>
+<code>resy_aggregate_taxa()</code> works with an expert system that has no aggregations.</li>
+<li>
+<code><a href="../reference/resy_add_classification.html">resy_add_classification()</a></code> stores the metadata of a <code>.txt</code> input as <code>metadata.json</code>; it was named <code>expert.json</code>, which <code><a href="../reference/resy_load_expert.html">resy_load_expert()</a></code> then tried to read as the expert system. <code>overwrite = TRUE</code> removes the previous files.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-0-3">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-3"></a></h3>
+<ul><li>
+<code><a href="../articles/taxonomy.html">vignette("taxonomy")</a></code> opens with the three steps (resolve, inspect, classify) and states the build date and backbone versions of the shipped synonym table, with a table and a figure of how many backbones support each pair. Its classify example resolves names against the vocabulary of the expert system it classifies with.</li>
+<li>
+<code><a href="../articles/RESY.html">vignette("RESY")</a></code> shows the printed result and the <code><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary()</a></code> of <code><a href="../reference/resy_check_taxonomy.html">resy_check_taxonomy()</a></code>.</li>
+<li>The EUNIS vignette lists Markus Bauer, Mariasole Calbi and Gilles Colling as authors and links to the EUNIS page on the EEA Datahub.</li>
+<li>The Altitude vignette’s sections start at level 2, below the title.</li>
+<li>The help pages of the GIS datasets give their names, sources and titles.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="licence-and-authors-0-3">Licence and authors<a class="anchor" aria-label="anchor" href="#licence-and-authors-0-3"></a></h3>
+<ul><li>The licence is unchanged (MIT). <code>LICENSE</code> holds the CRAN template (year and copyright holder) and the full text is in <code>LICENSE.md</code>. Both name all four authors as copyright holders.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="package-size-0-3">Package size<a class="anchor" aria-label="anchor" href="#package-size-0-3"></a></h3>
-<ul><li>GIS reference layers (<code>coastline_regions</code>, <code>ecoregions2017</code>, <code>europe_resolution_1</code>, <code>dunes_bohn_*</code>) simplified with <code>rmapshaper</code> (<code>data-raw/simplify_gis.R</code>), cutting <code>data/</code> from 9.5 MB to 2.1 MB and the source tarball below the CRAN 5 MB limit. Per-layer simplification was chosen so coast, ecoregion, country and dune assignments on the bundled 200-plot example are unchanged.</li>
+<ul><li>GIS reference layers reduced (<code>data-raw/simplify_gis.R</code> rebuilds all of them), cutting <code>data/</code> from 9.5 MB to 3.1 MB and the source tarball to 4.8 MB, below the CRAN 5 MB limit. <code>coastline_regions</code>, <code>ecoregions2017</code> and <code>dunes_bohn_*</code> are simplified with <code>rmapshaper</code>, each with the strongest simplification that leaves the coast, ecoregion and dune assignments of the bundled 200-plot example unchanged. <code>europe_resolution_1</code> (country lookup) keeps all vertices, rounded to a 1 m grid (3.0 MB to 1.1 MB); none of 858 test points within 2 km of a border or coast changes country. <code>europe_resolution_60</code> is unchanged.</li>
 </ul></div>
 </div>
     <div class="section level2">

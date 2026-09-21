@@ -8,10 +8,10 @@ The classifier is taxonomy-agnostic: it classifies the species names in
 system's vocabulary. If your plot data uses names from a general
 backbone (GBIF, WFO, POWO, Euro+Med, a national checklist), harmonise
 them first as an explicit step with \[resy_resolve_taxa\] and inspect
-the result with \[resy_summarize_taxa\] before classifying, so the
-taxonomic choices stay visible (see the taxonomy vignette). Setting
-\`resolve_taxa = TRUE\` runs that resolution inside \`resy_classify()\`
-as a convenience: names the expert already knows pass through untouched,
+the result with its \`summary()\` before classifying, so the taxonomic
+choices stay visible (see the taxonomy vignette). Setting \`resolve_taxa
+= TRUE\` runs that resolution inside \`resy_classify()\` as a
+convenience: names the expert already knows pass through untouched,
 unknown names are looked up in the synonym table, and names that resolve
 to nothing keep their original value (never a best guess). What was
 resolved is then reported in the result's \`taxon_resolution\`.
@@ -93,12 +93,12 @@ resy_classify(
 ## Value
 
 An object of class \`resy_result\`. When \`resolve_taxa = TRUE\` it also
-carries a \`taxon_resolution\` summary from \[resy_summarize_taxa\];
-otherwise \`taxon_resolution\` is \`NULL\`.
+carries the \`summary()\` of the \[resy_resolve_taxa\] result as
+\`taxon_resolution\`; otherwise \`taxon_resolution\` is \`NULL\`.
 
 ## See also
 
-\[resy_resolve_taxa\], \[resy_summarize_taxa\]
+\[resy_resolve_taxa\], \[resy_check_taxonomy\]
 
 ## Examples
 
@@ -129,8 +129,8 @@ res <- resy_classify(species, header, scheme = "Apennine-test")
 #> Step 5.9  Number of T$ NON conditions: 0
 #> Step 5.10  Header conditions with numeric values: 0
 #>   Header conditions with character values: 0
-#> adapt conditions 2026-09-21 16:38:30.387249
-#> classification from here on 2026-09-21 16:38:30.388184
+#> adapt conditions 2026-09-21 16:56:16.240992
+#> classification from here on 2026-09-21 16:56:16.242188
 head(res$result.classification)
 #> HU32 KW76 YB18 NX70 OL48 YL40 
 #>  "F"  "F"  "F"  "F"  "F"  "F" 

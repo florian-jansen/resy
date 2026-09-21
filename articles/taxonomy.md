@@ -20,7 +20,7 @@ can check the taxonomic decisions before they affect a classification.
     with
     [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md).
 2.  **Inspect** the result with
-    [`resy_summarize_taxa()`](https://florian-jansen.github.io/resy/reference/resy_summarize_taxa.md).
+    [`summary()`](https://rspatial.github.io/terra/reference/summary.html).
 3.  **Classify** the resolved data with
     [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
 
@@ -170,39 +170,41 @@ plots <- data.frame(
 
 resolved <- resy_resolve_taxa(plots, species_col = "TaxonName")
 resolved
-#>                 TaxonName              canonical taxon_confidence
-#> 1        Hibiscus praecox Abelmoschus esculentus          synonym
-#> 2 Abelmoschus longifolius Abelmoschus esculentus          synonym
-#> 3         Fagus sylvatica        Fagus sylvatica            exact
-#> 4     Anemone nemorosa L.       Anemone nemorosa    cleaned_exact
-#> 5  Not a real species 123                   <NA>       unresolved
+#> <resy_taxa> 5 name(s) from column `TaxonName` resolved against 20158 reference names
+#>   TaxonName         name as submitted
+#>   canonical         resolved canonical name; NA when unresolved
+#>   taxon_confidence  exact, synonym, cleaned_exact, cleaned_synonym or unresolved
+#>   matched           TRUE if the name resolved
+#> 4 matched (80.0%), 1 unmatched; summary() lists them
+#> 
+#>                 TaxonName              canonical taxon_confidence matched
+#> 1        Hibiscus praecox Abelmoschus esculentus          synonym    TRUE
+#> 2 Abelmoschus longifolius Abelmoschus esculentus          synonym    TRUE
+#> 3         Fagus sylvatica        Fagus sylvatica            exact    TRUE
+#> 4     Anemone nemorosa L.       Anemone nemorosa    cleaned_exact    TRUE
+#> 5  Not a real species 123                   <NA>       unresolved   FALSE
 ```
 
-[`resy_summarize_taxa()`](https://florian-jansen.github.io/resy/reference/resy_summarize_taxa.md)
-reports how many names resolved, the breakdown by confidence, and the
-distinct names that stayed unresolved.
+The result is a `resy_taxa` table, the same kind
+[`resy_check_taxonomy()`](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md)
+returns.
+[`summary()`](https://rspatial.github.io/terra/reference/summary.html)
+reports how many names and records resolved, the records by match type,
+and the distinct names that stayed unresolved.
 
 ``` r
 
-resy_summarize_taxa(resolved, species_col = "TaxonName")
-#> $n
-#> [1] 5
+summary(resolved)
+#> 5 names checked: 4 matched (80.0%), 1 not matched (20.0%).
 #> 
-#> $resolved
-#> [1] 4
+#> Records by match type:
+#>   cleaned_exact  1  (20.0%)
+#>   exact          1  (20.0%)
+#>   synonym        2  (40.0%)
+#>   unresolved     1  (20.0%)
 #> 
-#> $unresolved
-#> [1] 1
-#> 
-#> $by_confidence
-#>      confidence n prop
-#> 1 cleaned_exact 1  0.2
-#> 2         exact 1  0.2
-#> 3       synonym 2  0.4
-#> 4    unresolved 1  0.2
-#> 
-#> $unresolved_taxa
-#> [1] "Not a real species 123"
+#> Not matched:
+#>   species (1): Not a real species 123
 ```
 
 Unresolved names can be fixed by correcting a spelling, adding a row to
@@ -243,10 +245,17 @@ resy_resolve_taxa(
   synonyms    = crosswalk,
   canonical   = unique(crosswalk$esy_canonical)
 )
-#>         TaxonName       canonical taxon_confidence
-#> 1 Fagus silvatica Fagus sylvatica          synonym
-#> 2 Abies pectinata      Abies alba          synonym
-#> 3   Quercus robur            <NA>       unresolved
+#> <resy_taxa> 3 name(s) from column `TaxonName` resolved against 5 reference names
+#>   TaxonName         name as submitted
+#>   canonical         resolved canonical name; NA when unresolved
+#>   taxon_confidence  exact, synonym, cleaned_exact, cleaned_synonym or unresolved
+#>   matched           TRUE if the name resolved
+#> 2 matched (66.7%), 1 unmatched; summary() lists them
+#> 
+#>         TaxonName       canonical taxon_confidence matched
+#> 1 Fagus silvatica Fagus sylvatica          synonym    TRUE
+#> 2 Abies pectinata      Abies alba          synonym    TRUE
+#> 3   Quercus robur            <NA>       unresolved   FALSE
 ```
 
 If your crosswalk lives in an Excel sheet, read it yourself and pass the

@@ -103,8 +103,6 @@ to get to it as soon as possible!
   : Read the taxonomy synonym table
 - [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
   : Resolve plot species names to canonical ESy names
-- [`resy_summarize_taxa()`](https://florian-jansen.github.io/resy/reference/resy_summarize_taxa.md)
-  : Summarise a taxonomy-resolution result
 - [`resy_validate_esy()`](https://florian-jansen.github.io/resy/reference/resy_validate_esy.md)
   : Validate an expert classification file
 - [`resy_view_expert()`](https://florian-jansen.github.io/resy/reference/resy_view_expert.md)

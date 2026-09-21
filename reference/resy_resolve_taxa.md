@@ -51,9 +51,10 @@ resy_resolve_taxa(
 
 ## Value
 
-`obs` with two appended columns: `canonical` (the resolved ESy name,
-`NA` when unresolved) and `taxon_confidence` (`"exact"`, `"synonym"`,
-`"cleaned_exact"`, `"cleaned_synonym"`, or `"unresolved"`).
+A `resy_taxa` data frame: `obs` with three appended columns, `canonical`
+(the resolved ESy name, `NA` when unresolved), `taxon_confidence`
+(`"exact"`, `"synonym"`, `"cleaned_exact"`, `"cleaned_synonym"`, or
+`"unresolved"`), and `matched` (`TRUE` unless unresolved).
 
 ## Details
 
@@ -61,8 +62,15 @@ The synonym table pools synonymy from six backbones (Euro+Med, WFO,
 GBIF, COL, ITIS, NCBI), so plot data named under any of them resolves
 without the caller needing to say which backbone the names came from.
 
+The result is a `resy_taxa` data frame, the same class
+[`resy_check_taxonomy`](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md)
+returns. Printing it shows what each column holds and how many distinct
+names resolved; [`summary()`](https://rdrr.io/r/base/summary.html)
+returns the counts per name and per record, the records by match type,
+and the names that stayed unresolved.
+
 ## See also
 
 [`resy_read_synonyms`](https://florian-jansen.github.io/resy/reference/resy_read_synonyms.md),
-[`resy_summarize_taxa`](https://florian-jansen.github.io/resy/reference/resy_summarize_taxa.md),
+[`resy_check_taxonomy`](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md),
 [`resy_classify`](https://florian-jansen.github.io/resy/reference/resy_classify.md)

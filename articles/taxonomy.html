@@ -93,7 +93,7 @@ they affect a classification.</p>
 expert system with <code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code>.</li>
 <li>
 <strong>Inspect</strong> the result with
-<code><a href="../reference/resy_summarize_taxa.html">resy_summarize_taxa()</a></code>.</li>
+<code><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary()</a></code>.</li>
 <li>
 <strong>Classify</strong> the resolved data with
 <code><a href="../reference/resy_classify.html">resy_classify()</a></code>.</li>
@@ -300,35 +300,35 @@ guess.</p>
 <span></span>
 <span><span class="va">resolved</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa</a></span><span class="op">(</span><span class="va">plots</span>, species_col <span class="op">=</span> <span class="st">"TaxonName"</span><span class="op">)</span></span>
 <span><span class="va">resolved</span></span>
-<span><span class="co">#&gt;                 TaxonName              canonical taxon_confidence</span></span>
-<span><span class="co">#&gt; 1        Hibiscus praecox Abelmoschus esculentus          synonym</span></span>
-<span><span class="co">#&gt; 2 Abelmoschus longifolius Abelmoschus esculentus          synonym</span></span>
-<span><span class="co">#&gt; 3         Fagus sylvatica        Fagus sylvatica            exact</span></span>
-<span><span class="co">#&gt; 4     Anemone nemorosa L.       Anemone nemorosa    cleaned_exact</span></span>
-<span><span class="co">#&gt; 5  Not a real species 123                   &lt;NA&gt;       unresolved</span></span></code></pre></div>
-<p><code><a href="../reference/resy_summarize_taxa.html">resy_summarize_taxa()</a></code> reports how many names resolved,
-the breakdown by confidence, and the distinct names that stayed
-unresolved.</p>
+<span><span class="co">#&gt; &lt;resy_taxa&gt; 5 name(s) from column `TaxonName` resolved against 20158 reference names</span></span>
+<span><span class="co">#&gt;   TaxonName         name as submitted</span></span>
+<span><span class="co">#&gt;   canonical         resolved canonical name; NA when unresolved</span></span>
+<span><span class="co">#&gt;   taxon_confidence  exact, synonym, cleaned_exact, cleaned_synonym or unresolved</span></span>
+<span><span class="co">#&gt;   matched           TRUE if the name resolved</span></span>
+<span><span class="co">#&gt; 4 matched (80.0%), 1 unmatched; summary() lists them</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;                 TaxonName              canonical taxon_confidence matched</span></span>
+<span><span class="co">#&gt; 1        Hibiscus praecox Abelmoschus esculentus          synonym    TRUE</span></span>
+<span><span class="co">#&gt; 2 Abelmoschus longifolius Abelmoschus esculentus          synonym    TRUE</span></span>
+<span><span class="co">#&gt; 3         Fagus sylvatica        Fagus sylvatica            exact    TRUE</span></span>
+<span><span class="co">#&gt; 4     Anemone nemorosa L.       Anemone nemorosa    cleaned_exact    TRUE</span></span>
+<span><span class="co">#&gt; 5  Not a real species 123                   &lt;NA&gt;       unresolved   FALSE</span></span></code></pre></div>
+<p>The result is a <code>resy_taxa</code> table, the same kind
+<code><a href="../reference/resy_check_taxonomy.html">resy_check_taxonomy()</a></code> returns. <code><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary()</a></code>
+reports how many names and records resolved, the records by match type,
+and the distinct names that stayed unresolved.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_summarize_taxa.html">resy_summarize_taxa</a></span><span class="op">(</span><span class="va">resolved</span>, species_col <span class="op">=</span> <span class="st">"TaxonName"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $n</span></span>
-<span><span class="co">#&gt; [1] 5</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">resolved</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 5 names checked: 4 matched (80.0%), 1 not matched (20.0%).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $resolved</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
+<span><span class="co">#&gt; Records by match type:</span></span>
+<span><span class="co">#&gt;   cleaned_exact  1  (20.0%)</span></span>
+<span><span class="co">#&gt;   exact          1  (20.0%)</span></span>
+<span><span class="co">#&gt;   synonym        2  (40.0%)</span></span>
+<span><span class="co">#&gt;   unresolved     1  (20.0%)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $unresolved</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $by_confidence</span></span>
-<span><span class="co">#&gt;      confidence n prop</span></span>
-<span><span class="co">#&gt; 1 cleaned_exact 1  0.2</span></span>
-<span><span class="co">#&gt; 2         exact 1  0.2</span></span>
-<span><span class="co">#&gt; 3       synonym 2  0.4</span></span>
-<span><span class="co">#&gt; 4    unresolved 1  0.2</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $unresolved_taxa</span></span>
-<span><span class="co">#&gt; [1] "Not a real species 123"</span></span></code></pre></div>
+<span><span class="co">#&gt; Not matched:</span></span>
+<span><span class="co">#&gt;   species (1): Not a real species 123</span></span></code></pre></div>
 <p>Unresolved names can be fixed by correcting a spelling, adding a row
 to your own crosswalk, or leaving them out.</p>
 </div>
@@ -362,10 +362,17 @@ and <code>source</code>. A small example ships with the package.</p>
 <span>  synonyms    <span class="op">=</span> <span class="va">crosswalk</span>,</span>
 <span>  canonical   <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">crosswalk</span><span class="op">$</span><span class="va">esy_canonical</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt;         TaxonName       canonical taxon_confidence</span></span>
-<span><span class="co">#&gt; 1 Fagus silvatica Fagus sylvatica          synonym</span></span>
-<span><span class="co">#&gt; 2 Abies pectinata      Abies alba          synonym</span></span>
-<span><span class="co">#&gt; 3   Quercus robur            &lt;NA&gt;       unresolved</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;resy_taxa&gt; 3 name(s) from column `TaxonName` resolved against 5 reference names</span></span>
+<span><span class="co">#&gt;   TaxonName         name as submitted</span></span>
+<span><span class="co">#&gt;   canonical         resolved canonical name; NA when unresolved</span></span>
+<span><span class="co">#&gt;   taxon_confidence  exact, synonym, cleaned_exact, cleaned_synonym or unresolved</span></span>
+<span><span class="co">#&gt;   matched           TRUE if the name resolved</span></span>
+<span><span class="co">#&gt; 2 matched (66.7%), 1 unmatched; summary() lists them</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;         TaxonName       canonical taxon_confidence matched</span></span>
+<span><span class="co">#&gt; 1 Fagus silvatica Fagus sylvatica          synonym    TRUE</span></span>
+<span><span class="co">#&gt; 2 Abies pectinata      Abies alba          synonym    TRUE</span></span>
+<span><span class="co">#&gt; 3   Quercus robur            &lt;NA&gt;       unresolved   FALSE</span></span></code></pre></div>
 <p>If your crosswalk lives in an Excel sheet, read it yourself and pass
 the data frame. RESY validates the columns and uses it directly, so it
 needs no Excel package as a dependency:</p>
