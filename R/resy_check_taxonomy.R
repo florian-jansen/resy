@@ -124,14 +124,53 @@ summary.resy_taxa <- function(object, ...) {
 
 #' @export
 print.summary.resy_taxa <- function(x, ...) {
-  cat(sprintf("%d name(s): %d matched (%s), %d unmatched (%s)\n",
+  cat(sprintf("%d names checked: %d matched (%s), %d not matched (%s).\n",
               x$n, x$matched, .resy_pct(x$matched, x$n),
               x$unmatched, .resy_pct(x$unmatched, x$n)))
   if (x$unmatched > 0L) {
-    cat("Unmatched names:\n")
-    cat(paste0("  ", x$unmatched_names), sep = "\n")
+    cat("\nNot matched:\n")
+    kinds <- .resy_name_kind(x$unmatched_names)
+    labels <- c(genus = "genus only", infraspecific = "below species level",
+                species = "species")
+    for (k in names(labels)) {
+      nm <- x$unmatched_names[kinds == k]
+      if (!length(nm)) next
+      if (k == "genus") nm <- sub("\\s+spp?\\.?$", "", nm)
+      cat(.resy_pack_names(sprintf("  %s (%d): ", labels[[k]], length(nm)), nm,
+                           width = getOption("width"), exdent = 4L), sep = "\n")
+    }
   }
   invisible(x)
+}
+
+# Lines of comma-separated names after `lead`, filled up to `width` characters
+# without breaking a name across lines; continuation lines are indented by
+# `exdent` spaces.
+.resy_pack_names <- function(lead, names, width, exdent) {
+  lines <- character()
+  current <- lead
+  fresh <- TRUE
+  for (i in seq_along(names)) {
+    item <- if (i < length(names)) paste0(names[i], ",") else names[i]
+    candidate <- if (fresh) paste0(current, item) else paste(current, item)
+    if (!fresh && nchar(candidate) > width) {
+      lines <- c(lines, current)
+      current <- paste0(strrep(" ", exdent), item)
+    } else {
+      current <- candidate
+    }
+    fresh <- FALSE
+  }
+  c(lines, current)
+}
+
+# What a taxon name names: a genus only ("Carex sp.", "Carex"), a taxon below
+# species level ("Festuca rubra subsp. commutata", "... var. ..."), or a species.
+.resy_name_kind <- function(names) {
+  words <- lengths(strsplit(trimws(names), "\\s+"))
+  genus <- words == 1L | grepl("\\s+spp?\\.?$", names)
+  infra <- grepl("\\s(subsp|ssp|var|subvar|f|nothosubsp)\\.\\s", names)
+  ifelse(genus, "genus", ifelse(infra, "infraspecific", "species"))
 }
 
 .resy_pct <- function(k, n) {

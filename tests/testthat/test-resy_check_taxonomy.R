@@ -95,7 +95,28 @@ test_that("summary counts matches and lists unmatched names", {
   expect_s3_class(s, "summary.resy_taxa")
   expect_equal(c(s$n, s$matched, s$unmatched), c(4L, 2L, 2L))
   expect_equal(s$unmatched_names, c("Herba ignota", "Planta inventa"))
-  expect_output(print(s), "2 matched (50.0%), 2 unmatched", fixed = TRUE)
+  expect_output(print(s), "4 names checked: 2 matched (50.0%), 2 not matched (50.0%).",
+                fixed = TRUE)
+})
+
+test_that("summary prints unmatched names grouped by kind on wrapped lines", {
+  obs <- data.frame(TaxonName = c("Fagus sylvatica", "Carex sp.", "Rosa sp.",
+                                  "Festuca rubra subsp. commutata",
+                                  "Melica minuta var. arrecta", "Planta inventa"))
+  out <- capture.output(print(summary(resy_check_taxonomy(obs, toy_expert()))))
+
+  expect_true("  genus only (2): Carex, Rosa" %in% out)
+  expect_true(any(startsWith(out, "  below species level (2): Festuca rubra subsp. commutata")))
+  expect_true("  species (1): Planta inventa" %in% out)
+  expect_false(any(grepl("Fagus sylvatica", out, fixed = TRUE)))
+})
+
+test_that("names are sorted into genus, below-species and species", {
+  expect_equal(
+    .resy_name_kind(c("Carex sp.", "Carex spp.", "Carex", "Poa annua",
+                      "Festuca rubra subsp. commutata", "Melica minuta var. arrecta")),
+    c("genus", "genus", "genus", "species", "infraspecific", "infraspecific")
+  )
 })
 
 test_that("summary is computed from the rows, so it follows subsetting", {
@@ -123,4 +144,15 @@ test_that("print truncates long tables", {
   obs <- data.frame(TaxonName = paste("Planta", seq_len(12)))
   expect_output(print(resy_check_taxonomy(obs, toy_expert())),
                 "# ... 2 more row(s)", fixed = TRUE)
+})
+
+test_that("wrapped name lists never break a name across lines", {
+  out <- .resy_pack_names("  species (4): ",
+                          c("Borago officinalis", "Cardamine chelidonia",
+                            "Carex mucronata", "Crithmum maritimum"),
+                          width = 40, exdent = 4)
+  expect_true(all(nchar(out) <= 40))
+  expect_equal(out[1], "  species (4): Borago officinalis,")
+  expect_equal(out[2], "    Cardamine chelidonia,")
+  expect_equal(out[3], "    Carex mucronata, Crithmum maritimum")
 })
