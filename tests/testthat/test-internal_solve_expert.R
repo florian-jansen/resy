@@ -82,7 +82,7 @@ test_that(".resy_solve_membership classifies a plot from a parsed expert", {
     "SECTION 3: End"
   )
   parsed <- RESY:::.resy_build_parsed(
-    RESY:::parse.classification.expert.vector(expert)
+    RESY:::.resy_parse_expert_lines(expert)
   )
 
   obs <- data.table::data.table(
@@ -91,7 +91,7 @@ test_that(".resy_solve_membership classifies a plot from a parsed expert", {
     Cover_Perc        = c(20, 20, 40)
   )
   header    <- data.frame(PlotObservationID = c("p1", "p2"))
-  plot.cond <- RESY:::resy_init_plot_conditions(obs, parsed$conditions)
+  plot.cond <- RESY:::.resy_init_plot_conditions(obs, parsed$conditions)
 
   res <- suppressMessages(
     RESY:::.resy_solve_membership(obs, header, parsed, plot.cond, mc = 1L)
@@ -158,4 +158,28 @@ test_that("resy_classify warns about header columns the expert system uses but h
     )),
     "does not have: Ecoreg"
   )
+})
+
+test_that("whole-plot cover conditions do not depend on the row order of obs", {
+  expert <- test_path("fixtures", "whole-plot-cover.json")
+  parsed <- resy_load_expert(expertfile = expert)
+  expect_true(all(c("#T$", "#$$") %in% parsed$conditions))
+
+  # Plot ids out of sorted order: "z" (dense) comes before "a" (sparse).
+  obs <- data.frame(
+    PlotObservationID = c("z", "z", "a", "a"),
+    TaxonName = c("Fagus sylvatica", "Corylus avellana", "Fagus sylvatica", "Corylus avellana"),
+    Cover_Perc = c(60, 30, 5, 5)
+  )
+  header <- data.frame(PlotObservationID = c("z", "a"))
+  classify <- function(o) suppressMessages(resy_classify(o, header, expertfile = expert, mc = 1L))
+
+  res <- classify(obs)
+  i <- match(c("z", "a"), names(res$types))
+  expect_equal(res$logi2$T[i], c(TRUE, FALSE))
+  expect_equal(res$logi2$M[i], c(TRUE, FALSE))
+
+  rev_res <- classify(obs[nrow(obs):1, ])
+  expect_equal(rev_res$result.classification[c("z", "a")],
+               res$result.classification[c("z", "a")])
 })

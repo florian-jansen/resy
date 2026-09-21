@@ -81,9 +81,59 @@
   hit
 }
 
+# Taxa of a condition of the form "A EXCEPT B": the union of the groups in A
+# minus the taxa of the groups or species in B. Without EXCEPT, the union of A.
+#' @keywords internal
+.resy_except_taxa <- function(x, groups, groups.names, prefix = NULL) {
+  parts <- trimws(strsplit(x, "EXCEPT", fixed = TRUE)[[1]])
+  taxa <- .resy_group_taxa_union(parts[1], groups, groups.names, prefix = prefix)
+  if (length(parts) > 1L) {
+    drop <- .resy_group_taxa_or_species(parts[2], groups, groups.names, prefix = prefix)
+    taxa <- taxa[is.na(fastmatch::fmatch(taxa, drop))]
+  }
+  taxa
+}
+
+# Per-plot value of `stat(Cover_Perc, TaxonName)` over the observations whose
+# taxon is in `taxa` (or, with `exclude = TRUE`, not in `taxa`). Plots without
+# such observations are absent from the result.
+#' @keywords internal
+.resy_plot_stat <- function(obs, taxa, stat, exclude = FALSE) {
+  keep <- obs$TaxonName %in% taxa
+  if (exclude) keep <- !keep
+  if (!any(keep)) return(NULL)
+  obs[keep, list(x = stat(Cover_Perc, TaxonName)), by = PlotObservationID]
+}
+
+# Fill columns `cols` of the plot x condition matrix: column `cols[k]` receives
+# the per-plot statistic over `taxa[[k]]`. `stat` is one function for all
+# columns or a list with one function per column. Rows are matched by plot id.
+#' @keywords internal
+.resy_fill_conditions <- function(plot.cond, obs, cols, taxa, stat,
+                                  exclude = FALSE, mc = 1L) {
+  if (!length(cols)) return(plot.cond)
+  stats <- if (is.function(stat)) rep(list(stat), length(cols)) else stat
+  l <- .resy_mclapply(seq_along(cols), function(k)
+    .resy_plot_stat(obs, taxa[[k]], stats[[k]], exclude = exclude), mc = mc)
+  n <- vapply(l, function(d) if (is.null(d)) 0L else nrow(d), integer(1))
+  if (!sum(n)) return(plot.cond)
+  rows <- fastmatch::fmatch(unlist(lapply(l, `[[`, "PlotObservationID"), use.names = FALSE),
+                            rownames(plot.cond))
+  plot.cond[cbind(rows, rep(cols, n))] <- unlist(lapply(l, `[[`, "x"), use.names = FALSE)
+  plot.cond
+}
+
+# Per-plot statistics of the cover values (and taxa) of the selected observations.
+.resy_stat_n      <- function(cover, taxa) length(cover)
+.resy_stat_sqrt   <- function(cover, taxa) round(sum(sqrt(cover)), 5)
+.resy_stat_sum    <- function(cover, taxa) sum(cover)
+.resy_stat_total  <- function(cover, taxa) .total_cover(cover)
+.resy_stat_max    <- function(cover, taxa) max(cover)
+.resy_stat_mean   <- function(cover, taxa) mean(cover)
+.resy_stat_sqrt_q <- function(cover, taxa) sum(cover^0.5)
+
 #' @keywords internal
 .resy_solve_membership <- function(obs, header, parsed, plot.cond, mc = 1L) {
-  # parsed <- resy_load_expert(expertfile = NULL, scheme = "VegformMV", version = '2026-03-05')
   if (!inherits(obs, 'data.table')) obs <- data.table::as.data.table(obs)
   if (missing(header) || is.null(header)) stop('header must be provided (data.frame).')
   groups <- parsed$groups
@@ -97,9 +147,24 @@
   # Make sure PlotObservationID are character indices
   obs[, PlotObservationID := as.character(PlotObservationID)]
   header$PlotObservationID <- as.character(header$PlotObservationID)
+  plots <- rownames(plot.cond)
   # Header conditions ($$C, $$N) are filled row by row, so the header must be in
   # the plot order of plot.cond; a plot missing from the header gets an NA row.
-  header <- header[match(dimnames(plot.cond)[[1]], header$PlotObservationID), , drop = FALSE]
+  header <- header[match(plots, header$PlotObservationID), , drop = FALSE]
+
+  # Condition text after its four-character code ("#TC ", "##Q ", ...).
+  body <- function(x) substr(x, 5, nchar(x))
+  union_of <- function(x, prefix = NULL)
+    lapply(x, .resy_group_taxa_union, groups = groups, groups.names = groups.names,
+           prefix = prefix)
+  except_of <- function(x, prefix)
+    lapply(x, .resy_except_taxa, groups = groups, groups.names = groups.names,
+           prefix = prefix)
+  fill <- function(cols, taxa, stat, exclude = FALSE)
+    .resy_fill_conditions(plot.cond, obs, cols, taxa, stat, exclude = exclude, mc = mc)
+  has_except <- grepl("EXCEPT", conditions, fixed = TRUE)
+  # All observations of a plot: the complement of no taxa.
+  all_taxa <- function(cols) rep(list(character()), length(cols))
 
   ###  R code for Expert system vegetation classification
   ###  Bruelheide H, Chytry M,  Tichý L & Jansen F  2021
@@ -118,379 +183,164 @@
   # 6. Cover of any species in the group (#SC)
   # 7. Cover of single species (#SC and #SC EXCEPT)
   # 8. Highest cover of any species (#$$ EXCEPT)
-  # 9. NON conditions, where species number (N), cover (C) or sum of squared  cover (Q) is compared with all other species groups
+  # 9. NON conditions, where the sum of square-rooted cover (Q) is compared with
+  #    all other species groups of the same set
   # 10. Header data, categorical ($$C) and numeric ($$N)
-  # In all cases: handle “|” (combine groups) and EXCEPT
+  # In all cases: handle "|" (combine groups) and EXCEPT
 
-  if(!'data.table' %in% class(obs)) stop('obs must be of class data.table')
-    ############################################### #
-    # 5.1. Number of species (###) of a group    ####
-    w = which(startsWith(conditions, "###") | startsWith(conditions, "##D"))
-    message('Step 5.1  Number of conditions with number of species of a group: ', length(w))
-    FUN <- function(i) {
-      taxa <- .resy_group_taxa_union(i, groups, groups.names)
-      obs[obs$TaxonName %in% taxa, list(x = .N), by = PlotObservationID]
-    }
-    if(length(w) > 0) {
-       cond <- sapply(conditions[w], function(x) substr(x, 5, nchar(x)), USE.NAMES = FALSE)
-       l <-  .resy_mclapply(cond, function(x) FUN(x), mc.cores=mc)
-       ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), dimnames(plot.cond)[[1]]),
-                      rep(w, sapply(l, function(x) nrow(x))) ), ncol = 2)
-       plot.cond[ind] <- unlist(sapply(l, function(x) x$x, USE.NAMES = FALSE))
-    }
+  ############################################### #
+  # 5.1. Number of species (###) of a group    ####
+  w <- which(startsWith(conditions, "###") | startsWith(conditions, "##D"))
+  message('Step 5.1  Number of conditions with number of species of a group: ', length(w))
+  plot.cond <- fill(w, union_of(body(conditions[w])), .resy_stat_n)
 
-    #################################################################################### #
-    # 5.2. Minimum number of species which have to be present in a group (#01 to #99) ####
-    ##!! Not to be confounded with +01, +02 etc. in group names, which is for additional hierarchy with differential species groups !!##
-    w <- suppressWarnings(which(!is.na(as.numeric(substr(conditions,2,3))) & startsWith(conditions, "#")))
-    message('Step 5.2  Number of conditions with minimum number of species: ', length(w))
-    cond <- sapply(conditions[w], function(x) substr(x, 5, nchar(x)), USE.NAMES = FALSE)
-    nb <- as.numeric(sapply(conditions[w], function(x) substr(x, 2, 3), USE.NAMES = FALSE))
-    FUN <- function(i, nb) {
-      taxa <- .resy_group_taxa_union(i, groups, groups.names)
-      result <- obs[obs$TaxonName %in% taxa,
-                    .(x = uniqueN(TaxonName)),
-                    by = PlotObservationID]
-      result[, y := as.integer(x >= nb)]
-      result
+  #################################################################################### #
+  # 5.2. Minimum number of species which have to be present in a group (#01 to #99) ####
+  ##!! Not to be confounded with +01, +02 etc. in group names, which is for additional hierarchy with differential species groups !!##
+  w <- suppressWarnings(which(!is.na(as.numeric(substr(conditions, 2, 3))) & startsWith(conditions, "#")))
+  message('Step 5.2  Number of conditions with minimum number of species: ', length(w))
+  at_least <- lapply(as.numeric(substr(conditions[w], 2, 3)), function(nb) {
+    force(nb)
+    function(cover, taxa) as.integer(data.table::uniqueN(taxa) >= nb)
+  })
+  plot.cond <- fill(w, union_of(body(conditions[w])), at_least)
+
+  ##################################################### #
+  # 5.3. '##Q sum of square root Cover_Perc'         ####
+  w <- which(startsWith(conditions, "##Q") | startsWith(conditions, "##D"))
+  message('Step 5.3  Number of conditions with sum of square rooted Cover_Perc of species: ', length(w))
+  plot.cond <- fill(w, union_of(body(conditions[w])), .resy_stat_sqrt)
+
+  ###################################################### #
+  # 5.4. Total Cover_Perc of the group (##C)          ####
+  w <- which(startsWith(conditions, "##C") | startsWith(conditions, "##D"))
+  message('Step 5.4  Number of conditions with total Cover_Perc of the group: ', length(w))
+  plot.cond <- fill(w, union_of(body(conditions[w])), .resy_stat_sum)
+
+  ########################################################################################## #
+  # 5.5 Total Cover_Perc (#TC) and percent of total cover of all other species ($05, $10) ####
+  # "#T$" alone is the total cover of the plot.
+  w <- which(conditions == "#T$")
+  message('Step 5.5  Number of conditions with total Cover_Perc of all other species: ', length(w))
+  plot.cond <- fill(w, all_taxa(w), .resy_stat_total, exclude = TRUE)
+
+  # "#T$ A" and "#T$ A|#T$ B": total cover of all species outside the groups.
+  # Conditions with EXCEPT are handled below.
+  w <- which(startsWith(conditions, "#T$") & nzchar(body(conditions)) & !has_except)
+  message('          Number of conditions with total Cover_Perc of all other species except those on the left-hand side: ', length(w))
+  plot.cond <- fill(w, union_of(conditions[w], prefix = "#T$"), .resy_stat_total,
+                    exclude = TRUE)
+
+  # "#TC A" and "#TC A|#TC B": total cover of the species in the groups.
+  w <- which(startsWith(conditions, "#TC") & !has_except)
+  plot.cond <- fill(w, union_of(conditions[w], prefix = "#TC"), .resy_stat_total)
+
+  # "$05", "$25", ...: that percentage of the total cover of the plot.
+  w <- which(grepl("\\$[0-9]", conditions))
+  message('          Number of conditions with $05, $25 etc.: ', length(w))
+  share_of_total <- lapply(as.numeric(sub("$", "", conditions[w], fixed = TRUE)) / 100,
+                           function(p) { force(p); function(cover, taxa) .total_cover(cover) * p })
+  plot.cond <- fill(w, all_taxa(w), share_of_total, exclude = TRUE)
+
+  # "#TC A|#TC B EXCEPT C" and "#TC A EXCEPT C": total cover of the groups
+  # without the taxa of C.
+  w <- which(startsWith(conditions, "#TC") & grepl("|#", conditions, fixed = TRUE) & has_except)
+  plot.cond <- fill(w, except_of(conditions[w], prefix = "#TC"), .resy_stat_total)
+  w <- which(has_except &
+               !grepl("|", conditions, fixed = TRUE) &
+               !startsWith(conditions, "#SC") &
+               !startsWith(conditions, "#$$"))
+  plot.cond <- fill(w, except_of(conditions[w], prefix = "#TC"), .resy_stat_total)
+
+  ######################################################### #
+  # 5.6   Cover of any species in the group (#SC)   ####
+  # The cover of the species is greater than the cover of any single species in
+  # the functional species group, except of the species at the left-hand side of
+  # the logical operator. "#SC" occurs at the beginning of a condition and after
+  # "|#" inside it; on right-hand sides it always comes with EXCEPT and group
+  # names or names of single species.
+  w <- which(grepl("#SC", conditions, fixed = TRUE))
+  message('Step 5.6  Number of conditions with maximum cover of the group: ', length(w))
+  plot.cond <- fill(w, except_of(conditions[w], prefix = "#SC"), .resy_stat_max)
+
+  ######################################################## #
+  # 5.7. Cover percentage single species and SC left    ####
+  w <- which(!startsWith(conditions, "#") &
+               !startsWith(conditions, "$") &
+               !startsWith(conditions, "NON"))
+  message('Step 5.7  Number of conditions with single species, header levels (e.g. country names): ', length(w))
+  plot.cond <- fill(w, as.list(conditions[w]), .resy_stat_mean)
+
+  ################################################################## #
+  # 5.8   Highest Cover_Perc of any species in plot (#$$ EXCEPT)  ####
+  w <- which(conditions == "#$$")
+  message('Step 5.8  Number of conditions with maximum Cover_Perc in plot: ', length(w))
+  plot.cond <- fill(w, all_taxa(w), .resy_stat_max, exclude = TRUE)
+
+  # "#$$ EXCEPT B": highest cover of any species outside the groups or species of B.
+  w <- which(startsWith(conditions, "#$$") & has_except)
+  message('          Number of conditions with maximum Cover_Perc in plot EXCEPT species of target group: ', length(w))
+  outside <- lapply(conditions[w], function(i)
+    .resy_group_taxa_or_species(trimws(strsplit(i, "EXCEPT", fixed = TRUE)[[1]])[[2]],
+                                groups, groups.names))
+  plot.cond <- fill(w, outside, .resy_stat_max, exclude = TRUE)
+
+  ################################################## #
+  # 5.9 NON conditions                              ####
+  # "NON ##Q +01 A": the highest sum of square-rooted cover among the other
+  # differential groups (##D) of the same set (+01).
+  wn <- which(startsWith(conditions, "NON "))
+  message('Step 5.9  Number of T$ NON conditions: ', length(wn))
+  if (any(substr(conditions[wn], 5, 7) != "##Q"))
+    stop('Only square root cover value NON condition implemented.')
+
+  if (length(wn)) {
+    group.d <- which(substr(names(groups), 3, 3) == "D")
+    q <- matrix(0, nrow = length(plots), ncol = length(group.d))
+    q <- .resy_fill_conditions(`rownames<-`(q, plots), obs, seq_along(group.d),
+                               lapply(group.d, function(i) unlist(groups[i], use.names = FALSE)),
+                               .resy_stat_sqrt_q, mc = mc)
+    group.d.names <- names(groups)[group.d]
+    for (j in wn) {
+      target <- body(conditions[j])
+      substr(target, 1, 3) <- "##D"
+      others <- which(substr(group.d.names, 5, 7) == substr(target, 5, 7) &
+                        group.d.names != target)
+      if (length(others))
+        plot.cond[, j] <- round(apply(q[, others, drop = FALSE], 1, max, na.rm = TRUE), 5)
     }
-    # FUN(cond[[1]], nb[[1]])
-    l =  .resy_mcmapply(FUN, cond, nb, SIMPLIFY = FALSE)
-    ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), dimnames(plot.cond)[[1]]),
-                    rep(w, sapply(l, function(x) nrow(x))), unlist(sapply(l, function(x) x$y, USE.NAMES = FALSE)) ), ncol = 3)
+  }
+
+  ######################################## #
+  # 5.10. evaluate header data          ####
+  ### Numerical
+  w <- conditions[startsWith(conditions, '$$N')]
+  message('Step 5.10  Header conditions with numeric values: ', length(w))
+  if(length(w) > 0) {
+    m <- match(body(w), names(header))
+    W <- w[!is.na(m)]
+    m <- m[!is.na(m)]
+    ind <- matrix(c(rep(1:nrow(header), length(m)),
+                    rep(fmatch(W, conditions), each = nrow(header)),
+                    as.numeric(unlist(header[, m], use.names = FALSE))), ncol = 3)
+    ind[,3][is.na(ind[,3])] <- 0
     plot.cond[ind[,1:2]] <- ind[,3]
-
-    ##################################################### #
-    # 5.3. '##Q sum of square root Cover_Perc'         ####
-    w = which(startsWith(conditions, "##Q") | startsWith(conditions, "##D"))
-    message('Step 5.3  Number of conditions with sum of square rooted Cover_Perc of species: ', length(w))
-    if(length(w) > 0) {
-      cond <- sapply(conditions[w], function(x) substr(x, 5, nchar(x)), USE.NAMES = FALSE)
-      FUN <- function(i) {
-        taxa <- .resy_group_taxa_union(i, groups, groups.names)
-        obs[obs$TaxonName %in% taxa, list(x=sum(sqrt(Cover_Perc))), by=PlotObservationID]
-      }
-      l <-  .resy_mclapply(cond, function(x) FUN(x), mc.cores=mc)
-      ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), dimnames(plot.cond)[[1]]),
-                      rep(w, sapply(l, function(x) nrow(x))) ), ncol = 2)
-      plot.cond[ind] <- unlist(sapply(l, function(x) round(x$x,5), USE.NAMES = FALSE))
-
-    }
-
-   ###################################################### #
-   # 5.4. Total Cover_Perc of the group (##C)          ####
-    w = which(startsWith(conditions, "##C") | startsWith(conditions, "##D"))
-    message('Step 5.4  Number of conditions with total Cover_Perc of the group: ', length(w))
-    if(length(w) > 0) {
-      cond <- sapply(conditions[w], function(x) substr(x, 5, nchar(x)), USE.NAMES = FALSE)
-      FUN <- function(i) {
-        taxa <- .resy_group_taxa_union(i, groups, groups.names)
-        obs[obs$TaxonName %in% taxa, list(x=sum(Cover_Perc)), by=PlotObservationID]
-      }
-      l =  .resy_mclapply(cond, function(x) FUN(x), mc.cores=mc)
-      ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), dimnames(plot.cond)[[1]]),
-                    rep(w, sapply(l, function(x) nrow(x))) ), ncol = 2)
-      plot.cond[ind] <- unlist(sapply(l, function(x) x$x, USE.NAMES = FALSE))
-    }
-
-
-    ########################################################################################## #
-    # 5.5 Total Cover_Perc (#TC) and percent of total cover of all other species ($05, $10) ####
-    # check whether there is "#T$" as single condition also on the left-hand side, e.g. with "GE" as operator:
-    # "#T$ GE 30" which means that total Cover_Perc is greater or equal than 30%
-    # if(any(trim(tstrsplit(membership.expressions, "GE", fixed=TRUE)[[1]])=="#T$")) warning('"#T$ GE" detected.')
-    w <- which(conditions == "#T$")
-    message('Step 5.5  Number of conditions with total Cover_Perc of all other species: ', length(w))
-    plot.cond[,w] <- tapply(obs$Cover_Perc, obs$PlotObservationID, .total_cover)
-
-    # '#T$' total Cover_Perc of all other species except those on the left-hand side
-    # we exclude "|#" and "EXCEPT" because we handle these cases separately below
-    w <- which(startsWith(conditions, "#T$") &
-                 regexpr("|#", conditions, fixed=T) == -1 &
-                 regexpr("EXCEPT", conditions, fixed=T) == -1)
-    message('          Number of conditions with total Cover_Perc of all other species except those on the left-hand side: ', length(w))
-    #  d <- which(substr(conditions[w], 6,7) %in% discr)
-    cond <- sapply(conditions[w], function(x) substr(x, 5, nchar(x)), USE.NAMES = FALSE)
-    w <- w[cond != '']   # necessary because we still have #T$ in the conditions
-    cond <- cond[cond != '']
-    FUN <- function(i) {
-      taxa <- .resy_group_taxa_union(i, groups, groups.names, prefix = "#T$")
-      result <- obs[!obs$TaxonName %in% taxa, list(x= .total_cover(Cover_Perc)), by=PlotObservationID]
-      return(result)
-    }
-    l =  .resy_mclapply(cond, function(x) FUN(x), mc.cores=mc)
-    ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), unique(obs$PlotObservationID)),
-                    rep(w, sapply(l, function(x) nrow(x)) ) ), ncol = 2)
-    plot.cond[ind] <- unlist(sapply(l, function(x) x$x, USE.NAMES = FALSE))
-
-    ### #TC total cover of all species in this group  ###
-    # we exclude "|#" and "EXCEPT" because we handle these cases separately below
-    wn <- which(startsWith(conditions, "#TC") & !grepl("|#", conditions, fixed=TRUE) & !grepl("EXCEPT",conditions, fixed=TRUE))
-    # also includes | operator, which is a combination of the two groups the species groups have to be combined
-    # "#TC Atlantic-heath-shrubs|#TC Lowland-to-alpine-heath-shrubs"
-    if(length(wn) > 0) {
-      FUN <- function(i) {
-        taxa <- .resy_group_taxa_union(i, groups, groups.names, prefix = NULL)  # prefix = '#TC
-        obs[obs$TaxonName %in% taxa, list(x= .total_cover(Cover_Perc)), by=PlotObservationID]
-      }
-      l <- .resy_mclapply(substr(conditions[wn],5, nchar(conditions[wn])), FUN, mc.cores = mc)
-      ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), dimnames(plot.cond)[[1]]),
-                      rep(wn, sapply(l, function(x) nrow(x))) ), ncol = 2)
-      plot.cond[ind] <- unlist(sapply(l, function(x) x$x, USE.NAMES = FALSE))
-    }
-
-    # We calculate total cover and then take the percentage
-    w <- which(grepl("\\$[0-9]",conditions))
-    # conditions[w]
-    message('          Number of conditions with $05, $25 etc.: ', length(w))
-    if(length(w) > 0) {
-      cond <- conditions[w]
-      FUN <- function(i) {
-        prop.total.cover <- as.numeric(sub("$","", i, fixed=TRUE))/100
-        return(obs[, list(x= .total_cover(Cover_Perc)*prop.total.cover), by=PlotObservationID])
-      }
-      l =  .resy_mclapply(cond, function(x) FUN(x), mc.cores=mc)
-      ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), dimnames(plot.cond)[[1]]),
-                      rep(w, sapply(l, function(x) nrow(x))) ), ncol = 2)
-      plot.cond[ind] <- unlist(sapply(l, function(x) x$x, USE.NAMES = FALSE))
-    }
-
-    ### now handle cases of | and EXCEPT ###
-    # first: deal with | without EXCEPT a) #T$
-    wn <- which(startsWith(conditions, "#T$") & grepl("|#", conditions, fixed=TRUE) & !grepl("EXCEPT",conditions, fixed=TRUE))
-    if(length(wn) > 0) {
-      # #TS means total cover of all species not in these groups
-      FUN <- function(i) {
-        b <- .resy_group_taxa_union(i, groups, groups.names, prefix = "#T$")
-        return(obs[!obs$TaxonName %in% b, list(x= .total_cover(Cover_Perc)), by=PlotObservationID])
-      }
-      l <- .resy_mclapply(conditions[wn], FUN, mc.cores = mc)
-      ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), dimnames(plot.cond)[[1]]),
-                      rep(wn, sapply(l, function(x) nrow(x))) ), ncol = 2)
-      plot.cond[ind] <- unlist(sapply(l, function(x) x$x, USE.NAMES = FALSE))
-    }
-
-    # second: deal with | without except b) #TC
-    wn <- which(startsWith(conditions, "#TC") & grepl("\\|#", conditions) & !grepl("EXCEPT",conditions, fixed=TRUE))
-    if(length(wn) > 0) {
-      # #TS means total cover of all species not in these groups
-      FUN <- function(i) {
-        taxa <- .resy_group_taxa_union(i, groups, groups.names, prefix = "#TC")
-        return(obs[obs$TaxonName %in% taxa, list(x= .total_cover(Cover_Perc)), by=PlotObservationID])
-      }
-      l <- .resy_mclapply(conditions[wn], FUN, mc.cores = mc)
-      ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), dimnames(plot.cond)[[1]]),
-                      rep(wn, sapply(l, function(x) nrow(x))) ), ncol = 2)
-      plot.cond[ind] <- unlist(sapply(l, function(x) x$x, USE.NAMES = FALSE))
-    }
-
-    # third: | and except
-    # 1. divide condition at EXCEPT in left- and right hand side
-    # make sure that the condition starts with #TC
-
-    wn <- which(startsWith(conditions, "#TC") & grepl("|#", conditions, fixed=TRUE) & grepl("EXCEPT",conditions, fixed=TRUE))
-    # only occurs with #TC and single species
-    if(length(wn) > 0) {
-      FUN <- function(i) {
-        d <- trimws(unlist(strsplit(i, "EXCEPT", fixed = TRUE), use.names = FALSE))
-        b1 <- .resy_group_taxa_union(d[1], groups, groups.names, prefix = "#TC")
-        b2 <- .resy_group_taxa_or_species(d[2], groups, groups.names, prefix = "#TC")
-        b <- b1[is.na(fastmatch::fmatch(b1, b2))]
-        return(obs[obs$TaxonName %in% b, list(x= .total_cover(Cover_Perc)), by=PlotObservationID])
-      }
-      l <- .resy_mclapply(conditions[wn], FUN, mc.cores = mc)
-      ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), dimnames(plot.cond)[[1]]),
-                      rep(wn, sapply(l, function(x) nrow(x))) ), ncol = 2)
-      plot.cond[ind] <- unlist(sapply(l, function(x) x$x, USE.NAMES = FALSE))
-    }
-
-
-    # fourth: deal with EXCEPT only (without #SC, which we have dealt with before)
-    wn <- which(grepl("EXCEPT",conditions, fixed=TRUE) &
-                  !grepl("|", conditions, fixed=TRUE) &
-                  !startsWith(conditions, "#SC") &
-                  !startsWith(conditions, "#$$"))
-    # conditions[wn]
-    # all have #TC: if other conditions exist they would have to be dealt with separately
-    if(length(wn) > 0) {
-      FUN <- function(i) {
-        a <- trimws(unlist(strsplit(i, "EXCEPT", fixed = TRUE)))
-        b <- .resy_group_taxa_union(a[1], groups, groups.names, prefix = "#TC")
-        c <- .resy_group_taxa_or_species(a[2], groups, groups.names, prefix = "#TC")
-        b <- b[is.na(fastmatch::fmatch(b, c))]
-        return(obs[obs$TaxonName %in% b, list(x= .total_cover(Cover_Perc)), by=PlotObservationID])
-      }
-      l <- .resy_mclapply(conditions[wn], FUN, mc.cores = mc)
-      ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), dimnames(plot.cond)[[1]]),
-                      rep(wn, sapply(l, function(x) nrow(x))) ), ncol = 2)
-      plot.cond[ind] <- unlist(sapply(l, function(x) x$x, USE.NAMES = FALSE))
-    }
-
-   ######################################################### #
-   # 5.6   Cover of any species in the group (#SC)   ####
-    ### #SC maximum cover of the group ###
-    # The cover of the species is greater than the cover of any single species in the functional species group,
-    # except of the species at the left-hand side of logical operator.
-    w <- which(grepl("#SC", conditions, fixed=TRUE))
-    # "#SC" occurs both at the beginning of the condition and after "|#" inside
-    # "#SC" on left-hand sides can appear with group names
-    # it would be logical to write this with EXCEPT, but which currently is not done
-    # "#SC" on right-hand sides does appear always with EXCEPT and group names
-    # or names of single species. EXCEPT had been inserted by us in
-    # ParsingExpertFile.R by us into the code
-    # Here we handle all possible cases
-    message('Step 5.6  Number of conditions with maximum cover of the group: ', length(w))
-    if(length(w) > 0) {
-      FUN <- function(i) {
-        a <- trimws(unlist(strsplit(i, "EXCEPT", fixed = TRUE)))
-        b <- .resy_group_taxa_union(a[1], groups, groups.names, prefix = "#SC")
-        if (length(a) > 1) {
-          c <- .resy_group_taxa_or_species(a[2], groups, groups.names, prefix = "#SC")
-          b <- b[is.na(fastmatch::fmatch(b, c))]
-        }
-        if(any(obs$TaxonName %in% b)) {
-         return(obs[obs$TaxonName %in% b, list(x=max(Cover_Perc)), by=PlotObservationID])
-        } else {
-         return(data.table::data.table(PlotObservationID=NULL, x=NULL))
-        }
-      }
-      # for(n in 1:length(w)) FUN(i=conditions[w][n])
-      l =  .resy_mclapply(conditions[w], function(x) FUN(x), mc.cores=mc)
-      ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), dimnames(plot.cond)[[1]]),
-                      rep(w, sapply(l, function(x) nrow(x))) ), ncol = 2)
-      plot.cond[ind] <- unlist(sapply(l, function(x) x$x, USE.NAMES = FALSE))
-    }
-
-
-    ######################################################## #
-    # 5.7. Cover percentage single species and SC left    ####
-    w <- conditions[!startsWith(conditions, "#") &
-                      !startsWith(conditions, "$") &
-                      !startsWith(conditions, "NON")]
-    message('Step 5.7  Number of conditions with single species, header levels (e.g. country names): ', length(w))
-    FUN <- function(i) obs[obs$TaxonName %in% i, list(x=mean(Cover_Perc)), by=PlotObservationID]
-    l <-  .resy_mclapply(w, FUN, mc.cores=mc)
-    ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), dimnames(plot.cond)[[1]]),
-                    rep(fmatch(w, conditions), sapply(l, function(x) nrow(x))) ), ncol = 2)
-    plot.cond[ind] <- unlist(sapply(l, function(x) x$x, USE.NAMES = FALSE))
-
-    ################################################################## #
-    # 5.8   Highest Cover_Perc of any species in plot (#$$ EXCEPT)  ####
-    w = which(conditions=="#$$")
-    # only those that contain #$$ and no further EXCEPT condition
-    message('Step 5.8  Number of conditions with maximum Cover_Perc in plot: ', length(w))
-    if(length(w) > 0)
-      plot.cond[,w] <- tapply(obs$Cover_Perc, obs$PlotObservationID, max)
-
-    ## highest Cover_Perc in plot #$$ EXCEPT for species from a species group ###
-    w = which(startsWith(conditions, "#$$") & grepl("EXCEPT", conditions,fixed=T))
-    message('          Number of conditions with maximum Cover_Perc in plot EXCEPT species of target group: ', length(w))
-    if(length(w) > 0) {
-      FUN <- function(i) {
-        a <- trimws(unlist(strsplit(i, "EXCEPT", fixed=TRUE)))
-        b <- .resy_group_taxa_or_species(a[[2]], groups, groups.names)
-        return(obs[!obs$TaxonName %in% b, list(x=max(Cover_Perc)), by=PlotObservationID])
-      }
-      l <- .resy_mclapply(conditions[w], FUN, mc.cores = mc)
-      ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), dimnames(plot.cond)[[1]]),
-                      rep(w, sapply(l, function(x) nrow(x))) ), ncol = 2)
-      plot.cond[ind] <- unlist(sapply(l, function(x) x$x, USE.NAMES = FALSE))
-     }
-
-    ################################################## #
-    # 5.9 Total cover of all other species     ####
-    # except those of the group (#T$ NON)
-
-    wn <- grep("NON", conditions, ignore.case = FALSE)
-    message('Step 5.9  Number of T$ NON conditions: ', length(wn))
-
-    if(length(wn[!grep('##Q', conditions[wn])]) > 0) stop('Only square root cover value NON condition implemented.')
-    # currently only the sqrt(cover) of all the species in the corresponding group is calculated,
-    # We need to calculated the sqrt(cover) of all other groups in the system!
-    conditions.wn <- substr(conditions[wn],5 , nchar(conditions[wn]))
-    substr(conditions.wn,1,3) <- "##D"
-    # the ##D groups are used for the same purpose as the ##Q groups
-    index6 <- which(substr(names(groups),3,3)=="D")
-    # these are all differential groups used for a comparison
-    a <- match(conditions.wn, names(groups)[index6])
-    # any(is.na(a)) # F, all membership.conditions3 are found in the group names
-    # the following opposite check is not necessary
-    b <- match(names(groups)[index6],conditions.wn)
-
-    # we need to calculate species number (N), cover (C) and sum of squared
-    # cover (Q) of all these groups
-    # currently only implemented for Q, but see stop condition above
-    plot.group.non.Q <- matrix(0, nrow=length(unique(obs$PlotObservationID)), ncol=length(index6)) ##Q
-
-    if(length(index6) > 0) {
-      FUN <- function(i) obs[obs$TaxonName %in% unlist(groups[i], use.names=FALSE), list(x=sum(Cover_Perc^0.5)), by=PlotObservationID]
-      l =  .resy_mclapply(index6, function(x) FUN(x), mc.cores=mc)
-      ind <- matrix(c(fmatch(unlist(sapply(l, function(x) x$PlotObservationID)), unique(obs$PlotObservationID)),
-                      rep(1:length(index6), sapply(l, function(x) nrow(x))) ), ncol = 2)
-      plot.group.non.Q[ind] <- unlist(sapply(l, function(x) x$x, USE.NAMES = FALSE))
-    }
-
-    pgna <- names(groups)[index6]
-    result <- NULL
-    plot.group.non.N <- matrix(0, nrow=length(unique(obs$PlotObservationID)), ncol=length(index6)) ##N
-    for(j in 1:length(conditions.wn)){
-      # including the + sign at the beginning of the group name
-      # only groups of the same set are compared with each other
-      # at the same time the group itself is excluded
-      group.set <- substr(conditions.wn[j],5,7)
-      index9 <- which(substr(pgna,5,7)==group.set & pgna!=conditions.wn[j])
-      if(length(index9) > 0) {
-      # b is: 1==N, 2==C, 3==Q
-      a <- substr(conditions[wn[j]],7,7)
-      if (a=="N" | a=="D"){
-        # in membership.conditions2 all groups are coded "D", rather than "N"
-        # thus we ask for both options
-        x <- apply(plot.group.non.N[,-index9],1, FUN=max, na.rm=T)
-      } else {
-        if (a=="C"){
-          x <- apply(plot.group.non.C[,-index9],1, FUN=max, na.rm=T)
-        } else {
-          # then it is "Q"
-          x <- apply(plot.group.non.Q[,index9,drop=F],1, FUN=max, na.rm=T)
-        }
-      }
-      result <- cbind(result, x)
-      index5 <- which(conditions==conditions[wn[j]])
-      plot.cond[,index5] <- round(result[,j],5)
-      # columns in result are conditions.wn
-      }
-    }
-
-
-    ######################################## #
-    # 5.10. evaluate header data          ####
-    ### Numerical
-    w <- conditions[startsWith(conditions, '$$N')]
-    message('Step 5.10  Header conditions with numeric values: ', length(w))
-    if(length(w) > 0) {
-      m <- match(substr(w, 5, nchar(w)), names(header))
-      W <- w[!is.na(m)]
-      m <- m[!is.na(m)]
-      ind <- matrix(c(rep(1:nrow(header), length(m)),
-                                       rep(fmatch(W, conditions), each = nrow(header)),
-                                       as.numeric(unlist(header[, m], use.names = FALSE))), ncol = 3)
-      ind[,3][is.na(ind[,3])] <- 0
-      plot.cond[ind[,1:2]] <- ind[,3]
-    }
-    ### Categorical
-    w <- conditions[startsWith(conditions, '$$C')]
-    message('  Header conditions with character values: ', length(w))
-    categorical.header <- intersect(names(header), substr(w, 5, nchar(w)))
-    for(i in categorical.header) {
-  #    header[,i][is.na(header[,i])] <- NA
-      b <- as.factor(as.character(header[,i]))
-      if(length(levels(b)) > 0) {
+  }
+  ### Categorical
+  is_cat <- startsWith(conditions, '$$C')
+  w <- conditions[is_cat]
+  message('  Header conditions with character values: ', length(w))
+  categorical.header <- intersect(names(header), body(w))
+  for(i in categorical.header) {
+    own <- which(is_cat & body(conditions) == i)
+    b <- as.factor(as.character(header[,i]))
+    if(length(levels(b)) > 0) {
       # left hand
       # mark NAs as -1, otherwise they will be set 0 and result in wrong
       # comparisons
       c <- as.numeric(b)
       c[is.na(c)] <- -1
-      plot.cond[, grep(i, conditions)] <- c
+      plot.cond[, own] <- c
       # filling the right-hand side
       index5 <- which(conditions %in% levels(b))
       if(length(index5)>0){
@@ -503,8 +353,8 @@
           plot.cond[index7 == c, index5[j]] <- c
         }
       }
-      } else plot.cond[, grepl(i, conditions)] <- -1
-    }
+    } else plot.cond[, own] <- -1
+  }
 
 
   ### condition matrix end     ####
@@ -569,11 +419,12 @@
 
   message(paste('classification from here on', Sys.time()))
 
-  types <-  .resy_mclapply(1:length(logi2[[1]]), function(x) names(which(sapply(logi2, '[', x))))
-  names(types) <- unique(obs$PlotObservationID)
+  types <- .resy_mclapply(seq_along(plots), function(x) names(which(sapply(logi2, '[', x))),
+                          mc = mc)
+  names(types) <- plots
 
-
-  result.classification <- unlist( .resy_mclapply(types, FUN = function(x) .resy_classify_choice(x, vegtype.priority, vegtype.formula.names.short)))
+  result.classification <- unlist(.resy_mclapply(types, FUN = function(x)
+    .resy_classify_choice(x, vegtype.priority, vegtype.formula.names.short), mc = mc))
 
   list(
     plot.cond = plot.cond,
