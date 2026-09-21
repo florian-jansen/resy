@@ -141,11 +141,11 @@ outcome <- RESY::resy_harmonize_eunis(
    run_coast_dunes = TRUE,
    coast_buffer = 5000
    )
-#> Warning in RESY::resy_harmonize_eunis(data = data_sites, source_crs = 25832, :
-#> "Altitude (m)" is missing. See vignette "Altitude data" and mapsforeurope.org
-#> for a raster source.
-#> Warning in RESY::resy_harmonize_eunis(data = data_sites, source_crs = 25832, :
-#> NA values in "Ecoreg": some sites are outside the ecoregion base map.
+#> Transforming coordinates to ETRS89 / UTM zone 32N (EPSG:25832).
+#> Warning: "Altitude (m)" is missing. See vignette "Altitude data" and
+#> mapsforeurope.org for a raster source.
+#> Warning: "Ecoreg" contains NA values: some sites are outside the ecoregion base
+#> map.
 #> Warning: attribute variables are assumed to be spatially constant throughout
 #> all geometries
 #> Warning: attribute variables are assumed to be spatially constant throughout
@@ -311,8 +311,8 @@ res <- RESY::resy_classify(
 #> Step 5.9  Number of T$ NON conditions: 140
 #> Step 5.10  Header conditions with numeric values: 4
 #>   Header conditions with character values: 4
-#> adapt conditions 2026-09-21 15:39:21.201222
-#> classification from here on 2026-09-21 15:39:21.294666
+#> adapt conditions 2026-09-21 16:23:56.594216
+#> classification from here on 2026-09-21 16:23:56.671219
 ```
 
 ### Inspect the results

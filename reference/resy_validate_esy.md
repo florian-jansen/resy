@@ -22,7 +22,7 @@ are:
 6.  Priority must be a single character in `0-9`, `A-Z` or `a-z`.
 
 7.  Group keys in Section 2 / `"groups"` must start with a recognised
-    prefix (`###`, `##D`, `#TC`, `#SC`, `$$C`, `$$N`).
+    prefix (`###`, `##D`, `##Q`, `##C`, `$$C`, `$$N`).
 
 \*\*Warnings\*\* (errors when `strict = TRUE`):
 

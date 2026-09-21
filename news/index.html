@@ -56,7 +56,7 @@
 <div class="section level3">
 <h3 id="internal-changes-0-3">Internal changes<a class="anchor" aria-label="anchor" href="#internal-changes-0-3"></a></h3>
 <ul><li>
-<code>resy_parse_expert()</code>, <code><a href="../reference/resy_parse_json.html">resy_parse_json()</a></code>, <code>resy_show_vegtypes()</code> are now internal (unexported). Use <code><a href="../reference/resy_load_expert.html">resy_load_expert()</a></code> as the single entry point for loading any expert system.</li>
+<code>resy_parse_expert()</code>, <code>resy_parse_json()</code>, <code>resy_show_vegtypes()</code> are now internal (unexported). Use <code><a href="../reference/resy_load_expert.html">resy_load_expert()</a></code> as the single entry point for loading any expert system.</li>
 <li>Geographic helpers (<code>check_ecoregions</code>, <code>check_country</code>, <code>check_coast_dunes</code>, <code>check_coordinates</code>) consolidated into internal functions in <code>internal_eunis_geo.R</code> under the <code>.resy_assign_*</code> / <code>.resy_check_*</code> naming convention.</li>
 <li>RDS format support removed. Expert systems are imported from <code>.txt</code> and stored as <code>.json</code>. <code><a href="../reference/resy_available_classifications.html">resy_available_classifications()</a></code> no longer returns an <code>expert_rds</code> column.</li>
 <li>
@@ -83,7 +83,7 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2" id="resy-02">RESY 0.2<a class="anchor" aria-label="anchor" href="#resy-02"></a></h2>
 <ul><li>Added <code><a href="../reference/resy_read_expert.html">resy_read_expert()</a></code>, <code><a href="../reference/resy_write_expert.html">resy_write_expert()</a></code>, <code><a href="../reference/resy_expert_tree.html">resy_expert_tree()</a></code>, <code><a href="../reference/resy_write_expert_html.html">resy_write_expert_html()</a></code>, <code><a href="../reference/resy_view_expert.html">resy_view_expert()</a></code>, and <code><a href="../reference/resy_eunis_names.html">resy_eunis_names()</a></code> for lossless reading, writing, and hierarchical inspection of expert-system files.</li>
-<li>Added <code><a href="../reference/resy_parse_json.html">resy_parse_json()</a></code> for direct parsing of structured JSON expert files.</li>
+<li>Added <code>resy_parse_json()</code> for direct parsing of structured JSON expert files.</li>
 <li>
 <code>prepare_eunis()</code> now returns a named list with <code>sites</code> and <code>species_checked</code>. A new <code>parsed</code> argument is required when <code>run_taxonomy = TRUE</code>.</li>
 <li>

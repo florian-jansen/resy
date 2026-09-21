@@ -18,9 +18,8 @@
 
 ### Internal changes
 
-- `resy_parse_expert()`,
-  [`resy_parse_json()`](https://florian-jansen.github.io/resy/reference/resy_parse_json.md),
-  `resy_show_vegtypes()` are now internal (unexported). Use
+- `resy_parse_expert()`, `resy_parse_json()`, `resy_show_vegtypes()` are
+  now internal (unexported). Use
   [`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md)
   as the single entry point for loading any expert system.
 - Geographic helpers (`check_ecoregions`, `check_country`,
@@ -86,9 +85,8 @@
   [`resy_eunis_names()`](https://florian-jansen.github.io/resy/reference/resy_eunis_names.md)
   for lossless reading, writing, and hierarchical inspection of
   expert-system files.
-- Added
-  [`resy_parse_json()`](https://florian-jansen.github.io/resy/reference/resy_parse_json.md)
-  for direct parsing of structured JSON expert files.
+- Added `resy_parse_json()` for direct parsing of structured JSON expert
+  files.
 - `prepare_eunis()` now returns a named list with `sites` and
   `species_checked`. A new `parsed` argument is required when
   `run_taxonomy = TRUE`.

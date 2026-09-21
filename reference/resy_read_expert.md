@@ -4,10 +4,11 @@ Parses an expert-system definition file (the EUNIS-ESy `.txt` format and
 compatible expert systems) into a structured tree that preserves the
 source byte-for-byte.
 
-This is the lossless counterpart to `resy_parse_expert`. Where
-`resy_parse_expert` rewrites the formulas into the solver's internal
-form (and is therefore one-way), `resy_read_expert` retains the file's
-structure verbatim for inspection or conversion to other formats.
+This is the lossless counterpart to
+[`resy_load_expert`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md).
+Where `resy_load_expert` rewrites the formulas into the solver's
+internal form (and is therefore one-way), `resy_read_expert` retains the
+file's structure verbatim for inspection or conversion to other formats.
 
 ## Usage
 
@@ -54,7 +55,8 @@ An object of class `resy_expert`: a list with components
 
 ## See also
 
-`resy_parse_expert` for the solver-form parser.
+[`resy_load_expert`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md)
+for the solver-form parser.
 
 ## Examples
 

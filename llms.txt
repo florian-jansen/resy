@@ -57,20 +57,18 @@ to get to it as soon as possible!
 - [`RESY`](https://florian-jansen.github.io/resy/reference/RESY-package.md)
   [`RESY-package`](https://florian-jansen.github.io/resy/reference/RESY-package.md)
   : RESY: rule-based expert classification of vegetation plots
-- [`dunes_bohn_500mbuffer_epsg25832`](https://florian-jansen.github.io/resy/reference/bohn.md)
-  : Bohn dune layer with 500 m buffer (EPSG:25832)
-- [`coastline_regions_epsg25832`](https://florian-jansen.github.io/resy/reference/co.md)
-  : EEA coastline regions of Europe (EPSG:25832)
+- [`coastline_regions_epsg25832`](https://florian-jansen.github.io/resy/reference/coastline_regions_epsg25832.md)
+  : Regional seas around Europe (EPSG:25832)
+- [`dunes_bohn_500mbuffer_epsg25832`](https://florian-jansen.github.io/resy/reference/dunes_bohn_500mbuffer_epsg25832.md)
+  : Coastal vegetation of the Bohn map with a 500 m buffer (EPSG:25832)
 - [`ecoregions2017_epsg25832`](https://florian-jansen.github.io/resy/reference/ecoregions2017_epsg25832.md)
-  : European ecoregions in EPSG:25832
+  : Ecoregions of Europe (EPSG:25832)
 - [`europe_resolution_1_epsg25832`](https://florian-jansen.github.io/resy/reference/europe_resolution_1_epsg25832.md)
-  : European countries in high resolution
+  : European countries at high resolution (EPSG:25832)
 - [`europe_resolution_60_epsg25832`](https://florian-jansen.github.io/resy/reference/europe_resolution_60_epsg25832.md)
-  : European countries in EPSG:25832
+  : European countries at low resolution (EPSG:25832)
 - [`resy_add_classification()`](https://florian-jansen.github.io/resy/reference/resy_add_classification.md)
   : Add a new classification to the RESY store
-- [`resy_aggregate_taxa()`](https://florian-jansen.github.io/resy/reference/resy_aggregate_taxa.md)
-  : Aggregate taxa to expert-system aggregation level
 - [`resy_available_classifications()`](https://florian-jansen.github.io/resy/reference/resy_available_classifications.md)
   : List available classifications
 - [`resy_candidates()`](https://florian-jansen.github.io/resy/reference/resy_candidates.md)

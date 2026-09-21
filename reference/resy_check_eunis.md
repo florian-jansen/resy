@@ -1,7 +1,7 @@
 # Check plot data for EUNIS classification requirements
 
 Validates that the input data frame or sf object meets the structural
-requirements for EUNIS habitat classification. This is a pure check — it
+requirements for EUNIS habitat classification. This is a pure check: it
 reports issues without modifying data. Use \[resy_harmonize_eunis()\] to
 actually enrich and prepare the data.
 
@@ -33,8 +33,11 @@ resy_check_eunis(data, source_crs = NULL, verbose = TRUE)
 
 - source_crs:
 
-  Integer EPSG code of the input CRS. Required when \`data\` is not an
-  \`sf\` object.
+  Integer EPSG code of the coordinates in a plain data frame. When
+  \`NULL\` (default), coordinates that are all valid longitudes and
+  latitudes are read as degrees (EPSG:4326); other coordinates need the
+  code. Ignored when \`data\` is an \`sf\` object, which carries its own
+  CRS.
 
 - verbose:
 
