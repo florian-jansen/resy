@@ -34,7 +34,9 @@ test_that("resy_check_eunis: valid data frame with all columns passes silently",
   data <- .create_valid_data() |>
     dplyr::mutate(
       Ecoreg = "Medi",
-      Country = "Italy"
+      Country = "Italy",
+      Coast_EEA = "N_COAST",
+      Dunes_Bohn = "N_DUNES"
     )
 
   result <- RESY::resy_check_eunis(data, source_crs = 4326, verbose = FALSE)
@@ -51,7 +53,9 @@ test_that("resy_check_eunis: valid sf object passes silently", {
   data <- .create_valid_sf() |>
     dplyr::mutate(
       Ecoreg = "Medi",
-      Country = "Germany"
+      Country = "Germany",
+      Coast_EEA = "N_COAST",
+      Dunes_Bohn = "N_DUNES"
     )
 
   result <- RESY::resy_check_eunis(data, verbose = FALSE)
@@ -126,7 +130,7 @@ test_that("resy_check_eunis: NA coordinates are reported as errors", {
 
   data <- sf::st_sfc(
     sf::st_point(c(12.4924, 41.8902)),
-    sf::st_point(c(NA, NA)),
+    sf::st_point(c(NA_real_, NA_real_)),
     crs = 4326
   ) |>
     sf::st_sf(
