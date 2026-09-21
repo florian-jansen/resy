@@ -14,13 +14,23 @@ validated and returned unchanged.}
 }
 \value{
 A data frame with columns \code{synonym}, \code{esy_canonical}, and
-  \code{source}.
+  \code{source}, and \code{accepted_in} when the table has it.
 }
 \description{
 Loads the shipped table of alternate species names mapped to their canonical
 ESy name. Each synonym is an alternate string a plot dataset might carry, keyed
 to the canonical ESy species it resolves to; \code{source} records the taxonomic
 backbone(s) that support the pairing (\code{;}-separated when more than one).
+The shipped table also has an \code{accepted_in} column: the backbones that list
+the synonym as an accepted name under the same author as the synonym rows
+supporting the pair. A backbone appears in both \code{source} and
+\code{accepted_in} when it holds an accepted row and a synonym row for the
+name. The column is empty when no backbone accepts the name. The shipped
+synonyms are binomials (genus and species epithet); infraspecific
+names, hybrid formulas, and bare genera are not in it. Its build date and the
+version of each backbone are recorded in
+\code{inst/extdata/esy_synonyms_build.csv} and
+\code{inst/extdata/esy_synonyms_backbones.csv}.
 Pass \code{path = NULL} for the shipped table, a file path for a user CSV, or a
 data frame to validate one already in memory.
 }

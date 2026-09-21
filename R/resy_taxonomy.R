@@ -8,6 +8,9 @@
 # Required schema for the synonym table.
 .RESY_SYNONYM_COLUMNS <- c("synonym", "esy_canonical", "source")
 
+# Optional column, carried when present (the shipped table has it).
+.RESY_SYNONYM_OPTIONAL <- "accepted_in"
+
 # Whitespace-normalise a taxon name for matching (trim + collapse runs). No case
 # folding: ESy names are properly cased and folding risks false merges.
 .resy_normalize_name <- function(x) gsub("\\s+", " ", trimws(x))
@@ -18,6 +21,16 @@
 #' ESy name. Each synonym is an alternate string a plot dataset might carry, keyed
 #' to the canonical ESy species it resolves to; \code{source} records the taxonomic
 #' backbone(s) that support the pairing (\code{;}-separated when more than one).
+#' The shipped table also has an \code{accepted_in} column: the backbones that list
+#' the synonym as an accepted name under the same author as the synonym rows
+#' supporting the pair. A backbone appears in both \code{source} and
+#' \code{accepted_in} when it holds an accepted row and a synonym row for the
+#' name. The column is empty when no backbone accepts the name. The shipped
+#' synonyms are binomials (genus and species epithet); infraspecific
+#' names, hybrid formulas, and bare genera are not in it. Its build date and the
+#' version of each backbone are recorded in
+#' \code{inst/extdata/esy_synonyms_build.csv} and
+#' \code{inst/extdata/esy_synonyms_backbones.csv}.
 #' Pass \code{path = NULL} for the shipped table, a file path for a user CSV, or a
 #' data frame to validate one already in memory.
 #'
@@ -26,7 +39,7 @@
 #'   (optionally \code{.gz}/\code{.xz}) with the same schema. A data frame is
 #'   validated and returned unchanged.
 #' @return A data frame with columns \code{synonym}, \code{esy_canonical}, and
-#'   \code{source}.
+#'   \code{source}, and \code{accepted_in} when the table has it.
 #' @seealso \code{\link{resy_resolve_taxa}}, \code{\link{resy_canonical_species}}
 #' @export
 resy_read_synonyms <- function(path = NULL) {
@@ -61,8 +74,9 @@ resy_read_synonyms <- function(path = NULL) {
     stop("synonym table: missing required column(s): ",
          paste(missing, collapse = ", "), ".", call. = FALSE)
   }
-  for (col in .RESY_SYNONYM_COLUMNS) df[[col]] <- as.character(df[[col]])
-  df[, .RESY_SYNONYM_COLUMNS, drop = FALSE]
+  keep <- c(.RESY_SYNONYM_COLUMNS, intersect(.RESY_SYNONYM_OPTIONAL, names(df)))
+  for (col in keep) df[[col]] <- as.character(df[[col]])
+  df[, keep, drop = FALSE]
 }
 
 # Build a normalised synonym -> canonical lookup. Ambiguous synonyms (one string

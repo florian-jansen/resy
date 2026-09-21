@@ -23,6 +23,40 @@ test_that("read_synonyms loads the shipped table and validates the schema", {
   expect_error(resy_read_synonyms("no_such_file.csv.xz"), "file not found")
 })
 
+test_that("the shipped table matches its recorded build", {
+  build <- utils::read.csv(
+    system.file("extdata", "esy_synonyms_build.csv", package = "RESY"),
+    stringsAsFactors = FALSE
+  )
+  backbones <- utils::read.csv(
+    system.file("extdata", "esy_synonyms_backbones.csv", package = "RESY"),
+    stringsAsFactors = FALSE
+  )
+  syn <- resy_read_synonyms()
+
+  expect_equal(build$n_pairs, nrow(syn))
+  expect_equal(build$n_canonicals, length(unique(syn$esy_canonical)))
+  expect_true(all(unlist(strsplit(syn$source, ";", fixed = TRUE)) %in%
+                    backbones$backbone))
+  expect_true(all(nzchar(backbones$version) & nzchar(backbones$content_id)))
+  expect_true(!is.na(as.Date(build$built)))
+
+  expect_true("accepted_in" %in% names(syn))
+  expect_equal(build$n_accepted_in, sum(!is.na(syn$accepted_in)))
+  expect_true(all(unlist(strsplit(syn$accepted_in[!is.na(syn$accepted_in)], ";",
+                                  fixed = TRUE)) %in% backbones$backbone))
+})
+
+test_that("read_synonyms keeps the optional accepted_in column when present", {
+  syn <- mini_syn()
+  expect_false("accepted_in" %in% names(resy_read_synonyms(syn)))
+
+  syn$accepted_in <- c("wfo", NA)
+  out <- resy_read_synonyms(syn)
+  expect_equal(names(out), c("synonym", "esy_canonical", "source", "accepted_in"))
+  expect_equal(out$accepted_in, c("wfo", NA))
+})
+
 test_that("resolve recovers canonical names exactly and via synonym fallback", {
   obs <- data.frame(
     TaxonName = c("Genus species", " Old name ", "Older name", "Other taxon"),

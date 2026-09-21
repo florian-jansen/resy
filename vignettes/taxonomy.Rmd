@@ -52,6 +52,39 @@ name used by the EUNIS-ESy expert system. It pools synonymy from six backbones
 (Euro+Med, WFO, GBIF, Catalogue of Life, ITIS, NCBI), so a name coming from any
 of them can resolve without you having to say which backbone it came from.
 
+```{r build-info, include=FALSE}
+build <- utils::read.csv(
+  system.file("extdata", "esy_synonyms_build.csv", package = "RESY"),
+  stringsAsFactors = FALSE
+)
+backbones <- utils::read.csv(
+  system.file("extdata", "esy_synonyms_backbones.csv", package = "RESY"),
+  stringsAsFactors = FALSE, na.strings = ""
+)
+```
+
+The table was built on `r build$built` with taxify `r build$taxify_version`,
+against the `r build$expert_system` expert system `r build$expert_version`, from
+the backbone releases below. `data-raw/build_synonyms.R` and the taxify lockfile
+next to it in the source repository rebuild it from these versions.
+
+```{r build-backbones, echo=FALSE}
+knitr::kable(
+  data.frame(
+    Backbone      = backbones$backbone,
+    Release       = backbones$version,
+    `Upstream data` = ifelse(is.na(backbones$upstream_date), "", backbones$upstream_date),
+    Downloaded    = backbones$downloaded,
+    `Content id`  = substr(backbones$content_id, 1, 8),
+    check.names   = FALSE
+  )
+)
+```
+
+The synonyms are binomials (genus and species epithet). Infraspecific names,
+hybrid formulas, and bare genera are not in the table, so a name of that kind is
+not resolved through it.
+
 ```{r shipped-table}
 syn <- resy_read_synonyms()
 nrow(syn)
@@ -60,7 +93,15 @@ head(syn)
 
 Each row is one alternate spelling (`synonym`), the canonical ESy name it
 resolves to (`esy_canonical`), and the backbone(s) that support the pairing
-(`source`).
+(`source`). The column `accepted_in` names the backbones that list the synonym as
+an accepted name under the same author as the synonym rows supporting the pair.
+A backbone appears in both `source` and `accepted_in` when it holds an accepted
+row and a synonym row for the name. The column is empty for
+`r round(100 * mean(is.na(syn$accepted_in)))`% of the pairs.
+
+```{r accepted-in}
+head(syn[!is.na(syn$accepted_in), ], 4)
+```
 
 A pair is listed under every backbone that supports it, so the counts per
 backbone add up to more than the number of rows.
