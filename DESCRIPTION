@@ -1,6 +1,6 @@
 Package: RESY
 Type: Package
-Title: Vegetation type expert classification system
+Title: Vegetation Type Expert Classification System
 Version: 0.3
 Description: A toolbox to classify plant species co-occurrence matrices, 
    aka vegetation plots with formalised, rule based so-called "expert systems". 
@@ -42,7 +42,7 @@ Authors@R: c(
       comment = c(ORCID = "0000-0003-3070-6066")
     )
   )
-License: file LICENSE
+License: MIT + file LICENSE
 Encoding: UTF-8
 Depends: R (>= 4.1.0)
 Imports: 
