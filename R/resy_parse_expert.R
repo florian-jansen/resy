@@ -56,6 +56,18 @@ parse.classification.expert.file <- function(expertfile) {
   parse.classification.expert.vector(expert)
 }
 
+# Members of each header-led block of a section: the non-blank lines after a
+# header, up to the next header or the end of the section. Blank lines separate
+# blocks and are never members.
+.resy_block_members <- function(lines, header_idx) {
+  ends <- c(header_idx[-1L] - 1L, length(lines))
+  lapply(seq_along(header_idx), function(i) {
+    n <- max(0L, ends[i] - header_idx[i])
+    block <- lines[seq.int(header_idx[i] + 1L, length.out = n)]
+    trim.leading(block[nzchar(trimws(block))])
+  })
+}
+
 parse.classification.expert.vector <- function(expert) {
   # Drop everything after the first tab (TSV compatibility) and '---' lines
   expert <- sub("\t.*$", "", expert)
@@ -69,25 +81,17 @@ parse.classification.expert.vector <- function(expert) {
     nzchar(trimws(species.agg)) &
     !grepl("^SECTION\\s+\\d", trimws(species.agg))
   )
-  number.agg   <- length(index.agg.names)
-  ind.agg.names <- c(index.agg.names, length(species.agg) + 1)
-  aggs <- lapply(seq_len(number.agg), function(x)
-    trim.leading(species.agg[(ind.agg.names[x] + 1):(ind.agg.names[x + 1] - 1)])
-  )
+  aggs <- .resy_block_members(species.agg, index.agg.names)
   names(aggs) <- trim.trailing(species.agg[index.agg.names])
   if (any(!nzchar(names(aggs)))) aggs <- aggs[nzchar(names(aggs))]
   for (i in seq_along(aggs))
-    aggs[[i]] <- sapply(aggs[[i]], trim.trailing, USE.NAMES = FALSE)
+    aggs[[i]] <- vapply(aggs[[i]], trim.trailing, character(1), USE.NAMES = FALSE)
 
   # ---- Section 2: Species groups
   section2          <- grep("SECTION 2", expert)
   species.groups    <- expert[(section2[1] + 1):(section2[2] - 1)]
   index.group.names <- which(substr(species.groups, 1, 1) != " " & nzchar(trimws(species.groups)))
-  number.groups     <- length(index.group.names)
-  gr                <- c(index.group.names, length(species.groups))
-  groups <- lapply(seq_len(number.groups), function(x)
-    trim.leading(species.groups[(gr[x] + 1):(gr[x + 1] - 1)])
-  )
+  groups            <- .resy_block_members(species.groups, index.group.names)
   names(groups) <- species.groups[index.group.names]
 
   if (!all(substr(names(groups), 1, 3) %in% c("###", "##D", "##Q", "##C", "$$C", "$$N")))

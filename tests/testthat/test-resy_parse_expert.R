@@ -46,6 +46,32 @@ test_that("section 2 groups keep their prefix and members", {
                c("Fagus sylvatica", "Abies alba"))
 })
 
+test_that("the last group keeps its final member when section 2 ends on it", {
+  no_blank <- mini_expert[nzchar(mini_expert)]
+  raw <- RESY:::parse.classification.expert.vector(no_blank)
+  expect_equal(raw$groups[["### Forest-trees"]],
+               c("Fagus sylvatica", "Abies alba"))
+})
+
+test_that("blank lines separate blocks and are never members", {
+  spaced <- append(mini_expert, "", after = 18)
+  raw <- RESY:::parse.classification.expert.vector(spaced)
+  expect_equal(raw$groups[["### Grassland-herbs"]],
+               c("Nardus stricta", "Achillea millefolium agg."))
+  expect_equal(raw$groups[["### Forest-trees"]],
+               c("Fagus sylvatica", "Abies alba"))
+  expect_false(any(vapply(c(raw$groups, raw$aggs),
+                          function(v) any(!nzchar(trimws(v))), NA)))
+})
+
+test_that("an aggregation without members is an empty character vector", {
+  with_empty <- append(mini_expert, "Empty agg.", after = 1)
+  raw <- RESY:::parse.classification.expert.vector(with_empty)
+  expect_identical(raw$aggs[["Empty agg."]], character(0))
+  expect_equal(raw$aggs[["Achillea millefolium agg."]],
+               c("Achillea millefolium", "Achillea pratensis"))
+})
+
 test_that("section 3 yields formulas and their priorities", {
   raw <- RESY:::parse.classification.expert.vector(mini_expert)
   expect_length(raw$formulas, 2L)
