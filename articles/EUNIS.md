@@ -151,7 +151,7 @@ outcome <- RESY::resy_harmonize_eunis(
 #> Warning: attribute variables are assumed to be spatially constant throughout
 #> all geometries
 outcome_sites <- tibble(outcome$sites)
-outcome_species <- tibble(outcome$species_checked)
+outcome_species <- outcome$species_checked
 ```
 
 We have three warnings: The column `Altitude (m)` is missing and this
@@ -227,28 +227,106 @@ are for example no author names anymore:
 ``` r
 
 outcome_species
-#> # A tibble: 1,006 × 3
-#>    TaxonName                                matched canonical                  
-#>    <chr>                                    <lgl>   <chr>                      
-#>  1 Dryopteris filix-mas                     TRUE    Dryopteris filix-mas aggr. 
-#>  2 Cephalanthera longifolia                 TRUE    Cephalanthera longifolia   
-#>  3 Prenanthes purpurea                      TRUE    Prenanthes purpurea        
-#>  4 Anemone nemorosa                         TRUE    Anemone nemorosa           
-#>  5 Epipactis helleborine subsp. helleborine TRUE    Epipactis helleborine aggr.
-#>  6 Sorbus aucuparia subsp. aucuparia        TRUE    Sorbus aucuparia           
-#>  7 Fagus sylvatica                          TRUE    Fagus sylvatica            
-#>  8 Rubus hirtus                             TRUE    Rubus fruticosus aggr.     
-#>  9 Abies alba                               TRUE    Abies alba                 
-#> 10 Oxalis acetosella                        TRUE    Oxalis acetosella          
-#> # ℹ 996 more rows
+#> <resy_taxa> 1006 name(s) from column `species` checked against 20159 Section 1 species
+#>   scientificName  name as submitted
+#>   TaxonName       canonical name used by resy_classify(); NA when unmatched
+#>   matched         TRUE if found as a canonical name or Section 1 synonym
+#> 935 matched (92.9%), 71 unmatched; summary() lists them
+#> 
+#>                              scientificName                   TaxonName matched
+#> 1                      Dryopteris filix-mas  Dryopteris filix-mas aggr.    TRUE
+#> 2                  Cephalanthera longifolia    Cephalanthera longifolia    TRUE
+#> 3                       Prenanthes purpurea         Prenanthes purpurea    TRUE
+#> 4                          Anemone nemorosa            Anemone nemorosa    TRUE
+#> 5  Epipactis helleborine subsp. helleborine Epipactis helleborine aggr.    TRUE
+#> 6         Sorbus aucuparia subsp. aucuparia            Sorbus aucuparia    TRUE
+#> 7                           Fagus sylvatica             Fagus sylvatica    TRUE
+#> 8                              Rubus hirtus      Rubus fruticosus aggr.    TRUE
+#> 9                                Abies alba                  Abies alba    TRUE
+#> 10                        Oxalis acetosella           Oxalis acetosella    TRUE
+#> # ... 996 more row(s)
+summary(outcome_species)
+#> 1006 name(s): 935 matched (92.9%), 71 unmatched (7.1%)
+#> Unmatched names:
+#>   Aegopodium podagraria
+#>   Allium sp.
+#>   Anthoxanthum sp.
+#>   Anthyllis barba-jovis
+#>   Artemisia caerulescens var. palmata
+#>   Asparagus sp.
+#>   Borago officinalis
+#>   Cardamine chelidonia
+#>   Cardamine monteluccii
+#>   Carex macrolepis
+#>   Carex mucronata
+#>   Carex sp.
+#>   Centaurea triumfetti
+#>   Cerastium arvense var. etruscum
+#>   Cirsium sp.
+#>   Crithmum maritimum
+#>   Crocus neglectus
+#>   Crocus sp.
+#>   Cuscuta sp.
+#>   Dianthus sp.
+#>   Echinophora spinosa
+#>   Eryngium maritimum
+#>   Erysimum pseudorhaeticum
+#>   Festuca arundinacea subsp. arundinacea
+#>   Festuca riccerii
+#>   Festuca sp.
+#>   Flavoparmelia caperata
+#>   Galium sp.
+#>   Hieracium sp.
+#>   Humulus lupulus
+#>   Juglans regia
+#>   Juniperus communis subsp. saxatilis
+#>   Laurus nobilis
+#>   Leopoldia comosa
+#>   Linaria sp.
+#>   Marrubium incanum
+#>   Medicago sp.
+#>   Melica minuta var. arrecta
+#>   Melica uniflora
+#>   Narcissus poëticus
+#>   Odontites rubra
+#>   Odontites sp.
+#>   Ononis variegata
+#>   Orchis sp.
+#>   Oreojuncus trifidus
+#>   Paris quadrifolia
+#>   Phyteuma italicum
+#>   Plantago maritima subsp. serpentina
+#>   Potentilla sp.
+#>   Ranunculus sp.
+#>   Ranunculus velutinus
+#>   Rosa sp.
+#>   Rubus sp.
+#>   Scleropodium tourretti
+#>   Sherardia arvensis
+#>   Silene paradoxa
+#>   Silene pichiana
+#>   Spartium junceum
+#>   Staphylea pinnata
+#>   Stipellula capensis
+#>   Tanacetum corymbosum var. tenuifolium
+#>   Taraxacum erythrosperma
+#>   Taraxacum sp.
+#>   Thesium sommieri
+#>   Tordylium apulum
+#>   Tragopogon sp.
+#>   Trifolium sp.
+#>   Usnea sp.
+#>   Vicia sp.
+#>   Viola ferrarinii
+#>   Viola sp.
 ```
 
 ``` r
 
 outcome_species2 <- data_species |>
-  left_join(outcome_species, by = c("species" = "TaxonName")) |>
-  select(PlotObservationID, canonical, cover) |>
-  rename(TaxonName = canonical, Cover_Perc = cover)
+  left_join(outcome_species, by = c("species" = "scientificName")) |>
+  select(PlotObservationID, TaxonName, cover) |>
+  rename(Cover_Perc = cover)
 ```
 
 ## Classify the vegetation surveys
@@ -279,8 +357,8 @@ res <- RESY::resy_classify(
 #> Step 5.9  Number of T$ NON conditions: 140
 #> Step 5.10  Header conditions with numeric values: 4
 #>   Header conditions with character values: 4
-#> adapt conditions 2026-09-21 13:49:30.941532
-#> classification from here on 2026-09-21 13:49:31.034827
+#> adapt conditions 2026-09-21 14:08:17.589662
+#> classification from here on 2026-09-21 14:08:17.683441
 ```
 
 ### Inspect the results

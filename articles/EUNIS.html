@@ -212,7 +212,7 @@ evaluation. We use <code>resy_load_expert</code>.</p>
 <span><span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant throughout</span></span>
 <span><span class="co">#&gt; all geometries</span></span>
 <span><span class="va">outcome_sites</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span><span class="va">outcome</span><span class="op">$</span><span class="va">sites</span><span class="op">)</span></span>
-<span><span class="va">outcome_species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span><span class="va">outcome</span><span class="op">$</span><span class="va">species_checked</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">outcome_species</span> <span class="op">&lt;-</span> <span class="va">outcome</span><span class="op">$</span><span class="va">species_checked</span></span></code></pre></div>
 <p>We have three warnings: The column <code>Altitude (m)</code> is
 missing and this could not be covered by
 <code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code>, but we provide a
@@ -279,25 +279,103 @@ ecoregion and country. This has to be corrected by yourself.</p>
 are for example no author names anymore:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outcome_species</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1,006 × 3</span></span></span>
-<span><span class="co">#&gt;    TaxonName                                matched canonical                  </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                      </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> Dryopteris filix-mas                     TRUE    Dryopteris filix-mas aggr. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> Cephalanthera longifolia                 TRUE    Cephalanthera longifolia   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> Prenanthes purpurea                      TRUE    Prenanthes purpurea        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> Anemone nemorosa                         TRUE    Anemone nemorosa           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> Epipactis helleborine subsp. helleborine TRUE    Epipactis helleborine aggr.</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> Sorbus aucuparia subsp. aucuparia        TRUE    Sorbus aucuparia           </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> Fagus sylvatica                          TRUE    Fagus sylvatica            </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> Rubus hirtus                             TRUE    Rubus fruticosus aggr.     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> Abies alba                               TRUE    Abies alba                 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> Oxalis acetosella                        TRUE    Oxalis acetosella          </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 996 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;resy_taxa&gt; 1006 name(s) from column `species` checked against 20159 Section 1 species</span></span>
+<span><span class="co">#&gt;   scientificName  name as submitted</span></span>
+<span><span class="co">#&gt;   TaxonName       canonical name used by resy_classify(); NA when unmatched</span></span>
+<span><span class="co">#&gt;   matched         TRUE if found as a canonical name or Section 1 synonym</span></span>
+<span><span class="co">#&gt; 935 matched (92.9%), 71 unmatched; summary() lists them</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;                              scientificName                   TaxonName matched</span></span>
+<span><span class="co">#&gt; 1                      Dryopteris filix-mas  Dryopteris filix-mas aggr.    TRUE</span></span>
+<span><span class="co">#&gt; 2                  Cephalanthera longifolia    Cephalanthera longifolia    TRUE</span></span>
+<span><span class="co">#&gt; 3                       Prenanthes purpurea         Prenanthes purpurea    TRUE</span></span>
+<span><span class="co">#&gt; 4                          Anemone nemorosa            Anemone nemorosa    TRUE</span></span>
+<span><span class="co">#&gt; 5  Epipactis helleborine subsp. helleborine Epipactis helleborine aggr.    TRUE</span></span>
+<span><span class="co">#&gt; 6         Sorbus aucuparia subsp. aucuparia            Sorbus aucuparia    TRUE</span></span>
+<span><span class="co">#&gt; 7                           Fagus sylvatica             Fagus sylvatica    TRUE</span></span>
+<span><span class="co">#&gt; 8                              Rubus hirtus      Rubus fruticosus aggr.    TRUE</span></span>
+<span><span class="co">#&gt; 9                                Abies alba                  Abies alba    TRUE</span></span>
+<span><span class="co">#&gt; 10                        Oxalis acetosella           Oxalis acetosella    TRUE</span></span>
+<span><span class="co">#&gt; # ... 996 more row(s)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">outcome_species</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 1006 name(s): 935 matched (92.9%), 71 unmatched (7.1%)</span></span>
+<span><span class="co">#&gt; Unmatched names:</span></span>
+<span><span class="co">#&gt;   Aegopodium podagraria</span></span>
+<span><span class="co">#&gt;   Allium sp.</span></span>
+<span><span class="co">#&gt;   Anthoxanthum sp.</span></span>
+<span><span class="co">#&gt;   Anthyllis barba-jovis</span></span>
+<span><span class="co">#&gt;   Artemisia caerulescens var. palmata</span></span>
+<span><span class="co">#&gt;   Asparagus sp.</span></span>
+<span><span class="co">#&gt;   Borago officinalis</span></span>
+<span><span class="co">#&gt;   Cardamine chelidonia</span></span>
+<span><span class="co">#&gt;   Cardamine monteluccii</span></span>
+<span><span class="co">#&gt;   Carex macrolepis</span></span>
+<span><span class="co">#&gt;   Carex mucronata</span></span>
+<span><span class="co">#&gt;   Carex sp.</span></span>
+<span><span class="co">#&gt;   Centaurea triumfetti</span></span>
+<span><span class="co">#&gt;   Cerastium arvense var. etruscum</span></span>
+<span><span class="co">#&gt;   Cirsium sp.</span></span>
+<span><span class="co">#&gt;   Crithmum maritimum</span></span>
+<span><span class="co">#&gt;   Crocus neglectus</span></span>
+<span><span class="co">#&gt;   Crocus sp.</span></span>
+<span><span class="co">#&gt;   Cuscuta sp.</span></span>
+<span><span class="co">#&gt;   Dianthus sp.</span></span>
+<span><span class="co">#&gt;   Echinophora spinosa</span></span>
+<span><span class="co">#&gt;   Eryngium maritimum</span></span>
+<span><span class="co">#&gt;   Erysimum pseudorhaeticum</span></span>
+<span><span class="co">#&gt;   Festuca arundinacea subsp. arundinacea</span></span>
+<span><span class="co">#&gt;   Festuca riccerii</span></span>
+<span><span class="co">#&gt;   Festuca sp.</span></span>
+<span><span class="co">#&gt;   Flavoparmelia caperata</span></span>
+<span><span class="co">#&gt;   Galium sp.</span></span>
+<span><span class="co">#&gt;   Hieracium sp.</span></span>
+<span><span class="co">#&gt;   Humulus lupulus</span></span>
+<span><span class="co">#&gt;   Juglans regia</span></span>
+<span><span class="co">#&gt;   Juniperus communis subsp. saxatilis</span></span>
+<span><span class="co">#&gt;   Laurus nobilis</span></span>
+<span><span class="co">#&gt;   Leopoldia comosa</span></span>
+<span><span class="co">#&gt;   Linaria sp.</span></span>
+<span><span class="co">#&gt;   Marrubium incanum</span></span>
+<span><span class="co">#&gt;   Medicago sp.</span></span>
+<span><span class="co">#&gt;   Melica minuta var. arrecta</span></span>
+<span><span class="co">#&gt;   Melica uniflora</span></span>
+<span><span class="co">#&gt;   Narcissus poëticus</span></span>
+<span><span class="co">#&gt;   Odontites rubra</span></span>
+<span><span class="co">#&gt;   Odontites sp.</span></span>
+<span><span class="co">#&gt;   Ononis variegata</span></span>
+<span><span class="co">#&gt;   Orchis sp.</span></span>
+<span><span class="co">#&gt;   Oreojuncus trifidus</span></span>
+<span><span class="co">#&gt;   Paris quadrifolia</span></span>
+<span><span class="co">#&gt;   Phyteuma italicum</span></span>
+<span><span class="co">#&gt;   Plantago maritima subsp. serpentina</span></span>
+<span><span class="co">#&gt;   Potentilla sp.</span></span>
+<span><span class="co">#&gt;   Ranunculus sp.</span></span>
+<span><span class="co">#&gt;   Ranunculus velutinus</span></span>
+<span><span class="co">#&gt;   Rosa sp.</span></span>
+<span><span class="co">#&gt;   Rubus sp.</span></span>
+<span><span class="co">#&gt;   Scleropodium tourretti</span></span>
+<span><span class="co">#&gt;   Sherardia arvensis</span></span>
+<span><span class="co">#&gt;   Silene paradoxa</span></span>
+<span><span class="co">#&gt;   Silene pichiana</span></span>
+<span><span class="co">#&gt;   Spartium junceum</span></span>
+<span><span class="co">#&gt;   Staphylea pinnata</span></span>
+<span><span class="co">#&gt;   Stipellula capensis</span></span>
+<span><span class="co">#&gt;   Tanacetum corymbosum var. tenuifolium</span></span>
+<span><span class="co">#&gt;   Taraxacum erythrosperma</span></span>
+<span><span class="co">#&gt;   Taraxacum sp.</span></span>
+<span><span class="co">#&gt;   Thesium sommieri</span></span>
+<span><span class="co">#&gt;   Tordylium apulum</span></span>
+<span><span class="co">#&gt;   Tragopogon sp.</span></span>
+<span><span class="co">#&gt;   Trifolium sp.</span></span>
+<span><span class="co">#&gt;   Usnea sp.</span></span>
+<span><span class="co">#&gt;   Vicia sp.</span></span>
+<span><span class="co">#&gt;   Viola ferrarinii</span></span>
+<span><span class="co">#&gt;   Viola sp.</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outcome_species2</span> <span class="op">&lt;-</span> <span class="va">data_species</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">outcome_species</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"species"</span> <span class="op">=</span> <span class="st">"TaxonName"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">PlotObservationID</span>, <span class="va">canonical</span>, <span class="va">cover</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>TaxonName <span class="op">=</span> <span class="va">canonical</span>, Cover_Perc <span class="op">=</span> <span class="va">cover</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">outcome_species</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"species"</span> <span class="op">=</span> <span class="st">"scientificName"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">PlotObservationID</span>, <span class="va">TaxonName</span>, <span class="va">cover</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Cover_Perc <span class="op">=</span> <span class="va">cover</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -328,8 +406,8 @@ which includes sites data (<code>header</code>).</p>
 <span><span class="co">#&gt; Step 5.9  Number of T$ NON conditions: 140</span></span>
 <span><span class="co">#&gt; Step 5.10  Header conditions with numeric values: 4</span></span>
 <span><span class="co">#&gt;   Header conditions with character values: 4</span></span>
-<span><span class="co">#&gt; adapt conditions 2026-09-21 13:49:30.941532</span></span>
-<span><span class="co">#&gt; classification from here on 2026-09-21 13:49:31.034827</span></span></code></pre></div>
+<span><span class="co">#&gt; adapt conditions 2026-09-21 14:08:17.589662</span></span>
+<span><span class="co">#&gt; classification from here on 2026-09-21 14:08:17.683441</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="inspect-the-results">Inspect the results<a class="anchor" aria-label="anchor" href="#inspect-the-results"></a>

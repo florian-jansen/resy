@@ -2,10 +2,14 @@
 
 Validates taxon names in a plot observation table against the canonical
 names and synonyms declared in Section 1 of the loaded expert system.
-Returns a per-taxon summary of matches and canonical name mappings.
+Returns a per-taxon table of matches and canonical name mappings.
 
 This is a purely offline check; no external name-resolution service is
 called.
+
+The result is a \`resy_taxa\` data frame. Printing it shows what each
+column holds and how many names matched; \[summary()\] returns the match
+counts and the unmatched names.
 
 ## Usage
 
@@ -30,20 +34,22 @@ resy_check_taxonomy(obs, parsed, col = "TaxonName")
 
 ## Value
 
-A data frame with one row per unique taxon name in \`obs\`:
+A \`resy_taxa\` data frame with one row per unique taxon name in
+\`obs\`:
+
+- \`scientificName\`:
+
+  The name as submitted in \`obs\`.
 
 - \`TaxonName\`:
 
-  The name as it appears in \`obs\`.
+  The canonical name used by \[resy_classify()\], or \`NA\` when
+  unmatched.
 
 - \`matched\`:
 
   \`TRUE\` if the name was found as a canonical name or synonym in
   Section 1 of the expert system.
-
-- \`canonical\`:
-
-  The canonical name, or \`NA\` when unmatched.
 
 ## See also
 
@@ -60,17 +66,34 @@ obs <- data.frame(
                 "Abies alba Mill.",    # listed synonym of "Abies alba"
                 "Planta inventa")      # unknown to the expert system
 )
-resy_check_taxonomy(obs, parsed)
-#>          TaxonName matched       canonical
-#> 1  Fagus sylvatica    TRUE Fagus sylvatica
-#> 2 Abies alba Mill.    TRUE      Abies alba
-#> 3   Planta inventa   FALSE            <NA>
+checked <- resy_check_taxonomy(obs, parsed)
+checked
+#> <resy_taxa> 3 name(s) from column `TaxonName` checked against 950 Section 1 species
+#>   scientificName  name as submitted
+#>   TaxonName       canonical name used by resy_classify(); NA when unmatched
+#>   matched         TRUE if found as a canonical name or Section 1 synonym
+#> 2 matched (66.7%), 1 unmatched; summary() lists them
+#> 
+#>     scientificName       TaxonName matched
+#> 1  Fagus sylvatica Fagus sylvatica    TRUE
+#> 2 Abies alba Mill.      Abies alba    TRUE
+#> 3   Planta inventa            <NA>   FALSE
+summary(checked)
+#> 3 name(s): 2 matched (66.7%), 1 unmatched (33.3%)
+#> Unmatched names:
+#>   Planta inventa
 
 # Names held in a differently named column
 names(obs)[2] <- "species"
 resy_check_taxonomy(obs, parsed, col = "species")
-#>          TaxonName matched       canonical
-#> 1  Fagus sylvatica    TRUE Fagus sylvatica
-#> 2 Abies alba Mill.    TRUE      Abies alba
-#> 3   Planta inventa   FALSE            <NA>
+#> <resy_taxa> 3 name(s) from column `species` checked against 950 Section 1 species
+#>   scientificName  name as submitted
+#>   TaxonName       canonical name used by resy_classify(); NA when unmatched
+#>   matched         TRUE if found as a canonical name or Section 1 synonym
+#> 2 matched (66.7%), 1 unmatched; summary() lists them
+#> 
+#>     scientificName       TaxonName matched
+#> 1  Fagus sylvatica Fagus sylvatica    TRUE
+#> 2 Abies alba Mill.      Abies alba    TRUE
+#> 3   Planta inventa            <NA>   FALSE
 ```
