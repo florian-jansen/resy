@@ -26,10 +26,11 @@ to override it (\code{\link{resy_classify}} passes the expert system's own
 vocabulary here, so any name the expert already knows is left untouched).}
 }
 \value{
-\code{obs} with two appended columns: \code{canonical} (the resolved
-  ESy name, \code{NA} when unresolved) and \code{taxon_confidence}
-  (\code{"exact"}, \code{"synonym"}, \code{"cleaned_exact"},
-  \code{"cleaned_synonym"}, or \code{"unresolved"}).
+A \code{resy_taxa} data frame: \code{obs} with three appended columns,
+  \code{canonical} (the resolved ESy name, \code{NA} when unresolved),
+  \code{taxon_confidence} (\code{"exact"}, \code{"synonym"},
+  \code{"cleaned_exact"}, \code{"cleaned_synonym"}, or \code{"unresolved"}),
+  and \code{matched} (\code{TRUE} unless unresolved).
 }
 \description{
 Maps a column of plot species names to the canonical ESy names used by the
@@ -47,8 +48,14 @@ it is never replaced with a best guess.
 The synonym table pools synonymy from six backbones (Euro+Med, WFO, GBIF, COL,
 ITIS, NCBI), so plot data named under any of them resolves without the caller
 needing to say which backbone the names came from.
+
+The result is a \code{resy_taxa} data frame, the same class
+\code{\link{resy_check_taxonomy}} returns. Printing it shows what each column
+holds and how many distinct names resolved; \code{summary()} returns the
+counts per name and per record, the records by match type, and the names that
+stayed unresolved.
 }
 \seealso{
-\code{\link{resy_read_synonyms}}, \code{\link{resy_summarize_taxa}},
+\code{\link{resy_read_synonyms}}, \code{\link{resy_check_taxonomy}},
   \code{\link{resy_classify}}
 }

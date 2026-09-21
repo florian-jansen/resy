@@ -102,8 +102,8 @@ test_that("resolve_taxa = TRUE reports resolution and never guesses unknowns", {
                   resolve_taxa = TRUE, mc = 1L)
   )
   tr <- res$taxon_resolution
-  expect_type(tr, "list")
-  expect_true(all(c("n", "resolved", "unresolved") %in% names(tr)))
+  expect_s3_class(tr, "summary.resy_taxa")
+  expect_equal(c(tr$n_records, tr$unmatched), c(3L, 2L))
 
   # The invented names are not silently remapped: they survive verbatim in the
   # observations passed to the solver.

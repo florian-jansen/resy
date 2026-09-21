@@ -169,6 +169,12 @@ resy_canonical_species <- function(path = NULL) {
 #' ITIS, NCBI), so plot data named under any of them resolves without the caller
 #' needing to say which backbone the names came from.
 #'
+#' The result is a \code{resy_taxa} data frame, the same class
+#' \code{\link{resy_check_taxonomy}} returns. Printing it shows what each column
+#' holds and how many distinct names resolved; \code{summary()} returns the
+#' counts per name and per record, the records by match type, and the names that
+#' stayed unresolved.
+#'
 #' @param obs A data frame (or \code{data.table}) of plot observations.
 #' @param species_col Name of the column in \code{obs} holding the species name
 #'   (default \code{"TaxonName"}).
@@ -178,11 +184,12 @@ resy_canonical_species <- function(path = NULL) {
 #'   exact-match step; pass a path, a data frame, or a character vector of names
 #'   to override it (\code{\link{resy_classify}} passes the expert system's own
 #'   vocabulary here, so any name the expert already knows is left untouched).
-#' @return \code{obs} with two appended columns: \code{canonical} (the resolved
-#'   ESy name, \code{NA} when unresolved) and \code{taxon_confidence}
-#'   (\code{"exact"}, \code{"synonym"}, \code{"cleaned_exact"},
-#'   \code{"cleaned_synonym"}, or \code{"unresolved"}).
-#' @seealso \code{\link{resy_read_synonyms}}, \code{\link{resy_summarize_taxa}},
+#' @return A \code{resy_taxa} data frame: \code{obs} with three appended columns,
+#'   \code{canonical} (the resolved ESy name, \code{NA} when unresolved),
+#'   \code{taxon_confidence} (\code{"exact"}, \code{"synonym"},
+#'   \code{"cleaned_exact"}, \code{"cleaned_synonym"}, or \code{"unresolved"}),
+#'   and \code{matched} (\code{TRUE} unless unresolved).
+#' @seealso \code{\link{resy_read_synonyms}}, \code{\link{resy_check_taxonomy}},
 #'   \code{\link{resy_classify}}
 #' @export
 resy_resolve_taxa <- function(obs, species_col = "TaxonName",
@@ -232,49 +239,14 @@ resy_resolve_taxa <- function(obs, species_col = "TaxonName",
   out <- as.data.frame(obs, stringsAsFactors = FALSE)
   out$canonical <- resolved
   out$taxon_confidence <- conf
-  out
-}
-
-#' Summarise a taxonomy-resolution result
-#'
-#' Diagnostic over the output of \code{\link{resy_resolve_taxa}}: how many input
-#' records resolved to a canonical name, the breakdown by confidence, and
-#' (optionally) the distinct input values that stayed unresolved.
-#'
-#' @param resolved The data frame returned by \code{\link{resy_resolve_taxa}}
-#'   (must carry a \code{taxon_confidence} column).
-#' @param species_col Optional name of the original name column in \code{resolved};
-#'   when supplied, the distinct unresolved input values are listed.
-#' @return A list with elements \code{n} (records), \code{resolved},
-#'   \code{unresolved}, \code{by_confidence} (a data frame of confidence level,
-#'   count, and proportion), and \code{unresolved_taxa} (character vector, empty
-#'   unless \code{species_col} is given).
-#' @seealso \code{\link{resy_resolve_taxa}}
-#' @export
-resy_summarize_taxa <- function(resolved, species_col = NULL) {
-  if (!is.data.frame(resolved) || !"taxon_confidence" %in% names(resolved)) {
-    stop("resy_summarize_taxa: `resolved` must be a data frame produced by ",
-         "resy_resolve_taxa (with a `taxon_confidence` column).", call. = FALSE)
-  }
-  conf <- as.character(resolved$taxon_confidence)
-  n <- length(conf)
-  tab <- as.data.frame(table(confidence = conf), stringsAsFactors = FALSE)
-  names(tab) <- c("confidence", "n")
-  tab$prop <- if (n > 0L) tab$n / n else numeric(0)
-  unresolved_taxa <- character(0)
-  if (!is.null(species_col)) {
-    if (!species_col %in% names(resolved)) {
-      stop("resy_summarize_taxa: column `", species_col,
-           "` not found in `resolved`.", call. = FALSE)
-    }
-    unresolved_taxa <- sort(unique(
-      as.character(resolved[[species_col]][conf == "unresolved"])))
-  }
-  list(
-    n = n,
-    resolved = sum(conf != "unresolved"),
-    unresolved = sum(conf == "unresolved"),
-    by_confidence = tab,
-    unresolved_taxa = unresolved_taxa
-  )
+  out$matched <- conf != "unresolved"
+  columns <- c("name as submitted",
+               "resolved canonical name; NA when unresolved",
+               "exact, synonym, cleaned_exact, cleaned_synonym or unresolved",
+               "TRUE if the name resolved")
+  names(columns) <- c(species_col, "canonical", "taxon_confidence", "matched")
+  .resy_taxa(out, input_col = species_col, name_col = species_col,
+             columns = columns,
+             reference = sprintf("resolved against %d reference names",
+                                 length(canon)))
 }

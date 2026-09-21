@@ -38,6 +38,15 @@
 * `resy_resolve_taxa()` matches a name a second time with its author citation
   removed (`resy_clean_names()`) when it does not match as given. These matches
   are labelled `"cleaned_exact"` and `"cleaned_synonym"` in `taxon_confidence`.
+* `resy_check_taxonomy()` and `resy_resolve_taxa()` both return a `resy_taxa`
+  data frame with a logical `matched` column. `resy_check_taxonomy()` names its
+  columns `scientificName` (as submitted), `TaxonName` (canonical) and
+  `matched`. Printing a `resy_taxa` table describes its columns and counts the
+  matches; `summary()` gives the counts per name and per record, the records by
+  match type, and the unmatched names grouped into genus only, below species
+  level and species. `resy_summarize_taxa()` is removed; use `summary()` on the
+  result of `resy_resolve_taxa()`. With `resolve_taxa = TRUE`,
+  `resy_classify()` stores that summary as `taxon_resolution`.
 
 ## Fixes
 

@@ -33,7 +33,7 @@ the taxonomic decisions before they affect a classification.
 
 1. **Resolve** the species names to the vocabulary of the expert system with
    `resy_resolve_taxa()`.
-2. **Inspect** the result with `resy_summarize_taxa()`.
+2. **Inspect** the result with `summary()`.
 3. **Classify** the resolved data with `resy_classify()`.
 
 ## Example
@@ -165,11 +165,12 @@ resolved <- resy_resolve_taxa(plots, species_col = "TaxonName")
 resolved
 ```
 
-`resy_summarize_taxa()` reports how many names resolved, the breakdown by
-confidence, and the distinct names that stayed unresolved.
+The result is a `resy_taxa` table, the same kind `resy_check_taxonomy()`
+returns. `summary()` reports how many names and records resolved, the records by
+match type, and the distinct names that stayed unresolved.
 
 ```{r summarise}
-resy_summarize_taxa(resolved, species_col = "TaxonName")
+summary(resolved)
 ```
 
 Unresolved names can be fixed by correcting a spelling, adding a row to your own

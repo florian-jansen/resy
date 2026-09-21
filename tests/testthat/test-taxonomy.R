@@ -132,21 +132,53 @@ test_that("canonical_species returns the sorted unique canonical names", {
   expect_gt(length(resy_canonical_species()), 19000L)
 })
 
-test_that("summarize_taxa counts resolution and lists unresolved inputs", {
+test_that("resolve returns a resy_taxa table whose summary counts names and records", {
   obs <- data.frame(
-    TaxonName = c("Genus species", "Old name", "Notareal sp", "Stillfake"),
+    PlotObservationID = c("p1", "p1", "p2", "p2", "p3"),
+    TaxonName = c("Genus species", "Old name", "Notareal sp", "Stillfake",
+                  "Genus species"),
     stringsAsFactors = FALSE
   )
   res <- resy_resolve_taxa(obs, "TaxonName",
                            synonyms = mini_syn(), canonical = mini_canon())
-  s <- resy_summarize_taxa(res, species_col = "TaxonName")
-  expect_equal(s$n, 4L)
-  expect_equal(s$resolved, 2L)
-  expect_equal(s$unresolved, 2L)
-  expect_setequal(s$unresolved_taxa, c("Notareal sp", "Stillfake"))
-  expect_equal(sum(s$by_confidence$n), 4L)
+  expect_s3_class(res, c("resy_taxa", "data.frame"))
+  expect_equal(res$matched, c(TRUE, TRUE, FALSE, FALSE, TRUE))
+
+  s <- summary(res)
+  expect_s3_class(s, "summary.resy_taxa")
+  expect_equal(c(s$n, s$matched, s$unmatched), c(4L, 2L, 2L))
+  expect_equal(c(s$n_records, s$records_matched), c(5L, 3L))
+  expect_equal(s$unmatched_names, c("Notareal sp", "Stillfake"))
+  expect_equal(sum(s$by_confidence$n), 5L)
   expect_equal(sum(s$by_confidence$prop), 1)
-  expect_error(resy_summarize_taxa(data.frame(x = 1)), "taxon_confidence")
+
+  out <- capture.output(print(s))
+  expect_true("4 names checked: 2 matched (50.0%), 2 not matched (50.0%)." %in% out)
+  expect_true("3 of 5 records matched (60.0%)." %in% out)
+  expect_true(any(grepl("^  exact +2  \\(40\\.0%\\)$", out)))
+})
+
+test_that("printing a resolved table shows its taxonomy columns and names the rest", {
+  obs <- data.frame(PlotObservationID = c("p1", "p2"),
+                    TaxonName = c("Genus species", "Genus species"),
+                    stringsAsFactors = FALSE)
+  res <- resy_resolve_taxa(obs, "TaxonName",
+                           synonyms = mini_syn(), canonical = mini_canon())
+  expect_output(print(res), "2 record(s) with 1 distinct name(s) from column `TaxonName` resolved against 2 reference names",
+                fixed = TRUE)
+  expect_output(print(res), "(1 other column(s) not shown: PlotObservationID)",
+                fixed = TRUE)
+})
+
+test_that("dropping a defining column turns a resy_taxa table into a data frame", {
+  res <- resy_resolve_taxa(data.frame(TaxonName = "Genus species"), "TaxonName",
+                           synonyms = mini_syn(), canonical = mini_canon())
+  kept <- res[c("TaxonName", "matched")]
+  expect_s3_class(kept, "resy_taxa")
+  expect_equal(attr(kept, "name_col"), "TaxonName")
+  plain <- res[c("TaxonName", "canonical")]
+  expect_false(inherits(plain, "resy_taxa"))
+  expect_null(attr(plain, "name_col"))
 })
 
 test_that("classify with resolve_taxa = TRUE resolves and never corrupts known names", {
@@ -175,8 +207,8 @@ test_that("classify with resolve_taxa = TRUE resolves and never corrupts known n
 
   # With resolve_taxa = TRUE the classifier resolves names and reports what it did.
   cl <- resy_classify(obs, header, expertfile = expert, resolve_taxa = TRUE)
-  expect_type(cl$taxon_resolution, "list")
-  expect_equal(cl$taxon_resolution$n, nrow(obs))
+  expect_s3_class(cl$taxon_resolution, "summary.resy_taxa")
+  expect_equal(cl$taxon_resolution$n_records, nrow(obs))
 
   # Consistency: the in-classifier resolution matches an explicit pre-resolution
   # followed by an agnostic classify (idempotent).

@@ -50,8 +50,8 @@ classification (see Description).}
 }
 \value{
 An object of class `resy_result`. When `resolve_taxa = TRUE` it also
-  carries a `taxon_resolution` summary from [resy_summarize_taxa]; otherwise
-  `taxon_resolution` is `NULL`.
+  carries the `summary()` of the [resy_resolve_taxa] result as
+  `taxon_resolution`; otherwise `taxon_resolution` is `NULL`.
 }
 \description{
 Loads an expert system (by file or by scheme/version), aggregates taxa,
@@ -61,7 +61,7 @@ The classifier is taxonomy-agnostic: it classifies the species names in `obs`
 as they are given. Names should already match the expert system's vocabulary.
 If your plot data uses names from a general backbone (GBIF, WFO, POWO,
 Euro+Med, a national checklist), harmonise them first as an explicit step with
-[resy_resolve_taxa] and inspect the result with [resy_summarize_taxa] before
+[resy_resolve_taxa] and inspect the result with its `summary()` before
 classifying, so the taxonomic choices stay visible (see the taxonomy
 vignette). Setting `resolve_taxa = TRUE` runs that resolution inside
 `resy_classify()` as a convenience: names the expert already knows pass through
@@ -86,5 +86,5 @@ head(res$result.classification)
 }
 }
 \seealso{
-[resy_resolve_taxa], [resy_summarize_taxa]
+[resy_resolve_taxa], [resy_check_taxonomy]
 }
