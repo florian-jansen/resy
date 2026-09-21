@@ -13,12 +13,12 @@
 
 ## Citation
 
-Jansen F, Bauer M, Calbi M, Colling G (2026). *RESY: Vegetation type
-expert classification system*. R package version 0.3,
+Jansen F, Bauer M, Calbi M, Colling G (2026). *RESY: Vegetation Type
+Expert Classification System*. R package version 0.3,
 <https://florian-jansen.github.io/resy/>.
 
     @Manual{,
-      title = {RESY: Vegetation type expert classification system},
+      title = {RESY: Vegetation Type Expert Classification System},
       author = {Florian Jansen and Markus Bauer and Mariasole Calbi and Gilles Colling},
       year = {2026},
       note = {R package version 0.3},

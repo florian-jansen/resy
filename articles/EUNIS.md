@@ -4,8 +4,9 @@ This vignette illustrates a common use of the package: to classify
 European vegetation surveys to **EUNIS habitat types**
 ([FloraVeg.EU](https://floraveg.eu/); Chytrý et
 al. [2024](https://doi.org/10.1111/avsc.12798); European Environment
-Agency EUNIS [Website](https://eunis.eea.europa.eu/index.jsp)) according
-to the **Expert System (ESy)** of Chytrý et
+Agency EUNIS
+[Website](https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed))
+according to the **Expert System (ESy)** of Chytrý et
 al. ([2020](https://doi.org/10.1111/avsc.12519)) (see
 [FloraVeg.EU](https://floraveg.eu/habitat/)). The function
 [`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md)
@@ -311,8 +312,8 @@ res <- RESY::resy_classify(
 #> Step 5.9  Number of T$ NON conditions: 140
 #> Step 5.10  Header conditions with numeric values: 4
 #>   Header conditions with character values: 4
-#> adapt conditions 2026-09-21 16:23:56.594216
-#> classification from here on 2026-09-21 16:23:56.671219
+#> adapt conditions 2026-09-21 16:38:50.459208
+#> classification from here on 2026-09-21 16:38:50.541432
 ```
 
 ### Inspect the results
