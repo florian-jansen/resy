@@ -3,17 +3,20 @@
 \docType{data}
 \name{ecoregions2017_epsg25832}
 \alias{ecoregions2017_epsg25832}
-\title{European ecoregions in EPSG:25832}
+\title{Ecoregions of Europe (EPSG:25832)}
 \format{
-An `sf` object.
+An `sf` object with 159 polygons.
 }
 \source{
-source?
+Dinerstein, E. et al. (2017): An ecoregion-based approach to
+  protecting half the terrestrial realm. BioScience 67. Licence CC-BY 4.0.
 }
 \usage{
 data(ecoregions2017_epsg25832)
 }
 \description{
-GIS data of the Ecoregions in Projection EPSG:25832.
+The terrestrial ecoregions of Europe from the RESOLVE Ecoregions 2017 map, in
+EPSG:25832. Used to set `Ecoreg` (column `ECO_ID`) in
+[resy_harmonize_eunis()].
 }
 \keyword{datasets}

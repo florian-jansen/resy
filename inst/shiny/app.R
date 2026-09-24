@@ -83,11 +83,9 @@ classification_choices <- build_classification_choices()
 # local parser and section editors. Group keys already carry their solver prefix
 # (###, ##D …) so they are written to Section 2 verbatim.
 json_to_txt_lines <- function(path) {
-  if (!requireNamespace('jsonlite', quietly = TRUE))
-    stop('jsonlite is required to read JSON expert files.')
   x <- jsonlite::read_json(path, simplifyVector = TRUE)
 
-  if (!all(c('synonyms', 'groups', 'rules') %in% names(x)))
+  if (!all(RESY:::.resy_json_required %in% names(x)))
     stop('Unsupported JSON expert format: expected synonyms / groups / rules keys.')
 
   lines <- character()
@@ -112,18 +110,13 @@ json_to_txt_lines <- function(path) {
   }
   lines <- c(lines, 'SECTION 2: End')
 
-  # Section 3: priority + 10 spaces + code + description, then indented expression
+  # Section 3: the header line of each rule, then its indented expression.
   # _comment and other _ keys are ignored by jsonlite column naming conventions
   lines <- c(lines, 'SECTION 3: Start')
   rules <- x$rules  # simplified to a data frame by jsonlite
+  headers <- RESY:::.resy_rule_header(rules$priority, rules$code, rules$description)
   for (i in seq_len(nrow(rules))) {
-    lines <- c(lines,
-      sprintf('%s          %s %s',
-        as.character(rules$priority[i]),
-        as.character(rules$code[i]),
-        as.character(rules$description[i])),
-      paste0('   ', as.character(rules$expression[i]))
-    )
+    lines <- c(lines, headers[i], paste0('   ', as.character(rules$expression[i])))
   }
   lines <- c(lines, 'SECTION 3: End')
 
@@ -139,14 +132,14 @@ read_expert_lines <- function(path) {
 }
 
 extract_section_body <- function(lines, section_no) {
-  idx <- grep(sprintf('^\\s*SECTION\\s+%s\\b', section_no), lines, ignore.case = TRUE)
+  idx <- RESY:::.resy_section_rows(lines, section_no)
   if (length(idx) < 2) stop('Section ', section_no, ' could not be found.')
   body <- lines[(idx[1] + 1):(idx[2] - 1)]
   paste(body, collapse = '\n')
 }
 
 replace_section_body <- function(lines, section_no, new_text) {
-  idx <- grep(sprintf('^\\s*SECTION\\s+%s\\b', section_no), lines, ignore.case = TRUE)
+  idx <- RESY:::.resy_section_rows(lines, section_no)
   if (length(idx) < 2) stop('Section ', section_no, ' could not be found.')
   before <- lines[seq_len(idx[1])]
   after <- lines[idx[2]:length(lines)]
@@ -170,65 +163,28 @@ safe_validate <- function(path) {
 }
 
 classify_with_expert <- function(expert_path, example_data) {
-  obs <- copy(example_data$obs)
-  header <- as.data.frame(example_data$header)
-
-  tmp <- RESY:::.resy_standardize_plot_id(obs, header)
-  obs <- tmp$obs
-  header <- tmp$header
-
-  parsed <- RESY::resy_load_expert(expertfile = expert_path)
-  obs2 <- RESY:::resy_aggregate_taxa(obs, parsed$aggs)
-  plot.cond <- RESY:::resy_init_plot_conditions(obs2, parsed$conditions)
-
-  solved <- RESY:::.resy_solve_membership(
-    obs = obs2,
-    header = header,
-    parsed = parsed,
-    plot.cond = plot.cond,
+  res <- RESY::resy_classify(
+    obs = copy(example_data$obs),
+    header = as.data.frame(example_data$header),
+    expertfile = expert_path,
     mc = 1
   )
+  res$scheme <- 'custom'
+  res$version <- NA_character_
+  res
+}
 
-  cand <- data.table(
-    plot_id = character(), type = character(),
-    priority = character(), priority_rank = integer()
-  )
-  if (!is.null(solved$types) && length(solved$types) > 0) {
-    vt_names <- parsed$vegtype.formula.names.short
-    vt_prio  <- parsed$vegtype.priority
-    rows <- Filter(Negate(is.null), lapply(names(solved$types), function(pid) {
-      ty <- solved$types[[pid]]
-      if (!length(ty)) return(NULL)
-      pr <- vt_prio[fastmatch::fmatch(ty, vt_names)]
-      data.table(
-        plot_id       = as.character(pid),
-        type          = as.character(ty),
-        priority      = pr,
-        priority_rank = as.integer(pr)
-      )
-    }))
-    if (length(rows)) {
-      cand <- rbindlist(rows, use.names = TRUE, fill = TRUE)
-      setorder(cand, plot_id, -priority_rank, type)
-    }
-  }
-
-  structure(
-    c(
-      list(
-        obs = obs2,
-        header = header,
-        expertfile = expert_path,
-        scheme = 'custom',
-        version = NA_character_,
-        prefer = 'user',
-        candidates = cand
-      ),
-      solved,
-      list(parsed = parsed)
-    ),
-    class = 'resy_result'
-  )
+# Plots of a classification without a type among the candidates `cand`.
+unclassified_plots <- function(res, cand = res$candidates) {
+  all_plot_ids <- unique(c(
+    as.character(res$header$PlotObservationID),
+    as.character(res$obs$PlotObservationID)
+  ))
+  all_plot_ids <- all_plot_ids[!is.na(all_plot_ids) & nzchar(all_plot_ids)]
+  classified <- unique(as.character(cand$plot_id[
+    !is.na(cand$type) & nzchar(trimws(as.character(cand$type))) & !is.na(cand$plot_id)
+  ]))
+  setdiff(all_plot_ids, classified)
 }
 
 priority_table <- function(res, priority = 1) {
@@ -241,16 +197,7 @@ priority_table <- function(res, priority = 1) {
   cand[, type_label := fifelse(is.na(type) | !nzchar(trimws(as.character(type))), 'NA', as.character(type))]
   out <- cand[!is.na(plot_id) & nzchar(plot_id), .(N = uniqueN(plot_id)), by = .(type = type_label)]
 
-  all_plot_ids <- unique(c(
-    as.character(res$header$PlotObservationID),
-    as.character(res$header$plot_id),
-    as.character(res$obs$PlotObservationID),
-    as.character(res$obs$plot_id),
-    as.character(res$candidates$plot_id)
-  ))
-  all_plot_ids <- unique(all_plot_ids[!is.na(all_plot_ids) & nzchar(all_plot_ids)])
-  classified_plot_ids <- unique(cand[!is.na(type) & nzchar(trimws(as.character(type))) & !is.na(plot_id) & nzchar(plot_id), plot_id])
-  na_count <- length(setdiff(all_plot_ids, classified_plot_ids))
+  na_count <- length(unclassified_plots(res, cand))
 
   if ('NA' %in% out$type) {
     out[type == 'NA', N := max(N, na_count)]
@@ -290,16 +237,7 @@ priority_taxon_table <- function(res, priority = 1, type_code) {
 
   cand[, plot_id := as.character(plot_id)]
   if (identical(type_code, 'NA')) {
-    all_plot_ids <- unique(c(
-      as.character(res$header$PlotObservationID),
-      as.character(res$header$plot_id),
-      as.character(res$obs$PlotObservationID),
-      as.character(res$obs$plot_id),
-      as.character(res$candidates$plot_id)
-    ))
-    all_plot_ids <- unique(all_plot_ids[!is.na(all_plot_ids) & nzchar(all_plot_ids)])
-    classified_plot_ids <- unique(cand[!is.na(type) & nzchar(trimws(as.character(type))) & !is.na(plot_id) & nzchar(plot_id), plot_id])
-    plot_ids <- setdiff(all_plot_ids, classified_plot_ids)
+    plot_ids <- unclassified_plots(res, cand)
   } else {
     plot_ids <- unique(cand[as.character(type) == as.character(type_code) & !is.na(plot_id) & nzchar(plot_id), plot_id])
   }
@@ -473,16 +411,7 @@ server <- function(input, output, session) {
 
     all_types <- sort(unique(as.character(res$candidates[!is.na(type), type])))
 
-    # Detect plots that received no candidate type (NA / unclassified)
-    all_plot_ids <- unique(c(
-      as.character(res$header$PlotObservationID),
-      as.character(res$header$plot_id)
-    ))
-    all_plot_ids <- all_plot_ids[!is.na(all_plot_ids) & nzchar(all_plot_ids)]
-    classified   <- unique(res$candidates[
-      !is.na(type) & nzchar(trimws(as.character(type))), as.character(plot_id)
-    ])
-    na_choice <- if (length(setdiff(all_plot_ids, classified)) > 0L)
+    na_choice <- if (length(unclassified_plots(res)) > 0L)
       c('NA (unclassified)' = '__na__') else character(0)
 
     updateSelectInput(session, 'plot_filter_p2',
@@ -500,15 +429,7 @@ server <- function(input, output, session) {
     }
 
     if (identical(filter_val, '__na__')) {
-      all_plot_ids <- unique(c(
-        as.character(res$header$PlotObservationID),
-        as.character(res$header$plot_id)
-      ))
-      all_plot_ids <- all_plot_ids[!is.na(all_plot_ids) & nzchar(all_plot_ids)]
-      classified   <- unique(res$candidates[
-        !is.na(type) & nzchar(trimws(as.character(type))), as.character(plot_id)
-      ])
-      return(sort(setdiff(all_plot_ids, classified)))
+      return(sort(unclassified_plots(res)))
     }
 
     # Return only plots where the selected type appears among their candidates

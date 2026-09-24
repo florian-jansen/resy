@@ -1,12 +1,12 @@
 ---
 title: "RESY EUNIS habitat classifications"
-author: "Markus Bauer & Mariasole Calbi"
+author: "Markus Bauer, Mariasole Calbi & Gilles Colling"
 date: "`r Sys.Date()`"
 output:
    rmarkdown::html_vignette:
       toc: true
 vignette: >
-  %\VignetteIndexEntry{RESY EUNIS tutorial}
+  %\VignetteIndexEntry{RESY EUNIS habitat classifications}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette illustrates a common use of the package: to classify European vegetation surveys to __EUNIS habitat types__ ([FloraVeg.EU](https://floraveg.eu/); Chytrý et al. [2024](https://doi.org/10.1111/avsc.12798); European Environment Agency EUNIS [Website](https://eunis.eea.europa.eu/index.jsp)) according to the __Expert System (ESy)__ of Chytrý et al. ([2020](https://doi.org/10.1111/avsc.12519)) (see [FloraVeg.EU](https://floraveg.eu/habitat/)). The function `resy_harmonize_eunis()` incorporates several functions to collect geographic information about the vegetation survey like the country, ecoregion, or coastal position. Furthermore, the format of the coordinates and the taxonomy are checked and adjusted to the requirements for the expert system (ESy). The function `resy_classify()` does the classification of the vegation surveys including the sites data.
+This vignette illustrates a common use of the package: to classify European vegetation surveys to __EUNIS habitat types__ ([FloraVeg.EU](https://floraveg.eu/); Chytrý et al. [2024](https://doi.org/10.1111/avsc.12798); European Environment Agency EUNIS [Website](https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed)) according to the __Expert System (ESy)__ of Chytrý et al. ([2020](https://doi.org/10.1111/avsc.12519)) (see [FloraVeg.EU](https://floraveg.eu/habitat/)). The function `resy_harmonize_eunis()` incorporates several functions to collect geographic information about the vegetation survey like the country, ecoregion, or coastal position. Furthermore, the format of the coordinates and the taxonomy are checked and adjusted to the requirements for the expert system (ESy). The function `resy_classify()` does the classification of the vegation surveys including the sites data.
 
 1. **Prepare the format** of the sites including the right **coordination system** and add information like **ecoregion**, **country** or if it is on a **coast**.
 2. **Check of taxonomy** of the species data
@@ -119,7 +119,7 @@ outcome <- RESY::resy_harmonize_eunis(
    coast_buffer = 5000
    )
 outcome_sites <- tibble(outcome$sites)
-outcome_species <- tibble(outcome$species_checked)
+outcome_species <- outcome$species_checked
 ```
 
 We have three warnings: The column `Altitude (m)` is missing and this could not be covered by `resy_harmonize_eunis()`, but we provide a `vignette("Get altitude data")`. `NAs` are in the ecoregions (`Ecoreg`) and country (`Country`) columns. This could be the vegetation surveys on islands which is not covered by the base map.
@@ -170,13 +170,14 @@ Let's have a look on the checked and transformed species names. There are for ex
 
 ```{r checked-species-names}
 outcome_species
+summary(outcome_species)
 ```
 
 ```{r}
 outcome_species2 <- data_species |>
-  left_join(outcome_species, by = c("species" = "TaxonName")) |>
-  select(PlotObservationID, canonical, cover) |>
-  rename(TaxonName = canonical, Cover_Perc = cover)
+  left_join(outcome_species, by = c("species" = "scientificName")) |>
+  select(PlotObservationID, TaxonName, cover) |>
+  rename(Cover_Perc = cover)
 ```
 
 
@@ -218,12 +219,12 @@ resy_eval_plot(res, p = "AM30")
 
 ```
 
-### Vegetation type details
+Passing `type` adds, for each named type, its formula as written in the expert
+file and the membership conditions it uses, whether each holds for this plot,
+and the plot's taxa responsible for it:
 
-`resy_eval_type()` shows conditions of a type which is evaluated.
-
-```{r}
-resy_eval_type(res, t = "R1A")
+```{r eval-plot-type}
+resy_eval_plot(res, p = "AM30", type = "T17")
 ```
 
 ### Print classification hierarchy

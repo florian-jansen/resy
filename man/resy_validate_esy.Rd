@@ -40,7 +40,7 @@ problems. Does not assess ecological correctness. The rules are:
   \item Priority must be a single character in \code{0-9}, \code{A-Z} or
     \code{a-z}.
   \item Group keys in Section 2 / \code{"groups"} must start with a
-    recognised prefix (\code{###}, \code{##D}, \code{#TC}, \code{#SC},
+    recognised prefix (\code{###}, \code{##D}, \code{##Q}, \code{##C},
     \code{$$C}, \code{$$N}).
 }
 
