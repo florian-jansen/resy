@@ -46,6 +46,7 @@ We have written several vignettes to help you use the RESY R package:
 
 - `vignette("EUNIS")`
 - `vignette("Get altitude data")`
+- `vignette("taxonomy")`
 
 ## :desktop_computer: Functions
 

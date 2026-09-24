@@ -9,8 +9,8 @@
 #' @param create Logical; if `TRUE` and `location = "user"`, create the
 #'   directory if it does not yet exist. Ignored for `"package"`.
 #' @return A path string.
-#' @keywords internal
-resy_classifications_root <- function(location = c("user", "package"),
+#' @noRd
+.resy_classifications_root <- function(location = c("user", "package"),
                                       create = FALSE) {
   location <- match.arg(location)
   if (location == "package") {

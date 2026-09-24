@@ -26,8 +26,11 @@
 #'
 #' @export
 resy_available_classifications <- function() {
-  
-  root <- system.file("extdata", "classifications", package = "RESY")
+  .resy_scan_classifications(.resy_classifications_root("package"))
+}
+
+# One row per <scheme>/<version> directory under a classification root.
+.resy_scan_classifications <- function(root) {
   if (!nzchar(root) || !dir.exists(root))
     return(.resy_empty_classifications_df())
 
@@ -63,7 +66,10 @@ resy_available_classifications <- function() {
     
   })
 
-  out <- do.call(rbind, unlist(rows, recursive = FALSE))
+  rows <- unlist(rows, recursive = FALSE)
+  if (!length(rows))
+    return(.resy_empty_classifications_df())
+  out <- do.call(rbind, rows)
   rownames(out) <- NULL
   out
   
