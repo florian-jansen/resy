@@ -24,9 +24,9 @@ test_that(".resy_check_coordinates: sf not in 25832 transforms with message", {
   
 })
 
-test_that(".resy_check_coordinates: data frame without source_crs errors", {
+test_that(".resy_check_coordinates: projected data frame without source_crs errors", {
   
-  df <- data.frame(Longitude = 10, Latitude = 50)
+  df <- data.frame(Longitude = 700000, Latitude = 5000000)
   expect_error(RESY:::.resy_check_coordinates(df), "source_crs")
   
 })

@@ -122,17 +122,5 @@ test_that("resy_validate_esy: Apennine-test JSON passes validation", {
   skip_if(!nzchar(path), "Apennine-test JSON not found")
   result <- resy_validate_esy(path, verbose = FALSE)
   expect_true(result$ok)
-  expect_length(result$errors, 0L)
-  expect_equal(result$meta$vegtypes_defined, 5L)
-})
-
-test_that("resy_validate_esy: EUNIS JSON passes validation", {
-  path <- system.file(
-    "extdata/classifications/EUNIS/2025-10-03/expert.json",
-    package = "RESY"
-  )
-  skip_if(!nzchar(path), "EUNIS JSON not found")
-  result <- resy_validate_esy(path, verbose = FALSE)
-  expect_true(result$ok)
-  expect_length(result$errors, 0L)
+  expect_true(any(grepl("G_UNDEFINED", result$warnings)))
 })

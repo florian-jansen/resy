@@ -1,0 +1,96 @@
+# The text parser reads the canonical three-section .txt expert file into the
+# same intermediate list the JSON parser produces, which .resy_build_parsed then
+# turns into a resy_parsed_expert. These tests drive .resy_parse_expert_lines
+# on an in-memory file so no fixture is needed, and check the two things that
+# silently corrupt a classification if wrong: which species land in which
+# aggregation/group, and that an unknown group prefix is rejected rather than
+# mis-parsed.
+
+mini_expert <- c(
+  "SECTION 1: Species aggregation",
+  "Achillea millefolium agg.",
+  "     Achillea millefolium",
+  "     Achillea pratensis",
+  "SECTION 1: End",
+  "SECTION 2: Species groups",
+  "### Grassland-herbs",
+  "     Nardus stricta",
+  "     Achillea millefolium agg.",
+  "### Forest-trees",
+  "     Fagus sylvatica",
+  "     Abies alba",
+  "",
+  "SECTION 2: End",
+  "SECTION 3: Group definitions",
+  "5          GR Grassland",
+  "<### Grassland-herbs GR 0>",
+  "2          FO Forest",
+  "<### Forest-trees GR 0>",
+  "SECTION 3: End"
+)
+
+test_that("section 1 aggregations map an aggregate to its members", {
+  raw <- RESY:::.resy_parse_expert_lines(mini_expert)
+  expect_equal(
+    raw$aggs[["Achillea millefolium agg."]],
+    c("Achillea millefolium", "Achillea pratensis")
+  )
+})
+
+test_that("section 2 groups keep their prefix and members", {
+  raw <- RESY:::.resy_parse_expert_lines(mini_expert)
+  expect_setequal(names(raw$groups), c("### Grassland-herbs", "### Forest-trees"))
+  expect_equal(raw$groups[["### Grassland-herbs"]],
+               c("Nardus stricta", "Achillea millefolium agg."))
+  expect_equal(raw$groups[["### Forest-trees"]],
+               c("Fagus sylvatica", "Abies alba"))
+})
+
+test_that("the last group keeps its final member when section 2 ends on it", {
+  no_blank <- mini_expert[nzchar(mini_expert)]
+  raw <- RESY:::.resy_parse_expert_lines(no_blank)
+  expect_equal(raw$groups[["### Forest-trees"]],
+               c("Fagus sylvatica", "Abies alba"))
+})
+
+test_that("blank lines separate blocks and are never members", {
+  spaced <- append(mini_expert, "", after = 18)
+  raw <- RESY:::.resy_parse_expert_lines(spaced)
+  expect_equal(raw$groups[["### Grassland-herbs"]],
+               c("Nardus stricta", "Achillea millefolium agg."))
+  expect_equal(raw$groups[["### Forest-trees"]],
+               c("Fagus sylvatica", "Abies alba"))
+  expect_false(any(vapply(c(raw$groups, raw$aggs),
+                          function(v) any(!nzchar(trimws(v))), NA)))
+})
+
+test_that("an aggregation without members is an empty character vector", {
+  with_empty <- append(mini_expert, "Empty agg.", after = 1)
+  raw <- RESY:::.resy_parse_expert_lines(with_empty)
+  expect_identical(raw$aggs[["Empty agg."]], character(0))
+  expect_equal(raw$aggs[["Achillea millefolium agg."]],
+               c("Achillea millefolium", "Achillea pratensis"))
+})
+
+test_that("section 3 yields formulas and their priorities", {
+  raw <- RESY:::.resy_parse_expert_lines(mini_expert)
+  expect_length(raw$formulas, 2L)
+  expect_equal(as.character(raw$membership.priority), c("5", "2"))
+})
+
+test_that(".resy_build_parsed extracts the short codes", {
+  parsed <- RESY:::.resy_build_parsed(
+    RESY:::.resy_parse_expert_lines(mini_expert)
+  )
+  expect_s3_class(parsed, "resy_parsed_expert")
+  expect_equal(parsed$vegtype.formula.names.short, c("GR", "FO"))
+})
+
+test_that("an unknown group prefix is rejected", {
+  bad <- mini_expert
+  bad[7] <- "@@@ Grassland-herbs"   # not a recognised prefix
+  expect_error(
+    RESY:::.resy_parse_expert_lines(bad),
+    "known group prefixes"
+  )
+})

@@ -1,6 +1,6 @@
 Package: RESY
 Type: Package
-Title: Vegetation type expert classification system
+Title: Vegetation Type Expert Classification System
 Version: 0.3
 Description: A toolbox to classify plant species co-occurrence matrices, 
    aka vegetation plots with formalised, rule based so-called "expert systems". 
@@ -42,31 +42,35 @@ Authors@R: c(
       comment = c(ORCID = "0000-0003-3070-6066")
     )
   )
-License: file LICENSE
+License: MIT + file LICENSE
 Encoding: UTF-8
 Depends: R (>= 4.1.0)
 Imports: 
     dplyr (>= 1.1.4),
-    methods,
     rlang (>= 1.1.6),
     sf (>= 1.0-21),
     stringr (>= 1.5.2),
-    tibble (>= 3.3.0),
     tidyselect (>= 1.2.1),
     data.table,
     fastmatch,
     jsonlite,
     parallel,
-    stringi
-Suggests: 
+    stats,
+    stringi,
+    tools,
+    utils
+Suggests:
     here,
+    tibble,
     knitr,
     readr,
     rmarkdown,
     ggplot2,
     terra,
     tidyterra,
-    testthat (>= 3.0.0)
+    rmapshaper,
+    testthat (>= 3.0.0),
+    withr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 NeedsCompilation: no
