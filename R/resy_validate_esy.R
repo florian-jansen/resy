@@ -46,18 +46,27 @@
 #'     \item{`meta`}{Named list: `path`, and counts of groups and vegetation
 #'       types defined.}
 #'   }
+#' @examples
+#' # Validate a .txt file
+#' result <- resy_validate_esy("path/to/expert.txt", strict = FALSE)
+#' if (!result$ok) print(result$errors)
 #' @seealso [resy_read_expert()], [resy_load_expert()],
 #'   [resy_add_classification()]
 #' @export
 resy_validate_esy <- function(path, strict = FALSE, verbose = TRUE) {
+  
   stopifnot(is.character(path), length(path) == 1L)
   if (!file.exists(path)) stop("File not found: ", path)
-
+  
   is_json <- grepl("\\.json$", path, ignore.case = TRUE)
   result  <- if (is_json) {
+    
     .resy_validate_esy_json(path, strict = strict)
+    
   } else {
+    
     .resy_validate_esy_txt(path, strict = strict)
+    
   }
 
   if (isTRUE(verbose)) .resy_report_message("ESy validation", result)
@@ -453,5 +462,3 @@ resy_validate_esy <- function(path, strict = FALSE, verbose = TRUE) {
     vegtypes_defined = length(unique(veg_codes))
   ))
 }
-
-
