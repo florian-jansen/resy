@@ -48,13 +48,19 @@ resy_load_expert <- function(expertfile = NULL,
     version <- sort(avail$version, decreasing = TRUE)[1L]
   hit <- avail[avail$version == version, , drop = FALSE]
   if (nrow(hit) == 0L)
-    stop("Classification not found for scheme='", scheme, "', version='", version, "'.")
+    stop(
+      "Classification not found for scheme='",
+      scheme, "', version='", version, "'."
+      )
 
   # --- First root in search order; json preferred over txt within a root
   paths <- c(rbind(hit$expert_json, hit$expert_txt))
   paths <- paths[!is.na(paths)]
   if (!length(paths))
-    stop("No expert file (json/txt) found for scheme='", scheme, "', version='", version, "'.")
+    stop(
+      "No expert file (json/txt) found for scheme='",
+      scheme, "', version='", version, "'."
+      )
   .resy_parse_by_ext(paths[1L])
 }
 
