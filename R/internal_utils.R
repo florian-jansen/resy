@@ -1,10 +1,20 @@
-#' Internal string utilities
-#' @keywords internal
-trim.trailing <- function(x) sub("\\s+$|\\s+\\d$|\\s+\\-\\s+\\d$", "", x)
-#' @keywords internal
-trim.leading <- function(x)  sub("^\\s+", "", x)
-#' @keywords internal
-trim <- function(x) gsub("^\\s+|\\s+$", "", x)
+# Whitespace trimming. .resy_trim_trailing also drops a trailing aggregation
+# code ("  0", "  -  0") from a Section 1 line.
+.resy_trim_trailing <- function(x) sub("\\s+$|\\s+\\d$|\\s+\\-\\s+\\d$", "", x)
+.resy_trim_leading <- function(x) sub("^\\s+", "", x)
+.resy_trim <- function(x) gsub("^\\s+|\\s+$", "", x)
+
+# Prefixes that open a Section 2 group: species groups (###), differential
+# groups (##D, ##Q, ##C) and header variables (categorical $$C, numeric $$N).
+.resy_group_prefixes <- c("###", "##D", "##Q", "##C", "$$C", "$$N")
+
+# Group name of a Section 2 group key: the text after the prefix and its space.
+.resy_group_name <- function(key) substr(key, 5, nchar(key))
+
+# Line numbers of the "SECTION <n>" markers (opener and "SECTION <n>: End").
+.resy_section_rows <- function(lines, n) {
+  which(grepl(paste0("^\\s*SECTION\\s+", n, "\\b"), lines, ignore.case = TRUE, perl = TRUE))
+}
 
 #' @keywords internal
 .total_cover <- function(x) round((1 - prod(1 - x/100)) * 100, 10)
@@ -73,25 +83,4 @@ trim <- function(x) gsub("^\\s+|\\s+$", "", x)
   obs[, PlotObservationID := as.character(get(id_used))]
   header$PlotObservationID <- as.character(header[[id_used]])
   list(obs = obs, header = header, id_col_used = id_used)
-}
-
-.resy_get_id_col <- function(obs, header, id_col = NULL) {
-  candidates <- c("PlotObservationID", "PlotID")
-  if (!is.null(id_col)) candidates <- c(id_col, candidates)
-  
-  for (cand in unique(candidates)) {
-    if (cand %in% names(obs) && cand %in% names(header)) return(cand)
-  }
-  stop("No suitable plot id column found in both obs and header. Tried: ",
-       paste(unique(candidates), collapse = ", "))
-}
-
-.resy_normalize_ids_obs <- function(obs, id_col) {
-  obs$PlotObservationID <- as.character(obs[[id_col]])
-  obs
-}
-
-.resy_normalize_ids_header <- function(header, id_col) {
-  header$PlotObservationID <- as.character(header[[id_col]])
-  header
 }

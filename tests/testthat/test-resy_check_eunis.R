@@ -35,8 +35,8 @@ test_that("resy_check_eunis: valid data frame with all columns returns ok = TRUE
     dplyr::mutate(
       Ecoreg = "Medi",
       Country = "Italy",
-      Coast_EEA = 0,
-      Dunes_Bohn = 0
+      Coast_EEA = "N_COAST",
+      Dunes_Bohn = "N_DUNES"
     )
   
   result <- RESY::resy_check_eunis(data, source_crs = 4326, verbose = FALSE)
@@ -54,8 +54,8 @@ test_that("resy_check_eunis: valid sf object returns ok = TRUE", {
     dplyr::mutate(
       Ecoreg = "Medi",
       Country = "Germany",
-      Coast_EEA = 0,
-      Dunes_Bohn = 0
+      Coast_EEA = "N_COAST",
+      Dunes_Bohn = "N_DUNES"
     )
   
   result <- RESY::resy_check_eunis(data, verbose = FALSE)
@@ -81,12 +81,14 @@ test_that("resy_check_eunis: verbose = TRUE prints message on success", {
 
 # ---- resy_check_eunis: Coordinate errors ----
 
-test_that("resy_check_eunis: missing source_crs for non-sf data sets ok = FALSE", {
-  
+test_that("resy_check_eunis: projected coordinates without source_crs error", {
+
   data <- .create_valid_data()
-  
-  result <- RESY::resy_check_eunis(data, source_crs = NULL, verbose = FALSE)
-  
+  data$Longitude <- 700000
+  data$Latitude  <- 5000000
+
+  result <- RESY::resy_check_eunis(data, verbose = FALSE)
+
   expect_type(result, "list")
   expect_false(result$ok)
   expect_length(result$errors, 1)
@@ -120,7 +122,30 @@ test_that("resy_check_eunis: coordinate error halts further checks", {
   
   # Should exit early with coordinate error, not checking other columns
   expect_length(result$errors, 1)
-  
+
+})
+
+test_that("resy_check_eunis: NA coordinates are reported as errors", {
+
+  data <- sf::st_sfc(
+    sf::st_point(c(12.4924, 41.8902)),
+    sf::st_point(c(NA_real_, NA_real_)),
+    crs = 4326
+  ) |>
+    sf::st_sf(
+      PlotObservationID = 1:2,
+      `Altitude (m)` = c(100, 200),
+      check.names = FALSE
+    ) |>
+    sf::st_transform(crs = 25832)
+
+  result <- RESY::resy_check_eunis(data, verbose = FALSE)
+
+  expect_false(result$ok)
+  expect_true(
+    any(grepl("missing coordinates", result$errors))
+  )
+
 })
 
 # ---- resy_check_eunis: PlotObservationID ----
@@ -381,8 +406,8 @@ test_that("resy_check_eunis: verbose prints FAILED message on coordinate error",
   )
   
   expect_message(
-    RESY::resy_check_eunis(data, source_crs = NULL, verbose = TRUE),
-    "EUNIS check: FAILED.*coordinate"
+    RESY::resy_check_eunis(data, source_crs = 4326, verbose = TRUE),
+    "EUNIS check: FAILED.*Coordinate error"
   )
   
 })

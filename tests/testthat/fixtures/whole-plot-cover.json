@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "scheme": "whole-plot-cover",
+    "version": "2026-09-21",
+    "description": "Types decided by the total cover and the highest species cover of the plot"
+  },
+  "synonyms": {},
+  "groups": {
+    "### Trees": ["Fagus sylvatica"]
+  },
+  "rules": [
+    {"priority": 1, "code": "T", "description": "Total cover above 50",
+     "expression": "<#T$ GR 50>"},
+    {"priority": 1, "code": "M", "description": "Highest species cover above 40",
+     "expression": "<#$$ GR 40>"}
+  ]
+}

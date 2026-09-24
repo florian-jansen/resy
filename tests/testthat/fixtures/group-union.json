@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "scheme": "group-union",
+    "version": "2026-09-21",
+    "description": "One type decided by the combined cover of two groups"
+  },
+  "synonyms": {},
+  "groups": {
+    "### Trees": ["Fagus sylvatica"],
+    "### Shrubs": ["Corylus avellana"]
+  },
+  "rules": [
+    {"priority": 1, "code": "W", "description": "Trees and shrubs together above 15",
+     "expression": "<#TC Trees|#TC Shrubs GR 15>"},
+    {"priority": 1, "code": "N2", "description": "At least two species of trees and shrubs together",
+     "expression": "<#02 Trees|#02 Shrubs>"}
+  ]
+}
