@@ -4,7 +4,12 @@
 \alias{resy_load_expert}
 \title{Load a classification}
 \usage{
-resy_load_expert(expertfile = NULL, scheme = "EUNIS", version = NULL)
+resy_load_expert(
+  expertfile = NULL,
+  scheme = "EUNIS",
+  version = NULL,
+  location = c("user", "package")
+)
 }
 \arguments{
 \item{expertfile}{Optional path to a `.json` or `.txt` file.}
@@ -13,6 +18,11 @@ resy_load_expert(expertfile = NULL, scheme = "EUNIS", version = NULL)
 
 \item{version}{Version identifier. If `NULL`, the newest available version
 is used.}
+
+\item{location}{Where to look for `scheme`/`version`, in search order. One
+or both of `"user"` and `"package"`; the default searches both, user
+first, so a user-stored classification takes precedence over a shipped
+one with the same scheme and version.}
 }
 \value{
 A list of class `resy_parsed_expert`.
@@ -29,8 +39,10 @@ file format is detected from the extension:
 
 When no `expertfile` is supplied, the function looks for
 `expert.json`, then `expert.txt` (in that order) under
-`inst/extdata/classifications/<scheme>/<version>/` in the installed package.
+`<root>/<scheme>/<version>/`, where the roots are searched in the order
+given by `location`: classifications stored with [resy_add_classification()]
+(`"user"`) and the classifications shipped with the package (`"package"`).
 }
 \seealso{
-[resy_available_classifications()]
+[resy_available_classifications()], [resy_add_classification()]
 }

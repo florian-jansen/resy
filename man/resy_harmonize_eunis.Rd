@@ -18,8 +18,11 @@ resy_harmonize_eunis(
 \item{data}{A data frame or `sf` object containing plot data. If not an
 `sf` object, columns `Longitude` and `Latitude` must be present.}
 
-\item{source_crs}{Integer EPSG code of the input CRS. Required when `data`
-is a plain data frame; ignored when `data` is already an `sf` object.}
+\item{source_crs}{Integer EPSG code of the coordinates in a plain data
+frame, in any coordinate reference system; they are converted as needed.
+When `NULL` (default), coordinates that are all valid longitudes and
+latitudes are read as degrees (EPSG:4326); other coordinates need the code.
+Ignored when `data` is an `sf` object, which carries its own CRS.}
 
 \item{run_taxonomy}{Logical; if `TRUE`, runs [resy_check_taxonomy()] on
 `species_data`.}
@@ -40,7 +43,8 @@ Required when `run_taxonomy = TRUE`.}
 A named list:
   \describe{
     \item{`sites`}{Data frame of harmonised plot data, geometry dropped,
-      WGS84 `Longitude` and `Latitude` added.}
+      WGS84 `Longitude` and `Latitude` added, and the same values as
+      `DEG_LON` and `DEG_LAT`, the header fields EUNIS-ESy reads.}
     \item{`species_checked`}{Output from [resy_check_taxonomy()] when
       `run_taxonomy = TRUE`, otherwise `NULL`.}
   }

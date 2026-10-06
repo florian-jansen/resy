@@ -11,8 +11,11 @@
 #'
 #' @param data A data frame or `sf` object containing plot data. If not an
 #'   `sf` object, columns `Longitude` and `Latitude` must be present.
-#' @param source_crs Integer EPSG code of the input CRS. Required when `data`
-#'   is a plain data frame; ignored when `data` is already an `sf` object.
+#' @param source_crs Integer EPSG code of the coordinates in a plain data
+#'   frame, in any coordinate reference system; they are converted as needed.
+#'   When `NULL` (default), coordinates that are all valid longitudes and
+#'   latitudes are read as degrees (EPSG:4326); other coordinates need the code.
+#'   Ignored when `data` is an `sf` object, which carries its own CRS.
 #' @param run_taxonomy Logical; if `TRUE`, runs [resy_check_taxonomy()] on
 #'   `species_data`.
 #' @param species_data A data frame with a column `species`. Required when
@@ -26,7 +29,8 @@
 #' @return A named list:
 #'   \describe{
 #'     \item{`sites`}{Data frame of harmonised plot data, geometry dropped,
-#'       WGS84 `Longitude` and `Latitude` added.}
+#'       WGS84 `Longitude` and `Latitude` added, and the same values as
+#'       `DEG_LON` and `DEG_LAT`, the header fields EUNIS-ESy reads.}
 #'     \item{`species_checked`}{Output from [resy_check_taxonomy()] when
 #'       `run_taxonomy = TRUE`, otherwise `NULL`.}
 #'   }
@@ -42,82 +46,26 @@ resy_harmonize_eunis <- function(
     coast_buffer    = 5000
     ) {
 
-  # ---- 1. Ensure sf + CRS ----
-  
-  if (!inherits(data, "sf")) {
-    
-    if (!all(c("Longitude", "Latitude") %in% names(data)))
-      stop('Data frame must contain columns "Longitude" and "Latitude".')
-    
-    if (is.null(source_crs))
-      stop("source_crs must be provided for plain data frames.")
-    
-    data_sf <- sf::st_as_sf(
-      data,
-      coords = c("Longitude", "Latitude"),
-      crs = source_crs
-      )
-    
-  } else {
-    
-    data_sf <- data
-    
-  }
-  
-  data_sf <- sf::st_transform(data_sf, 25832)
+  # ---- 1. Sites as sf in the CRS of the base maps ----
+
+  data_sf <- .resy_check_coordinates(data, source_crs = source_crs)
 
   if (anyNA(data_sf$geometry))
     warning("Some sites have missing coordinates.")
 
   # ---- 2. PlotObservationID ----
-  
+
   if (!rlang::has_name(data_sf, "PlotObservationID"))
     stop('Column "PlotObservationID" is missing.')
 
-  # ---- 3. Altitude ----
-  
-  if (rlang::has_name(data_sf, "Altitude (m)")) {
-    
-    if (anyNA(data_sf$`Altitude (m)`))
-      warning('NA values in "Altitude (m)".')
-    
-  } else {
-    
-    warning('"Altitude (m)" is missing. See vignette "Altitude data" and mapsforeurope.org for a raster source.')
-    
-  }
+  # ---- 3. Ecoregions and countries, and what is missing ----
 
-  # ---- 4. Ecoregions ----
-  
-  if (!rlang::has_name(data_sf, "Ecoreg")) {
-    
-    data_sf <- .resy_assign_ecoregions(data_sf)
-    
-    if (anyNA(data_sf$Ecoreg))
-      warning('NA values in "Ecoreg": some sites are outside the ecoregion base map.')
-    
-  } else if (anyNA(data_sf$Ecoreg)) {
-    
-    warning('NA values in "Ecoreg" from provided data.')
-    
-  }
+  sites <- .resy_assign_sites(data_sf)
+  data_sf <- sites$data
+  for (msg in .resy_site_warnings(data_sf, sites$assigned, coast_dunes = FALSE))
+    warning(msg, call. = FALSE)
 
-  # ---- 5. Country ----
-  
-  if (!rlang::has_name(data_sf, "Country")) {
-    
-    data_sf <- .resy_assign_country(data_sf)
-    
-    if (anyNA(data_sf$Country))
-      warning('NA values in "Country": some sites are outside the country base map.')
-    
-  } else if (anyNA(data_sf$Country)) {
-    
-    warning('NA values in "Country" from provided data.')
-    
-  }
-
-  # ---- 6. Coast and dunes ----
+  # ---- 4. Coast and dunes ----
   
   if (run_coast_dunes) {
     
@@ -127,7 +75,7 @@ resy_harmonize_eunis <- function(
     
   }
 
-  # ---- 7. Taxonomy ----
+  # ---- 5. Taxonomy ----
   
   taxonomy_checked <- NULL
   if (run_taxonomy) {
@@ -138,23 +86,19 @@ resy_harmonize_eunis <- function(
     
   }
 
-  # ---- 8. Column order ----
+  # ---- 6. Column order ----
   
-  data_sf <- data_sf |>
-    dplyr::select(
-      tidyselect::any_of(c(
-        "PlotObservationID", "Altitude (m)", "Coast_EEA", "Dunes_Bohn",
-        "Ecoreg", "Ecoreg_name", "Country", "Country_ID", "geometry"
-      )),
-      tidyselect::everything()
-    )
+  data_sf <- .resy_order_eunis_cols(data_sf)
 
-  # ---- 9. Re-export WGS84 coordinates, drop geometry ----
+  # ---- 7. Re-export WGS84 coordinates, drop geometry ----
   
   coords_wgs84       <- sf::st_transform(data_sf, 4326)
   coords_mat         <- sf::st_coordinates(coords_wgs84)
   data_sf$Longitude  <- coords_mat[, 1]
   data_sf$Latitude   <- coords_mat[, 2]
+  # EUNIS-ESy reads the plot position from the header fields DEG_LON and DEG_LAT.
+  data_sf$DEG_LON    <- coords_mat[, 1]
+  data_sf$DEG_LAT    <- coords_mat[, 2]
 
   sites_output <- as.data.frame(sf::st_drop_geometry(data_sf)) |>
     dplyr::select(-dplyr::any_of("...1"))

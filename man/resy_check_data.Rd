@@ -4,28 +4,31 @@
 \alias{resy_check_data}
 \title{Check the format of plot data for ESy classification}
 \usage{
-resy_check_data(data, source_crs)
+resy_check_data(data, source_crs = NULL)
 }
 \arguments{
 \item{data}{A data frame, tibble, or point `sf` object.}
 
-\item{source_crs}{Integer EPSG code of the input CRS. Required when `data`
-is not an `sf` object.}
+\item{source_crs}{Integer EPSG code of the coordinates in a plain data
+frame. When `NULL` (default), coordinates that are all valid longitudes and
+latitudes are read as degrees (EPSG:4326); other coordinates need the code.
+Ignored when `data` is an `sf` object, which carries its own CRS.}
 }
 \value{
 An `sf` object in EPSG:25832 with all available ESy columns ordered
   to the front: `PlotObservationID`, `Altitude (m)`, `Coast_EEA`, `Dunes_Bohn`,
-  `Ecoreg`, `Country`, `Country_ID`, `Ecoreg_name`, `geometry`.
+  `Ecoreg`, `Ecoreg_name`, `Country`, `Country_ID`, `geometry`.
 }
 \description{
 Validates that the input data frame or sf object has the structure and
 columns expected by [resy_classify()]. Performs coordinate transformation to
 EPSG:25832 and checks for `PlotObservationID`, altitude, ecoregion, country,
-coast, and dune columns. Missing geographic columns are filled automatically
-by calling the internal EUNIS geo-assignment helpers.
+coast, and dune columns. Missing `Ecoreg` and `Country` columns are
+assigned from the bundled base maps; missing altitude, coast and dune
+columns are reported as warnings.
 }
 \examples{
-  data <- tibble::tibble(
+  data <- data.frame(
     PlotObservationID = 1L, x = 701327, y = 5364375
   ) |>
     sf::st_as_sf(coords = c("x", "y"), crs = 25832)

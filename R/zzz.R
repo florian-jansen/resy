@@ -1,11 +1,7 @@
 utils::globalVariables(c(
-  # data.table specials used inside .resy_solve_membership
-  ".", "y",
-  ".SD", "plot.group.non.C",
-  "Cover_Perc", "TaxonName",
-  "PlotObservationID",
-  "ind", "values",
+  # data.table columns used inside the solver and resy_candidates()
+  ".SD", "Cover_Perc", "TaxonName", "PlotObservationID",
   "priority_rank", "plot_id", "type",
-  # dplyr tidy-eval column names in check_country
-  "NUTS_ID", "NUTS_NAME", "Country"
+  # dplyr column in .resy_assign_country()
+  "Country"
 ))

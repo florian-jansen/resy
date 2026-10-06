@@ -38,8 +38,8 @@ Parses an expert-system definition file (the EUNIS-ESy \code{.txt} format and
 compatible expert systems) into a structured tree that preserves the source
 byte-for-byte.
 
-This is the lossless counterpart to \code{\link{resy_parse_expert}}. Where
-\code{resy_parse_expert} rewrites the formulas into the solver's internal
+This is the lossless counterpart to \code{\link{resy_load_expert}}. Where
+\code{resy_load_expert} rewrites the formulas into the solver's internal
 form (and is therefore one-way), \code{resy_read_expert} retains the file's
 structure verbatim for inspection or conversion to other formats.
 }
@@ -51,5 +51,5 @@ length(x$sections)
 }
 }
 \seealso{
-\code{\link{resy_parse_expert}} for the solver-form parser.
+\code{\link{resy_load_expert}} for the solver-form parser.
 }

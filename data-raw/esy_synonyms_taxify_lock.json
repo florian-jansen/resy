@@ -1,0 +1,141 @@
+{
+  "taxify_version": "0.5.5",
+  "created": "2026-09-21",
+  "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
+  "backbones": [
+    {
+      "name": "wfo",
+      "version": "2026.06",
+      "content_id": "0db73976db23777d039f28834c5960f9",
+      "downloaded_at": "2026-09-15",
+      "installed": true
+    },
+    {
+      "name": "col",
+      "version": "2026.09",
+      "content_id": "c2999654decfc2a45771631a59ca7ba5",
+      "downloaded_at": "2026-09-14",
+      "installed": true
+    },
+    {
+      "name": "colxr",
+      "version": "2026.09",
+      "content_id": "c454069c5f336c276ca2be32d17dd385",
+      "downloaded_at": "2026-09-14",
+      "installed": true
+    },
+    {
+      "name": "gbif",
+      "version": "2026.08",
+      "content_id": "4ecece7e2df32dd065f742b72636bcac",
+      "downloaded_at": "2026-08-30",
+      "installed": true
+    },
+    {
+      "name": "itis",
+      "version": "2026.09",
+      "content_id": "c506652f484d46ac5c2684fa370d19b0",
+      "downloaded_at": "2026-09-14",
+      "installed": true
+    },
+    {
+      "name": "ncbi",
+      "version": "2026.09",
+      "content_id": "7553eb41e4274fe17505bb577ed1a6ef",
+      "downloaded_at": "2026-09-14",
+      "installed": true
+    },
+    {
+      "name": "ott",
+      "version": "2026.09",
+      "content_id": "51cbacc4687c55c9ccfc5393acb598ad",
+      "downloaded_at": "2026-09-14",
+      "installed": true
+    },
+    {
+      "name": "worms",
+      "version": "2026.09",
+      "content_id": "25b8f9a8537170cb5c00ff1625dd97e5",
+      "downloaded_at": "2026-09-14",
+      "installed": true
+    },
+    {
+      "name": "euromed",
+      "version": "2026.08",
+      "content_id": "066682024bbd866f476d0aeaf3c02e00",
+      "downloaded_at": "2026-08-27",
+      "installed": true
+    },
+    {
+      "name": "fungorum",
+      "version": "2026.08",
+      "content_id": "5b5a9a6c85ed78f9a956b8a8c594daeb",
+      "downloaded_at": "2026-08-27",
+      "installed": true
+    },
+    {
+      "name": "algaebase",
+      "version": "2026.09",
+      "content_id": "0304770dfb9da0b64192a4784f8faf3d",
+      "downloaded_at": "2026-09-14",
+      "installed": true
+    },
+    {
+      "name": "fishbase",
+      "version": "2026.08",
+      "content_id": "7bfd417eecbf71818ec0e344f80d83b3",
+      "downloaded_at": "2026-08-27",
+      "installed": true
+    },
+    {
+      "name": "sealifebase",
+      "version": "2026.08",
+      "content_id": "b802345151fb72a4aa81e7e192d8efb5",
+      "downloaded_at": "2026-08-27",
+      "installed": true
+    },
+    {
+      "name": "reptiledb",
+      "version": "2026.07",
+      "content_id": "047bde3e1e5503dc9204b2c9419d420f",
+      "downloaded_at": "2026-07-21",
+      "installed": true
+    },
+    {
+      "name": "lcvp",
+      "version": "2026.08",
+      "content_id": "a01b7b00e4a0aa683df3ef5ca4f3141b",
+      "downloaded_at": "2026-08-27",
+      "installed": true
+    },
+    {
+      "name": "wcvp",
+      "version": "2026.08",
+      "content_id": "1148cb280192de2391f4f2aee591d451",
+      "downloaded_at": "2026-08-27",
+      "installed": true
+    },
+    {
+      "name": "mdd",
+      "version": "2026.08",
+      "content_id": "dbc709c2f7008c14e341abc37e141082",
+      "downloaded_at": "2026-08-03",
+      "installed": true
+    },
+    {
+      "name": "avilist",
+      "version": "2026.08",
+      "content_id": "8f16f7e07aadae4c0174d6279387e8b5",
+      "downloaded_at": "2026-08-03",
+      "installed": true
+    },
+    {
+      "name": "lpsn",
+      "version": "2026.08",
+      "content_id": "5d1af91a3fe782d61f8366c2f5a4fc52",
+      "downloaded_at": "2026-08-03",
+      "installed": true
+    }
+  ],
+  "enrichments": []
+}

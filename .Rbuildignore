@@ -1,3 +1,6 @@
+^data-raw$
+^renv$
+^renv\.lock$
 .*\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
@@ -10,3 +13,7 @@
 ^inst/shiny/\.positai$
 ^\.posit/assistant$
 ^\.github$
+^\.\.Rcheck$
+^discussion\.md$
+^nonmatching\.xlsx$
+^LICENSE\.md$

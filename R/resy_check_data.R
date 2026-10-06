@@ -4,101 +4,47 @@
 #' Validates that the input data frame or sf object has the structure and
 #' columns expected by [resy_classify()]. Performs coordinate transformation to
 #' EPSG:25832 and checks for `PlotObservationID`, altitude, ecoregion, country,
-#' coast, and dune columns. Missing geographic columns are filled automatically
-#' by calling the internal EUNIS geo-assignment helpers.
+#' coast, and dune columns. Missing `Ecoreg` and `Country` columns are
+#' assigned from the bundled base maps; missing altitude, coast and dune
+#' columns are reported as warnings.
 #'
 #' @param data A data frame, tibble, or point `sf` object.
-#' @param source_crs Integer EPSG code of the input CRS. Required when `data`
-#'   is not an `sf` object.
+#' @param source_crs Integer EPSG code of the coordinates in a plain data
+#'   frame. When `NULL` (default), coordinates that are all valid longitudes and
+#'   latitudes are read as degrees (EPSG:4326); other coordinates need the code.
+#'   Ignored when `data` is an `sf` object, which carries its own CRS.
 #' @return An `sf` object in EPSG:25832 with all available ESy columns ordered
 #'   to the front: `PlotObservationID`, `Altitude (m)`, `Coast_EEA`, `Dunes_Bohn`,
-#'   `Ecoreg`, `Country`, `Country_ID`, `Ecoreg_name`, `geometry`.
+#'   `Ecoreg`, `Ecoreg_name`, `Country`, `Country_ID`, `geometry`.
 #' @seealso [resy_harmonize_eunis()] for the EUNIS-specific enrichment workflow.
 #' @examples
-#'   data <- tibble::tibble(
+#'   data <- data.frame(
 #'     PlotObservationID = 1L, x = 701327, y = 5364375
 #'   ) |>
 #'     sf::st_as_sf(coords = c("x", "y"), crs = 25832)
 #'   resy_check_data(data, source_crs = 25832)
 #' @export
-resy_check_data <- function(data, source_crs) {
+resy_check_data <- function(data, source_crs = NULL) {
 
   # 1 Coordinates / CRS ----
-  
+
   data_sf <- .resy_check_coordinates(data = data, source_crs = source_crs)
 
   if (anyNA(data_sf$geometry))
     warning("Some sites have missing coordinates.")
 
   # 2 PlotObservationID ----
-  
+
   if (!rlang::has_name(data_sf, "PlotObservationID"))
     stop('The column "PlotObservationID" is missing. Please insert or rename your plot ID column.')
 
-  # 3 Altitude ----
-  
-  if (rlang::has_name(data_sf, "Altitude (m)")) {
-    
-    if (anyNA(data_sf$`Altitude (m)`))
-      warning('NAs in "Altitude (m)". See mapsforeurope.org for a raster source.')
-    
-  } else {
-    
-    warning('The column "Altitude (m)" is missing. See mapsforeurope.org for a raster source.')
-    
-  }
+  # 3 Ecoregions and countries, and what is missing ----
 
-  # 4 Coast_EEA ----
-  
-  if (!rlang::has_name(data_sf, "Coast_EEA"))
-    warning('The column "Coast_EEA" is missing.')
+  sites <- .resy_assign_sites(data_sf)
+  for (msg in .resy_site_warnings(sites$data, sites$assigned))
+    warning(msg, call. = FALSE)
 
-  # 5 Dunes_Bohn ----
-  
-  if (!rlang::has_name(data_sf, "Dunes_Bohn"))
-    warning('The column "Dunes_Bohn" is missing.')
+  # 4 Column order ----
 
-  # 6 Ecoreg ----
-  
-  if (rlang::has_name(data_sf, "Ecoreg")) {
-    
-    if (anyNA(data_sf$Ecoreg))
-      warning('NAs in "Ecoreg" from provided data.')
-    
-  } else {
-    
-    data_sf <- .resy_assign_ecoregions(data_sf)
-    
-    if (anyNA(data_sf$Ecoreg))
-      warning('NAs in "Ecoreg": some sites could not be matched to an ecoregion.')
-    
-  }
-
-  # 7 Country ----
-  
-  if (rlang::has_name(data_sf, "Country")) {
-    
-    if (anyNA(data_sf$Country))
-      warning('NAs in "Country" from provided data.')
-    
-  } else {
-    
-    data_sf <- .resy_assign_country(data_sf)
-    
-    if (anyNA(data_sf$Country))
-      warning('NAs in "Country": some sites could not be matched to a country.')
-    
-  }
-
-  # 8 Column order ----
-  
-  data_sf |>
-    dplyr::select(
-      tidyselect::any_of(c(
-        "PlotObservationID", "Altitude (m)", "Coast_EEA", "Dunes_Bohn",
-        "Ecoreg", "Country", "Country_ID", "Ecoreg_name", "geometry"
-      )),
-      tidyselect::everything()
-    )
-  
+  .resy_order_eunis_cols(sites$data)
 }

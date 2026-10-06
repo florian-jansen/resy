@@ -155,11 +155,10 @@ resy_expert_tree <- function(expert, section = 3L, fill = FALSE,
 #'
 #' @description
 #' Writes the classification hierarchy built by \code{\link{resy_expert_tree}}
-#' to a single, self-contained HTML file: a collapsible tree built from native
-#' \code{<details>} elements, with an in-page filter and expand/collapse
-#' controls. The page has no external dependencies -- no JavaScript library, no
-#' web fonts, no separate asset files -- so it opens identically in any browser
-#' and can be shared as one file.
+#' to a single HTML file. The tree is made of native \code{<details>} elements,
+#' with an in-page filter and expand/collapse controls. The file loads no
+#' JavaScript library, web fonts, or other assets, so it can be shared as one
+#' file.
 #'
 #' @param expert Either a \code{resy_expert} object (from
 #'   \code{\link{resy_read_expert}}) or a \code{resy_expert_tree} (from

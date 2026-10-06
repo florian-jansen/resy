@@ -5,7 +5,10 @@ utils::globalVariables(c("group_names", "TaxonName"))
 #' @param res A `resy_result` returned by [resy_classify()].
 #' @param p Plot identifier (`PlotObservationID`) as character; if numeric, treated as
 #'   row index in `header`.
-#' @param type If vegetation-type short code is given, relevant conditions are shown
+#' @param type Optional vegetation-type short code(s). For each, the type's name
+#'   and formula as written in the expert file are printed, followed by the
+#'   membership conditions it uses, whether each holds for the plot, and the
+#'   plot's taxa responsible for it.
 #' @export
 resy_eval_plot <- function(res, p, type) {
   stopifnot(inherits(res, "resy_result"))
@@ -25,12 +28,13 @@ resy_eval_plot <- function(res, p, type) {
   
   if (is.numeric(p)) {
     warning('Plot numbers ("PlotObservationID") should be characters (indices), not numeric row numbers.')
-    n <- p
-    p <- as.character(header$PlotObservationID[n])
+    p <- as.character(header$PlotObservationID[p])
   } else {
     p <- as.character(p)
-    n <- which(header$PlotObservationID == p)
   }
+  # logi1 and logi2 are in the solver's plot order, which need not be the row
+  # order of `header`.
+  n <- match(p, names(res$types))
   obs_plot <- data.table::copy(obs[obs$PlotObservationID == p])
   
   if (!is.null(groups) && !is.null(groups.names) && "TaxonName" %in% names(obs_plot)) {
@@ -71,6 +75,7 @@ resy_eval_plot <- function(res, p, type) {
     if (is.na(t)) {
       cat("Type not defined.\n")
     } else {
+      .resy_print_type_definition(res$parsed, t)
       fml <- vegtype.formulas.p[t]
       
       all_tok <- stringr::str_match_all(fml, "!?\\s*\\(?\\s*col\\s*([0-9]+)")[[1]]
@@ -93,50 +98,17 @@ resy_eval_plot <- function(res, p, type) {
         membership.expressions[col]
       )
       
-      .extract_condition_terms <- function(expr) {
-        x <- trimws(expr)
-        x <- gsub("^<|>$", "", x)
-        x <- gsub("^#(?:TC|[0-9]{2})\\s*", "", x)
-        x <- gsub("\\s+", " ", x)
-        terms <- trimws(unlist(strsplit(x, "\\|", perl = TRUE), use.names = FALSE))
-        terms[nzchar(terms)]
-      }
-      
-      .taxa_for_condition <- function(expr, obs_taxa, groups, groups.names) {
-        refs <- .extract_condition_terms(expr)
-        if (!length(refs)) return(NA_character_)
-        
-        gn <- trimws(groups.names)
-        grp_taxa <- lapply(groups, trimws)
-        names(grp_taxa) <- gn
-        
-        hits <- character()
-        
-        for (ref in refs) {
-          ref2 <- trimws(ref)
-          
-          if (ref2 %in% gn) {
-            hits <- c(hits, intersect(obs_taxa, grp_taxa[[ref2]]))
-          } else {
-            hits <- c(hits, intersect(obs_taxa, ref2))
-          }
-        }
-        
-        hits <- unique(trimws(hits))
-        if (!length(hits)) NA_character_ else paste(hits, collapse = " | ")
-      }
-      
       obs_taxa <- unique(trimws(obs_plot$TaxonName))
-      
+
       responsible_taxa <- vapply(
         col,
         function(j) {
-          .taxa_for_condition(
-            membership.expressions[j],
-            obs_taxa = obs_taxa,
-            groups = groups,
-            groups.names = groups.names
-          )
+          conds <- .resy_expression_conditions(membership.expressions[j],
+                                               res$parsed$conditions)
+          taxa <- unlist(lapply(conds, .resy_condition_taxa,
+                                groups = groups, groups.names = groups.names))
+          hits <- intersect(obs_taxa, trimws(taxa))
+          if (!length(hits)) NA_character_ else paste(hits, collapse = " | ")
         },
         character(1)
       )

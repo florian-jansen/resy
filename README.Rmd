@@ -50,6 +50,7 @@ We have written several vignettes to help you use the RESY R package: <br>
 
 - `vignette("RESY")`
 - `vignette("Altitude data")`
+- `vignette("taxonomy")`
 
 ## :desktop_computer: Functions
 
