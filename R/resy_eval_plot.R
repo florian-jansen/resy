@@ -11,6 +11,7 @@ utils::globalVariables(c("group_names", "TaxonName"))
 #'   plot's taxa responsible for it.
 #' @export
 resy_eval_plot <- function(res, p, type) {
+  
   stopifnot(inherits(res, "resy_result"))
   
   obs <- res$obs
@@ -27,10 +28,14 @@ resy_eval_plot <- function(res, p, type) {
   groups.names <- res$parsed$groups.names
   
   if (is.numeric(p)) {
+    
     warning('Plot numbers ("PlotObservationID") should be characters (indices), not numeric row numbers.')
     p <- as.character(header$PlotObservationID[p])
+    
   } else {
+    
     p <- as.character(p)
+    
   }
   # logi1 and logi2 are in the solver's plot order, which need not be the row
   # order of `header`.
@@ -38,43 +43,71 @@ resy_eval_plot <- function(res, p, type) {
   obs_plot <- data.table::copy(obs[obs$PlotObservationID == p])
   
   if (!is.null(groups) && !is.null(groups.names) && "TaxonName" %in% names(obs_plot)) {
+    
     grp_taxa <- lapply(groups, trimws)
     names(grp_taxa) <- trimws(groups.names)
     
     obs_plot[, group_names := vapply(
       trimws(TaxonName),
       function(tx) {
+        
         hit <- names(grp_taxa)[vapply(grp_taxa, function(g) tx %in% g, logical(1))]
         if (length(hit)) paste(hit, collapse = " | ") else NA_character_
+        
       },
+      
       character(1)
     )]
     
     pos_taxon <- match("TaxonName", names(obs_plot))
-    new_order <- append(names(obs_plot)[names(obs_plot) != "group_names"], "group_names", after = pos_taxon)
+    new_order <- append(
+      names(obs_plot)[names(obs_plot) != "group_names"],
+      "group_names", after = pos_taxon
+      )
     data.table::setcolorder(obs_plot, new_order)
+    
+  }
+  
+  if (!is.null(logi2)) {
+    
+    typ <- which(vapply(logi2, function(x) isTRUE(x[n]), logical(1)))
+    cat(
+      'Possible types of plot "', p, '" (', n, '): ',
+      paste(names(typ), collapse = ", "), "\n", sep = ""
+      )
+    cat(
+      "Priorities of these types:",
+      vegtype.priority[fastmatch::fmatch(names(typ), vegtype.formula.names.short)],
+      "\n"
+      )
+    cat(
+      "Classified as:",
+      .resy_classify_choice(
+        names(typ), vegtype.priority, vegtype.formula.names.short
+        ),
+      "\n"
+      )
+    
   }
   
   cat("Plant observations for plot", p, ":\n")
   print(obs_plot)
   
-  if (!is.null(logi2)) {
-    typ <- which(vapply(logi2, function(x) isTRUE(x[n]), logical(1)))
-    cat('Possible types of plot "', p, '" (', n, '): ', paste(names(typ), collapse = ", "), "\n", sep = "")
-    cat("Priorities of these types:", vegtype.priority[fastmatch::fmatch(names(typ), vegtype.formula.names.short)], "\n")
-    cat("Classified as:", .resy_classify_choice(names(typ), vegtype.priority, vegtype.formula.names.short), "\n")
-  }
-  
   if (!missing(type)) {
+    
     for(i in 1:length(type)) {
+      
     cat('\n')
     typ <- type[i]
     t <- NA_integer_
     if (is.character(typ)) t <- fastmatch::fmatch(typ, vegtype.formula.names.short)
     
     if (is.na(t)) {
+      
       cat("Type not defined.\n")
+      
     } else {
+      
       .resy_print_type_definition(res$parsed, t)
       fml <- vegtype.formulas.p[t]
       
@@ -128,9 +161,13 @@ resy_eval_plot <- function(res, p, type) {
         ),
         right = FALSE
       )
+      
     }
+    
     }
+    
   }
   
   invisible(NULL)
+  
 }

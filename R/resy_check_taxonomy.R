@@ -43,6 +43,7 @@
 #' resy_check_taxonomy(obs, parsed, col = "species")
 #' @export
 resy_check_taxonomy <- function(obs, parsed, col = "TaxonName") {
+  
   if (!inherits(parsed, "resy_parsed_expert"))
     stop("`parsed` must be a resy_parsed_expert object (from resy_load_expert()).")
   if (!col %in% names(obs))
@@ -66,10 +67,11 @@ resy_check_taxonomy <- function(obs, parsed, col = "TaxonName") {
   .resy_taxa(
     out, input_col = col, name_col = "scientificName",
     columns = c(
-      scientificName = "name as submitted",
-      TaxonName      = "canonical name used by resy_classify(); NA when unmatched",
+      scientificName = "Name as submitted",
+      TaxonName      = "Canonical name used by resy_classify(); NA when unmatched",
       matched        = "TRUE if found as a canonical name or Section 1 synonym"
     ),
     reference = sprintf("checked against %d Section 1 species", length(canon_names))
   )
+  
 }
