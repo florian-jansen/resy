@@ -114,7 +114,7 @@ We see a part of Italy, mainly Tuscany and the Mediterranean or more
 specific the Tyrrhenian Sea. The dots are the locations of the
 vegetation surveys. Some are on islands.
 
-## Preparation for classification
+## Preparation
 
 ### Load the expert file
 
@@ -165,7 +165,8 @@ vegetation surveys on islands which is not covered by the base map.
 ### Inspect additional data
 
 Here are the additional information of ecoregions and countries which
-were successfully identified:
+were successfully identified with
+[`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md):
 
 ``` r
 
@@ -280,11 +281,24 @@ outcome_species2 <- data_species |>
   left_join(outcome_species, by = c("species" = "scientificName")) |>
   select(PlotObservationID, TaxonName, cover) |>
   rename(Cover_Perc = cover)
+outcome_species2
+#> # A tibble: 3,580 × 3
+#>    PlotObservationID TaxonName                   Cover_Perc
+#>    <chr>             <chr>                            <dbl>
+#>  1 HU32              Dryopteris filix-mas aggr.         0.1
+#>  2 HU32              Cephalanthera longifolia           0.1
+#>  3 HU32              Prenanthes purpurea                0.5
+#>  4 HU32              Anemone nemorosa                   0.5
+#>  5 HU32              Epipactis helleborine aggr.        0.5
+#>  6 HU32              Sorbus aucuparia                   0.5
+#>  7 HU32              Fagus sylvatica                   87.5
+#>  8 HU32              Rubus fruticosus aggr.             3  
+#>  9 HU32              Abies alba                         3  
+#> 10 HU32              Oxalis acetosella                  3  
+#> # ℹ 3,570 more rows
 ```
 
-## Classify the vegetation surveys
-
-### Apply `resy_classify()`
+## Classify relevés
 
 Now, you can classify your vegetation surveys (`obs`) which includes
 sites data (`header`).
@@ -312,13 +326,13 @@ res <- RESY::resy_classify(
 #> Step 5.9  Number of T$ NON conditions: 140
 #> Step 5.10  Header conditions with numeric values: 4
 #>   Header conditions with character values: 4
-#> adapt conditions 2026-10-06 10:42:57.832018
-#> classification from here on 2026-10-06 10:42:57.923491
+#> adapt conditions 2026-10-06 13:53:58.545254
+#> classification from here on 2026-10-06 13:53:58.623349
 ```
 
-### Inspect the results
+## Inspect results
 
-#### Long table of candidates for all plots
+### Long table of candidates for all plots
 
 You can see that the plot AM30 was classified with two EUNIS habitat
 types, but with different priorities.
@@ -344,7 +358,7 @@ cand
 #> # ℹ 295 more rows
 ```
 
-#### Plot-level details
+### Plot-level details
 
 [`resy_eval_plot()`](https://florian-jansen.github.io/resy/reference/resy_eval_plot.md)
 prints the full evidence for one plot: which species matched, which
@@ -503,14 +517,15 @@ resy_eval_plot(res, p = "AM30", type = "T17")
 #> 614 <NA>
 ```
 
-#### Print classification hierarchy
+### Print classification hierarchy
 
-We can see all habitat types at once:
+You can find all habitat types on
+[FloraVEG.EU](https://floraveg.eu/habitat/). However, you can see all
+habitat types at once in R.
 
 ``` r
 
-tree_filled <- resy_expert_tree(parsed, fill = TRUE)
-print(tree_filled)
+resy_expert_tree(parsed, fill = TRUE)
 #> <resy_expert_tree> 339 node(s), 9 top-level, 38 synthesised group(s)
 #> MA Coastal saltmarshes
 #>   MA2
@@ -717,7 +732,7 @@ print(tree_filled)
 
 ## References
 
-Chytrý M, Řezníčková M, Novotný P et
+Chytrý M, Řezníčková M, Novotný P, Holubová D et
 al. ([2024](https://doi.org/10.1111/avsc.12798)) FloraVeg.EU – an online
 database of European vegetation, habitats and flora. – *Applied
 Vegetation Science* 27, e12798. <https://doi.org/10.1111/avsc.12798>
@@ -728,13 +743,13 @@ language of the vegetation classification expert systems (ESy) in the
 statistical computing environment R. – *Applied Vegetation Science* 24,
 e12562 <https://doi.org/10.1111/avsc.12562>
 
-Chytrý M, Tichý L, Hennekens SM et
+Chytrý M, Tichý L, Hennekens SM, Knollová I et
 al. ([2020](https://doi.org/10.1111/avsc.12519)) EUNIS Habitat
 Classification: expert system, characteristic species combinations and
 distribution maps of European habitats. – *Applied Vegetation Science*
 23, 648–675. <https://doi.org/10.1111/avsc.12519>
 
-Mucina L, Bültmann H, Dierßen K et
+Mucina L, Bültmann H, Dierßen K, Theurillat J-P et
 al. ([2016](https://doi.org/10.1111/avsc.12257)) Vegetation of Europe:
 hierarchical floristic classification system of vascular plant,
 bryophyte, lichen, and algal communities. – *Applied Vegetation Science*
