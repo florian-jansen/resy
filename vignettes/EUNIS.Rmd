@@ -18,11 +18,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette illustrates a common use of the package: to classify European vegetation surveys to __EUNIS habitat types__ ([FloraVeg.EU](https://floraveg.eu/); Chytrý et al. [2024](https://doi.org/10.1111/avsc.12798); European Environment Agency EUNIS [Website](https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed)) according to the __Expert System (ESy)__ of Chytrý et al. ([2020](https://doi.org/10.1111/avsc.12519)) (see [FloraVeg.EU](https://floraveg.eu/habitat/)). The function `resy_harmonize_eunis()` incorporates several functions to collect geographic information about the vegetation survey like the country, ecoregion, or coastal position. Furthermore, the format of the coordinates and the taxonomy are checked and adjusted to the requirements for the expert system (ESy). The function `resy_classify()` does the classification of the vegation surveys including the sites data.
+This vignette illustrates a common use of the package: to classify European vegetation relevés to __EUNIS habitat types__ ([FloraVeg.EU](https://floraveg.eu/); Chytrý et al. [2024](https://doi.org/10.1111/avsc.12798); European Environment Agency EUNIS [Website](https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed)) according to the __Expert System (ESy)__ of Chytrý et al. ([2020](https://doi.org/10.1111/avsc.12519)) (see [FloraVeg.EU](https://floraveg.eu/habitat/)). The function `resy_harmonize_eunis()` incorporates several functions to collect geographic information about the vegetation survey like the country, ecoregion, or coastal position. Furthermore, the format of the coordinates and the taxonomy are checked and adjusted to the requirements for the expert system (ESy). The function `resy_classify()` does the classification of the vegation relevés including the sites data.
 
 1. **Prepare the format** of the sites including the right **coordination system** and add information like **ecoregion**, **country** or if it is on a **coast**.
 2. **Check of taxonomy** of the species data
-3. Evaluation of your vegetation surveys and **assigning EUNIS habitat types**
+3. Evaluation of your vegetation relevés and **assigning EUNIS habitat types**
 4. **Present the results**
 
 # Example
@@ -52,7 +52,7 @@ data_species
 
 Clean names with RESY's native cleaner: drops author strings but keeps ranks
 
-```{r example-data-species, message=FALSE}
+```{r clean-species-names, message=FALSE}
 data_species$scientificName <- RESY::resy_clean_names(
   data_species$scientificName
   )
@@ -71,7 +71,7 @@ data_sites
 
 ## Map the sites
 
-The vegetation surveys of the example dataset are in Tuscany in Italy.
+The vegetation relevés of the example dataset are in Tuscany in Italy.
 
 ```{r base-map, echo=FALSE}
 utils::data(
@@ -105,7 +105,7 @@ We see a part of Italy: mainly Tuscany and the Mediterranean or more specific th
 
 We have to parse the expert file which is the base for every evaluation. We use `resy_load_expert`.
 
-```{r}
+```{r parse-expert-file}
 parsed_expert_file <- RESY::resy_load_expert(scheme = "EUNIS")
 ```
 
@@ -126,7 +126,7 @@ outcome <- RESY::resy_harmonize_eunis(
    )
 ```
 
-We have one information and two warnings of RESY: The information says the transformation to the coordination system UTM zone 32N. Furthermore, the warning says that the column `Altitude (m)` is missing and this could not be covered by `resy_harmonize_eunis()`, but we provide a `vignette("Get altitude data")`. `NAs` are in the ecoregions (`Ecoreg`) column. This could be the vegetation surveys on islands which is not covered by the base map.
+We have one information and two warnings of RESY: The information says the transformation to the coordination system UTM zone 32N. Furthermore, the warning says that the column `Altitude (m)` is missing and this could not be covered by `resy_harmonize_eunis()`, but we provide a `vignette("Get altitude data")`. `NAs` are in the ecoregions (`Ecoreg`) column. This could be the vegetation relevés on islands which is not covered by the base map.
 
 ## Inspect additional data
 
@@ -138,7 +138,7 @@ outcome$sites
 
 ## Missing info
 
-Let us see which vegetation surveys could not get an ecoregion and country:
+Let us see which vegetation relevés could not get an ecoregion and country:
 
 ```{r missing-info}
 outcome$sites |>
@@ -153,7 +153,7 @@ Here is the updated map with ecoregions as differetn colors
 ggplot() +
    geom_sf(data = europe_resolution_1_epsg25832) +
    geom_sf(
-      data = outcome_sites |>
+      data = outcome$sites |>
          st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326),
       aes(color = as.factor(Ecoreg))
       ) +
@@ -174,6 +174,10 @@ Let's have a look on the checked and transformed species names. There are for ex
 
 ```{r checked-species-names}
 outcome$species_checked
+```
+
+
+```{r summary-checked-species-names}
 summary(outcome$species_checked)
 ```
 
@@ -181,11 +185,13 @@ summary(outcome$species_checked)
 
 We have to merge the species abundances with the checked species names.
 
-```{r}
-outcome_species2 <- data_species |>
+```{r prepare-outcome_species2}
+outcome_species <- data_species |>
   left_join(outcome$species_checked, by = "scientificName") |>
   select(PlotObservationID, TaxonName, Cover_Perc)
-outcome_species2
+outcome_species |>
+  filter(PlotObservationID == "AE28") |>
+  arrange(desc(Cover_Perc), TaxonName)
 ```
 
 # Classify relevés
@@ -194,8 +200,8 @@ Classify your vegetation relevés (`obs`) which includes sites data (`header`).
 
 ```{r apply-resy-classify}
 res <- RESY::resy_classify(
-  obs = outcome_species2,
-  header = outcome_sites,
+  obs = outcome_species,
+  header = outcome$sites,
   scheme = "EUNIS"
   )
 ```
@@ -206,10 +212,25 @@ res <- RESY::resy_classify(
 
 You can see that the plot AM30 was classified with two EUNIS habitat types, but with different priorities.
 
-```{r}
-cand <- RESY::resy_candidates(res, top_n = 3) |>
-  tibble()
+```{r show-eunis-candiates-long}
+cand <- RESY::resy_candidates(res, top_n = 3)
 cand
+```
+
+Sometimes the wide format is useful:
+
+```{r show-eunis-candiates-wide}
+cand |>
+  dplyr::select(-priority_rank) |>
+  dplyr::arrange(plot_id, priority) |>
+  dplyr::group_by(plot_id) |>
+  dplyr::mutate(rank_n = dplyr::row_number()) |>
+  tidyr::pivot_wider(
+    id_cols = plot_id,
+    names_from = rank_n,
+    values_from = c(type, priority),
+    names_sep = "_"
+  )
 ```
 
 ## Plot-level details
@@ -237,7 +258,8 @@ RESY::resy_eval_plot(res, p = "AM30", type = "T17")
 You can find all habitat types on [FloraVEG.EU](https://floraveg.eu/habitat/). Here, you can see all identified habitat types of your dataset.
 
 ```{r print-results-of-classification}
-RESY::resy_expert_tree(parsed, fill = TRUE)
+RESY::resy_expert_tree(parsed_expert_file, fill = TRUE) |>
+  head(10) # We truncate the output in this example to save space
 ```
 
 # References
