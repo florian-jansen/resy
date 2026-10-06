@@ -1,4 +1,4 @@
-PlotObservationID,cover,species
+PlotObservationID,Cover_Perc,scientificName
 HU32,0.1,Dryopteris filix-mas (L.) Schott
 HU32,0.1,Cephalanthera longifolia (L.) Fritsch
 HU32,0.5,Prenanthes purpurea L.
