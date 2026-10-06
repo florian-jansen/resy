@@ -19,7 +19,7 @@ NULL
 #' trim("  hello world  ")  # Returns "hello world"
 #' trim(c("  a ", "b  ", " c "))  # Returns c("a", "b", "c")
 #' @keywords internal
-trim <- function(x) gsub("^\\s+|\\s+$", "", x)
+.resy_trim <- function(x) gsub("^\\s+|\\s+$", "", x)
 
 #' Trim Trailing Whitespace and Specific Patterns
 #'
@@ -39,7 +39,7 @@ trim <- function(x) gsub("^\\s+|\\s+$", "", x)
 #' trim.trailing("text 123")   # Returns "text"
 #' @seealso [trim()], [trim.leading()]
 #' @keywords internal
-trim.trailing <- function(x) sub("\\s+$|\\s+\\d$|\\s+\\-\\s+\\d$", "", x)
+.resy_trim_trailing <- function(x) sub("\\s+$|\\s+\\d$|\\s+\\-\\s+\\d$", "", x)
 
 #' Trim Leading Whitespace
 #'
@@ -51,4 +51,4 @@ trim.trailing <- function(x) sub("\\s+$|\\s+\\d$|\\s+\\-\\s+\\d$", "", x)
 #' trim.leading("  hello")  # Returns "hello"
 #' @seealso [trim()], [trim.trailing()]
 #' @keywords internal
-trim.leading <- function(x) sub("^\\s+", "", x)
+.resy_trim_leading <- function(x) sub("^\\s+", "", x)
