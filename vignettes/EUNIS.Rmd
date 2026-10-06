@@ -93,7 +93,7 @@ ggplot() +
 
 We see a part of Italy, mainly Tuscany and the Mediterranean or more specific the Tyrrhenian Sea. The dots are the locations of the vegetation surveys. Some are on islands.
 
-# Preparation for classification
+# Preparation
 
 ## Load the expert file
 
@@ -126,7 +126,7 @@ We have three warnings: The column `Altitude (m)` is missing and this could not 
 
 ## Inspect additional data
 
-Here are the additional information of ecoregions and countries which were successfully identified:
+Here are the additional information of ecoregions and countries which were successfully identified with `resy_harmonize_eunis()`:
 
 ```{r show-added-ecoregions}
 outcome_sites
@@ -178,12 +178,11 @@ outcome_species2 <- data_species |>
   left_join(outcome_species, by = c("species" = "scientificName")) |>
   select(PlotObservationID, TaxonName, cover) |>
   rename(Cover_Perc = cover)
+outcome_species2
 ```
 
 
-# Classify the vegetation surveys
-
-## Apply `resy_classify()`
+# Classify relevés
 
 Now, you can classify your vegetation surveys (`obs`) which includes sites data (`header`). 
 
@@ -195,9 +194,9 @@ res <- RESY::resy_classify(
   )
 ```
 
-## Inspect the results
+# Inspect results
 
-### Long table of candidates for all plots
+## Long table of candidates for all plots
 
 You can see that the plot AM30 was classified with two EUNIS habitat types, but with different priorities.
 
@@ -207,7 +206,7 @@ cand <- resy_candidates(res, top_n = 3) |>
 cand
 ```
 
-### Plot-level details
+## Plot-level details
 
 `resy_eval_plot()` prints the full evidence for one plot: which species
 matched, which group conditions fired, and which vegetation-type formulas
@@ -227,21 +226,20 @@ and the plot's taxa responsible for it:
 resy_eval_plot(res, p = "AM30", type = "T17")
 ```
 
-### Print classification hierarchy
+## Print classification hierarchy
 
-We can see all habitat types at once:
+You can find all habitat types on [FloraVEG.EU](https://floraveg.eu/habitat/). However, you can see all habitat types at once in R.
 
 ```{r print-results-of-classification}
-tree_filled <- resy_expert_tree(parsed, fill = TRUE)
-print(tree_filled)
+resy_expert_tree(parsed, fill = TRUE)
 ```
 
 # References
 
-Chytrý M, Řezníčková M, Novotný P et al. ([2024](https://doi.org/10.1111/avsc.12798)) FloraVeg.EU – an online database of European vegetation, habitats and flora. &ndash; _Applied Vegetation Science_ 27, e12798. [https://doi.org/10.1111/avsc.12798](https://doi.org/10.1111/avsc.12798)
+Chytrý M, Řezníčková M, Novotný P, Holubová D et al. ([2024](https://doi.org/10.1111/avsc.12798)) FloraVeg.EU – an online database of European vegetation, habitats and flora. &ndash; _Applied Vegetation Science_ 27, e12798. [https://doi.org/10.1111/avsc.12798](https://doi.org/10.1111/avsc.12798)
 
 Bruelheide H, Tichý L, Chytrý M, Jansen F ([2021](https://doi.org/10.1111/avsc.12562)) Implementing the formal language of the vegetation classification expert systems (ESy) in the statistical computing environment R. &ndash; _Applied Vegetation Science_ 24, e12562 [https://doi.org/10.1111/avsc.12562](https://doi.org/10.1111/avsc.12562)
 
-Chytrý M, Tichý L, Hennekens SM et al. ([2020](https://doi.org/10.1111/avsc.12519)) EUNIS Habitat Classification: expert system, characteristic species combinations and distribution maps of European habitats. &ndash; _Applied Vegetation Science_ 23, 648&ndash;675. [https://doi.org/10.1111/avsc.12519](https://doi.org/10.1111/avsc.12519)
+Chytrý M, Tichý L, Hennekens SM, Knollová I et al. ([2020](https://doi.org/10.1111/avsc.12519)) EUNIS Habitat Classification: expert system, characteristic species combinations and distribution maps of European habitats. &ndash; _Applied Vegetation Science_ 23, 648&ndash;675. [https://doi.org/10.1111/avsc.12519](https://doi.org/10.1111/avsc.12519)
 
-Mucina L, Bültmann H, Dierßen K et al. ([2016](https://doi.org/10.1111/avsc.12257)) Vegetation of Europe: hierarchical floristic classification system of vascular plant, bryophyte, lichen, and algal communities. &ndash; _Applied Vegetation Science_ 19(Suppl. 1), 3&ndash;264.[https://doi.org/10.1111/avsc.12257](https://doi.org/10.1111/avsc.12257)
+Mucina L, Bültmann H, Dierßen K, Theurillat J-P et al. ([2016](https://doi.org/10.1111/avsc.12257)) Vegetation of Europe: hierarchical floristic classification system of vascular plant, bryophyte, lichen, and algal communities. &ndash; _Applied Vegetation Science_ 19(Suppl. 1), 3&ndash;264.[https://doi.org/10.1111/avsc.12257](https://doi.org/10.1111/avsc.12257)
