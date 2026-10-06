@@ -1,12 +1,12 @@
 ---
-title: "RESY EUNIS habitat classifications"
+title: "Get additional data"
 author: "Markus Bauer, Mariasole Calbi & Gilles Colling"
 date: "`r Sys.Date()`"
 output:
    rmarkdown::html_vignette:
       toc: true
 vignette: >
-  %\VignetteIndexEntry{RESY EUNIS habitat classifications}
+  %\VignetteIndexEntry{Get additional data}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 ---
@@ -93,14 +93,14 @@ ggplot() +
 
 We see a part of Italy, mainly Tuscany and the Mediterranean or more specific the Tyrrhenian Sea. The dots are the locations of the vegetation surveys. Some are on islands.
 
-# Preparation
+# Get additional data
 
 ## Load the expert file
 
 We have to parse the expert file which is the base for every evaluation. We use `resy_load_expert`.
 
 ```{r}
-parsed <- RESY::resy_load_expert(scheme = "EUNIS")
+parsed_expert_file <- RESY::resy_load_expert(scheme = "EUNIS")
 ```
 
 
@@ -114,12 +114,10 @@ outcome <- RESY::resy_harmonize_eunis(
    source_crs = 25832,
    run_taxonomy = TRUE,
    species_data = data_species,
-   parsed = parsed,
+   parsed = parsed_expert_file,
    run_coast_dunes = TRUE,
    coast_buffer = 5000
    )
-outcome_sites <- tibble(outcome$sites)
-outcome_species <- outcome$species_checked
 ```
 
 We have three warnings: The column `Altitude (m)` is missing and this could not be covered by `resy_harmonize_eunis()`, but we provide a `vignette("Get altitude data")`. `NAs` are in the ecoregions (`Ecoreg`) and country (`Country`) columns. This could be the vegetation surveys on islands which is not covered by the base map.
@@ -129,7 +127,7 @@ We have three warnings: The column `Altitude (m)` is missing and this could not 
 Here are the additional information of ecoregions and countries which were successfully identified with `resy_harmonize_eunis()`:
 
 ```{r show-added-ecoregions}
-outcome_sites
+outcome$sites
 ```
 
 ## Missing info
@@ -137,7 +135,7 @@ outcome_sites
 Let us see which vegetation surveys could not get an ecoregion and country:
 
 ```{r missing-info}
-outcome_sites |>
+outcome$sites |>
    filter(is.na(Ecoreg))
 ```
 
@@ -169,22 +167,24 @@ ggplot() +
 Let's have a look on the checked and transformed species names. There are for example no author names anymore:
 
 ```{r checked-species-names}
-outcome_species
-summary(outcome_species)
+outcome$species_checked
+summary(outcome$species_checked)
 ```
+
+## Finalize species data
+
+We have to merge the species abundances with the checked species names.
 
 ```{r}
 outcome_species2 <- data_species |>
-  left_join(outcome_species, by = c("species" = "scientificName")) |>
-  select(PlotObservationID, TaxonName, cover) |>
-  rename(Cover_Perc = cover)
+  left_join(outcome$species_checked, by = "scientificName") |>
+  select(PlotObservationID, TaxonName, Cover_Perc)
 outcome_species2
 ```
 
-
 # Classify relevés
 
-Now, you can classify your vegetation surveys (`obs`) which includes sites data (`header`). 
+Classify your vegetation relevés (`obs`) which includes sites data (`header`). 
 
 ```{r apply-resy-classify}
 res <- RESY::resy_classify(
@@ -228,7 +228,7 @@ resy_eval_plot(res, p = "AM30", type = "T17")
 
 ## Print classification hierarchy
 
-You can find all habitat types on [FloraVEG.EU](https://floraveg.eu/habitat/). However, you can see all habitat types at once in R.
+You can find all habitat types on [FloraVEG.EU](https://floraveg.eu/habitat/). Here, you can see all identified habitat types of your dataset.
 
 ```{r print-results-of-classification}
 resy_expert_tree(parsed, fill = TRUE)
