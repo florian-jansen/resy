@@ -80,9 +80,14 @@ resy_harmonize_eunis <- function(
   taxonomy_checked <- NULL
   if (run_taxonomy) {
     
-    if (is.null(species_data)) stop("species_data must be provided when run_taxonomy = TRUE.")
-    if (is.null(parsed))       stop("parsed must be provided when run_taxonomy = TRUE.")
-    taxonomy_checked <- resy_check_taxonomy(species_data, parsed, col = "species")
+    if (is.null(species_data))
+      stop("'species_data' must be provided when run_taxonomy = TRUE.")
+    if (is.null(parsed))
+      stop("'parsed' must be provided when run_taxonomy = TRUE.")
+    if (!rlang::has_name(species_data, "scientificName"))
+      stop("Column 'scientificName' not found in `species_data`.")
+    
+    taxonomy_checked <- resy_check_taxonomy(species_data, parsed, col = "scientificName")
     
   }
 
