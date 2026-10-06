@@ -28,7 +28,7 @@
 #'   (default 5000).
 #' @return A named list:
 #'   \describe{
-#'     \item{`sites`}{Data frame of harmonised plot data, geometry dropped,
+#'     \item{`sites`}{Tibble of harmonised plot data, geometry dropped,
 #'       WGS84 `Longitude` and `Latitude` added, and the same values as
 #'       `DEG_LON` and `DEG_LAT`, the header fields EUNIS-ESy reads.}
 #'     \item{`species_checked`}{Output from [resy_check_taxonomy()] when
@@ -100,7 +100,8 @@ resy_harmonize_eunis <- function(
   data_sf$DEG_LON    <- coords_mat[, 1]
   data_sf$DEG_LAT    <- coords_mat[, 2]
 
-  sites_output <- as.data.frame(sf::st_drop_geometry(data_sf)) |>
+  sites_output <- sf::st_drop_geometry(data_sf) |>
+    tibble::as_tibble() |>
     dplyr::select(-dplyr::any_of("...1"))
 
   list(sites = sites_output, species_checked = taxonomy_checked)
