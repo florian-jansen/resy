@@ -42,7 +42,7 @@ Required when `run_taxonomy = TRUE`.}
 \value{
 A named list:
   \describe{
-    \item{`sites`}{Data frame of harmonised plot data, geometry dropped,
+    \item{`sites`}{Tibble of harmonised plot data, geometry dropped,
       WGS84 `Longitude` and `Latitude` added, and the same values as
       `DEG_LON` and `DEG_LAT`, the header fields EUNIS-ESy reads.}
     \item{`species_checked`}{Output from [resy_check_taxonomy()] when

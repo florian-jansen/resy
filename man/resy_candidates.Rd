@@ -28,7 +28,7 @@ are returned.}
 \item{top_n}{Optional maximum number of candidates to return per plot.}
 }
 \value{
-A `data.table` with columns `plot_id`, `type`, `priority`, `priority_rank`.
+A `tibble` with columns `plot_id`, `type`, `priority`, `priority_rank`.
 }
 \description{
 The result object returned by [resy_classify()] contains a long table of all

@@ -58,6 +58,11 @@ problems. Does not assess ecological correctness. The rules are:
   \item Empty description for a vegetation type.
 }
 }
+\examples{
+# Validate a .txt file
+result <- resy_validate_esy("path/to/expert.txt", strict = FALSE)
+if (!result$ok) print(result$errors)
+}
 \seealso{
 [resy_read_expert()], [resy_load_expert()],
   [resy_add_classification()]
