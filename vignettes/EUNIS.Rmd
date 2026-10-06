@@ -34,31 +34,37 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 library(sf)
-library(RESY)
 ```
 
 ## Load the example data.
 
-The example data include the species data with the vegetation surveys and the sites data with further information to the location of the surveys.
+The example data include the species data with the vegetation relevés and the sites data with further information to the location of the relevés.
 
-First, the vegetation surveys:
+First, load the vegetation relevés:
 
 ```{r example-data-species, message=FALSE}
-data_species <- read_csv(system.file("extdata", "data_example_species.csv", package = "RESY"), skip = 0)
+data_species <- read_csv(
+  system.file("extdata", "data_example_species.csv", package = "RESY"),
+  skip = 0
+  )
 data_species
+```
 
-# clean names with RESY's native cleaner: drops author strings, keeps ranks
-data_species$species <- resy_clean_names(data_species$species)
+Clean names with RESY's native cleaner: drops author strings but keeps ranks
+
+```{r example-data-species, message=FALSE}
+data_species$scientificName <- RESY::resy_clean_names(
+  data_species$scientificName
+  )
 # data_species$species <- vegdata::taxname.removeAuthors(data_species$species)
 ```
 
-Second, the sites data:
+Second, load the sites data:
 
 ```{r example-data-sites, message=FALSE}
 data_sites <- read_csv(
    system.file("extdata", "data_example_sites.csv", package = "RESY")
    ) |>
-   select(-"cover") |>
    st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
 data_sites
 ```
@@ -91,7 +97,7 @@ ggplot() +
    theme_classic()
 ```
 
-We see a part of Italy, mainly Tuscany and the Mediterranean or more specific the Tyrrhenian Sea. The dots are the locations of the vegetation surveys. Some are on islands.
+We see a part of Italy: mainly Tuscany and the Mediterranean or more specific the Tyrrhenian Sea. The dots are the locations of the vegetation relevés. Some are on islands.
 
 # Get additional data
 
@@ -120,7 +126,7 @@ outcome <- RESY::resy_harmonize_eunis(
    )
 ```
 
-We have three warnings: The column `Altitude (m)` is missing and this could not be covered by `resy_harmonize_eunis()`, but we provide a `vignette("Get altitude data")`. `NAs` are in the ecoregions (`Ecoreg`) and country (`Country`) columns. This could be the vegetation surveys on islands which is not covered by the base map.
+We have one information and two warnings of RESY: The information says the transformation to the coordination system UTM zone 32N. Furthermore, the warning says that the column `Altitude (m)` is missing and this could not be covered by `resy_harmonize_eunis()`, but we provide a `vignette("Get altitude data")`. `NAs` are in the ecoregions (`Ecoreg`) column. This could be the vegetation surveys on islands which is not covered by the base map.
 
 ## Inspect additional data
 
@@ -201,7 +207,7 @@ res <- RESY::resy_classify(
 You can see that the plot AM30 was classified with two EUNIS habitat types, but with different priorities.
 
 ```{r}
-cand <- resy_candidates(res, top_n = 3) |>
+cand <- RESY::resy_candidates(res, top_n = 3) |>
   tibble()
 cand
 ```
@@ -214,7 +220,7 @@ evaluated to `TRUE`.
 
 ```{r eval-plot}
 # Replace "AN57" with a PlotObservationID present in your data
-resy_eval_plot(res, p = "AM30")
+RESY::resy_eval_plot(res, p = "AM30")
 
 ```
 
@@ -223,7 +229,7 @@ file and the membership conditions it uses, whether each holds for this plot,
 and the plot's taxa responsible for it:
 
 ```{r eval-plot-type}
-resy_eval_plot(res, p = "AM30", type = "T17")
+RESY::resy_eval_plot(res, p = "AM30", type = "T17")
 ```
 
 ## Print classification hierarchy
@@ -231,7 +237,7 @@ resy_eval_plot(res, p = "AM30", type = "T17")
 You can find all habitat types on [FloraVEG.EU](https://floraveg.eu/habitat/). Here, you can see all identified habitat types of your dataset.
 
 ```{r print-results-of-classification}
-resy_expert_tree(parsed, fill = TRUE)
+RESY::resy_expert_tree(parsed, fill = TRUE)
 ```
 
 # References
