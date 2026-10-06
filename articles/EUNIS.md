@@ -312,8 +312,8 @@ res <- RESY::resy_classify(
 #> Step 5.9  Number of T$ NON conditions: 140
 #> Step 5.10  Header conditions with numeric values: 4
 #>   Header conditions with character values: 4
-#> adapt conditions 2026-10-06 10:02:02.76285
-#> classification from here on 2026-10-06 10:02:02.835479
+#> adapt conditions 2026-10-06 10:24:10.016173
+#> classification from here on 2026-10-06 10:24:10.108351
 ```
 
 ### Inspect the results
