@@ -16,42 +16,66 @@
 #'   higher priority. If provided, only candidates with `priority_rank >= min_priority`
 #'   are returned.
 #' @param top_n Optional maximum number of candidates to return per plot.
-#' @return A `data.table` with columns `plot_id`, `type`, `priority`, `priority_rank`.
+#' @return A `tibble` with columns `plot_id`, `type`, `priority`, `priority_rank`.
 #' @export
-resy_candidates <- function(res, plot_id = NULL, priority = NULL, min_priority = NULL, top_n = NULL) {
+resy_candidates <- function(
+    res, plot_id = NULL, priority = NULL, min_priority = NULL, top_n = NULL
+    ) {
+  
   stopifnot(inherits(res, "resy_result"))
   
   cand <- res$candidates
   if (is.null(cand)) {
+    
     stop("No candidate table found in result. Re-run resy_classify() with a recent package version.")
+  
   }
+  
   if (!inherits(cand, "data.table")) cand <- data.table::as.data.table(cand)
 
   # Ensure required columns exist even when no types matched
   for (col in c("plot_id", "type", "priority", "priority_rank")) {
+    
     if (!col %in% names(cand))
       cand[[col]] <- if (col == "priority_rank") integer() else character()
+    
   }
 
-  if (nrow(cand) == 0L)
-    return(cand[, c("plot_id", "type", "priority", "priority_rank"), with = FALSE])
+  if (nrow(cand) == 0L){
+    
+    return(
+      tibble::as_tibble(
+        cand[, c("plot_id", "type", "priority", "priority_rank"), with = FALSE]
+        )
+      )
+    
+  }
 
   all_plots <- names(res$result)
   if (is.null(all_plots) || !length(all_plots)) {
+    
     all_plots <- unique(as.character(cand$plot_id))
+    
   } else {
+    
     all_plots <- unique(as.character(all_plots))
+    
   }
   
   if (!is.null(plot_id)) {
+    
     all_plots <- intersect(all_plots, as.character(plot_id))
+    
   }
   
   if (!is.null(priority) && !is.null(min_priority)) {
+    
     stop("Use only one of 'priority' or 'min_priority'.")
+    
   }
   
   if (!is.null(priority)) {
+    
     pr <- as.integer(priority)
     
     base <- data.table::data.table(plot_id = all_plots)
@@ -63,20 +87,28 @@ resy_candidates <- function(res, plot_id = NULL, priority = NULL, min_priority =
     
     out <- cand_sub[base, on = "plot_id"]
     return(out[])
+    
   }
   
   if (!is.null(min_priority)) {
+    
     cand <- cand[priority_rank >= as.integer(min_priority)]
+    
   }
   
   if (!is.null(plot_id)) {
+    
     cand <- cand[plot_id %in% all_plots]
+    
   }
   
   if (!is.null(top_n)) {
+    
     top_n <- as.integer(top_n)
     cand <- cand[order(plot_id, priority_rank)][, head(.SD, top_n), by = plot_id]
+    
   }
   
   cand[]
+  
 }
