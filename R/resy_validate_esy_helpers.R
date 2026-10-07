@@ -3,7 +3,7 @@
 #' Check that every opening bracket has a matching closer of the same type.
 #'
 #' @description
-#' Checks that every opening bracket (`(`, `[`, `{`) in a string has a corresponding closing bracket of the same type.
+#' Checks that every opening bracket (`(`, `\\[`, `\\\{`) in a string has a corresponding closing bracket of the same type.
 #'
 #' @param s A character string to check for balanced brackets.
 #' @return A logical value: `TRUE` if all brackets are balanced, `FALSE` otherwise.

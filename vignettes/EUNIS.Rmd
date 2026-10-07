@@ -240,8 +240,7 @@ matched, which group conditions fired, and which vegetation-type formulas
 evaluated to `TRUE`.
 
 ```{r eval-plot}
-# Replace "AN57" with a PlotObservationID present in your data
-RESY::resy_eval_plot(res, p = "AM30")
+RESY::resy_eval_plot(res, p = "AM30") # p = PlotObservationID
 
 ```
 
