@@ -59,8 +59,7 @@ library(RESY)
 data_species <- read_csv(
   system.file("extdata", "data_example_species.csv", package = "RESY"),
   show_col_types = FALSE
-) |>
-  rename(TaxonName = species, Cover_Perc = cover)
+)
 
 glimpse(data_species)
 ```
@@ -112,7 +111,7 @@ Printing it lists what each column holds and how many names matched.
 tax_apennine <- resy_check_taxonomy(
   obs    = data_species,
   parsed = parsed_apennine,
-  col    = "TaxonName"
+  col    = "scientificName"
 )
 tax_apennine
 ```
