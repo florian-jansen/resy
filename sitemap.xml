@@ -13,20 +13,7 @@
 <url><loc>https://florian-jansen.github.io/resy/news/index.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/RESY-package.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/coastline_regions_epsg25832.html</loc></url>
-<url><loc>https://florian-jansen.github.io/resy/reference/dot-resy_classify_choice.html</loc></url>
-<url><loc>https://florian-jansen.github.io/resy/reference/dot-resy_get_id_col.html</loc></url>
-<url><loc>https://florian-jansen.github.io/resy/reference/dot-resy_group_name.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/dot-resy_group_prefixes.html</loc></url>
-<url><loc>https://florian-jansen.github.io/resy/reference/dot-resy_guess_id_col.html</loc></url>
-<url><loc>https://florian-jansen.github.io/resy/reference/dot-resy_mclapply.html</loc></url>
-<url><loc>https://florian-jansen.github.io/resy/reference/dot-resy_normalize_ids_header.html</loc></url>
-<url><loc>https://florian-jansen.github.io/resy/reference/dot-resy_normalize_ids_obs.html</loc></url>
-<url><loc>https://florian-jansen.github.io/resy/reference/dot-resy_section_rows.html</loc></url>
-<url><loc>https://florian-jansen.github.io/resy/reference/dot-resy_standardize_plot_id.html</loc></url>
-<url><loc>https://florian-jansen.github.io/resy/reference/dot-resy_trim.html</loc></url>
-<url><loc>https://florian-jansen.github.io/resy/reference/dot-resy_trim_leading.html</loc></url>
-<url><loc>https://florian-jansen.github.io/resy/reference/dot-resy_trim_trailing.html</loc></url>
-<url><loc>https://florian-jansen.github.io/resy/reference/dot-total_cover.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/dunes_bohn_500mbuffer_epsg25832.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/ecoregions2017_epsg25832.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/europe_resolution_1_epsg25832.html</loc></url>
@@ -55,6 +42,5 @@
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_view_expert.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_write_expert.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_write_expert_html.html</loc></url>
-<url><loc>https://florian-jansen.github.io/resy/reference/string_utils.html</loc></url>
 </urlset>
 
