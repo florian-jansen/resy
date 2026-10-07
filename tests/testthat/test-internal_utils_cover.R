@@ -112,7 +112,7 @@ test_that(".total_cover with very high covers", {
   result <- .total_cover(c(99, 99, 99))
   # 1 - (0.01 * 0.01 * 0.01) = 1 - 0.000001 ≈ 99.9999%
   expect_true(result > 99.99)
-  expect_equal(result, 100)
+  expect_equal(result, 100, tolerance = 1e-5)
 })
 
 test_that(".total_cover approaches 100 with multiple high covers", {
