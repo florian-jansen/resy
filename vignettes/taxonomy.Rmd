@@ -235,8 +235,8 @@ species <- head(species, 200)   # keep the example quick
 
 obs <- data.frame(
   PlotObservationID = species$PlotObservationID,
-  TaxonName         = species$species,
-  Cover_Perc        = species$cover,
+  TaxonName         = species$scientificName,
+  Cover_Perc        = species$Cover_Perc,
   stringsAsFactors  = FALSE
 )
 expert <- resy_load_expert(scheme = "Apennine-test")
