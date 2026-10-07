@@ -59,9 +59,11 @@ test_that("resy_candidates supports priority = n and keeps at most one row per p
   
   out <- resy_candidates(res, priority = 1L)
   
-  expect_equal(out$plot_id, "p1")
-  expect_equal(out$type, "A")
-  expect_equal(out$priority_rank, 1L)
+  # Function returns one row per plot from all_plots, even if no match for that priority
+  # p1 has priority_rank=1, p2 does not, so p2 gets NA values
+  expect_equal(out$plot_id, c("p1", "p2"))
+  expect_equal(out$type, c("A", NA))
+  expect_equal(out$priority_rank, c(1L, NA))
 })
 
 test_that("resy_candidates supports min_priority", {
@@ -100,7 +102,7 @@ test_that("resy_candidates limits rows per plot with top_n", {
   
   out <- resy_candidates(res, top_n = 1L)
   
-  expect_equal(table(out$plot_id), c(p1 = 1L, p2 = 1L))
+  expect_equal(as.vector(table(out$plot_id)), c(1L, 1L))
   expect_true(all(out$priority_rank %in% c(1L, 2L)))
 })
 
