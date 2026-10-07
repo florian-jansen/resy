@@ -28,10 +28,6 @@ structure:
 - Within each version directory, the function looks for \`expert.json\`
   and \`expert.txt\` files.
 
-If a classification file doesn't exist, the corresponding column
-contains \`NA\`. If the classifications directory doesn't exist or is
-empty, an empty data frame with the correct structure is returned.
-
 ## See also
 
 \[resy_load_expert()\], \[resy_add_classification()\],
@@ -40,9 +36,8 @@ empty, an empty data frame with the correct structure is returned.
 ## Examples
 
 ``` r
-# List all available classifications
-classifications <- resy_available_classifications()
-print(classifications)
+# List all available classifications and their paths
+resy_available_classifications()
 #>          scheme    version
 #> 1 Apennine-test 2026-06-27
 #> 2         EUNIS 2025-10-03
@@ -52,16 +47,4 @@ print(classifications)
 #>   expert_txt
 #> 1       <NA>
 #> 2       <NA>
-
-# View unique schemes
-unique(classifications$scheme)
-#> [1] "Apennine-test" "EUNIS"        
-
-# Filter for EUNIS classification
-eunis_classifications <- classifications[
-  classifications$scheme == "EUNIS", 
-]
-
-# Get the path to the first available expert.json file
-expert_path <- classifications$expert_json[1]
 ```

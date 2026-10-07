@@ -69,8 +69,8 @@ obs <- data.frame(
 checked <- resy_check_taxonomy(obs, parsed)
 checked
 #> <resy_taxa> 3 name(s) from column `TaxonName` checked against 950 Section 1 species
-#>   scientificName  name as submitted
-#>   TaxonName       canonical name used by resy_classify(); NA when unmatched
+#>   scientificName  Name as submitted
+#>   TaxonName       Canonical name used by resy_classify(); NA when unmatched
 #>   matched         TRUE if found as a canonical name or Section 1 synonym
 #> 2 matched (66.7%), 1 unmatched; summary() lists them
 #> 
@@ -88,8 +88,8 @@ summary(checked)
 names(obs)[2] <- "species"
 resy_check_taxonomy(obs, parsed, col = "species")
 #> <resy_taxa> 3 name(s) from column `species` checked against 950 Section 1 species
-#>   scientificName  name as submitted
-#>   TaxonName       canonical name used by resy_classify(); NA when unmatched
+#>   scientificName  Name as submitted
+#>   TaxonName       Canonical name used by resy_classify(); NA when unmatched
 #>   matched         TRUE if found as a canonical name or Section 1 synonym
 #> 2 matched (66.7%), 1 unmatched; summary() lists them
 #> 

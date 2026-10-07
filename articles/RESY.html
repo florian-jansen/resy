@@ -40,7 +40,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/altitude-vignette.html">Get altitude data</a></li>
-    <li><a class="dropdown-item" href="../articles/EUNIS.html">RESY EUNIS habitat classifications</a></li>
+    <li><a class="dropdown-item" href="../articles/EUNIS.html">Get additional data</a></li>
     <li><a class="dropdown-item" href="../articles/taxonomy.html">RESY taxonomy</a></li>
   </ul>
 </li>
@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Florian Jansen,
 Markus Bauer, Mariasole Calbi &amp; Gilles Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-10-06</h4>
+            <h4 data-toc-skip class="date">2026-10-07</h4>
       
 
       <div class="d-none name"><code>RESY.Rmd</code></div>
@@ -141,15 +141,14 @@ three columns:</p>
 <code class="sourceCode R"><span><span class="va">data_species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"data_example_species.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span>,</span>
 <span>  show_col_types <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>TaxonName <span class="op">=</span> <span class="va">species</span>, Cover_Perc <span class="op">=</span> <span class="va">cover</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">data_species</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 3,580</span></span>
 <span><span class="co">#&gt; Columns: 3</span></span>
 <span><span class="co">#&gt; $ PlotObservationID <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "HU32"<span style="color: #949494;">, </span>"HU32"<span style="color: #949494;">, </span>"HU32"<span style="color: #949494;">, </span>"HU32"<span style="color: #949494;">, </span>"HU32"<span style="color: #949494;">, </span>"HU32"<span style="color: #949494;">, </span>"HU3…</span></span>
 <span><span class="co">#&gt; $ Cover_Perc        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.1<span style="color: #949494;">, </span>0.1<span style="color: #949494;">, </span>0.5<span style="color: #949494;">, </span>0.5<span style="color: #949494;">, </span>0.5<span style="color: #949494;">, </span>0.5<span style="color: #949494;">, </span>87.5<span style="color: #949494;">, </span>3.0<span style="color: #949494;">, </span>3.0<span style="color: #949494;">, </span>3.0<span style="color: #949494;">, </span>0…</span></span>
-<span><span class="co">#&gt; $ TaxonName         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Dryopteris filix-mas (L.) Schott"<span style="color: #949494;">, </span>"Cephalanthera l…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ scientificName    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Dryopteris filix-mas (L.) Schott"<span style="color: #949494;">, </span>"Cephalanthera l…</span></span></code></pre></div>
 <p>A minimal <strong>header</strong> table (one row per plot) is
 required even when no geographic conditions are used. It must contain
 the same plot ID column as the observation table.</p>
@@ -194,12 +193,12 @@ matched.</p>
 <code class="sourceCode R"><span><span class="va">tax_apennine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_check_taxonomy.html">resy_check_taxonomy</a></span><span class="op">(</span></span>
 <span>  obs    <span class="op">=</span> <span class="va">data_species</span>,</span>
 <span>  parsed <span class="op">=</span> <span class="va">parsed_apennine</span>,</span>
-<span>  col    <span class="op">=</span> <span class="st">"TaxonName"</span></span>
+<span>  col    <span class="op">=</span> <span class="st">"scientificName"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">tax_apennine</span></span>
-<span><span class="co">#&gt; &lt;resy_taxa&gt; 1009 name(s) from column `TaxonName` checked against 950 Section 1 species</span></span>
-<span><span class="co">#&gt;   scientificName  name as submitted</span></span>
-<span><span class="co">#&gt;   TaxonName       canonical name used by resy_classify(); NA when unmatched</span></span>
+<span><span class="co">#&gt; &lt;resy_taxa&gt; 1009 name(s) from column `scientificName` checked against 950 Section 1 species</span></span>
+<span><span class="co">#&gt;   scientificName  Name as submitted</span></span>
+<span><span class="co">#&gt;   TaxonName       Canonical name used by resy_classify(); NA when unmatched</span></span>
 <span><span class="co">#&gt;   matched         TRUE if found as a canonical name or Section 1 synonym</span></span>
 <span><span class="co">#&gt; 1009 matched (100.0%), 0 unmatched</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -273,14 +272,8 @@ per plot.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cand_apennine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res_apennine</span>, top_n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cand_apennine</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    plot_id   type priority priority_rank</span></span>
-<span><span class="co">#&gt;     &lt;char&gt; &lt;char&gt;    &lt;ord&gt;         &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1:    AM30      F        2             1</span></span>
-<span><span class="co">#&gt; 2:    AN57      F        2             1</span></span>
-<span><span class="co">#&gt; 3:    BE71      F        2             1</span></span>
-<span><span class="co">#&gt; 4:    BE71     FB        5             3</span></span>
-<span><span class="co">#&gt; 5:    BK34      N        2             1</span></span>
-<span><span class="co">#&gt; 6:    BK34     NS        3             2</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 × 4</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 variables: plot_id &lt;chr&gt;, type &lt;chr&gt;, priority &lt;chr&gt;, priority_rank &lt;int&gt;</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plot-level-details">Plot-level details<a class="anchor" aria-label="anchor" href="#plot-level-details"></a>
@@ -291,52 +284,76 @@ vegetation-type formulas evaluated to <code>TRUE</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Replace "AN57" with a PlotObservationID present in your data</span></span>
 <span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res_apennine</span>, p <span class="op">=</span> <span class="st">"AN57"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Possible types of plot "AN57" (135): </span></span>
+<span><span class="co">#&gt; Priorities of these types:  </span></span>
+<span><span class="co">#&gt; Classified as: ? </span></span>
 <span><span class="co">#&gt; Plant observations for plot AN57 :</span></span>
-<span><span class="co">#&gt;     PlotObservationID Cover_Perc               TaxonName        group_names</span></span>
-<span><span class="co">#&gt;                &lt;char&gt;      &lt;num&gt;                  &lt;char&gt;             &lt;char&gt;</span></span>
-<span><span class="co">#&gt;  1:              AN57        0.1 Gymnocarpium dryopteris               &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  2:              AN57        0.1   Athyrium filix-femina               &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  3:              AN57        0.1     Prenanthes purpurea Beech-forest-herbs</span></span>
-<span><span class="co">#&gt;  4:              AN57        0.1      Dryopteris expansa               &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  5:              AN57        0.1      Polypodium vulgare               &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  6:              AN57        0.5       Oxalis acetosella Beech-forest-herbs</span></span>
-<span><span class="co">#&gt;  7:              AN57        0.5        Sorbus aucuparia               &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  8:              AN57        0.5              Abies alba Beech-forest-trees</span></span>
-<span><span class="co">#&gt;  9:              AN57       62.5         Fagus sylvatica Beech-forest-trees</span></span>
-<span><span class="co">#&gt; 10:              AN57       37.5     Vaccinium myrtillus   Nardus-grassland</span></span>
-<span><span class="co">#&gt; Possible types of plot "AN57" (135): F</span></span>
-<span><span class="co">#&gt; Priorities of these types: 1 </span></span>
-<span><span class="co">#&gt; Classified as: F</span></span></code></pre></div>
+<span><span class="co">#&gt;     PlotObservationID Cover_Perc</span></span>
+<span><span class="co">#&gt;                &lt;char&gt;      &lt;num&gt;</span></span>
+<span><span class="co">#&gt;  1:              AN57        0.1</span></span>
+<span><span class="co">#&gt;  2:              AN57        0.1</span></span>
+<span><span class="co">#&gt;  3:              AN57        0.1</span></span>
+<span><span class="co">#&gt;  4:              AN57        0.1</span></span>
+<span><span class="co">#&gt;  5:              AN57        0.1</span></span>
+<span><span class="co">#&gt;  6:              AN57        0.5</span></span>
+<span><span class="co">#&gt;  7:              AN57        0.5</span></span>
+<span><span class="co">#&gt;  8:              AN57        0.5</span></span>
+<span><span class="co">#&gt;  9:              AN57       62.5</span></span>
+<span><span class="co">#&gt; 10:              AN57       37.5</span></span>
+<span><span class="co">#&gt;                                        scientificName</span></span>
+<span><span class="co">#&gt;                                                &lt;char&gt;</span></span>
+<span><span class="co">#&gt;  1:               Gymnocarpium dryopteris (L.) Newman</span></span>
+<span><span class="co">#&gt;  2:                   Athyrium filix-femina (L.) Roth</span></span>
+<span><span class="co">#&gt;  3:                            Prenanthes purpurea L.</span></span>
+<span><span class="co">#&gt;  4: Dryopteris expansa (C.Presl) Fraser-Jenk. &amp; Jermy</span></span>
+<span><span class="co">#&gt;  5:                             Polypodium vulgare L.</span></span>
+<span><span class="co">#&gt;  6:                              Oxalis acetosella L.</span></span>
+<span><span class="co">#&gt;  7:              Sorbus aucuparia L. subsp. aucuparia</span></span>
+<span><span class="co">#&gt;  8:                                  Abies alba Mill.</span></span>
+<span><span class="co">#&gt;  9:                                Fagus sylvatica L.</span></span>
+<span><span class="co">#&gt; 10:                            Vaccinium myrtillus L.</span></span></code></pre></div>
 <p>Passing <code>type</code> adds, for each named type, its formula as
 written in the expert file and the membership conditions it uses,
 whether each holds for this plot, and the plot’s taxa responsible for
 it:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res_apennine</span>, p <span class="op">=</span> <span class="st">"AN57"</span>, type <span class="op">=</span> <span class="st">"F"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Possible types of plot "AN57" (135): </span></span>
+<span><span class="co">#&gt; Priorities of these types:  </span></span>
+<span><span class="co">#&gt; Classified as: ? </span></span>
 <span><span class="co">#&gt; Plant observations for plot AN57 :</span></span>
-<span><span class="co">#&gt;     PlotObservationID Cover_Perc               TaxonName        group_names</span></span>
-<span><span class="co">#&gt;                &lt;char&gt;      &lt;num&gt;                  &lt;char&gt;             &lt;char&gt;</span></span>
-<span><span class="co">#&gt;  1:              AN57        0.1 Gymnocarpium dryopteris               &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  2:              AN57        0.1   Athyrium filix-femina               &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  3:              AN57        0.1     Prenanthes purpurea Beech-forest-herbs</span></span>
-<span><span class="co">#&gt;  4:              AN57        0.1      Dryopteris expansa               &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  5:              AN57        0.1      Polypodium vulgare               &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  6:              AN57        0.5       Oxalis acetosella Beech-forest-herbs</span></span>
-<span><span class="co">#&gt;  7:              AN57        0.5        Sorbus aucuparia               &lt;NA&gt;</span></span>
-<span><span class="co">#&gt;  8:              AN57        0.5              Abies alba Beech-forest-trees</span></span>
-<span><span class="co">#&gt;  9:              AN57       62.5         Fagus sylvatica Beech-forest-trees</span></span>
-<span><span class="co">#&gt; 10:              AN57       37.5     Vaccinium myrtillus   Nardus-grassland</span></span>
-<span><span class="co">#&gt; Possible types of plot "AN57" (135): F</span></span>
-<span><span class="co">#&gt; Priorities of these types: 1 </span></span>
-<span><span class="co">#&gt; Classified as: F </span></span>
+<span><span class="co">#&gt;     PlotObservationID Cover_Perc</span></span>
+<span><span class="co">#&gt;                &lt;char&gt;      &lt;num&gt;</span></span>
+<span><span class="co">#&gt;  1:              AN57        0.1</span></span>
+<span><span class="co">#&gt;  2:              AN57        0.1</span></span>
+<span><span class="co">#&gt;  3:              AN57        0.1</span></span>
+<span><span class="co">#&gt;  4:              AN57        0.1</span></span>
+<span><span class="co">#&gt;  5:              AN57        0.1</span></span>
+<span><span class="co">#&gt;  6:              AN57        0.5</span></span>
+<span><span class="co">#&gt;  7:              AN57        0.5</span></span>
+<span><span class="co">#&gt;  8:              AN57        0.5</span></span>
+<span><span class="co">#&gt;  9:              AN57       62.5</span></span>
+<span><span class="co">#&gt; 10:              AN57       37.5</span></span>
+<span><span class="co">#&gt;                                        scientificName</span></span>
+<span><span class="co">#&gt;                                                &lt;char&gt;</span></span>
+<span><span class="co">#&gt;  1:               Gymnocarpium dryopteris (L.) Newman</span></span>
+<span><span class="co">#&gt;  2:                   Athyrium filix-femina (L.) Roth</span></span>
+<span><span class="co">#&gt;  3:                            Prenanthes purpurea L.</span></span>
+<span><span class="co">#&gt;  4: Dryopteris expansa (C.Presl) Fraser-Jenk. &amp; Jermy</span></span>
+<span><span class="co">#&gt;  5:                             Polypodium vulgare L.</span></span>
+<span><span class="co">#&gt;  6:                              Oxalis acetosella L.</span></span>
+<span><span class="co">#&gt;  7:              Sorbus aucuparia L. subsp. aucuparia</span></span>
+<span><span class="co">#&gt;  8:                                  Abies alba Mill.</span></span>
+<span><span class="co">#&gt;  9:                                Fagus sylvatica L.</span></span>
+<span><span class="co">#&gt; 10:                            Vaccinium myrtillus L.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; F     Forest</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; &lt;#TC Beech-forest-trees GR 10&gt;</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Relevant expressions for F :</span></span>
-<span><span class="co">#&gt;   expressions                  result responsible_taxa            </span></span>
-<span><span class="co">#&gt; 1 #TC Beech-forest-trees GR 10 TRUE   Abies alba | Fagus sylvatica</span></span></code></pre></div>
+<span><span class="co">#&gt;   expressions                  result responsible_taxa</span></span>
+<span><span class="co">#&gt; 1 #TC Beech-forest-trees GR 10 FALSE  &lt;NA&gt;</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

@@ -1,12 +1,9 @@
 # Get altitude data
 
-This vignette illustrates how you can get altitude data for the wrapper
-function `check_eunis`. Since the altitude data for Europe is too big
-for a R package, you have to get it on your own.
-
-## Example
-
-First, we illustrate the altitude data for our example dataset.
+This vignette illustrates how to obtain altitude data (column “Altitude
+(m)”) for use with the wrapper function `resy_classify`. Because the
+altitude dataset is too large to be included in the package, you need to
+download it separately.
 
 ``` r
 
@@ -18,9 +15,13 @@ library(terra)
 library(tidyterra)
 ```
 
-### Load the example data
+## Example
 
-Load the altitude data for the area of our example.
+First, we illustrate the altitude data for our example dataset.
+
+### Load data
+
+Load the altitude data for a part of our example.
 
 ``` r
 
@@ -39,7 +40,7 @@ altitude
 #> max value   :    1927
 ```
 
-We load the example plots.
+Load example plots which are part of the above altitute raster file.
 
 ``` r
 
@@ -49,12 +50,11 @@ data_sites <- readr::read_csv(
 ) |>
   dplyr::select(PlotObservationID, Longitude, Latitude) |>
   sf::st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) |>
-  sf::st_transform(terra::crs(altitude))
+  sf::st_transform(terra::crs(altitude)) |>
+  sf::st_crop(sf::st_bbox(altitude)) # for this example we use a subset of the total map
 ```
 
-### Map
-
-We show the map with altitude data and the plots
+We can show the map with altitude data and the example plots (red).
 
 ``` r
 
@@ -64,9 +64,9 @@ ggplot() +
     palette = "high_relief",
     na.value = "lightblue"
     ) +
-  geom_sf(data = data_sites, color = "red", size = 1) +
+  geom_sf(data = data_sites, color = "red", size = 2) +
   labs(fill = "Altitude (m)") +
-  theme_minimal()
+  theme_classic()
 ```
 
 ![](altitude-vignette_files/figure-html/map-1.png)
@@ -74,31 +74,31 @@ ggplot() +
 © EuroGeographics 2026, Istituto Geografico Militare (IGM), Italy;
 [Licence](https://www.mapsforeurope.org/licence)
 
+### Get ‘Altitude (m)’
+
 ``` r
 
-altitude_values <- terra::extract(altitude, terra::vect(data_sites))
 data_sites <- data_sites |>
-  mutate("Altitude (m)" = altitude_values$eurodem)
+  mutate(
+    "Altitude (m)" = terra::extract(altitude, terra::vect(data_sites))$eurodem
+    )
 data_sites
-#> Simple feature collection with 200 features and 2 fields
+#> Simple feature collection with 8 features and 2 fields
 #> Geometry type: POINT
 #> Dimension:     XY
-#> Bounding box:  xmin: 9.809499 ymin: 42.32483 xmax: 12.08963 ymax: 44.32464
+#> Bounding box:  xmin: 10.70124 ymin: 44.12676 xmax: 10.78004 ymax: 44.15539
 #> Geodetic CRS:  WGS 84
-#> # A tibble: 200 × 3
-#>    PlotObservationID            geometry `Altitude (m)`
-#>  * <chr>                     <POINT [°]>          <dbl>
-#>  1 JZ37               (9.93798 44.32464)             NA
-#>  2 FR49              (11.09287 43.91546)             NA
-#>  3 PT45              (11.65339 43.09104)             NA
-#>  4 ZH63              (10.53301 43.73897)             NA
-#>  5 TF93              (10.40239 44.23978)             NA
-#>  6 KG68              (10.40203 44.24087)             NA
-#>  7 QJ27               (10.40635 44.2413)             NA
-#>  8 JN90              (10.40602 44.24296)             NA
-#>  9 ZM18              (10.66071 44.12734)             NA
-#> 10 BQ20               (10.6589 44.12456)             NA
-#> # ℹ 190 more rows
+#> # A tibble: 8 × 3
+#>   PlotObservationID            geometry `Altitude (m)`
+#> * <chr>                     <POINT [°]>          <dbl>
+#> 1 VG30              (10.73782 44.15088)           1434
+#> 2 JW66              (10.73688 44.15539)           1657
+#> 3 MJ41              (10.73647 44.14837)           1355
+#> 4 WH80              (10.70124 44.15468)           1765
+#> 5 DS96              (10.78004 44.12676)           1645
+#> 6 SB81              (10.77721 44.13099)           1640
+#> 7 JU84               (10.7681 44.13086)           1507
+#> 8 KM11              (10.77537 44.13324)           1690
 ```
 
 ## Crop your own altitude data
@@ -107,10 +107,10 @@ Download the elevation data from EuroDEM (European Digital Elevation
 Model) from <https://www.mapsforeurope.org/datasets/euro-dem> which is
 from EuroGeographics and the project is cofounded by the European Union.
 
-### Load and adapt EuroDEM data
+### Load altitude data
 
-Save it in your data folder of your R project with your coordinates of
-your vegetation surveys (sites).
+Save EuroDEM data in the data folder of your R project. From there, you
+can load the raster file.
 
 ``` r
 
@@ -159,9 +159,10 @@ align the CRS to the raster altitude data.
 #   sf::st_transform(terra::crs(altitude))
 ```
 
-### Crop and save altitude data
+### Crop to your area
 
-We can crop the altitude data to the region of our plots.
+We can crop the elevation map to the area covered by our vegetation
+relevés.
 
 ``` r
 
@@ -172,7 +173,7 @@ We can crop the altitude data to the region of our plots.
 #   terra::project("EPSG:4326")
 ```
 
-Save the smaller file for a latter use.
+Save the cropped and therefore smaller altitude data for a latter use.
 
 ``` r
 
@@ -182,3 +183,6 @@ Save the smaller file for a latter use.
 #   overwrite = TRUE
 # )
 ```
+
+Now you can go on with the above [example](#example) and [get altitude
+data](#get-altitude).

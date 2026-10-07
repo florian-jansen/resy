@@ -50,15 +50,14 @@ expects the observation table to have three columns:
 data_species <- read_csv(
   system.file("extdata", "data_example_species.csv", package = "RESY"),
   show_col_types = FALSE
-) |>
-  rename(TaxonName = species, Cover_Perc = cover)
+)
 
 glimpse(data_species)
 #> Rows: 3,580
 #> Columns: 3
 #> $ PlotObservationID <chr> "HU32", "HU32", "HU32", "HU32", "HU32", "HU32", "HU3…
 #> $ Cover_Perc        <dbl> 0.1, 0.1, 0.5, 0.5, 0.5, 0.5, 87.5, 3.0, 3.0, 3.0, 0…
-#> $ TaxonName         <chr> "Dryopteris filix-mas (L.) Schott", "Cephalanthera l…
+#> $ scientificName    <chr> "Dryopteris filix-mas (L.) Schott", "Cephalanthera l…
 ```
 
 A minimal **header** table (one row per plot) is required even when no
@@ -117,12 +116,12 @@ matched.
 tax_apennine <- resy_check_taxonomy(
   obs    = data_species,
   parsed = parsed_apennine,
-  col    = "TaxonName"
+  col    = "scientificName"
 )
 tax_apennine
-#> <resy_taxa> 1009 name(s) from column `TaxonName` checked against 950 Section 1 species
-#>   scientificName  name as submitted
-#>   TaxonName       canonical name used by resy_classify(); NA when unmatched
+#> <resy_taxa> 1009 name(s) from column `scientificName` checked against 950 Section 1 species
+#>   scientificName  Name as submitted
+#>   TaxonName       Canonical name used by resy_classify(); NA when unmatched
 #>   matched         TRUE if found as a canonical name or Section 1 synonym
 #> 1009 matched (100.0%), 0 unmatched
 #> 
@@ -207,14 +206,8 @@ of types returned per plot.
 
 cand_apennine <- resy_candidates(res_apennine, top_n = 3)
 head(cand_apennine)
-#>    plot_id   type priority priority_rank
-#>     <char> <char>    <ord>         <int>
-#> 1:    AM30      F        2             1
-#> 2:    AN57      F        2             1
-#> 3:    BE71      F        2             1
-#> 4:    BE71     FB        5             3
-#> 5:    BK34      N        2             1
-#> 6:    BK34     NS        3             2
+#> # A tibble: 0 × 4
+#> # ℹ 4 variables: plot_id <chr>, type <chr>, priority <chr>, priority_rank <int>
 ```
 
 ### Plot-level details
@@ -228,22 +221,34 @@ group conditions fired, and which vegetation-type formulas evaluated to
 
 # Replace "AN57" with a PlotObservationID present in your data
 resy_eval_plot(res_apennine, p = "AN57")
+#> Possible types of plot "AN57" (135): 
+#> Priorities of these types:  
+#> Classified as: ? 
 #> Plant observations for plot AN57 :
-#>     PlotObservationID Cover_Perc               TaxonName        group_names
-#>                <char>      <num>                  <char>             <char>
-#>  1:              AN57        0.1 Gymnocarpium dryopteris               <NA>
-#>  2:              AN57        0.1   Athyrium filix-femina               <NA>
-#>  3:              AN57        0.1     Prenanthes purpurea Beech-forest-herbs
-#>  4:              AN57        0.1      Dryopteris expansa               <NA>
-#>  5:              AN57        0.1      Polypodium vulgare               <NA>
-#>  6:              AN57        0.5       Oxalis acetosella Beech-forest-herbs
-#>  7:              AN57        0.5        Sorbus aucuparia               <NA>
-#>  8:              AN57        0.5              Abies alba Beech-forest-trees
-#>  9:              AN57       62.5         Fagus sylvatica Beech-forest-trees
-#> 10:              AN57       37.5     Vaccinium myrtillus   Nardus-grassland
-#> Possible types of plot "AN57" (135): F
-#> Priorities of these types: 1 
-#> Classified as: F
+#>     PlotObservationID Cover_Perc
+#>                <char>      <num>
+#>  1:              AN57        0.1
+#>  2:              AN57        0.1
+#>  3:              AN57        0.1
+#>  4:              AN57        0.1
+#>  5:              AN57        0.1
+#>  6:              AN57        0.5
+#>  7:              AN57        0.5
+#>  8:              AN57        0.5
+#>  9:              AN57       62.5
+#> 10:              AN57       37.5
+#>                                        scientificName
+#>                                                <char>
+#>  1:               Gymnocarpium dryopteris (L.) Newman
+#>  2:                   Athyrium filix-femina (L.) Roth
+#>  3:                            Prenanthes purpurea L.
+#>  4: Dryopteris expansa (C.Presl) Fraser-Jenk. & Jermy
+#>  5:                             Polypodium vulgare L.
+#>  6:                              Oxalis acetosella L.
+#>  7:              Sorbus aucuparia L. subsp. aucuparia
+#>  8:                                  Abies alba Mill.
+#>  9:                                Fagus sylvatica L.
+#> 10:                            Vaccinium myrtillus L.
 ```
 
 Passing `type` adds, for each named type, its formula as written in the
@@ -253,30 +258,42 @@ for this plot, and the plot’s taxa responsible for it:
 ``` r
 
 resy_eval_plot(res_apennine, p = "AN57", type = "F")
+#> Possible types of plot "AN57" (135): 
+#> Priorities of these types:  
+#> Classified as: ? 
 #> Plant observations for plot AN57 :
-#>     PlotObservationID Cover_Perc               TaxonName        group_names
-#>                <char>      <num>                  <char>             <char>
-#>  1:              AN57        0.1 Gymnocarpium dryopteris               <NA>
-#>  2:              AN57        0.1   Athyrium filix-femina               <NA>
-#>  3:              AN57        0.1     Prenanthes purpurea Beech-forest-herbs
-#>  4:              AN57        0.1      Dryopteris expansa               <NA>
-#>  5:              AN57        0.1      Polypodium vulgare               <NA>
-#>  6:              AN57        0.5       Oxalis acetosella Beech-forest-herbs
-#>  7:              AN57        0.5        Sorbus aucuparia               <NA>
-#>  8:              AN57        0.5              Abies alba Beech-forest-trees
-#>  9:              AN57       62.5         Fagus sylvatica Beech-forest-trees
-#> 10:              AN57       37.5     Vaccinium myrtillus   Nardus-grassland
-#> Possible types of plot "AN57" (135): F
-#> Priorities of these types: 1 
-#> Classified as: F 
+#>     PlotObservationID Cover_Perc
+#>                <char>      <num>
+#>  1:              AN57        0.1
+#>  2:              AN57        0.1
+#>  3:              AN57        0.1
+#>  4:              AN57        0.1
+#>  5:              AN57        0.1
+#>  6:              AN57        0.5
+#>  7:              AN57        0.5
+#>  8:              AN57        0.5
+#>  9:              AN57       62.5
+#> 10:              AN57       37.5
+#>                                        scientificName
+#>                                                <char>
+#>  1:               Gymnocarpium dryopteris (L.) Newman
+#>  2:                   Athyrium filix-femina (L.) Roth
+#>  3:                            Prenanthes purpurea L.
+#>  4: Dryopteris expansa (C.Presl) Fraser-Jenk. & Jermy
+#>  5:                             Polypodium vulgare L.
+#>  6:                              Oxalis acetosella L.
+#>  7:              Sorbus aucuparia L. subsp. aucuparia
+#>  8:                                  Abies alba Mill.
+#>  9:                                Fagus sylvatica L.
+#> 10:                            Vaccinium myrtillus L.
 #> 
 #> F     Forest
 #> 
 #> <#TC Beech-forest-trees GR 10>
 #> 
 #> Relevant expressions for F :
-#>   expressions                  result responsible_taxa            
-#> 1 #TC Beech-forest-trees GR 10 TRUE   Abies alba | Fagus sylvatica
+#>   expressions                  result responsible_taxa
+#> 1 #TC Beech-forest-trees GR 10 FALSE  <NA>
 ```
 
 ## Next steps

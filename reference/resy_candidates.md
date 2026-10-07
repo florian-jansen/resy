@@ -46,5 +46,5 @@ resy_candidates(
 
 ## Value
 
-A \`data.table\` with columns \`plot_id\`, \`type\`, \`priority\`,
+A \`tibble\` with columns \`plot_id\`, \`type\`, \`priority\`,
 \`priority_rank\`.

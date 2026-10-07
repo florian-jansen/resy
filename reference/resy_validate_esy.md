@@ -88,3 +88,13 @@ A list with:
 
 \[resy_read_expert()\], \[resy_load_expert()\],
 \[resy_add_classification()\]
+
+## Examples
+
+``` r
+# Validate a .txt file
+result <- resy_validate_esy("path/to/expert.txt", strict = FALSE)
+#> Error in resy_validate_esy("path/to/expert.txt", strict = FALSE): File not found: path/to/expert.txt
+if (!result$ok) print(result$errors)
+#> Error: object 'result' not found
+```

@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>RESY EUNIS habitat classifications • RESY</title>
+<title>Get additional data • RESY</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="RESY EUNIS habitat classifications">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Get additional data">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -40,7 +40,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/altitude-vignette.html">Get altitude data</a></li>
-    <li><a class="dropdown-item" href="../articles/EUNIS.html">RESY EUNIS habitat classifications</a></li>
+    <li><a class="dropdown-item" href="../articles/EUNIS.html">Get additional data</a></li>
     <li><a class="dropdown-item" href="../articles/taxonomy.html">RESY taxonomy</a></li>
   </ul>
 </li>
@@ -62,11 +62,11 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>RESY EUNIS habitat classifications</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Get additional data</h1>
                         <h4 data-toc-skip class="author">Markus Bauer,
 Mariasole Calbi &amp; Gilles Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-10-06</h4>
+            <h4 data-toc-skip class="date">2026-10-07</h4>
       
 
       <div class="d-none name"><code>EUNIS.Rmd</code></div>
@@ -75,7 +75,7 @@ Mariasole Calbi &amp; Gilles Colling</h4>
     
     
 <p>This vignette illustrates a common use of the package: to classify
-European vegetation surveys to <strong>EUNIS habitat types</strong> (<a href="https://floraveg.eu/" class="external-link">FloraVeg.EU</a>; Chytrý et al. <a href="https://doi.org/10.1111/avsc.12798" class="external-link">2024</a>; European Environment
+European vegetation relevés to <strong>EUNIS habitat types</strong> (<a href="https://floraveg.eu/" class="external-link">FloraVeg.EU</a>; Chytrý et al. <a href="https://doi.org/10.1111/avsc.12798" class="external-link">2024</a>; European Environment
 Agency EUNIS <a href="https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed" class="external-link">Website</a>)
 according to the <strong>Expert System (ESy)</strong> of Chytrý et
 al. (<a href="https://doi.org/10.1111/avsc.12519" class="external-link">2020</a>) (see <a href="https://floraveg.eu/habitat/" class="external-link">FloraVeg.EU</a>). The function
@@ -85,7 +85,7 @@ country, ecoregion, or coastal position. Furthermore, the format of the
 coordinates and the taxonomy are checked and adjusted to the
 requirements for the expert system (ESy). The function
 <code><a href="../reference/resy_classify.html">resy_classify()</a></code> does the classification of the vegation
-surveys including the sites data.</p>
+relevés including the sites data.</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Prepare the format</strong> of the sites including the right
@@ -94,7 +94,7 @@ surveys including the sites data.</p>
 <strong>coast</strong>.</li>
 <li>
 <strong>Check of taxonomy</strong> of the species data</li>
-<li>Evaluation of your vegetation surveys and <strong>assigning EUNIS
+<li>Evaluation of your vegetation relevés and <strong>assigning EUNIS
 habitat types</strong>
 </li>
 <li><strong>Present the results</strong></li>
@@ -108,42 +108,46 @@ vignette:</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://florian-jansen.github.io/resy/">RESY</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="load-the-example-data-">Load the example data.<a class="anchor" aria-label="anchor" href="#load-the-example-data-"></a>
 </h3>
-<p>The example data include the species data with the vegetation surveys
+<p>The example data include the species data with the vegetation relevés
 and the sites data with further information to the location of the
-surveys.</p>
-<p>First, the vegetation surveys:</p>
+relevés.</p>
+<p>First, load the vegetation relevés:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"data_example_species.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span>, skip <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">data_species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"data_example_species.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span>,</span>
+<span>  skip <span class="op">=</span> <span class="fl">0</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="va">data_species</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3,580 × 3</span></span></span>
-<span><span class="co">#&gt;    PlotObservationID cover species                                             </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                               </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> HU32                0.1 Dryopteris filix-mas (L.) Schott                    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> HU32                0.1 Cephalanthera longifolia (L.) Fritsch               </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> HU32                0.5 Prenanthes purpurea L.                              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> HU32                0.5 Anemone nemorosa L.                                 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> HU32                0.5 Epipactis helleborine (L.) Crantz subsp. helleborine</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> HU32                0.5 Sorbus aucuparia L. subsp. aucuparia                </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> HU32               87.5 Fagus sylvatica L.                                  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> HU32                3   Rubus hirtus Waldst. &amp; Kit.                         </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> HU32                3   Abies alba Mill.                                    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> HU32                3   Oxalis acetosella L.                                </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3,570 more rows</span></span></span>
-<span></span>
-<span><span class="co"># clean names with RESY's native cleaner: drops author strings, keeps ranks</span></span>
-<span><span class="va">data_species</span><span class="op">$</span><span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_clean_names.html">resy_clean_names</a></span><span class="op">(</span><span class="va">data_species</span><span class="op">$</span><span class="va">species</span><span class="op">)</span></span>
-<span><span class="co"># data_species$species &lt;- vegdata::taxname.removeAuthors(data_species$species)</span></span></code></pre></div>
-<p>Second, the sites data:</p>
+<span><span class="co">#&gt;    PlotObservationID Cover_Perc scientificName                                  </span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> HU32                     0.1 Dryopteris filix-mas (L.) Schott                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> HU32                     0.1 Cephalanthera longifolia (L.) Fritsch           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> HU32                     0.5 Prenanthes purpurea L.                          </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> HU32                     0.5 Anemone nemorosa L.                             </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> HU32                     0.5 Epipactis helleborine (L.) Crantz subsp. helleb…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> HU32                     0.5 Sorbus aucuparia L. subsp. aucuparia            </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> HU32                    87.5 Fagus sylvatica L.                              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> HU32                     3   Rubus hirtus Waldst. &amp; Kit.                     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> HU32                     3   Abies alba Mill.                                </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> HU32                     3   Oxalis acetosella L.                            </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3,570 more rows</span></span></span></code></pre></div>
+<p>Clean names with RESY’s native cleaner: drops author strings but
+keeps ranks</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data_species</span><span class="op">$</span><span class="va">scientificName</span> <span class="op">&lt;-</span> <span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_clean_names.html">resy_clean_names</a></span><span class="op">(</span></span>
+<span>  <span class="va">data_species</span><span class="op">$</span><span class="va">scientificName</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co"># data_species$species &lt;- vegdata::taxname.removeAuthors(data_species$species)</span></span></code></pre></div>
+<p>Second, load the sites data:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_sites</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
 <span>   <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"data_example_sites.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span></span>
 <span>   <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="st">"cover"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>   <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html" class="external-link">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Longitude"</span>, <span class="st">"Latitude"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span>
 <span><span class="va">data_sites</span></span>
 <span><span class="co">#&gt; Simple feature collection with 200 features and 1 field</span></span>
@@ -169,37 +173,37 @@ surveys.</p>
 <div class="section level3">
 <h3 id="map-the-sites">Map the sites<a class="anchor" aria-label="anchor" href="#map-the-sites"></a>
 </h3>
-<p>The vegetation surveys of the example dataset are in Tuscany in
+<p>The vegetation relevés of the example dataset are in Tuscany in
 Italy.</p>
 <p><img src="EUNIS_files/figure-html/base-map-1.png" class="r-plt" alt="" width="700"></p>
-<p>We see a part of Italy, mainly Tuscany and the Mediterranean or more
+<p>We see a part of Italy: mainly Tuscany and the Mediterranean or more
 specific the Tyrrhenian Sea. The dots are the locations of the
-vegetation surveys. Some are on islands.</p>
+vegetation relevés. Some are on islands.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="preparation">Preparation<a class="anchor" aria-label="anchor" href="#preparation"></a>
+<h2 id="get-additional-data">Get additional data<a class="anchor" aria-label="anchor" href="#get-additional-data"></a>
 </h2>
 <div class="section level3">
 <h3 id="load-the-expert-file">Load the expert file<a class="anchor" aria-label="anchor" href="#load-the-expert-file"></a>
 </h3>
 <p>We have to parse the expert file which is the base for every
 evaluation. We use <code>resy_load_expert</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">parsed</span> <span class="op">&lt;-</span> <span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_load_expert.html">resy_load_expert</a></span><span class="op">(</span>scheme <span class="op">=</span> <span class="st">"EUNIS"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">parsed_expert_file</span> <span class="op">&lt;-</span> <span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_load_expert.html">resy_load_expert</a></span><span class="op">(</span>scheme <span class="op">=</span> <span class="st">"EUNIS"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="apply-resy_harmonize_eunis">Apply <code>resy_harmonize_eunis()</code><a class="anchor" aria-label="anchor" href="#apply-resy_harmonize_eunis"></a>
 </h3>
 <p>We prepare the sites and the species data with
 <code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outcome</span> <span class="op">&lt;-</span> <span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis</a></span><span class="op">(</span></span>
 <span>   data <span class="op">=</span> <span class="va">data_sites</span>,</span>
 <span>   source_crs <span class="op">=</span> <span class="fl">25832</span>,</span>
 <span>   run_taxonomy <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>   species_data <span class="op">=</span> <span class="va">data_species</span>,</span>
-<span>   parsed <span class="op">=</span> <span class="va">parsed</span>,</span>
+<span>   parsed <span class="op">=</span> <span class="va">parsed_expert_file</span>,</span>
 <span>   run_coast_dunes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>   coast_buffer <span class="op">=</span> <span class="fl">5000</span></span>
 <span>   <span class="op">)</span></span>
@@ -211,16 +215,15 @@ evaluation. We use <code>resy_load_expert</code>.</p>
 <span><span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant throughout</span></span>
 <span><span class="co">#&gt; all geometries</span></span>
 <span><span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant throughout</span></span>
-<span><span class="co">#&gt; all geometries</span></span>
-<span><span class="va">outcome_sites</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span><span class="va">outcome</span><span class="op">$</span><span class="va">sites</span><span class="op">)</span></span>
-<span><span class="va">outcome_species</span> <span class="op">&lt;-</span> <span class="va">outcome</span><span class="op">$</span><span class="va">species_checked</span></span></code></pre></div>
-<p>We have three warnings: The column <code>Altitude (m)</code> is
-missing and this could not be covered by
+<span><span class="co">#&gt; all geometries</span></span></code></pre></div>
+<p>We have one information and two warnings of RESY: The information
+says the transformation to the coordination system UTM zone 32N.
+Furthermore, the warning says that the column <code>Altitude (m)</code>
+is missing and this could not be covered by
 <code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code>, but we provide a
 <code>vignette("Get altitude data")</code>. <code>NAs</code> are in the
-ecoregions (<code>Ecoreg</code>) and country (<code>Country</code>)
-columns. This could be the vegetation surveys on islands which is not
-covered by the base map.</p>
+ecoregions (<code>Ecoreg</code>) column. This could be the vegetation
+relevés on islands which is not covered by the base map.</p>
 </div>
 <div class="section level3">
 <h3 id="inspect-additional-data">Inspect additional data<a class="anchor" aria-label="anchor" href="#inspect-additional-data"></a>
@@ -228,8 +231,8 @@ covered by the base map.</p>
 <p>Here are the additional information of ecoregions and countries which
 were successfully identified with
 <code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">outcome_sites</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">outcome</span><span class="op">$</span><span class="va">sites</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 200 × 11</span></span></span>
 <span><span class="co">#&gt;    PlotObservationID Coast_EEA Dunes_Bohn Ecoreg Ecoreg_name  Country Country_ID</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
@@ -250,10 +253,10 @@ were successfully identified with
 <div class="section level3">
 <h3 id="missing-info">Missing info<a class="anchor" aria-label="anchor" href="#missing-info"></a>
 </h3>
-<p>Let us see which vegetation surveys could not get an ecoregion and
+<p>Let us see which vegetation relevés could not get an ecoregion and
 country:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">outcome_sites</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">outcome</span><span class="op">$</span><span class="va">sites</span> <span class="op">|&gt;</span></span>
 <span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Ecoreg</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 23 × 11</span></span></span>
 <span><span class="co">#&gt;    PlotObservationID Coast_EEA Dunes_Bohn Ecoreg Ecoreg_name Country Country_ID</span></span>
@@ -281,11 +284,11 @@ ecoregion and country. This has to be corrected by yourself.</p>
 </h3>
 <p>Let’s have a look on the checked and transformed species names. There
 are for example no author names anymore:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">outcome_species</span></span>
-<span><span class="co">#&gt; &lt;resy_taxa&gt; 1006 name(s) from column `species` checked against 20159 Section 1 species</span></span>
-<span><span class="co">#&gt;   scientificName  name as submitted</span></span>
-<span><span class="co">#&gt;   TaxonName       canonical name used by resy_classify(); NA when unmatched</span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">outcome</span><span class="op">$</span><span class="va">species_checked</span></span>
+<span><span class="co">#&gt; &lt;resy_taxa&gt; 1006 name(s) from column `scientificName` checked against 20159 Section 1 species</span></span>
+<span><span class="co">#&gt;   scientificName  Name as submitted</span></span>
+<span><span class="co">#&gt;   TaxonName       Canonical name used by resy_classify(); NA when unmatched</span></span>
 <span><span class="co">#&gt;   matched         TRUE if found as a canonical name or Section 1 synonym</span></span>
 <span><span class="co">#&gt; 935 matched (92.9%), 71 unmatched; summary() lists them</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -300,8 +303,9 @@ are for example no author names anymore:</p>
 <span><span class="co">#&gt; 8                              Rubus hirtus      Rubus fruticosus aggr.    TRUE</span></span>
 <span><span class="co">#&gt; 9                                Abies alba                  Abies alba    TRUE</span></span>
 <span><span class="co">#&gt; 10                        Oxalis acetosella           Oxalis acetosella    TRUE</span></span>
-<span><span class="co">#&gt; # ... 996 more row(s)</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">outcome_species</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # ... 996 more row(s)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">outcome</span><span class="op">$</span><span class="va">species_checked</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 1006 names checked: 935 matched (92.9%), 71 not matched (7.1%).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Not matched:</span></span>
@@ -325,37 +329,47 @@ are for example no author names anymore:</p>
 <span><span class="co">#&gt;     Silene paradoxa, Silene pichiana, Spartium junceum, Staphylea pinnata,</span></span>
 <span><span class="co">#&gt;     Stipellula capensis, Taraxacum erythrosperma, Thesium sommieri,</span></span>
 <span><span class="co">#&gt;     Tordylium apulum, Viola ferrarinii</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">outcome_species2</span> <span class="op">&lt;-</span> <span class="va">data_species</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">outcome_species</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"species"</span> <span class="op">=</span> <span class="st">"scientificName"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">PlotObservationID</span>, <span class="va">TaxonName</span>, <span class="va">cover</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>Cover_Perc <span class="op">=</span> <span class="va">cover</span><span class="op">)</span></span>
-<span><span class="va">outcome_species2</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3,580 × 3</span></span></span>
-<span><span class="co">#&gt;    PlotObservationID TaxonName                   Cover_Perc</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> HU32              Dryopteris filix-mas aggr.         0.1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> HU32              Cephalanthera longifolia           0.1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> HU32              Prenanthes purpurea                0.5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> HU32              Anemone nemorosa                   0.5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> HU32              Epipactis helleborine aggr.        0.5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> HU32              Sorbus aucuparia                   0.5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> HU32              Fagus sylvatica                   87.5</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> HU32              Rubus fruticosus aggr.             3  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> HU32              Abies alba                         3  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> HU32              Oxalis acetosella                  3  </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3,570 more rows</span></span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="finalize-species-data">Finalize species data<a class="anchor" aria-label="anchor" href="#finalize-species-data"></a>
+</h3>
+<p>We have to merge the species abundances with the checked species
+names.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">outcome_species</span> <span class="op">&lt;-</span> <span class="va">data_species</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">outcome</span><span class="op">$</span><span class="va">species_checked</span>, by <span class="op">=</span> <span class="st">"scientificName"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">PlotObservationID</span>, <span class="va">TaxonName</span>, <span class="va">Cover_Perc</span><span class="op">)</span></span>
+<span><span class="va">outcome_species</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PlotObservationID</span> <span class="op">==</span> <span class="st">"AE28"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">Cover_Perc</span><span class="op">)</span>, <span class="va">TaxonName</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 14 × 3</span></span></span>
+<span><span class="co">#&gt;    PlotObservationID TaxonName                 Cover_Perc</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AE28              Mentha requienii                87.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AE28              Vulpia myuros                   15  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AE28              Cicendia filiformis              3  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AE28              Polypogon maritimus              3  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> AE28              Radiola linoides                 3  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> AE28              Vincetoxicum hirundinaria        3  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> AE28              Vulpia ciliata                   3  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> AE28              Anisantha madritensis            0.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> AE28              Lotus subbiflorus                0.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> AE28              Plantago coronopus aggr.         0.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> AE28              Pohlia elongata                  0.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> AE28              Sagina apetala                   0.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">13</span> AE28              Sagina subulata                  0.5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">14</span> AE28              Trifolium micranthum             0.5</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="classify-relevés">Classify relevés<a class="anchor" aria-label="anchor" href="#classify-relev%C3%A9s"></a>
 </h2>
-<p>Now, you can classify your vegetation surveys (<code>obs</code>)
-which includes sites data (<code>header</code>).</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p>Classify your vegetation relevés (<code>obs</code>) which includes
+sites data (<code>header</code>).</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_classify.html">resy_classify</a></span><span class="op">(</span></span>
-<span>  obs <span class="op">=</span> <span class="va">outcome_species2</span>,</span>
-<span>  header <span class="op">=</span> <span class="va">outcome_sites</span>,</span>
+<span>  obs <span class="op">=</span> <span class="va">outcome_species</span>,</span>
+<span>  header <span class="op">=</span> <span class="va">outcome</span><span class="op">$</span><span class="va">sites</span>,</span>
 <span>  scheme <span class="op">=</span> <span class="st">"EUNIS"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: The expert system uses header columns that `header` does not have:</span></span>
@@ -374,8 +388,8 @@ which includes sites data (<code>header</code>).</p>
 <span><span class="co">#&gt; Step 5.9  Number of T$ NON conditions: 140</span></span>
 <span><span class="co">#&gt; Step 5.10  Header conditions with numeric values: 4</span></span>
 <span><span class="co">#&gt;   Header conditions with character values: 4</span></span>
-<span><span class="co">#&gt; adapt conditions 2026-10-06 13:53:58.545254</span></span>
-<span><span class="co">#&gt; classification from here on 2026-10-06 13:53:58.623349</span></span></code></pre></div>
+<span><span class="co">#&gt; adapt conditions 2026-10-07 10:23:00.372172</span></span>
+<span><span class="co">#&gt; classification from here on 2026-10-07 10:23:00.464275</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="inspect-results">Inspect results<a class="anchor" aria-label="anchor" href="#inspect-results"></a>
@@ -385,24 +399,50 @@ which includes sites data (<code>header</code>).</p>
 </h3>
 <p>You can see that the plot AM30 was classified with two EUNIS habitat
 types, but with different priorities.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cand</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res</span>, top_n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cand</span> <span class="op">&lt;-</span> <span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res</span>, top_n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="va">cand</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 305 × 4</span></span></span>
-<span><span class="co">#&gt;    plot_id type  priority priority_rank</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;ord&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AE28    R     1                    1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AM30    T     3                    3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AM30    T17   4                    4</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> AN57    T     3                    3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> BE71    T     3                    3</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> BF83    P     1                    1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> BF83    P3b   2                    2</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> BK34    R     1                    1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> BK70    P     1                    1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> BK70    P3b   2                    2</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 295 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt;      plot_id   type priority priority_rank</span></span>
+<span><span class="co">#&gt;       &lt;char&gt; &lt;char&gt;    &lt;ord&gt;         &lt;int&gt;</span></span>
+<span><span class="co">#&gt;   1:    AE28      R        1             1</span></span>
+<span><span class="co">#&gt;   2:    AM30      T        3             3</span></span>
+<span><span class="co">#&gt;   3:    AM30    T17        4             4</span></span>
+<span><span class="co">#&gt;   4:    AN57      T        3             3</span></span>
+<span><span class="co">#&gt;   5:    BE71      T        3             3</span></span>
+<span><span class="co">#&gt;  ---                                      </span></span>
+<span><span class="co">#&gt; 301:    ZS46    R1A        2             2</span></span>
+<span><span class="co">#&gt; 302:    ZX20      T        3             3</span></span>
+<span><span class="co">#&gt; 303:    ZX20    T32        4             4</span></span>
+<span><span class="co">#&gt; 304:    ZX92      T        3             3</span></span>
+<span><span class="co">#&gt; 305:    ZX92    T17        4             4</span></span></code></pre></div>
+<p>Sometimes the wide format is useful:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cand</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">priority_rank</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">plot_id</span>, <span class="va">priority</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">plot_id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>rank_n <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/row_number.html" class="external-link">row_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span></span>
+<span>    id_cols <span class="op">=</span> <span class="va">plot_id</span>,</span>
+<span>    names_from <span class="op">=</span> <span class="va">rank_n</span>,</span>
+<span>    values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">type</span>, <span class="va">priority</span><span class="op">)</span>,</span>
+<span>    names_sep <span class="op">=</span> <span class="st">"_"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 196 × 7</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   plot_id [196]</span></span></span>
+<span><span class="co">#&gt;    plot_id type_1 type_2 type_3 priority_1 priority_2 priority_3</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;ord&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;ord&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;ord&gt;</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AE28    R      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     1          <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AM30    T      T17    <span style="color: #BB0000;">NA</span>     3          4          <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AN57    T      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     3          <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> BE71    T      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     3          <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> BF83    P      P3b    <span style="color: #BB0000;">NA</span>     1          2          <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> BK34    R      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     1          <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> BK70    P      P3b    <span style="color: #BB0000;">NA</span>     1          2          <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> BL76    T      T17    <span style="color: #BB0000;">NA</span>     3          4          <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> BQ20    T      T32    <span style="color: #BB0000;">NA</span>     3          4          <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> BR64    R      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     1          <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 186 more rows</span></span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plot-level-details">Plot-level details<a class="anchor" aria-label="anchor" href="#plot-level-details"></a>
@@ -410,9 +450,11 @@ types, but with different priorities.</p>
 <p><code><a href="../reference/resy_eval_plot.html">resy_eval_plot()</a></code> prints the full evidence for one plot:
 which species matched, which group conditions fired, and which
 vegetation-type formulas evaluated to <code>TRUE</code>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Replace "AN57" with a PlotObservationID present in your data</span></span>
-<span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res</span>, p <span class="op">=</span> <span class="st">"AM30"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res</span>, p <span class="op">=</span> <span class="st">"AM30"</span><span class="op">)</span> <span class="co"># p = PlotObservationID</span></span>
+<span><span class="co">#&gt; Possible types of plot "AM30" (18): T17, T</span></span>
+<span><span class="co">#&gt; Priorities of these types: 4 3 </span></span>
+<span><span class="co">#&gt; Classified as: T17 </span></span>
 <span><span class="co">#&gt; Plant observations for plot AM30 :</span></span>
 <span><span class="co">#&gt;     PlotObservationID                  TaxonName</span></span>
 <span><span class="co">#&gt;                &lt;char&gt;                     &lt;char&gt;</span></span>
@@ -455,16 +497,16 @@ vegetation-type formulas evaluated to <code>TRUE</code>.</p>
 <span><span class="co">#&gt;  9:        0.5</span></span>
 <span><span class="co">#&gt; 10:        0.5</span></span>
 <span><span class="co">#&gt; 11:       87.5</span></span>
-<span><span class="co">#&gt; 12:        3.0</span></span>
-<span><span class="co">#&gt; Possible types of plot "AM30" (18): T17, T</span></span>
-<span><span class="co">#&gt; Priorities of these types: 4 3 </span></span>
-<span><span class="co">#&gt; Classified as: T17</span></span></code></pre></div>
+<span><span class="co">#&gt; 12:        3.0</span></span></code></pre></div>
 <p>Passing <code>type</code> adds, for each named type, its formula as
 written in the expert file and the membership conditions it uses,
 whether each holds for this plot, and the plot’s taxa responsible for
 it:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res</span>, p <span class="op">=</span> <span class="st">"AM30"</span>, type <span class="op">=</span> <span class="st">"T17"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res</span>, p <span class="op">=</span> <span class="st">"AM30"</span>, type <span class="op">=</span> <span class="st">"T17"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Possible types of plot "AM30" (18): T17, T</span></span>
+<span><span class="co">#&gt; Priorities of these types: 4 3 </span></span>
+<span><span class="co">#&gt; Classified as: T17 </span></span>
 <span><span class="co">#&gt; Plant observations for plot AM30 :</span></span>
 <span><span class="co">#&gt;     PlotObservationID                  TaxonName</span></span>
 <span><span class="co">#&gt;                &lt;char&gt;                     &lt;char&gt;</span></span>
@@ -508,9 +550,6 @@ it:</p>
 <span><span class="co">#&gt; 10:        0.5</span></span>
 <span><span class="co">#&gt; 11:       87.5</span></span>
 <span><span class="co">#&gt; 12:        3.0</span></span>
-<span><span class="co">#&gt; Possible types of plot "AM30" (18): T17, T</span></span>
-<span><span class="co">#&gt; Priorities of these types: 4 3 </span></span>
-<span><span class="co">#&gt; Classified as: T17 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; T17   Fagus forest on non-acid soils</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -560,11 +599,12 @@ it:</p>
 <div class="section level3">
 <h3 id="print-classification-hierarchy">Print classification hierarchy<a class="anchor" aria-label="anchor" href="#print-classification-hierarchy"></a>
 </h3>
-<p>You can find all habitat types on <a href="https://floraveg.eu/habitat/" class="external-link">FloraVEG.EU</a>. However, you can
-see all habitat types at once in R.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_expert_tree.html">resy_expert_tree</a></span><span class="op">(</span><span class="va">parsed</span>, fill <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;resy_expert_tree&gt; 339 node(s), 9 top-level, 38 synthesised group(s)</span></span>
+<p>You can find all habitat types on <a href="https://floraveg.eu/habitat/" class="external-link">FloraVEG.EU</a>. Here, you can see
+all identified habitat types of your dataset.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_expert_tree.html">resy_expert_tree</a></span><span class="op">(</span><span class="va">parsed_expert_file</span>, fill <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="co"># We truncate the output in this example to save space</span></span>
+<span><span class="co">#&gt; &lt;resy_expert_tree&gt; 10 node(s), 1 top-level, 2 synthesised group(s)</span></span>
 <span><span class="co">#&gt; MA Coastal saltmarshes</span></span>
 <span><span class="co">#&gt;   MA2</span></span>
 <span><span class="co">#&gt;     MA211 Arctic coastal saltmarsh</span></span>
@@ -574,198 +614,7 @@ see all habitat types at once in R.</p>
 <span><span class="co">#&gt;       MA223 Atlantic upper-mid saltmarsh and saline and brackish reed, rush and sedge bed</span></span>
 <span><span class="co">#&gt;       MA224 Atlantic mid-low saltmarsh</span></span>
 <span><span class="co">#&gt;       MA225 Atlantic pioneer saltmarsh</span></span>
-<span><span class="co">#&gt;     MA232 Baltic coastal meadow</span></span>
-<span><span class="co">#&gt;     MA241 Black Sea littoral saltmarsh</span></span>
-<span><span class="co">#&gt;     MA25</span></span>
-<span><span class="co">#&gt;       MA251 Mediterranean upper saltmarsh</span></span>
-<span><span class="co">#&gt;       MA252 Mediterranean upper-mid saltmarsh and saline and brackish reed, rush and sedge bed</span></span>
-<span><span class="co">#&gt;       MA253 Mediterranean mid-low saltmarsh</span></span>
-<span><span class="co">#&gt;   MAa Angiosperm vegetation in the marine littoral zone</span></span>
-<span><span class="co">#&gt; N Coastal sand and cliff habitats</span></span>
-<span><span class="co">#&gt;   N1</span></span>
-<span><span class="co">#&gt;     N11 Atlantic, Baltic and Arctic sand beach</span></span>
-<span><span class="co">#&gt;     N12 Mediterranean and Black Sea sand beach</span></span>
-<span><span class="co">#&gt;     N13 Atlantic and Baltic shifting coastal dune</span></span>
-<span><span class="co">#&gt;     N14 Mediterranean, Macaronesian and Black Sea shifting coastal dune</span></span>
-<span><span class="co">#&gt;     N15 Atlantic and Baltic coastal dune grassland (grey dune)</span></span>
-<span><span class="co">#&gt;       N15! Atlantic and Baltic coastal dune grassland (grey dune)</span></span>
-<span><span class="co">#&gt;         N15!! Atlantic and Baltic coastal dune grassland (grey dune)</span></span>
-<span><span class="co">#&gt;     N16 Mediterranean and Macaronesian coastal dune grassland (grey dune)</span></span>
-<span><span class="co">#&gt;       N16! Mediterranean and Macaronesian coastal dune grassland (grey dune)</span></span>
-<span><span class="co">#&gt;         N16!! Mediterranean and Macaronesian coastal dune grassland (grey dune)</span></span>
-<span><span class="co">#&gt;     N17 Black Sea coastal dune grassland (grey dune)</span></span>
-<span><span class="co">#&gt;       N17! Black Sea coastal dune grassland (grey dune)</span></span>
-<span><span class="co">#&gt;         N17!! Black Sea coastal dune grassland (grey dune)</span></span>
-<span><span class="co">#&gt;     N18 Atlantic and Baltic coastal Empetrum heath</span></span>
-<span><span class="co">#&gt;     N19 Atlantic coastal Calluna and Ulex heath</span></span>
-<span><span class="co">#&gt;     N1A Atlantic and Baltic coastal dune scrub</span></span>
-<span><span class="co">#&gt;     N1B Mediterranean and Black Sea coastal dune scrub</span></span>
-<span><span class="co">#&gt;     N1C Macaronesian coastal dune scrub</span></span>
-<span><span class="co">#&gt;     N1D Atlantic and Baltic broad-leaved coastal dune forest</span></span>
-<span><span class="co">#&gt;     N1E Black Sea broad-leaved coastal dune forest</span></span>
-<span><span class="co">#&gt;     N1F Baltic coniferous coastal dune forest</span></span>
-<span><span class="co">#&gt;     N1G Mediterranean coniferous coastal dune forest</span></span>
-<span><span class="co">#&gt;     N1H Atlantic and Baltic moist and wet dune slack</span></span>
-<span><span class="co">#&gt;     N1J Mediterranean and Black Sea moist and wet dune slack</span></span>
-<span><span class="co">#&gt;   N2</span></span>
-<span><span class="co">#&gt;     N21 Atlantic, Baltic and Arctic coastal shingle beach</span></span>
-<span><span class="co">#&gt;     N22 Mediterranean and Black Sea coastal shingle beach</span></span>
-<span><span class="co">#&gt;   N3</span></span>
-<span><span class="co">#&gt;     N31 Atlantic and Baltic rocky sea cliff and shore</span></span>
-<span><span class="co">#&gt;       N31! Atlantic and Baltic rocky sea cliff and shore</span></span>
-<span><span class="co">#&gt;     N32 Mediterranean and Black Sea rocky sea cliff and shore</span></span>
-<span><span class="co">#&gt;     N33 Macaronesian rocky sea cliff and shore</span></span>
-<span><span class="co">#&gt;     N34 Atlantic and Baltic soft sea cliff</span></span>
-<span><span class="co">#&gt;     N35 Mediterranean and Black Sea soft sea cliff</span></span>
-<span><span class="co">#&gt; P Surface waters</span></span>
-<span><span class="co">#&gt;   P2N Spring</span></span>
-<span><span class="co">#&gt;   P3</span></span>
-<span><span class="co">#&gt;     P3a Brackish-water vegetation</span></span>
-<span><span class="co">#&gt;     P3b Fresh-water small pleustophyte vegetation</span></span>
-<span><span class="co">#&gt;     P3c Fresh-water large pleustophyte vegetation</span></span>
-<span><span class="co">#&gt;     P3d Fresh-water submerged vegetation</span></span>
-<span><span class="co">#&gt;     P3e Fresh-water nymphaeid vegetation</span></span>
-<span><span class="co">#&gt;     P3f Oligotrophic-water vegetation</span></span>
-<span><span class="co">#&gt;     P3g Dystrophic-water vegetation</span></span>
-<span><span class="co">#&gt;     P3h Stonewort vegetation</span></span>
-<span><span class="co">#&gt; Q</span></span>
-<span><span class="co">#&gt;   Q1</span></span>
-<span><span class="co">#&gt;     Q11 Raised bog</span></span>
-<span><span class="co">#&gt;     Q12 Blanket bog</span></span>
-<span><span class="co">#&gt;   Q2</span></span>
-<span><span class="co">#&gt;     Q21 Oceanic valley mire</span></span>
-<span><span class="co">#&gt;     Q22 Poor fen</span></span>
-<span><span class="co">#&gt;     Q23 Relict mire of Mediterranean mountains</span></span>
-<span><span class="co">#&gt;     Q24 Intermediate fen and soft-water spring mire</span></span>
-<span><span class="co">#&gt;     Q25 Non-calcareous quaking mire</span></span>
-<span><span class="co">#&gt;   Q31 Palsa mire</span></span>
-<span><span class="co">#&gt;   Q4</span></span>
-<span><span class="co">#&gt;     Q41 Alkaline, calcareous, carbonate-rich small-sedge spring fen</span></span>
-<span><span class="co">#&gt;     Q42 Extremely rich moss-sedge fen</span></span>
-<span><span class="co">#&gt;     Q43 Tall-sedge base-rich fen</span></span>
-<span><span class="co">#&gt;     Q44 Calcareous quaking mire</span></span>
-<span><span class="co">#&gt;     Q45 Arctic-alpine rich fen</span></span>
-<span><span class="co">#&gt;     Q46 Carpathian travertine fen with halophytes</span></span>
-<span><span class="co">#&gt;   Q5</span></span>
-<span><span class="co">#&gt;     Q51 Tall-helophyte bed</span></span>
-<span><span class="co">#&gt;     Q52 Small-helophyte bed</span></span>
-<span><span class="co">#&gt;     Q53 Tall-sedge bed</span></span>
-<span><span class="co">#&gt;     Q54 Inland saline or brackish helophyte bed</span></span>
-<span><span class="co">#&gt;   Q6</span></span>
-<span><span class="co">#&gt;     Q61 Periodically exposed shore with stable, eutrophic sediments with pioneer or ephemeral vegetation</span></span>
-<span><span class="co">#&gt;     Q62 Periodically exposed shore with stable, mesotrophic sediments with pioneer or ephemeral vegetation</span></span>
-<span><span class="co">#&gt;     Q63 Periodically exposed saline shore with pioneer or ephemeral vegetation</span></span>
-<span><span class="co">#&gt;   Qa Mires</span></span>
-<span><span class="co">#&gt;   Qb Wetlands</span></span>
-<span><span class="co">#&gt; R Grasslands</span></span>
-<span><span class="co">#&gt;   R1</span></span>
-<span><span class="co">#&gt;     R11 Pannonian and Pontic sandy steppe</span></span>
-<span><span class="co">#&gt;       R11! Pannonian and Pontic sandy steppe</span></span>
-<span><span class="co">#&gt;     R12 Cryptogam- and annual-dominated vegetation on siliceous rock outcrops</span></span>
-<span><span class="co">#&gt;     R13 Cryptogam- and annual-dominated vegetation on calcareous and ultramafic rock outcrops</span></span>
-<span><span class="co">#&gt;     R14 Perennial rocky grassland of the Italian Peninsula</span></span>
-<span><span class="co">#&gt;     R15 Continental dry rocky steppic grassland and dwarf scrub on chalk outcrops</span></span>
-<span><span class="co">#&gt;     R16 Perennial rocky grassland of Central and South-Eastern Europe</span></span>
-<span><span class="co">#&gt;     R17 Heavy-metal dry grassland of the Balkans</span></span>
-<span><span class="co">#&gt;     R18 Perennial rocky calcareous grassland of subatlantic-submediterranean Europe</span></span>
-<span><span class="co">#&gt;     R19 Dry steppic submediterranean pasture of the Amphi-Adriatic region</span></span>
-<span><span class="co">#&gt;     R1A Semi-dry perennial calcareous grassland (meadow steppe)</span></span>
-<span><span class="co">#&gt;     R1B Continental dry grassland (true steppe)</span></span>
-<span><span class="co">#&gt;       R1B! Continental dry grassland (true steppe)</span></span>
-<span><span class="co">#&gt;     R1C Desert steppe</span></span>
-<span><span class="co">#&gt;     R1D Mediterranean closely grazed dry grassland</span></span>
-<span><span class="co">#&gt;     R1E Mediterranean tall perennial dry grassland</span></span>
-<span><span class="co">#&gt;       R1E! Mediterranean tall perennial dry grassland</span></span>
-<span><span class="co">#&gt;     R1F Mediterranean annual-rich dry grassland</span></span>
-<span><span class="co">#&gt;     R1G Iberian oromediterranean siliceous dry grassland</span></span>
-<span><span class="co">#&gt;       R1G! Iberian oromediterranean siliceous dry grassland</span></span>
-<span><span class="co">#&gt;     R1H Iberian oromediterranean basiphilous dry grassland</span></span>
-<span><span class="co">#&gt;       R1H! Iberian oromediterranean basiphilous dry grassland</span></span>
-<span><span class="co">#&gt;     R1J Cyrno-Sardean oromediterranean siliceous dry grassland</span></span>
-<span><span class="co">#&gt;       R1J! Cyrno-Sardean oromediterranean siliceous dry grassland</span></span>
-<span><span class="co">#&gt;     R1K Balkan and Anatolian oromediterranean dry grassland</span></span>
-<span><span class="co">#&gt;       R1K! Balkan and Anatolian oromediterranean dry grassland</span></span>
-<span><span class="co">#&gt;     R1L Madeiran oromediterranean siliceous dry grassland</span></span>
-<span><span class="co">#&gt;       R1L! Madeiran oromediterranean siliceous dry grassland</span></span>
-<span><span class="co">#&gt;     R1M Lowland to montane, dry to mesic grassland usually dominated by Nardus stricta</span></span>
-<span><span class="co">#&gt;     R1N Open Iberian supramediterranean dry acid and neutral grassland</span></span>
-<span><span class="co">#&gt;       R1N! Open Iberian supramediterranean dry acid and neutral grassland</span></span>
-<span><span class="co">#&gt;     R1P Oceanic to subcontinental inland sand grassland on dry acid and neutral soils</span></span>
-<span><span class="co">#&gt;     R1Q Inland sanddrift and dune with siliceous grassland</span></span>
-<span><span class="co">#&gt;       R1Q! Inland sanddrift and dune with siliceous grassland</span></span>
-<span><span class="co">#&gt;     R1R Mediterranean to Atlantic open, dry, acid and neutral grassland</span></span>
-<span><span class="co">#&gt;     R1S Heavy-metal grassland in Western and Central Europe</span></span>
-<span><span class="co">#&gt;     R1T Azorean open, dry, acid to neutral grassland</span></span>
-<span><span class="co">#&gt;   R2</span></span>
-<span><span class="co">#&gt;     R21 Mesic permanent pasture of lowlands and mountains</span></span>
-<span><span class="co">#&gt;     R22 Low and medium altitude hay meadow</span></span>
-<span><span class="co">#&gt;     R23 Mountain hay meadow</span></span>
-<span><span class="co">#&gt;       R23! Mountain hay meadow</span></span>
-<span><span class="co">#&gt;     R24 Iberian summer pasture (vallicar)</span></span>
-<span><span class="co">#&gt;       R24! Iberian summer pasture (vallicar)</span></span>
-<span><span class="co">#&gt;   R3</span></span>
-<span><span class="co">#&gt;     R31 Mediterranean tall humid inland grassland</span></span>
-<span><span class="co">#&gt;     R32 Mediterranean short moist grassland of lowlands</span></span>
-<span><span class="co">#&gt;     R33 Mediterranean short moist grassland of mountains</span></span>
-<span><span class="co">#&gt;     R34 Submediterranean moist meadow</span></span>
-<span><span class="co">#&gt;     R35 Moist or wet mesotrophic to eutrophic hay meadow</span></span>
-<span><span class="co">#&gt;     R36 Moist or wet mesotrophic to eutrophic pasture</span></span>
-<span><span class="co">#&gt;     R37 Temperate and boreal moist or wet oligotrophic grassland</span></span>
-<span><span class="co">#&gt;   R4</span></span>
-<span><span class="co">#&gt;     R41 Snow-bed vegetation</span></span>
-<span><span class="co">#&gt;       R41! Snow-bed vegetation</span></span>
-<span><span class="co">#&gt;     R42 Boreal and Arctic acidophilous alpine grassland</span></span>
-<span><span class="co">#&gt;       R42! Boreal and Arctic acidophilous alpine grassland</span></span>
-<span><span class="co">#&gt;     R43 Temperate acidophilous alpine grassland</span></span>
-<span><span class="co">#&gt;       R43! Temperate acidophilous alpine grassland</span></span>
-<span><span class="co">#&gt;     R44 Arctic-alpine calcareous grassland</span></span>
-<span><span class="co">#&gt;     R45 Alpine and subalpine calcareous grassland of the Balkans and Apennines</span></span>
-<span><span class="co">#&gt;       R45! Alpine and subalpine calcareous grassland of the Balkans and Apennines</span></span>
-<span><span class="co">#&gt;   R5</span></span>
-<span><span class="co">#&gt;     R51 Thermophilous forest fringe of base-rich soils</span></span>
-<span><span class="co">#&gt;       R51! Thermophilous forest fringe of base-rich soils</span></span>
-<span><span class="co">#&gt;     R52 Forest fringe of acidic nutrient-poor soils</span></span>
-<span><span class="co">#&gt;       R52! Forest fringe of acidic nutrient-poor soils</span></span>
-<span><span class="co">#&gt;     R53 Macaronesian thermophilous forest fringe</span></span>
-<span><span class="co">#&gt;       R53! Macaronesian thermophilous forest fringe</span></span>
-<span><span class="co">#&gt;     R54 Pteridium aquilinum vegetation</span></span>
-<span><span class="co">#&gt;     R55 Lowland moist or wet tall-herb and fern fringe</span></span>
-<span><span class="co">#&gt;     R56 Montane to subalpine moist or wet tall-herb and fern fringe</span></span>
-<span><span class="co">#&gt;     R57 Herbaceous forest clearing vegetation</span></span>
-<span><span class="co">#&gt;   R6</span></span>
-<span><span class="co">#&gt;     R61 Mediterranean inland salt steppe</span></span>
-<span><span class="co">#&gt;     R62 Continental inland salt steppe</span></span>
-<span><span class="co">#&gt;     R63 Temperate inland salt marsh</span></span>
-<span><span class="co">#&gt;     R64 Semi-desert salt pan</span></span>
-<span><span class="co">#&gt;     R65 Continental subsaline alluvial pasture and meadow</span></span>
-<span><span class="co">#&gt; S</span></span>
-<span><span class="co">#&gt;   S1</span></span>
-<span><span class="co">#&gt;     S11 Shrub tundra</span></span>
-<span><span class="co">#&gt;     S12 Moss and lichen tundra</span></span>
-<span><span class="co">#&gt;   S2</span></span>
-<span><span class="co">#&gt;     S21 Subarctic and alpine dwarf Salix scrub</span></span>
-<span><span class="co">#&gt;     S22 Alpine and subalpine ericoid heath</span></span>
-<span><span class="co">#&gt;     S23 Alpine and subalpine Juniperus scrub</span></span>
-<span><span class="co">#&gt;     S24 Subalpine genistoid scrub of the Amphi-Adriatic region</span></span>
-<span><span class="co">#&gt;     S25 Subalpine and subarctic deciduous scrub</span></span>
-<span><span class="co">#&gt;     S26 Subalpine Pinus mugo scrub</span></span>
-<span><span class="co">#&gt;       S26! Subalpine Pinus mugo scrub</span></span>
-<span><span class="co">#&gt;   S3</span></span>
-<span><span class="co">#&gt;     S31 Lowland to montane temperate and submediterranean Juniperus scrub</span></span>
-<span><span class="co">#&gt;     S32 Temperate Rubus scrub</span></span>
-<span><span class="co">#&gt;     S33 Lowland to montane temperate and submediterranean genistoid scrub</span></span>
-<span><span class="co">#&gt;     S34 Balkan-Anatolian submontane genistoid scrub</span></span>
-<span><span class="co">#&gt;     S35 Temperate and submediterranean thorn scrub</span></span>
-<span><span class="co">#&gt;     S36 Low steppic scrub</span></span>
-<span><span class="co">#&gt;     S37 Corylus avellana scrub</span></span>
-<span><span class="co">#&gt;     S38 Temperate forest clearing scrub</span></span>
-<span><span class="co">#&gt;   S4</span></span>
-<span><span class="co">#&gt;     S41 Wet heath</span></span>
-<span><span class="co">#&gt;     S42 Dry heath</span></span>
-<span><span class="co">#&gt;     S43 Macaronesian heath</span></span>
-<span><span class="co">#&gt;   S5</span></span>
-<span><span class="co">#&gt;     S51 Mediterranean maquis and arborescent matorral</span></span>
-<span><span class="co">#&gt; ... (139 more node(s) not shown; increase `max`)</span></span></code></pre></div>
+<span><span class="co">#&gt;     MA232 Baltic coastal meadow</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

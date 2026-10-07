@@ -68,9 +68,9 @@ A named list:
 
 - \`sites\`:
 
-  Data frame of harmonised plot data, geometry dropped, WGS84
-  \`Longitude\` and \`Latitude\` added, and the same values as
-  \`DEG_LON\` and \`DEG_LAT\`, the header fields EUNIS-ESy reads.
+  Tibble of harmonised plot data, geometry dropped, WGS84 \`Longitude\`
+  and \`Latitude\` added, and the same values as \`DEG_LON\` and
+  \`DEG_LAT\`, the header fields EUNIS-ESy reads.
 
 - \`species_checked\`:
 

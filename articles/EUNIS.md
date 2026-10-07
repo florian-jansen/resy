@@ -1,7 +1,7 @@
-# RESY EUNIS habitat classifications
+# Get additional data
 
 This vignette illustrates a common use of the package: to classify
-European vegetation surveys to **EUNIS habitat types**
+European vegetation relevés to **EUNIS habitat types**
 ([FloraVeg.EU](https://floraveg.eu/); Chytrý et
 al. [2024](https://doi.org/10.1111/avsc.12798); European Environment
 Agency EUNIS
@@ -16,14 +16,14 @@ Furthermore, the format of the coordinates and the taxonomy are checked
 and adjusted to the requirements for the expert system (ESy). The
 function
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
-does the classification of the vegation surveys including the sites
+does the classification of the vegation relevés including the sites
 data.
 
 1.  **Prepare the format** of the sites including the right
     **coordination system** and add information like **ecoregion**,
     **country** or if it is on a **coast**.
 2.  **Check of taxonomy** of the species data
-3.  Evaluation of your vegetation surveys and **assigning EUNIS habitat
+3.  Evaluation of your vegetation relevés and **assigning EUNIS habitat
     types**
 4.  **Present the results**
 
@@ -38,49 +38,57 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 library(sf)
-library(RESY)
 ```
 
 ### Load the example data.
 
-The example data include the species data with the vegetation surveys
+The example data include the species data with the vegetation relevés
 and the sites data with further information to the location of the
-surveys.
+relevés.
 
-First, the vegetation surveys:
+First, load the vegetation relevés:
 
 ``` r
 
-data_species <- read_csv(system.file("extdata", "data_example_species.csv", package = "RESY"), skip = 0)
+data_species <- read_csv(
+  system.file("extdata", "data_example_species.csv", package = "RESY"),
+  skip = 0
+  )
 data_species
 #> # A tibble: 3,580 × 3
-#>    PlotObservationID cover species                                             
-#>    <chr>             <dbl> <chr>                                               
-#>  1 HU32                0.1 Dryopteris filix-mas (L.) Schott                    
-#>  2 HU32                0.1 Cephalanthera longifolia (L.) Fritsch               
-#>  3 HU32                0.5 Prenanthes purpurea L.                              
-#>  4 HU32                0.5 Anemone nemorosa L.                                 
-#>  5 HU32                0.5 Epipactis helleborine (L.) Crantz subsp. helleborine
-#>  6 HU32                0.5 Sorbus aucuparia L. subsp. aucuparia                
-#>  7 HU32               87.5 Fagus sylvatica L.                                  
-#>  8 HU32                3   Rubus hirtus Waldst. & Kit.                         
-#>  9 HU32                3   Abies alba Mill.                                    
-#> 10 HU32                3   Oxalis acetosella L.                                
+#>    PlotObservationID Cover_Perc scientificName                                  
+#>    <chr>                  <dbl> <chr>                                           
+#>  1 HU32                     0.1 Dryopteris filix-mas (L.) Schott                
+#>  2 HU32                     0.1 Cephalanthera longifolia (L.) Fritsch           
+#>  3 HU32                     0.5 Prenanthes purpurea L.                          
+#>  4 HU32                     0.5 Anemone nemorosa L.                             
+#>  5 HU32                     0.5 Epipactis helleborine (L.) Crantz subsp. helleb…
+#>  6 HU32                     0.5 Sorbus aucuparia L. subsp. aucuparia            
+#>  7 HU32                    87.5 Fagus sylvatica L.                              
+#>  8 HU32                     3   Rubus hirtus Waldst. & Kit.                     
+#>  9 HU32                     3   Abies alba Mill.                                
+#> 10 HU32                     3   Oxalis acetosella L.                            
 #> # ℹ 3,570 more rows
+```
 
-# clean names with RESY's native cleaner: drops author strings, keeps ranks
-data_species$species <- resy_clean_names(data_species$species)
+Clean names with RESY’s native cleaner: drops author strings but keeps
+ranks
+
+``` r
+
+data_species$scientificName <- RESY::resy_clean_names(
+  data_species$scientificName
+  )
 # data_species$species <- vegdata::taxname.removeAuthors(data_species$species)
 ```
 
-Second, the sites data:
+Second, load the sites data:
 
 ``` r
 
 data_sites <- read_csv(
    system.file("extdata", "data_example_sites.csv", package = "RESY")
    ) |>
-   select(-"cover") |>
    st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
 data_sites
 #> Simple feature collection with 200 features and 1 field
@@ -106,15 +114,15 @@ data_sites
 
 ### Map the sites
 
-The vegetation surveys of the example dataset are in Tuscany in Italy.
+The vegetation relevés of the example dataset are in Tuscany in Italy.
 
 ![](EUNIS_files/figure-html/base-map-1.png)
 
-We see a part of Italy, mainly Tuscany and the Mediterranean or more
+We see a part of Italy: mainly Tuscany and the Mediterranean or more
 specific the Tyrrhenian Sea. The dots are the locations of the
-vegetation surveys. Some are on islands.
+vegetation relevés. Some are on islands.
 
-## Preparation
+## Get additional data
 
 ### Load the expert file
 
@@ -123,7 +131,7 @@ We use `resy_load_expert`.
 
 ``` r
 
-parsed <- RESY::resy_load_expert(scheme = "EUNIS")
+parsed_expert_file <- RESY::resy_load_expert(scheme = "EUNIS")
 ```
 
 ### Apply `resy_harmonize_eunis()`
@@ -138,7 +146,7 @@ outcome <- RESY::resy_harmonize_eunis(
    source_crs = 25832,
    run_taxonomy = TRUE,
    species_data = data_species,
-   parsed = parsed,
+   parsed = parsed_expert_file,
    run_coast_dunes = TRUE,
    coast_buffer = 5000
    )
@@ -151,16 +159,16 @@ outcome <- RESY::resy_harmonize_eunis(
 #> all geometries
 #> Warning: attribute variables are assumed to be spatially constant throughout
 #> all geometries
-outcome_sites <- tibble(outcome$sites)
-outcome_species <- outcome$species_checked
 ```
 
-We have three warnings: The column `Altitude (m)` is missing and this
+We have one information and two warnings of RESY: The information says
+the transformation to the coordination system UTM zone 32N. Furthermore,
+the warning says that the column `Altitude (m)` is missing and this
 could not be covered by
 [`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md),
 but we provide a `vignette("Get altitude data")`. `NAs` are in the
-ecoregions (`Ecoreg`) and country (`Country`) columns. This could be the
-vegetation surveys on islands which is not covered by the base map.
+ecoregions (`Ecoreg`) column. This could be the vegetation relevés on
+islands which is not covered by the base map.
 
 ### Inspect additional data
 
@@ -170,7 +178,7 @@ were successfully identified with
 
 ``` r
 
-outcome_sites
+outcome$sites
 #> # A tibble: 200 × 11
 #>    PlotObservationID Coast_EEA Dunes_Bohn Ecoreg Ecoreg_name  Country Country_ID
 #>    <chr>             <chr>     <chr>       <dbl> <chr>        <chr>   <chr>     
@@ -191,12 +199,12 @@ outcome_sites
 
 ### Missing info
 
-Let us see which vegetation surveys could not get an ecoregion and
+Let us see which vegetation relevés could not get an ecoregion and
 country:
 
 ``` r
 
-outcome_sites |>
+outcome$sites |>
    filter(is.na(Ecoreg))
 #> # A tibble: 23 × 11
 #>    PlotObservationID Coast_EEA Dunes_Bohn Ecoreg Ecoreg_name Country Country_ID
@@ -230,10 +238,10 @@ are for example no author names anymore:
 
 ``` r
 
-outcome_species
-#> <resy_taxa> 1006 name(s) from column `species` checked against 20159 Section 1 species
-#>   scientificName  name as submitted
-#>   TaxonName       canonical name used by resy_classify(); NA when unmatched
+outcome$species_checked
+#> <resy_taxa> 1006 name(s) from column `scientificName` checked against 20159 Section 1 species
+#>   scientificName  Name as submitted
+#>   TaxonName       Canonical name used by resy_classify(); NA when unmatched
 #>   matched         TRUE if found as a canonical name or Section 1 synonym
 #> 935 matched (92.9%), 71 unmatched; summary() lists them
 #> 
@@ -249,7 +257,11 @@ outcome_species
 #> 9                                Abies alba                  Abies alba    TRUE
 #> 10                        Oxalis acetosella           Oxalis acetosella    TRUE
 #> # ... 996 more row(s)
-summary(outcome_species)
+```
+
+``` r
+
+summary(outcome$species_checked)
 #> 1006 names checked: 935 matched (92.9%), 71 not matched (7.1%).
 #> 
 #> Not matched:
@@ -275,39 +287,47 @@ summary(outcome_species)
 #>     Tordylium apulum, Viola ferrarinii
 ```
 
+### Finalize species data
+
+We have to merge the species abundances with the checked species names.
+
 ``` r
 
-outcome_species2 <- data_species |>
-  left_join(outcome_species, by = c("species" = "scientificName")) |>
-  select(PlotObservationID, TaxonName, cover) |>
-  rename(Cover_Perc = cover)
-outcome_species2
-#> # A tibble: 3,580 × 3
-#>    PlotObservationID TaxonName                   Cover_Perc
-#>    <chr>             <chr>                            <dbl>
-#>  1 HU32              Dryopteris filix-mas aggr.         0.1
-#>  2 HU32              Cephalanthera longifolia           0.1
-#>  3 HU32              Prenanthes purpurea                0.5
-#>  4 HU32              Anemone nemorosa                   0.5
-#>  5 HU32              Epipactis helleborine aggr.        0.5
-#>  6 HU32              Sorbus aucuparia                   0.5
-#>  7 HU32              Fagus sylvatica                   87.5
-#>  8 HU32              Rubus fruticosus aggr.             3  
-#>  9 HU32              Abies alba                         3  
-#> 10 HU32              Oxalis acetosella                  3  
-#> # ℹ 3,570 more rows
+outcome_species <- data_species |>
+  left_join(outcome$species_checked, by = "scientificName") |>
+  select(PlotObservationID, TaxonName, Cover_Perc)
+outcome_species |>
+  filter(PlotObservationID == "AE28") |>
+  arrange(desc(Cover_Perc), TaxonName)
+#> # A tibble: 14 × 3
+#>    PlotObservationID TaxonName                 Cover_Perc
+#>    <chr>             <chr>                          <dbl>
+#>  1 AE28              Mentha requienii                87.5
+#>  2 AE28              Vulpia myuros                   15  
+#>  3 AE28              Cicendia filiformis              3  
+#>  4 AE28              Polypogon maritimus              3  
+#>  5 AE28              Radiola linoides                 3  
+#>  6 AE28              Vincetoxicum hirundinaria        3  
+#>  7 AE28              Vulpia ciliata                   3  
+#>  8 AE28              Anisantha madritensis            0.5
+#>  9 AE28              Lotus subbiflorus                0.5
+#> 10 AE28              Plantago coronopus aggr.         0.5
+#> 11 AE28              Pohlia elongata                  0.5
+#> 12 AE28              Sagina apetala                   0.5
+#> 13 AE28              Sagina subulata                  0.5
+#> 14 AE28              Trifolium micranthum             0.5
 ```
 
 ## Classify relevés
 
-Now, you can classify your vegetation surveys (`obs`) which includes
-sites data (`header`).
+Classify your vegetation relevés (`obs`) which includes sites data
+(`header`).
 
 ``` r
 
 res <- RESY::resy_classify(
-  obs = outcome_species2,
-  header = outcome_sites,
+  obs = outcome_species,
+  header = outcome$sites,
   scheme = "EUNIS"
   )
 #> Warning: The expert system uses header columns that `header` does not have:
@@ -326,8 +346,8 @@ res <- RESY::resy_classify(
 #> Step 5.9  Number of T$ NON conditions: 140
 #> Step 5.10  Header conditions with numeric values: 4
 #>   Header conditions with character values: 4
-#> adapt conditions 2026-10-06 13:53:58.545254
-#> classification from here on 2026-10-06 13:53:58.623349
+#> adapt conditions 2026-10-07 10:23:00.372172
+#> classification from here on 2026-10-07 10:23:00.464275
 ```
 
 ## Inspect results
@@ -339,23 +359,53 @@ types, but with different priorities.
 
 ``` r
 
-cand <- resy_candidates(res, top_n = 3) |>
-  tibble()
+cand <- RESY::resy_candidates(res, top_n = 3)
 cand
-#> # A tibble: 305 × 4
-#>    plot_id type  priority priority_rank
-#>    <chr>   <chr> <ord>            <int>
-#>  1 AE28    R     1                    1
-#>  2 AM30    T     3                    3
-#>  3 AM30    T17   4                    4
-#>  4 AN57    T     3                    3
-#>  5 BE71    T     3                    3
-#>  6 BF83    P     1                    1
-#>  7 BF83    P3b   2                    2
-#>  8 BK34    R     1                    1
-#>  9 BK70    P     1                    1
-#> 10 BK70    P3b   2                    2
-#> # ℹ 295 more rows
+#>      plot_id   type priority priority_rank
+#>       <char> <char>    <ord>         <int>
+#>   1:    AE28      R        1             1
+#>   2:    AM30      T        3             3
+#>   3:    AM30    T17        4             4
+#>   4:    AN57      T        3             3
+#>   5:    BE71      T        3             3
+#>  ---                                      
+#> 301:    ZS46    R1A        2             2
+#> 302:    ZX20      T        3             3
+#> 303:    ZX20    T32        4             4
+#> 304:    ZX92      T        3             3
+#> 305:    ZX92    T17        4             4
+```
+
+Sometimes the wide format is useful:
+
+``` r
+
+cand |>
+  dplyr::select(-priority_rank) |>
+  dplyr::arrange(plot_id, priority) |>
+  dplyr::group_by(plot_id) |>
+  dplyr::mutate(rank_n = dplyr::row_number()) |>
+  tidyr::pivot_wider(
+    id_cols = plot_id,
+    names_from = rank_n,
+    values_from = c(type, priority),
+    names_sep = "_"
+  )
+#> # A tibble: 196 × 7
+#> # Groups:   plot_id [196]
+#>    plot_id type_1 type_2 type_3 priority_1 priority_2 priority_3
+#>    <chr>   <chr>  <chr>  <chr>  <ord>      <ord>      <ord>     
+#>  1 AE28    R      NA     NA     1          NA         NA        
+#>  2 AM30    T      T17    NA     3          4          NA        
+#>  3 AN57    T      NA     NA     3          NA         NA        
+#>  4 BE71    T      NA     NA     3          NA         NA        
+#>  5 BF83    P      P3b    NA     1          2          NA        
+#>  6 BK34    R      NA     NA     1          NA         NA        
+#>  7 BK70    P      P3b    NA     1          2          NA        
+#>  8 BL76    T      T17    NA     3          4          NA        
+#>  9 BQ20    T      T32    NA     3          4          NA        
+#> 10 BR64    R      NA     NA     1          NA         NA        
+#> # ℹ 186 more rows
 ```
 
 ### Plot-level details
@@ -367,8 +417,10 @@ group conditions fired, and which vegetation-type formulas evaluated to
 
 ``` r
 
-# Replace "AN57" with a PlotObservationID present in your data
-resy_eval_plot(res, p = "AM30")
+RESY::resy_eval_plot(res, p = "AM30") # p = PlotObservationID
+#> Possible types of plot "AM30" (18): T17, T
+#> Priorities of these types: 4 3 
+#> Classified as: T17 
 #> Plant observations for plot AM30 :
 #>     PlotObservationID                  TaxonName
 #>                <char>                     <char>
@@ -412,9 +464,6 @@ resy_eval_plot(res, p = "AM30")
 #> 10:        0.5
 #> 11:       87.5
 #> 12:        3.0
-#> Possible types of plot "AM30" (18): T17, T
-#> Priorities of these types: 4 3 
-#> Classified as: T17
 ```
 
 Passing `type` adds, for each named type, its formula as written in the
@@ -423,7 +472,10 @@ for this plot, and the plot’s taxa responsible for it:
 
 ``` r
 
-resy_eval_plot(res, p = "AM30", type = "T17")
+RESY::resy_eval_plot(res, p = "AM30", type = "T17")
+#> Possible types of plot "AM30" (18): T17, T
+#> Priorities of these types: 4 3 
+#> Classified as: T17 
 #> Plant observations for plot AM30 :
 #>     PlotObservationID                  TaxonName
 #>                <char>                     <char>
@@ -467,9 +519,6 @@ resy_eval_plot(res, p = "AM30", type = "T17")
 #> 10:        0.5
 #> 11:       87.5
 #> 12:        3.0
-#> Possible types of plot "AM30" (18): T17, T
-#> Priorities of these types: 4 3 
-#> Classified as: T17 
 #> 
 #> T17   Fagus forest on non-acid soils
 #> 
@@ -520,13 +569,14 @@ resy_eval_plot(res, p = "AM30", type = "T17")
 ### Print classification hierarchy
 
 You can find all habitat types on
-[FloraVEG.EU](https://floraveg.eu/habitat/). However, you can see all
-habitat types at once in R.
+[FloraVEG.EU](https://floraveg.eu/habitat/). Here, you can see all
+identified habitat types of your dataset.
 
 ``` r
 
-resy_expert_tree(parsed, fill = TRUE)
-#> <resy_expert_tree> 339 node(s), 9 top-level, 38 synthesised group(s)
+RESY::resy_expert_tree(parsed_expert_file, fill = TRUE) |>
+  head(10) # We truncate the output in this example to save space
+#> <resy_expert_tree> 10 node(s), 1 top-level, 2 synthesised group(s)
 #> MA Coastal saltmarshes
 #>   MA2
 #>     MA211 Arctic coastal saltmarsh
@@ -537,197 +587,6 @@ resy_expert_tree(parsed, fill = TRUE)
 #>       MA224 Atlantic mid-low saltmarsh
 #>       MA225 Atlantic pioneer saltmarsh
 #>     MA232 Baltic coastal meadow
-#>     MA241 Black Sea littoral saltmarsh
-#>     MA25
-#>       MA251 Mediterranean upper saltmarsh
-#>       MA252 Mediterranean upper-mid saltmarsh and saline and brackish reed, rush and sedge bed
-#>       MA253 Mediterranean mid-low saltmarsh
-#>   MAa Angiosperm vegetation in the marine littoral zone
-#> N Coastal sand and cliff habitats
-#>   N1
-#>     N11 Atlantic, Baltic and Arctic sand beach
-#>     N12 Mediterranean and Black Sea sand beach
-#>     N13 Atlantic and Baltic shifting coastal dune
-#>     N14 Mediterranean, Macaronesian and Black Sea shifting coastal dune
-#>     N15 Atlantic and Baltic coastal dune grassland (grey dune)
-#>       N15! Atlantic and Baltic coastal dune grassland (grey dune)
-#>         N15!! Atlantic and Baltic coastal dune grassland (grey dune)
-#>     N16 Mediterranean and Macaronesian coastal dune grassland (grey dune)
-#>       N16! Mediterranean and Macaronesian coastal dune grassland (grey dune)
-#>         N16!! Mediterranean and Macaronesian coastal dune grassland (grey dune)
-#>     N17 Black Sea coastal dune grassland (grey dune)
-#>       N17! Black Sea coastal dune grassland (grey dune)
-#>         N17!! Black Sea coastal dune grassland (grey dune)
-#>     N18 Atlantic and Baltic coastal Empetrum heath
-#>     N19 Atlantic coastal Calluna and Ulex heath
-#>     N1A Atlantic and Baltic coastal dune scrub
-#>     N1B Mediterranean and Black Sea coastal dune scrub
-#>     N1C Macaronesian coastal dune scrub
-#>     N1D Atlantic and Baltic broad-leaved coastal dune forest
-#>     N1E Black Sea broad-leaved coastal dune forest
-#>     N1F Baltic coniferous coastal dune forest
-#>     N1G Mediterranean coniferous coastal dune forest
-#>     N1H Atlantic and Baltic moist and wet dune slack
-#>     N1J Mediterranean and Black Sea moist and wet dune slack
-#>   N2
-#>     N21 Atlantic, Baltic and Arctic coastal shingle beach
-#>     N22 Mediterranean and Black Sea coastal shingle beach
-#>   N3
-#>     N31 Atlantic and Baltic rocky sea cliff and shore
-#>       N31! Atlantic and Baltic rocky sea cliff and shore
-#>     N32 Mediterranean and Black Sea rocky sea cliff and shore
-#>     N33 Macaronesian rocky sea cliff and shore
-#>     N34 Atlantic and Baltic soft sea cliff
-#>     N35 Mediterranean and Black Sea soft sea cliff
-#> P Surface waters
-#>   P2N Spring
-#>   P3
-#>     P3a Brackish-water vegetation
-#>     P3b Fresh-water small pleustophyte vegetation
-#>     P3c Fresh-water large pleustophyte vegetation
-#>     P3d Fresh-water submerged vegetation
-#>     P3e Fresh-water nymphaeid vegetation
-#>     P3f Oligotrophic-water vegetation
-#>     P3g Dystrophic-water vegetation
-#>     P3h Stonewort vegetation
-#> Q
-#>   Q1
-#>     Q11 Raised bog
-#>     Q12 Blanket bog
-#>   Q2
-#>     Q21 Oceanic valley mire
-#>     Q22 Poor fen
-#>     Q23 Relict mire of Mediterranean mountains
-#>     Q24 Intermediate fen and soft-water spring mire
-#>     Q25 Non-calcareous quaking mire
-#>   Q31 Palsa mire
-#>   Q4
-#>     Q41 Alkaline, calcareous, carbonate-rich small-sedge spring fen
-#>     Q42 Extremely rich moss-sedge fen
-#>     Q43 Tall-sedge base-rich fen
-#>     Q44 Calcareous quaking mire
-#>     Q45 Arctic-alpine rich fen
-#>     Q46 Carpathian travertine fen with halophytes
-#>   Q5
-#>     Q51 Tall-helophyte bed
-#>     Q52 Small-helophyte bed
-#>     Q53 Tall-sedge bed
-#>     Q54 Inland saline or brackish helophyte bed
-#>   Q6
-#>     Q61 Periodically exposed shore with stable, eutrophic sediments with pioneer or ephemeral vegetation
-#>     Q62 Periodically exposed shore with stable, mesotrophic sediments with pioneer or ephemeral vegetation
-#>     Q63 Periodically exposed saline shore with pioneer or ephemeral vegetation
-#>   Qa Mires
-#>   Qb Wetlands
-#> R Grasslands
-#>   R1
-#>     R11 Pannonian and Pontic sandy steppe
-#>       R11! Pannonian and Pontic sandy steppe
-#>     R12 Cryptogam- and annual-dominated vegetation on siliceous rock outcrops
-#>     R13 Cryptogam- and annual-dominated vegetation on calcareous and ultramafic rock outcrops
-#>     R14 Perennial rocky grassland of the Italian Peninsula
-#>     R15 Continental dry rocky steppic grassland and dwarf scrub on chalk outcrops
-#>     R16 Perennial rocky grassland of Central and South-Eastern Europe
-#>     R17 Heavy-metal dry grassland of the Balkans
-#>     R18 Perennial rocky calcareous grassland of subatlantic-submediterranean Europe
-#>     R19 Dry steppic submediterranean pasture of the Amphi-Adriatic region
-#>     R1A Semi-dry perennial calcareous grassland (meadow steppe)
-#>     R1B Continental dry grassland (true steppe)
-#>       R1B! Continental dry grassland (true steppe)
-#>     R1C Desert steppe
-#>     R1D Mediterranean closely grazed dry grassland
-#>     R1E Mediterranean tall perennial dry grassland
-#>       R1E! Mediterranean tall perennial dry grassland
-#>     R1F Mediterranean annual-rich dry grassland
-#>     R1G Iberian oromediterranean siliceous dry grassland
-#>       R1G! Iberian oromediterranean siliceous dry grassland
-#>     R1H Iberian oromediterranean basiphilous dry grassland
-#>       R1H! Iberian oromediterranean basiphilous dry grassland
-#>     R1J Cyrno-Sardean oromediterranean siliceous dry grassland
-#>       R1J! Cyrno-Sardean oromediterranean siliceous dry grassland
-#>     R1K Balkan and Anatolian oromediterranean dry grassland
-#>       R1K! Balkan and Anatolian oromediterranean dry grassland
-#>     R1L Madeiran oromediterranean siliceous dry grassland
-#>       R1L! Madeiran oromediterranean siliceous dry grassland
-#>     R1M Lowland to montane, dry to mesic grassland usually dominated by Nardus stricta
-#>     R1N Open Iberian supramediterranean dry acid and neutral grassland
-#>       R1N! Open Iberian supramediterranean dry acid and neutral grassland
-#>     R1P Oceanic to subcontinental inland sand grassland on dry acid and neutral soils
-#>     R1Q Inland sanddrift and dune with siliceous grassland
-#>       R1Q! Inland sanddrift and dune with siliceous grassland
-#>     R1R Mediterranean to Atlantic open, dry, acid and neutral grassland
-#>     R1S Heavy-metal grassland in Western and Central Europe
-#>     R1T Azorean open, dry, acid to neutral grassland
-#>   R2
-#>     R21 Mesic permanent pasture of lowlands and mountains
-#>     R22 Low and medium altitude hay meadow
-#>     R23 Mountain hay meadow
-#>       R23! Mountain hay meadow
-#>     R24 Iberian summer pasture (vallicar)
-#>       R24! Iberian summer pasture (vallicar)
-#>   R3
-#>     R31 Mediterranean tall humid inland grassland
-#>     R32 Mediterranean short moist grassland of lowlands
-#>     R33 Mediterranean short moist grassland of mountains
-#>     R34 Submediterranean moist meadow
-#>     R35 Moist or wet mesotrophic to eutrophic hay meadow
-#>     R36 Moist or wet mesotrophic to eutrophic pasture
-#>     R37 Temperate and boreal moist or wet oligotrophic grassland
-#>   R4
-#>     R41 Snow-bed vegetation
-#>       R41! Snow-bed vegetation
-#>     R42 Boreal and Arctic acidophilous alpine grassland
-#>       R42! Boreal and Arctic acidophilous alpine grassland
-#>     R43 Temperate acidophilous alpine grassland
-#>       R43! Temperate acidophilous alpine grassland
-#>     R44 Arctic-alpine calcareous grassland
-#>     R45 Alpine and subalpine calcareous grassland of the Balkans and Apennines
-#>       R45! Alpine and subalpine calcareous grassland of the Balkans and Apennines
-#>   R5
-#>     R51 Thermophilous forest fringe of base-rich soils
-#>       R51! Thermophilous forest fringe of base-rich soils
-#>     R52 Forest fringe of acidic nutrient-poor soils
-#>       R52! Forest fringe of acidic nutrient-poor soils
-#>     R53 Macaronesian thermophilous forest fringe
-#>       R53! Macaronesian thermophilous forest fringe
-#>     R54 Pteridium aquilinum vegetation
-#>     R55 Lowland moist or wet tall-herb and fern fringe
-#>     R56 Montane to subalpine moist or wet tall-herb and fern fringe
-#>     R57 Herbaceous forest clearing vegetation
-#>   R6
-#>     R61 Mediterranean inland salt steppe
-#>     R62 Continental inland salt steppe
-#>     R63 Temperate inland salt marsh
-#>     R64 Semi-desert salt pan
-#>     R65 Continental subsaline alluvial pasture and meadow
-#> S
-#>   S1
-#>     S11 Shrub tundra
-#>     S12 Moss and lichen tundra
-#>   S2
-#>     S21 Subarctic and alpine dwarf Salix scrub
-#>     S22 Alpine and subalpine ericoid heath
-#>     S23 Alpine and subalpine Juniperus scrub
-#>     S24 Subalpine genistoid scrub of the Amphi-Adriatic region
-#>     S25 Subalpine and subarctic deciduous scrub
-#>     S26 Subalpine Pinus mugo scrub
-#>       S26! Subalpine Pinus mugo scrub
-#>   S3
-#>     S31 Lowland to montane temperate and submediterranean Juniperus scrub
-#>     S32 Temperate Rubus scrub
-#>     S33 Lowland to montane temperate and submediterranean genistoid scrub
-#>     S34 Balkan-Anatolian submontane genistoid scrub
-#>     S35 Temperate and submediterranean thorn scrub
-#>     S36 Low steppic scrub
-#>     S37 Corylus avellana scrub
-#>     S38 Temperate forest clearing scrub
-#>   S4
-#>     S41 Wet heath
-#>     S42 Dry heath
-#>     S43 Macaronesian heath
-#>   S5
-#>     S51 Mediterranean maquis and arborescent matorral
-#> ... (139 more node(s) not shown; increase `max`)
 ```
 
 ## References
