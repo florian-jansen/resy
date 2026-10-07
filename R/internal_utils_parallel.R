@@ -31,6 +31,7 @@
 #' Otherwise, computations fall back to sequential operations.
 #'
 #' @keywords internal
+#' @noRd
 #'
 .resy_mclapply <- function(X, FUN, ..., mc = 1L, mc.cores = NULL) {
   
@@ -45,6 +46,7 @@
 }
 
 #' @keywords internal
+#' @noRd
 .resy_mcmapply <- function(
     FUN, ..., mc = 1L, mc.cores = NULL, SIMPLIFY = TRUE, USE.NAMES = TRUE
 ) {

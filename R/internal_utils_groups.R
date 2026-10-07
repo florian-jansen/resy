@@ -39,6 +39,7 @@ NULL
 #' @return character scalar with the group name only.
 #'
 #' @keywords internal
+#' @noRd
 .resy_group_name <- function(key) substr(key, 5, nchar(key))
 #'
 #' Locate the Rows of Section Markers
@@ -55,6 +56,7 @@ NULL
 #' @return integer vector of matching line numbers.
 #'
 #' @keywords internal
+#' @noRd
 .resy_section_rows <- function(lines, n) {
   which(grepl(paste0("^\\s*SECTION\\s+", n, "\\b"), lines, ignore.case = TRUE, perl = TRUE))
 }

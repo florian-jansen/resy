@@ -1,4 +1,5 @@
 #' @keywords internal
+#' @noRd
 .resy_membership_parts <- function(x, prefix = NULL) {
   parts <- trimws(unlist(strsplit(x, "\\|", perl = TRUE), use.names = FALSE))
   parts <- parts[nzchar(parts)]
@@ -18,6 +19,7 @@
 }
 
 #' @keywords internal
+#' @noRd
 .resy_group_taxa_union <- function(x, groups, groups.names, prefix = NULL) {
   ids <- .resy_membership_parts(x, prefix = prefix)
   idx <- fastmatch::fmatch(ids, groups.names)
@@ -28,6 +30,7 @@
 }
 
 #' @keywords internal
+#' @noRd
 .resy_group_taxa_or_species <- function(x, groups, groups.names, prefix = NULL) {
   ids <- .resy_membership_parts(x, prefix = prefix)
   idx <- fastmatch::fmatch(ids, groups.names)
@@ -48,6 +51,7 @@
 # conditions ("$$C", "$$N") and whole-plot cover ("#T$", "#$$", "$05") without a
 # group return no taxa.
 #' @keywords internal
+#' @noRd
 .resy_condition_taxa <- function(condition, groups, groups.names) {
   x <- trimws(condition)
   if (startsWith(x, "NON ")) x <- trimws(substring(x, 5L))
@@ -69,6 +73,7 @@
 # longest first with each match removed before the next, the order in which the
 # solver substitutes conditions by their columns.
 #' @keywords internal
+#' @noRd
 .resy_expression_conditions <- function(expression, conditions) {
   rest <- expression
   hit <- character()
@@ -84,6 +89,7 @@
 # Taxa of a condition of the form "A EXCEPT B": the union of the groups in A
 # minus the taxa of the groups or species in B. Without EXCEPT, the union of A.
 #' @keywords internal
+#' @noRd
 .resy_except_taxa <- function(x, groups, groups.names, prefix = NULL) {
   parts <- trimws(strsplit(x, "EXCEPT", fixed = TRUE)[[1]])
   taxa <- .resy_group_taxa_union(parts[1], groups, groups.names, prefix = prefix)
@@ -98,6 +104,7 @@
 # taxon is in `taxa` (or, with `exclude = TRUE`, not in `taxa`). Plots without
 # such observations are absent from the result.
 #' @keywords internal
+#' @noRd
 .resy_plot_stat <- function(obs, taxa, stat, exclude = FALSE) {
   keep <- obs$TaxonName %in% taxa
   if (exclude) keep <- !keep
@@ -109,6 +116,7 @@
 # the per-plot statistic over `taxa[[k]]`. `stat` is one function for all
 # columns or a list with one function per column. Rows are matched by plot id.
 #' @keywords internal
+#' @noRd
 .resy_fill_conditions <- function(plot.cond, obs, cols, taxa, stat,
                                   exclude = FALSE, mc = 1L) {
   if (!length(cols)) return(plot.cond)
@@ -133,6 +141,7 @@
 .resy_stat_sqrt_q <- function(cover, taxa) sum(cover^0.5)
 
 #' @keywords internal
+#' @noRd
 .resy_solve_membership <- function(obs, header, parsed, plot.cond, mc = 1L) {
   if (!inherits(obs, 'data.table')) obs <- data.table::as.data.table(obs)
   if (missing(header) || is.null(header)) stop('header must be provided (data.frame).')

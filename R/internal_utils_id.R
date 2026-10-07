@@ -40,9 +40,7 @@
 #'   character `PlotObservationID`.
 #'
 #' @keywords internal
-#'
-
-#' @keywords internal
+#' @noRd
 .resy_guess_id_col <- function(obs, header) {
   
   candidates <- c("PlotObservationID", "PlotID")
@@ -77,7 +75,7 @@
 #'   - `id_col_used`: character scalar indicating which original column was used
 #'
 #' @keywords internal
-#'
+#' @noRd
 .resy_standardize_plot_id <- function(obs, header, id_col = NULL) {
   
   if (!is.null(id_col)) {
@@ -122,7 +120,7 @@
 #' @return character scalar naming the detected plot ID column.
 #'
 #' @keywords internal
-#'
+#' @noRd
 .resy_get_id_col <- function(obs, header, id_col = NULL) {
   
   candidates <- c("PlotObservationID", "PlotID")
@@ -152,7 +150,7 @@
 #'   as character representation of the source ID column.
 #'
 #' @keywords internal
-#'
+#' @noRd
 .resy_normalize_ids_obs <- function(obs, id_col) {
   
   obs$PlotObservationID <- as.character(obs[[id_col]])
@@ -174,7 +172,7 @@
 #'   representation of the source ID column.
 #'
 #' @keywords internal
-#'
+#' @noRd
 .resy_normalize_ids_header <- function(header, id_col) {
   
   header$PlotObservationID <- as.character(header[[id_col]])

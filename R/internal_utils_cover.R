@@ -26,15 +26,5 @@
 #'   rounded to 10 decimal places.
 #'
 #' @keywords internal
-#'
-#' @examples
-#' # Single species
-#' .total_cover(50)
-#'
-#' # Two species with overlapping coverage
-#' .total_cover(c(50, 30))
-#'
-#' # Multiple species with various coverages
-#' .total_cover(c(60, 40, 20))
-#'
+#' @noRd
 .total_cover <- function(x) round((1 - prod(1 - x/100)) * 100, 10)

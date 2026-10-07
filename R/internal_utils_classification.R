@@ -37,31 +37,8 @@
 #'   - A vegetation type short name if a single highest-priority match is found
 #'   - `"?"` if no classifications are provided
 #'   - `"+"` if multiple classifications share the highest priority level
-#'
 #' @keywords internal
-#'
-#' @examples
-#' # No matches
-#' .resy_classify_choice(character(), c(1, 2, 3), c("T1", "T2", "T3"))
-#'
-#' # Single match
-#' .resy_classify_choice("T1", c(1, 2, 3), c("T1", "T2", "T3"))
-#'
-#' # Multiple matches with clear priority
-#' .resy_classify_choice(
-#'   c("T2", "T3"),
-#'   factor(c(1, 2, 3), levels = c(1, 2, 3)),
-#'   c("T1", "T2", "T3")
-#' )
-#'
-#' # Multiple matches with conflicting priorities
-#' .resy_classify_choice(
-#'   c("T1", "T2"),
-#'   factor(c(1, 1, 3), levels = c(1, 3)),
-#'   c("T1", "T2", "T3")
-#' )
-#'
-#' @keywords internal
+#' @noRd
 .resy_classify_choice <- function(
     type_short_names, vegtype.priority, vegtype.formula.names.short
 ) {
