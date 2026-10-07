@@ -40,7 +40,7 @@ test_that("warns when Altitude (m) is NA", {
   ) |>
     sf::st_as_sf(coords = c("lon", "lat"), crs = 4326)
   
-  expect_warning(resy_check_data(d), 'NAs in "Altitude \\(m\\)"')
+  expect_warning(resy_check_data(d), 'contains NA values')
 })
 
 test_that("warns when Ecoreg is NA when provided", {
@@ -55,7 +55,7 @@ test_that("warns when Ecoreg is NA when provided", {
   ) |>
     sf::st_as_sf(coords = c("lon", "lat"), crs = 4326)
   
-  expect_warning(resy_check_data(d), 'NAs in "Ecoreg" from provided data')
+  expect_warning(resy_check_data(d), '"Ecoreg" contains NA values')
 })
 
 test_that("warns when Country is NA when provided", {
@@ -70,7 +70,7 @@ test_that("warns when Country is NA when provided", {
   ) |>
     sf::st_as_sf(coords = c("lon", "lat"), crs = 4326)
   
-  expect_warning(resy_check_data(d), 'NAs in "Country" from provided data')
+  expect_warning(resy_check_data(d), '"Country" contains NA values')
 })
 
 test_that("warns when Coast_EEA and Dunes_Bohn are missing", {
