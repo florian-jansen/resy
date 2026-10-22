@@ -17,10 +17,12 @@ toy_expert <- function() {
 }
 
 test_that("canonical names map to themselves and synonyms to their canonical", {
-  obs <- data.frame(TaxonName = c("Achillea millefolium agg.",
-                                  "Achillea pratensis",
-                                  "Fagus sylvatica L.",
-                                  "Abies alba"))
+  obs <- data.frame(
+    TaxonName = c(
+      "Achillea millefolium agg.", "Achillea pratensis", "Fagus sylvatica L.",
+      "Abies alba"
+      )
+    )
   out <- resy_check_taxonomy(obs, toy_expert())
 
   expect_s3_class(out, c("resy_taxa", "data.frame"))
@@ -33,8 +35,9 @@ test_that("canonical names map to themselves and synonyms to their canonical", {
 })
 
 test_that("unknown names are flagged and keep canonical NA", {
-  obs <- data.frame(TaxonName = c("Fagus sylvatica", "Planta inventa",
-                                  "fagus sylvatica"))
+  obs <- data.frame(
+    TaxonName = c("Fagus sylvatica", "Planta inventa", "fagus sylvatica")
+    )
   out <- resy_check_taxonomy(obs, toy_expert())
 
   expect_equal(out$matched, c(TRUE, FALSE, FALSE))
@@ -60,8 +63,10 @@ test_that("factor and data.table input give the same result as a data.frame", {
 })
 
 test_that("col selects the column holding the names", {
-  obs <- data.frame(species = c("Achillea pratensis"), TaxonName = "Planta inventa")
-  out <- resy_check_taxonomy(obs, toy_expert(), col = "species")
+  obs <- data.frame(
+    scientificName = c("Achillea pratensis"), TaxonName = "Planta inventa"
+    )
+  out <- resy_check_taxonomy(obs, toy_expert(), col = "scientificName")
   expect_equal(out$scientificName, "Achillea pratensis")
   expect_equal(out$TaxonName, "Achillea millefolium agg.")
 })
@@ -70,8 +75,8 @@ test_that("invalid input is rejected", {
   obs <- data.frame(TaxonName = "Abies alba")
   expect_error(resy_check_taxonomy(obs, list(aggs = list())),
                "resy_parsed_expert")
-  expect_error(resy_check_taxonomy(obs, toy_expert(), col = "species"),
-               "Column 'species' not found")
+  expect_error(resy_check_taxonomy(obs, toy_expert(), col = "scientificName"),
+               "Column 'scientificName' not found")
 })
 
 test_that("every species of the example data is known to Apennine-test", {
@@ -80,16 +85,19 @@ test_that("every species of the example data is known to Apennine-test", {
     stringsAsFactors = FALSE
   )
   parsed <- resy_load_expert(scheme = "Apennine-test")
-  out <- resy_check_taxonomy(sp, parsed, col = "species")
+  out <- resy_check_taxonomy(sp, parsed, col = "scientificName")
 
-  expect_equal(nrow(out), length(unique(sp$species)))
+  expect_equal(nrow(out), length(unique(sp$scientificName)))
   expect_true(all(out$matched))
   expect_true(all(out$TaxonName %in% names(parsed$aggs)))
 })
 
 test_that("summary counts matches and lists unmatched names", {
-  obs <- data.frame(TaxonName = c("Fagus sylvatica", "Planta inventa",
-                                  "Abies alba", "Herba ignota"))
+  obs <- data.frame(
+    TaxonName = c(
+      "Fagus sylvatica", "Planta inventa", "Abies alba", "Herba ignota"
+      )
+    )
   s <- summary(resy_check_taxonomy(obs, toy_expert()))
 
   expect_s3_class(s, "summary.resy_taxa")
@@ -129,15 +137,17 @@ test_that("summary is computed from the rows, so it follows subsetting", {
 })
 
 test_that("print shows the column meanings, the counts and the rows", {
-  obs <- data.frame(species = c("Fagus sylvatica", "Planta inventa"))
-  out <- resy_check_taxonomy(obs, toy_expert(), col = "species")
+  obs <- data.frame(scientificName = c("Fagus sylvatica", "Planta inventa"))
+  out <- resy_check_taxonomy(obs, toy_expert(), col = "scientificName")
 
-  expect_output(print(out), "from column `species` checked against 3")
-  expect_output(print(out), "scientificName  name as submitted")
-  expect_output(print(out), "1 matched (50.0%), 1 unmatched; summary() lists them",
-                fixed = TRUE)
+  expect_output(print(out), "from column `scientificName` checked against 3")
+  expect_output(print(out), "Name as submitted")
+  expect_output(
+    print(out), "1 matched (50.0%), 1 unmatched; summary() lists them",
+    fixed = TRUE
+    )
   expect_output(print(out), "Planta inventa")
-  expect_invisible(print(out))
+  capture.output(expect_invisible(print(out)))
 })
 
 test_that("print truncates long tables", {
