@@ -48,7 +48,7 @@
 #'   }
 #' @examples
 #' # Validate a .txt file
-#' result <- resy_validate_esy("path/to/expert.txt", strict = FALSE)
+#' result <- resy_validate_esy(system.file("extdata", "example_mini_expert_file.txt", package = "RESY"), strict = FALSE)
 #' if (!result$ok) print(result$errors)
 #' @seealso [resy_read_expert()], [resy_load_expert()],
 #'   [resy_add_classification()]
@@ -127,8 +127,10 @@ resy_validate_esy <- function(path, strict = FALSE, verbose = TRUE) {
 # Summary list returned by the validators and checkers: `ok` when there are no
 # errors, the unique errors and warnings, and a `meta` list.
 .resy_report <- function(errors, warnings, meta = list()) {
-  list(ok = !length(errors), errors = unique(errors), warnings = unique(warnings),
-       meta = meta)
+  list(
+    ok = !length(errors), errors = unique(errors), warnings = unique(warnings),
+    meta = meta
+    )
 }
 
 # Summary of a report: "<label>: OK", or the error and warning counts followed

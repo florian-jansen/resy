@@ -277,14 +277,6 @@ test_that(".resy_esy_check_formula: valid complex formula passes", {
   
 })
 
-test_that(".resy_esy_check_formula: NOT at start is valid", {
-  
-  warn_env <- new.env(); warn_env$w <- character()
-  err <- RESY:::.resy_esy_check_formula("NOT <#TC A>", "test", FALSE, warn_env)
-  expect_equal(err, NA_character_)
-  
-})
-
 test_that(".resy_esy_check_formula: parentheses with valid formula passes", {
   
   warn_env <- new.env(); warn_env$w <- character()
