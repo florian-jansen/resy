@@ -43,12 +43,15 @@ resy_harmonize_eunis <- function(
     species_data    = NULL,
     parsed          = NULL,
     run_coast_dunes = FALSE,
-    coast_buffer    = 5000
+    coast_buffer    = 5000,
+    verbose = interactive()
     ) {
 
   # ---- 1. Sites as sf in the CRS of the base maps ----
 
-  data_sf <- .resy_check_coordinates(data, source_crs = source_crs)
+  data_sf <- .resy_check_coordinates(
+    data, source_crs = source_crs, verbose = verbose
+    )
 
   if (anyNA(data_sf$geometry))
     warning("Some sites have missing coordinates.")
@@ -108,7 +111,7 @@ resy_harmonize_eunis <- function(
   sites_output <- sf::st_drop_geometry(data_sf) |>
     tibble::as_tibble() |>
     dplyr::select(-dplyr::any_of("...1"))
-
+  
   list(sites = sites_output, species_checked = taxonomy_checked)
   
 }
