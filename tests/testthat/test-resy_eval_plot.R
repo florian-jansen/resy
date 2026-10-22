@@ -9,8 +9,7 @@ eval_plot_data <- function() {
     system.file("extdata", "data_example_species.csv", package = "RESY"),
     stringsAsFactors = FALSE
   )
-  names(sp)[names(sp) == "species"] <- "TaxonName"
-  names(sp)[names(sp) == "cover"]   <- "Cover_Perc"
+  names(sp)[names(sp) == "scientificName"] <- "TaxonName"
   sp
 }
 
@@ -40,8 +39,9 @@ test_that("type conditions name the plot's taxa responsible for them", {
   res <- suppressMessages(
     resy_classify(sp, header, scheme = "Apennine-test", mc = 1L)
   )
-  out <- paste(capture.output(resy_eval_plot(res, "AN57", type = "F")),
-               collapse = "\n")
+  out <- paste(
+    capture.output(resy_eval_plot(res, "AN57", type = "F")), collapse = "\n"
+    )
 
   expect_match(out, "F     Forest", fixed = TRUE)
   expect_match(out, "<#TC Beech-forest-trees GR 10>", fixed = TRUE)
