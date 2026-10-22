@@ -137,3 +137,49 @@ test_that("resy_candidates errors if no candidate table is present", {
     "No candidate table found in result"
   )
 })
+ranked_result <- function() {
+  structure(
+    list(
+      result.classification = c(p1 = "B", p2 = "C", p3 = "?"),
+      candidates = data.table::data.table(
+        plot_id       = c("p1", "p1", "p1", "p2"),
+        type          = c("B", "A", "D", "C"),
+        priority      = c("5", "2", "1", "3"),
+        priority_rank = c(3L, 2L, 1L, 2L)
+      )
+    ),
+    class = "resy_result"
+  )
+}
+
+test_that("top_n keeps the highest priorities", {
+  out <- resy_candidates(ranked_result(), top_n = 1L)
+  expect_equal(out$type, c("B", "C"))
+})
+
+test_that("wide = TRUE gives one row per plot, highest priority first", {
+  out <- resy_candidates(ranked_result(), wide = TRUE)
+
+  expect_equal(out$plot_id, c("p1", "p2", "p3"))
+  expect_equal(names(out), c("plot_id", "classification",
+                             "type_1", "priority_1", "type_2", "priority_2",
+                             "type_3", "priority_3"))
+  expect_equal(out$classification, c("B", "C", "?"))
+  expect_equal(out$type_1, c("B", "C", NA))
+  expect_equal(out$priority_1, c("5", "3", NA))
+  expect_equal(out$type_3, c("D", NA, NA))
+})
+
+test_that("wide = TRUE applies top_n and plot_id", {
+  out <- resy_candidates(ranked_result(), plot_id = "p1", top_n = 2L, wide = TRUE)
+  expect_equal(nrow(out), 1L)
+  expect_equal(unlist(out[, c("type_1", "type_2")], use.names = FALSE), c("B", "A"))
+  expect_false("type_3" %in% names(out))
+})
+
+test_that("wide = TRUE without candidates lists the plots", {
+  res <- ranked_result()
+  res$candidates <- res$candidates[0]
+  out <- resy_candidates(res, wide = TRUE)
+  expect_equal(names(out), c("plot_id", "classification"))
+})

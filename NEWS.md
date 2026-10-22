@@ -76,6 +76,9 @@
   level and species. `resy_summarize_taxa()` is removed; use `summary()` on the
   result of `resy_resolve_taxa()`. With `resolve_taxa = TRUE`,
   `resy_classify()` stores that summary as `taxon_resolution`.
+* `resy_candidates(wide = TRUE)` returns one row per plot: `plot_id`, its
+  `classification`, then `type_1`, `priority_1`, `type_2`, `priority_2`, ...,
+  highest priority first. Plots without candidates are kept with `NA`.
 * `resy_eval_plot()` explains a plot's classification in plain words: the types
   whose rules hold with their priorities, the type chosen, and the plot's species
   with cover. It then lists the lower-level types the plot did not reach, closest
@@ -109,6 +112,9 @@
   row order of `header`, and reports the responsible taxa of `#TC ... GR n`
   conditions, which were `NA`.
 * `resy_aggregate_taxa()` works with an expert system that has no aggregations.
+* `resy_candidates(top_n = )` keeps the candidates with the highest priority.
+  Before, it kept those with the lowest, so `top_n = 1` returned for example
+  `F` (priority 2) for a plot classified as `FB` (priority 5).
 * `resy_classify()` stops when `obs` has no `species_col` column. Before, it
   classified every plot as unclassified (`?`). A `species_col` other than
   `TaxonName` is used even when `obs` also has a `TaxonName` column.

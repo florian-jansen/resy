@@ -217,20 +217,11 @@ cand <- RESY::resy_candidates(res, top_n = 3)
 cand
 ```
 
-Sometimes the wide format is useful:
+`wide = TRUE` gives one row per plot: the type it is classified as, then its
+candidate types with their priorities, highest priority first:
 
 ```{r show-eunis-candiates-wide}
-cand |>
-  dplyr::select(-priority_rank) |>
-  dplyr::arrange(plot_id, priority) |>
-  dplyr::group_by(plot_id) |>
-  dplyr::mutate(rank_n = dplyr::row_number()) |>
-  tidyr::pivot_wider(
-    id_cols = plot_id,
-    names_from = rank_n,
-    values_from = c(type, priority),
-    names_sep = "_"
-  )
+RESY::resy_candidates(res, top_n = 3, wide = TRUE)
 ```
 
 ## Plot-level details
