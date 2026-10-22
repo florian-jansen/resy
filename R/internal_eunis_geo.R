@@ -42,29 +42,59 @@
 # data frame needs `Longitude` and `Latitude` in the CRS `source_crs`. Without
 # `source_crs`, coordinates that are all valid longitudes and latitudes are read
 # as degrees (EPSG:4326); other coordinates need the code.
-.resy_check_coordinates <- function(data, source_crs = NULL) {
-
+.resy_check_coordinates <- function(
+    data,
+    source_crs = NULL,
+    verbose = interactive()
+) {
+  
   if (!inherits(data, "sf")) {
-
-    if (!rlang::has_name(data, "Longitude") || !rlang::has_name(data, "Latitude"))
-      stop('"Longitude" and/or "Latitude" columns are missing.', call. = FALSE)
-
+    
+    if (!rlang::has_name(data, "Longitude") ||
+        !rlang::has_name(data, "Latitude"))
+      stop(
+        '"Longitude" and/or "Latitude" columns are missing.',
+        call. = FALSE
+      )
+    
     if (is.null(source_crs)) {
+      
       lon <- suppressWarnings(as.numeric(data$Longitude))
       lat <- suppressWarnings(as.numeric(data$Latitude))
+      
       if (!all(abs(lon) <= 180 & abs(lat) <= 90, na.rm = TRUE))
-        stop("The coordinates are not longitude/latitude in degrees; ",
-             "give their EPSG code as `source_crs`.", call. = FALSE)
-      message("`source_crs` not given; the coordinates are read as ",
-              "longitude/latitude in degrees (EPSG:4326).")
+        stop(
+          "The coordinates are not longitude/latitude in degrees; ",
+          "give their EPSG code as `source_crs`.",
+          call. = FALSE
+        )
+      
+      if (verbose) {
+        message(
+          "`source_crs` not given; the coordinates are read as ",
+          "longitude/latitude in degrees (EPSG:4326)."
+        )
+      }
+      
       source_crs <- 4326
     }
-
-    data <- sf::st_as_sf(data, coords = c("Longitude", "Latitude"), crs = source_crs)
+    
+    data <- sf::st_as_sf(
+      data,
+      coords = c("Longitude", "Latitude"),
+      crs = source_crs
+    )
   }
-
-  if (isTRUE(sf::st_crs(data)$epsg == .resy_eunis_crs)) return(data)
-  message("Transforming coordinates to ETRS89 / UTM zone 32N (EPSG:25832).")
+  
+  if (isTRUE(sf::st_crs(data)$epsg == .resy_eunis_crs))
+    return(data)
+  
+  if (verbose) {
+    message(
+      "Transforming coordinates to ETRS89 / UTM zone 32N (EPSG:25832)."
+    )
+  }
+  
   sf::st_transform(data, crs = .resy_eunis_crs)
 }
 
@@ -112,7 +142,7 @@
     if (col %in% assigned) {
       if (all(is.na(data[[col]])))
         out <- c(out, sprintf(paste0(
-          "No site falls inside the %s base map. Check that `source_crs` ",
+          "No site falls inside the %s base map. Check that `source_crs`",
           "matches the coordinates (longitude/latitude in degrees is 4326)."), map))
       else if (anyNA(data[[col]]))
         out <- c(out, sprintf('"%s" contains NA values: some sites are outside the %s base map.', col, map))
