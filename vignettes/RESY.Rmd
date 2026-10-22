@@ -165,9 +165,11 @@ head(cand_apennine)
 
 ### Plot-level details
 
-`resy_eval_plot()` prints the full evidence for one plot: which species
-matched, which group conditions fired, and which vegetation-type formulas
-evaluated to `TRUE`.
+`resy_eval_plot()` prints the full evidence for one plot: its species, which
+vegetation-type formulas evaluated to `TRUE`, and the type it is classified as.
+It then lists the lower-level types the plot did not reach, with the result of
+each of their conditions, which shows why the classification stopped at this
+level.
 
 ```{r eval-plot}
 # Replace "AN57" with a PlotObservationID present in your data
@@ -175,9 +177,8 @@ resy_eval_plot(res_apennine, p = "AN57")
 
 ```
 
-Passing `type` adds, for each named type, its formula as written in the expert
-file and the membership conditions it uses, whether each holds for this plot,
-and the plot's taxa responsible for it:
+Passing `type` explains any other type in the same way, whether or not its
+rule holds for the plot:
 
 ```{r eval-plot-type}
 resy_eval_plot(res_apennine, p = "AN57", type = "F")
