@@ -24,11 +24,13 @@
 #'     sf::st_as_sf(coords = c("x", "y"), crs = 25832)
 #'   resy_check_data(data, source_crs = 25832)
 #' @export
-resy_check_data <- function(data, source_crs = NULL) {
+resy_check_data <- function(data, source_crs = NULL, verbose = interactive()) {
 
   # 1 Coordinates / CRS ----
 
-  data_sf <- .resy_check_coordinates(data = data, source_crs = source_crs)
+  data_sf <- .resy_check_coordinates(
+    data = data, source_crs = source_crs, verbose = verbose
+    )
 
   if (anyNA(data_sf$geometry))
     warning("Some sites have missing coordinates.")
