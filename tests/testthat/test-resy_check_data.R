@@ -14,7 +14,9 @@ test_that("transforms sf with non-25832 CRS to EPSG:25832 and returns sf", {
     lat = 48
   ) |> sf::st_as_sf(coords = c("lon", "lat"), crs = 4326)
   
-  expect_message(res <- resy_check_data(d), "Transforming coordinates")
+  expect_message(
+    res <- resy_check_data(d, verbose = TRUE), "Transforming coordinates"
+    )
   expect_s3_class(res, "sf")
   expect_equal(sf::st_crs(res)$epsg, 25832)
   expect_true("PlotObservationID" %in% names(res))

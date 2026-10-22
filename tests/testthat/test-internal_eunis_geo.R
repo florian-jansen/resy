@@ -18,7 +18,8 @@ test_that(".resy_check_coordinates: sf not in 25832 transforms with message", {
   
   df <- sf::st_read(system.file("shape/nc.shp", package = "sf"), quiet = TRUE)
   expect_message(
-    out <- RESY:::.resy_check_coordinates(df), "Transforming coordinates"
+    out <- RESY:::.resy_check_coordinates(df, verbose = TRUE),
+    "Transforming coordinates"
     )
   expect_equal(sf::st_crs(out)$epsg, 25832)
   
@@ -35,7 +36,8 @@ test_that(".resy_check_coordinates: data frame with Lon/Lat and source_crs works
   
   df <- data.frame(Longitude = 10, Latitude = 50)
   expect_message(
-    out <- RESY:::.resy_check_coordinates(df, source_crs = 4326), "Transforming"
+    out <- RESY:::.resy_check_coordinates(df, source_crs = 4326, verbose = TRUE),
+    "Transforming"
     )
   expect_equal(sf::st_crs(out)$epsg, 25832)
   

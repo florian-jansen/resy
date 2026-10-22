@@ -4,7 +4,7 @@
 \alias{resy_check_data}
 \title{Check the format of plot data for ESy classification}
 \usage{
-resy_check_data(data, source_crs = NULL)
+resy_check_data(data, source_crs = NULL, verbose = interactive())
 }
 \arguments{
 \item{data}{A data frame, tibble, or point `sf` object.}
@@ -13,6 +13,9 @@ resy_check_data(data, source_crs = NULL)
 frame. When `NULL` (default), coordinates that are all valid longitudes and
 latitudes are read as degrees (EPSG:4326); other coordinates need the code.
 Ignored when `data` is an `sf` object, which carries its own CRS.}
+
+\item{verbose}{Logical; if `TRUE`, informational messages about coordinate
+interpretation and transformation are shown. Defaults to [interactive()].}
 }
 \value{
 An `sf` object in EPSG:25832 with all available ESy columns ordered

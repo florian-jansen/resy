@@ -56,7 +56,7 @@
   meta_j <- x[["metadata"]]
   if (is.null(meta_j)) {
     warnings <- c(warnings,
-                  "No 'metadata' key — recommended fields: scheme, version, description")
+                  "No 'metadata' key - recommended fields: scheme, version, description")
   } else {
     if (!nzchar(as.character(meta_j[["scheme"]]  %||% "")))
       warnings <- c(warnings, "metadata.scheme is missing or empty")
@@ -138,7 +138,7 @@
       # Priority
       if (!prio %in% valid_prios)
         errors <- c(errors, sprintf(
-          "Invalid priority %s in %s — must be a single character in 0-9, A-Z or a-z",
+          "Invalid priority %s in %s - must be a single character in 0-9, A-Z or a-z",
           dQuote(prio), lbl
         ))
 

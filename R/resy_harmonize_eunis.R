@@ -26,6 +26,8 @@
 #'   `Dunes_Bohn` flags via spatial intersection.
 #' @param coast_buffer Numeric buffer in metres for coastline proximity
 #'   (default 5000).
+#' @param verbose Logical; if `TRUE`, informational messages about coordinate
+#'   interpretation and transformation are shown. Defaults to [interactive()].
 #' @return A named list:
 #'   \describe{
 #'     \item{`sites`}{Tibble of harmonised plot data, geometry dropped,

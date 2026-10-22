@@ -130,6 +130,7 @@
 # columns that were just assigned from the base maps; `coast_dunes = FALSE`
 # leaves out the coast and dune columns.
 .resy_site_warnings <- function(data, assigned = character(), coast_dunes = TRUE) {
+  
   out <- character()
 
   if (!rlang::has_name(data, "Altitude (m)"))

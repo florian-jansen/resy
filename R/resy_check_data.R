@@ -13,6 +13,8 @@
 #'   frame. When `NULL` (default), coordinates that are all valid longitudes and
 #'   latitudes are read as degrees (EPSG:4326); other coordinates need the code.
 #'   Ignored when `data` is an `sf` object, which carries its own CRS.
+#' @param verbose Logical; if `TRUE`, informational messages about coordinate
+#'   interpretation and transformation are shown. Defaults to [interactive()].
 #' @return An `sf` object in EPSG:25832 with all available ESy columns ordered
 #'   to the front: `PlotObservationID`, `Altitude (m)`, `Coast_EEA`, `Dunes_Bohn`,
 #'   `Ecoreg`, `Ecoreg_name`, `Country`, `Country_ID`, `geometry`.
