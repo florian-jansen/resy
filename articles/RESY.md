@@ -212,10 +212,10 @@ head(cand_apennine)
 #>     <char> <char>    <ord>         <int>
 #> 1:    AM30      F        2             1
 #> 2:    AN57      F        2             1
-#> 3:    BE71      F        2             1
-#> 4:    BE71     FB        5             3
-#> 5:    BK34      N        2             1
-#> 6:    BK34     NS        3             2
+#> 3:    BE71     FB        5             3
+#> 4:    BE71      F        2             1
+#> 5:    BK34     NS        3             2
+#> 6:    BK34      N        2             1
 ```
 
 ### Plot-level details

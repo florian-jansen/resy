@@ -91,6 +91,8 @@
 <li>
 <code><a href="../reference/resy_check_taxonomy.html">resy_check_taxonomy()</a></code> and <code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> both return a <code>resy_taxa</code> data frame with a logical <code>matched</code> column. <code><a href="../reference/resy_check_taxonomy.html">resy_check_taxonomy()</a></code> names its columns <code>scientificName</code> (as submitted), <code>TaxonName</code> (canonical) and <code>matched</code>. Printing a <code>resy_taxa</code> table describes its columns and counts the matches; <code><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary()</a></code> gives the counts per name and per record, the records by match type, and the unmatched names grouped into genus only, below species level and species. <code>resy_summarize_taxa()</code> is removed; use <code><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary()</a></code> on the result of <code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code>. With <code>resolve_taxa = TRUE</code>, <code><a href="../reference/resy_classify.html">resy_classify()</a></code> stores that summary as <code>taxon_resolution</code>.</li>
 <li>
+<code>resy_candidates(wide = TRUE)</code> returns one row per plot: <code>plot_id</code>, its <code>classification</code>, then <code>type_1</code>, <code>priority_1</code>, <code>type_2</code>, <code>priority_2</code>, …, highest priority first. Plots without candidates are kept with <code>NA</code>.</li>
+<li>
 <code><a href="../reference/resy_eval_plot.html">resy_eval_plot()</a></code> explains a plot’s classification in plain words: the types whose rules hold with their priorities, the type chosen, and the plot’s species with cover. It then lists the lower-level types the plot did not reach, closest first, and shows the closest in full: its rule with numbered conditions, and for each condition whether it is met, the plot’s value, the required value and the species behind it. <code>type =</code> shows any type the same way; <code>lower = FALSE</code> turns the list off. The <code>group_names</code> column is no longer added to the species output.</li>
 </ul></div>
 <div class="section level3">
@@ -104,6 +106,8 @@
 <code><a href="../reference/resy_eval_plot.html">resy_eval_plot()</a></code> looks up a plot in the classifier’s plot order, not in the row order of <code>header</code>, and reports the responsible taxa of <code>#TC ... GR n</code> conditions, which were <code>NA</code>.</li>
 <li>
 <code>resy_aggregate_taxa()</code> works with an expert system that has no aggregations.</li>
+<li>
+<code>resy_candidates(top_n = )</code> keeps the candidates with the highest priority. Before, it kept those with the lowest, so <code>top_n = 1</code> returned for example <code>F</code> (priority 2) for a plot classified as <code>FB</code> (priority 5).</li>
 <li>
 <code><a href="../reference/resy_classify.html">resy_classify()</a></code> stops when <code>obs</code> has no <code>species_col</code> column. Before, it classified every plot as unclassified (<code>?</code>). A <code>species_col</code> other than <code>TaxonName</code> is used even when <code>obs</code> also has a <code>TaxonName</code> column.</li>
 <li>

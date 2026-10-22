@@ -345,8 +345,8 @@ res <- RESY::resy_classify(
 #> Step 5.9  Number of T$ NON conditions: 140
 #> Step 5.10  Header conditions with numeric values: 4
 #>   Header conditions with character values: 4
-#> adapt conditions 2026-10-22 13:30:45.031753
-#> classification from here on 2026-10-22 13:30:45.095583
+#> adapt conditions 2026-10-22 15:05:25.970213
+#> classification from here on 2026-10-22 15:05:26.063138
 ```
 
 ## Inspect results
@@ -363,48 +363,50 @@ cand
 #>      plot_id   type priority priority_rank
 #>       <char> <char>    <ord>         <int>
 #>   1:    AE28      R        1             1
-#>   2:    AM30      T        3             3
-#>   3:    AM30    T17        4             4
+#>   2:    AM30    T17        4             4
+#>   3:    AM30      T        3             3
 #>   4:    AN57      T        3             3
 #>   5:    BE71      T        3             3
 #>  ---                                      
-#> 301:    ZS46    R1A        2             2
-#> 302:    ZX20      T        3             3
-#> 303:    ZX20    T32        4             4
-#> 304:    ZX92      T        3             3
-#> 305:    ZX92    T17        4             4
+#> 301:    ZS46      R        1             1
+#> 302:    ZX20    T32        4             4
+#> 303:    ZX20      T        3             3
+#> 304:    ZX92    T17        4             4
+#> 305:    ZX92      T        3             3
 ```
 
-Sometimes the wide format is useful:
+`wide = TRUE` gives one row per plot: the type it is classified as, then
+its candidate types with their priorities, highest priority first:
 
 ``` r
 
-cand |>
-  dplyr::select(-priority_rank) |>
-  dplyr::arrange(plot_id, priority) |>
-  dplyr::group_by(plot_id) |>
-  dplyr::mutate(rank_n = dplyr::row_number()) |>
-  tidyr::pivot_wider(
-    id_cols = plot_id,
-    names_from = rank_n,
-    values_from = c(type, priority),
-    names_sep = "_"
-  )
-#> # A tibble: 196 × 7
-#> # Groups:   plot_id [196]
-#>    plot_id type_1 type_2 type_3 priority_1 priority_2 priority_3
-#>    <chr>   <chr>  <chr>  <chr>  <ord>      <ord>      <ord>     
-#>  1 AE28    R      NA     NA     1          NA         NA        
-#>  2 AM30    T      T17    NA     3          4          NA        
-#>  3 AN57    T      NA     NA     3          NA         NA        
-#>  4 BE71    T      NA     NA     3          NA         NA        
-#>  5 BF83    P      P3b    NA     1          2          NA        
-#>  6 BK34    R      NA     NA     1          NA         NA        
-#>  7 BK70    P      P3b    NA     1          2          NA        
-#>  8 BL76    T      T17    NA     3          4          NA        
-#>  9 BQ20    T      T32    NA     3          4          NA        
-#> 10 BR64    R      NA     NA     1          NA         NA        
-#> # ℹ 186 more rows
+RESY::resy_candidates(res, top_n = 3, wide = TRUE)
+#>      plot_id classification type_1 priority_1 type_2 priority_2 type_3
+#>       <char>         <char> <char>      <ord> <char>      <ord> <char>
+#>   1:    HU32            T17    T17          4      T          3   <NA>
+#>   2:    KW76            T17    T17          4      T          3   <NA>
+#>   3:    YB18              T      T          3   <NA>       <NA>   <NA>
+#>   4:    NX70              T      T          3   <NA>       <NA>   <NA>
+#>   5:    OL48              T      T          3   <NA>       <NA>   <NA>
+#>  ---                                                                  
+#> 196:    ZH63             Sa     Sa          3   <NA>       <NA>   <NA>
+#> 197:    SU38              T      T          3   <NA>       <NA>   <NA>
+#> 198:    CG67            S51    S51          4     Sa          3   <NA>
+#> 199:    HC96             Sa     Sa          3   <NA>       <NA>   <NA>
+#> 200:    DZ84             Sa     Sa          3   <NA>       <NA>   <NA>
+#>      priority_3
+#>           <ord>
+#>   1:       <NA>
+#>   2:       <NA>
+#>   3:       <NA>
+#>   4:       <NA>
+#>   5:       <NA>
+#>  ---           
+#> 196:       <NA>
+#> 197:       <NA>
+#> 198:       <NA>
+#> 199:       <NA>
+#> 200:       <NA>
 ```
 
 ### Plot-level details

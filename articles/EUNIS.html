@@ -387,8 +387,8 @@ sites data (<code>header</code>).</p>
 <span><span class="co">#&gt; Step 5.9  Number of T$ NON conditions: 140</span></span>
 <span><span class="co">#&gt; Step 5.10  Header conditions with numeric values: 4</span></span>
 <span><span class="co">#&gt;   Header conditions with character values: 4</span></span>
-<span><span class="co">#&gt; adapt conditions 2026-10-22 13:30:45.031753</span></span>
-<span><span class="co">#&gt; classification from here on 2026-10-22 13:30:45.095583</span></span></code></pre></div>
+<span><span class="co">#&gt; adapt conditions 2026-10-22 15:05:25.970213</span></span>
+<span><span class="co">#&gt; classification from here on 2026-10-22 15:05:26.063138</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="inspect-results">Inspect results<a class="anchor" aria-label="anchor" href="#inspect-results"></a>
@@ -404,44 +404,47 @@ types, but with different priorities.</p>
 <span><span class="co">#&gt;      plot_id   type priority priority_rank</span></span>
 <span><span class="co">#&gt;       &lt;char&gt; &lt;char&gt;    &lt;ord&gt;         &lt;int&gt;</span></span>
 <span><span class="co">#&gt;   1:    AE28      R        1             1</span></span>
-<span><span class="co">#&gt;   2:    AM30      T        3             3</span></span>
-<span><span class="co">#&gt;   3:    AM30    T17        4             4</span></span>
+<span><span class="co">#&gt;   2:    AM30    T17        4             4</span></span>
+<span><span class="co">#&gt;   3:    AM30      T        3             3</span></span>
 <span><span class="co">#&gt;   4:    AN57      T        3             3</span></span>
 <span><span class="co">#&gt;   5:    BE71      T        3             3</span></span>
 <span><span class="co">#&gt;  ---                                      </span></span>
-<span><span class="co">#&gt; 301:    ZS46    R1A        2             2</span></span>
-<span><span class="co">#&gt; 302:    ZX20      T        3             3</span></span>
-<span><span class="co">#&gt; 303:    ZX20    T32        4             4</span></span>
-<span><span class="co">#&gt; 304:    ZX92      T        3             3</span></span>
-<span><span class="co">#&gt; 305:    ZX92    T17        4             4</span></span></code></pre></div>
-<p>Sometimes the wide format is useful:</p>
+<span><span class="co">#&gt; 301:    ZS46      R        1             1</span></span>
+<span><span class="co">#&gt; 302:    ZX20    T32        4             4</span></span>
+<span><span class="co">#&gt; 303:    ZX20      T        3             3</span></span>
+<span><span class="co">#&gt; 304:    ZX92    T17        4             4</span></span>
+<span><span class="co">#&gt; 305:    ZX92      T        3             3</span></span></code></pre></div>
+<p><code>wide = TRUE</code> gives one row per plot: the type it is
+classified as, then its candidate types with their priorities, highest
+priority first:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cand</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">priority_rank</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">plot_id</span>, <span class="va">priority</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">plot_id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>rank_n <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/row_number.html" class="external-link">row_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span></span>
-<span>    id_cols <span class="op">=</span> <span class="va">plot_id</span>,</span>
-<span>    names_from <span class="op">=</span> <span class="va">rank_n</span>,</span>
-<span>    values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">type</span>, <span class="va">priority</span><span class="op">)</span>,</span>
-<span>    names_sep <span class="op">=</span> <span class="st">"_"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 196 × 7</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   plot_id [196]</span></span></span>
-<span><span class="co">#&gt;    plot_id type_1 type_2 type_3 priority_1 priority_2 priority_3</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;ord&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;ord&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;ord&gt;</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> AE28    R      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     1          <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> AM30    T      T17    <span style="color: #BB0000;">NA</span>     3          4          <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> AN57    T      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     3          <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> BE71    T      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     3          <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> BF83    P      P3b    <span style="color: #BB0000;">NA</span>     1          2          <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> BK34    R      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     1          <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> BK70    P      P3b    <span style="color: #BB0000;">NA</span>     1          2          <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> BL76    T      T17    <span style="color: #BB0000;">NA</span>     3          4          <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> BQ20    T      T32    <span style="color: #BB0000;">NA</span>     3          4          <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> BR64    R      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>     1          <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 186 more rows</span></span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res</span>, top_n <span class="op">=</span> <span class="fl">3</span>, wide <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      plot_id classification type_1 priority_1 type_2 priority_2 type_3</span></span>
+<span><span class="co">#&gt;       &lt;char&gt;         &lt;char&gt; &lt;char&gt;      &lt;ord&gt; &lt;char&gt;      &lt;ord&gt; &lt;char&gt;</span></span>
+<span><span class="co">#&gt;   1:    HU32            T17    T17          4      T          3   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   2:    KW76            T17    T17          4      T          3   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   3:    YB18              T      T          3   &lt;NA&gt;       &lt;NA&gt;   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   4:    NX70              T      T          3   &lt;NA&gt;       &lt;NA&gt;   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   5:    OL48              T      T          3   &lt;NA&gt;       &lt;NA&gt;   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  ---                                                                  </span></span>
+<span><span class="co">#&gt; 196:    ZH63             Sa     Sa          3   &lt;NA&gt;       &lt;NA&gt;   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 197:    SU38              T      T          3   &lt;NA&gt;       &lt;NA&gt;   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 198:    CG67            S51    S51          4     Sa          3   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 199:    HC96             Sa     Sa          3   &lt;NA&gt;       &lt;NA&gt;   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 200:    DZ84             Sa     Sa          3   &lt;NA&gt;       &lt;NA&gt;   &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;      priority_3</span></span>
+<span><span class="co">#&gt;           &lt;ord&gt;</span></span>
+<span><span class="co">#&gt;   1:       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   2:       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   3:       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   4:       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;   5:       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt;  ---           </span></span>
+<span><span class="co">#&gt; 196:       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 197:       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 198:       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 199:       &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 200:       &lt;NA&gt;</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plot-level-details">Plot-level details<a class="anchor" aria-label="anchor" href="#plot-level-details"></a>

@@ -121,6 +121,10 @@
   With `resolve_taxa = TRUE`,
   [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
   stores that summary as `taxon_resolution`.
+- `resy_candidates(wide = TRUE)` returns one row per plot: `plot_id`,
+  its `classification`, then `type_1`, `priority_1`, `type_2`,
+  `priority_2`, …, highest priority first. Plots without candidates are
+  kept with `NA`.
 - [`resy_eval_plot()`](https://florian-jansen.github.io/resy/reference/resy_eval_plot.md)
   explains a plot’s classification in plain words: the types whose rules
   hold with their priorities, the type chosen, and the plot’s species
@@ -160,6 +164,10 @@
   conditions, which were `NA`.
 - `resy_aggregate_taxa()` works with an expert system that has no
   aggregations.
+- `resy_candidates(top_n = )` keeps the candidates with the highest
+  priority. Before, it kept those with the lowest, so `top_n = 1`
+  returned for example `F` (priority 2) for a plot classified as `FB`
+  (priority 5).
 - [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
   stops when `obs` has no `species_col` column. Before, it classified
   every plot as unclassified (`?`). A `species_col` other than
