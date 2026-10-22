@@ -387,8 +387,8 @@ sites data (<code>header</code>).</p>
 <span><span class="co">#&gt; Step 5.9  Number of T$ NON conditions: 140</span></span>
 <span><span class="co">#&gt; Step 5.10  Header conditions with numeric values: 4</span></span>
 <span><span class="co">#&gt;   Header conditions with character values: 4</span></span>
-<span><span class="co">#&gt; adapt conditions 2026-10-22 10:01:50.991373</span></span>
-<span><span class="co">#&gt; classification from here on 2026-10-22 10:01:51.08339</span></span></code></pre></div>
+<span><span class="co">#&gt; adapt conditions 2026-10-22 13:30:45.031753</span></span>
+<span><span class="co">#&gt; classification from here on 2026-10-22 13:30:45.095583</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="inspect-results">Inspect results<a class="anchor" aria-label="anchor" href="#inspect-results"></a>
@@ -447,153 +447,75 @@ types, but with different priorities.</p>
 <h3 id="plot-level-details">Plot-level details<a class="anchor" aria-label="anchor" href="#plot-level-details"></a>
 </h3>
 <p><code><a href="../reference/resy_eval_plot.html">resy_eval_plot()</a></code> prints the full evidence for one plot:
-which species matched, which group conditions fired, and which
-vegetation-type formulas evaluated to <code>TRUE</code>.</p>
+its species, which vegetation-type formulas evaluated to
+<code>TRUE</code>, and the type it is classified as. It then lists the
+lower-level types the plot did not reach, with the result of each of
+their conditions, which shows why the classification stopped at this
+level.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res</span>, p <span class="op">=</span> <span class="st">"AM30"</span><span class="op">)</span> <span class="co"># p = PlotObservationID</span></span>
-<span><span class="co">#&gt; Possible types of plot "AM30" (18): T17, T</span></span>
-<span><span class="co">#&gt; Priorities of these types: 4 3 </span></span>
-<span><span class="co">#&gt; Classified as: T17 </span></span>
-<span><span class="co">#&gt; Plant observations for plot AM30 :</span></span>
-<span><span class="co">#&gt;     PlotObservationID                  TaxonName</span></span>
-<span><span class="co">#&gt;                &lt;char&gt;                     &lt;char&gt;</span></span>
-<span><span class="co">#&gt;  1:              AM30               Luzula nivea</span></span>
-<span><span class="co">#&gt;  2:              AM30          Cicerbita muralis</span></span>
-<span><span class="co">#&gt;  3:              AM30          Hieracium murorum</span></span>
-<span><span class="co">#&gt;  4:              AM30       Veronica urticifolia</span></span>
-<span><span class="co">#&gt;  5:              AM30        Acer pseudoplatanus</span></span>
-<span><span class="co">#&gt;  6:              AM30           Sorbus aucuparia</span></span>
-<span><span class="co">#&gt;  7:              AM30                 Abies alba</span></span>
-<span><span class="co">#&gt;  8:              AM30         Solidago virgaurea</span></span>
-<span><span class="co">#&gt;  9:              AM30 Dryopteris filix-mas aggr.</span></span>
-<span><span class="co">#&gt; 10:              AM30      Athyrium filix-femina</span></span>
-<span><span class="co">#&gt; 11:              AM30            Fagus sylvatica</span></span>
-<span><span class="co">#&gt; 12:              AM30        Prenanthes purpurea</span></span>
-<span><span class="co">#&gt;                                                                                                                                                                                                                  group_names</span></span>
-<span><span class="co">#&gt;                                                                                                                                                                                                                       &lt;char&gt;</span></span>
-<span><span class="co">#&gt;  1:                                                                                                                                                                       Hemicryptophytes | +11 Acidophilous-forest-species</span></span>
-<span><span class="co">#&gt;  2:                                             Hemicryptophytes | +04 R55-Lowland-moist-or-wet-tall-herb-and-fern-fringe | +04 R57-Herbaceous-forest-clearing-vegetation | +12 Grassland-species | +12 Synanthropic-species</span></span>
-<span><span class="co">#&gt;  3:                                                                                                                     Chamaephytes | +04 R52-Forest-fringe-of-acidic-nutrient-poor-soils | +11 Acidophilous-forest-species</span></span>
-<span><span class="co">#&gt;  4:                                                                                                                                                                Hemicryptophytes | +11 Eutrophic-deciduous-forest-species</span></span>
-<span><span class="co">#&gt;  5:                                                                               Native-broadleaf-trees | Native-trees | Noble-hardwood-trees | Noble-hardwood-trees-ravine-specialists | Ravine-forest-specialists | Trees</span></span>
-<span><span class="co">#&gt;  6:                                                     Forest-clearing-trees-and-shrubs | Native-broadleaf-trees | Native-trees | Shrubs | Temperate-deciduous-shrubs | Temperate-submediterranean-deciduous-shrubs | Trees</span></span>
-<span><span class="co">#&gt;  7:                                                                                                                                                            Native-conifer-trees | Native-trees | Temperate-Abies | Trees</span></span>
-<span><span class="co">#&gt;  8: Hemicryptophytes | +03 U2a-Siliceous-high-mountain-scree | +03 U2b-Siliceous-lowland-scree | +04 R52-Forest-fringe-of-acidic-nutrient-poor-soils | +12 Grassland-species | +12 Inland-sparsely-vegetated-habitat-species</span></span>
-<span><span class="co">#&gt;  9:                                                                                                                          +04 R55-Lowland-moist-or-wet-tall-herb-and-fern-fringe | +11 Eutrophic-deciduous-forest-species</span></span>
-<span><span class="co">#&gt; 10:                                                                                                                                                                                                                     &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 11:                                                                                                                                               Fagus-sylvatica-orientalis | Native-broadleaf-trees | Native-trees | Trees</span></span>
-<span><span class="co">#&gt; 12:                                                                                                                                                                Hemicryptophytes | +11 Eutrophic-deciduous-forest-species</span></span>
-<span><span class="co">#&gt;     Cover_Perc</span></span>
-<span><span class="co">#&gt;          &lt;num&gt;</span></span>
-<span><span class="co">#&gt;  1:        0.1</span></span>
-<span><span class="co">#&gt;  2:        0.1</span></span>
-<span><span class="co">#&gt;  3:        0.5</span></span>
-<span><span class="co">#&gt;  4:        0.5</span></span>
-<span><span class="co">#&gt;  5:        0.5</span></span>
-<span><span class="co">#&gt;  6:        0.5</span></span>
-<span><span class="co">#&gt;  7:        0.5</span></span>
-<span><span class="co">#&gt;  8:        0.5</span></span>
-<span><span class="co">#&gt;  9:        0.5</span></span>
-<span><span class="co">#&gt; 10:        0.5</span></span>
-<span><span class="co">#&gt; 11:       87.5</span></span>
-<span><span class="co">#&gt; 12:        3.0</span></span></code></pre></div>
-<p>Passing <code>type</code> adds, for each named type, its formula as
-written in the expert file and the membership conditions it uses,
-whether each holds for this plot, and the plot’s taxa responsible for
-it:</p>
+<span><span class="co">#&gt; Types whose rule holds: T17 (priority 4), T (priority 3)</span></span>
+<span><span class="co">#&gt; Classified as T17 (Fagus forest on non-acid soils), the type with the highest priority.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Plot AM30: 12 species</span></span>
+<span><span class="co">#&gt;  species                    cover</span></span>
+<span><span class="co">#&gt;  Fagus sylvatica            87.5 </span></span>
+<span><span class="co">#&gt;  Prenanthes purpurea         3.0 </span></span>
+<span><span class="co">#&gt;  Abies alba                  0.5 </span></span>
+<span><span class="co">#&gt;  Acer pseudoplatanus         0.5 </span></span>
+<span><span class="co">#&gt;  Athyrium filix-femina       0.5 </span></span>
+<span><span class="co">#&gt;  Dryopteris filix-mas aggr.  0.5 </span></span>
+<span><span class="co">#&gt;  Hieracium murorum           0.5 </span></span>
+<span><span class="co">#&gt;  Solidago virgaurea          0.5 </span></span>
+<span><span class="co">#&gt;  Sorbus aucuparia            0.5 </span></span>
+<span><span class="co">#&gt;  Veronica urticifolia        0.5 </span></span>
+<span><span class="co">#&gt;  Cicerbita muralis           0.1 </span></span>
+<span><span class="co">#&gt;  Luzula nivea                0.1 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; T17 has no lower levels.</span></span></code></pre></div>
+<p>Passing <code>type</code> explains any other type in the same way,
+whether or not its rule holds for the plot:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res</span>, p <span class="op">=</span> <span class="st">"AM30"</span>, type <span class="op">=</span> <span class="st">"T17"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Possible types of plot "AM30" (18): T17, T</span></span>
-<span><span class="co">#&gt; Priorities of these types: 4 3 </span></span>
-<span><span class="co">#&gt; Classified as: T17 </span></span>
-<span><span class="co">#&gt; Plant observations for plot AM30 :</span></span>
-<span><span class="co">#&gt;     PlotObservationID                  TaxonName</span></span>
-<span><span class="co">#&gt;                &lt;char&gt;                     &lt;char&gt;</span></span>
-<span><span class="co">#&gt;  1:              AM30               Luzula nivea</span></span>
-<span><span class="co">#&gt;  2:              AM30          Cicerbita muralis</span></span>
-<span><span class="co">#&gt;  3:              AM30          Hieracium murorum</span></span>
-<span><span class="co">#&gt;  4:              AM30       Veronica urticifolia</span></span>
-<span><span class="co">#&gt;  5:              AM30        Acer pseudoplatanus</span></span>
-<span><span class="co">#&gt;  6:              AM30           Sorbus aucuparia</span></span>
-<span><span class="co">#&gt;  7:              AM30                 Abies alba</span></span>
-<span><span class="co">#&gt;  8:              AM30         Solidago virgaurea</span></span>
-<span><span class="co">#&gt;  9:              AM30 Dryopteris filix-mas aggr.</span></span>
-<span><span class="co">#&gt; 10:              AM30      Athyrium filix-femina</span></span>
-<span><span class="co">#&gt; 11:              AM30            Fagus sylvatica</span></span>
-<span><span class="co">#&gt; 12:              AM30        Prenanthes purpurea</span></span>
-<span><span class="co">#&gt;                                                                                                                                                                                                                  group_names</span></span>
-<span><span class="co">#&gt;                                                                                                                                                                                                                       &lt;char&gt;</span></span>
-<span><span class="co">#&gt;  1:                                                                                                                                                                       Hemicryptophytes | +11 Acidophilous-forest-species</span></span>
-<span><span class="co">#&gt;  2:                                             Hemicryptophytes | +04 R55-Lowland-moist-or-wet-tall-herb-and-fern-fringe | +04 R57-Herbaceous-forest-clearing-vegetation | +12 Grassland-species | +12 Synanthropic-species</span></span>
-<span><span class="co">#&gt;  3:                                                                                                                     Chamaephytes | +04 R52-Forest-fringe-of-acidic-nutrient-poor-soils | +11 Acidophilous-forest-species</span></span>
-<span><span class="co">#&gt;  4:                                                                                                                                                                Hemicryptophytes | +11 Eutrophic-deciduous-forest-species</span></span>
-<span><span class="co">#&gt;  5:                                                                               Native-broadleaf-trees | Native-trees | Noble-hardwood-trees | Noble-hardwood-trees-ravine-specialists | Ravine-forest-specialists | Trees</span></span>
-<span><span class="co">#&gt;  6:                                                     Forest-clearing-trees-and-shrubs | Native-broadleaf-trees | Native-trees | Shrubs | Temperate-deciduous-shrubs | Temperate-submediterranean-deciduous-shrubs | Trees</span></span>
-<span><span class="co">#&gt;  7:                                                                                                                                                            Native-conifer-trees | Native-trees | Temperate-Abies | Trees</span></span>
-<span><span class="co">#&gt;  8: Hemicryptophytes | +03 U2a-Siliceous-high-mountain-scree | +03 U2b-Siliceous-lowland-scree | +04 R52-Forest-fringe-of-acidic-nutrient-poor-soils | +12 Grassland-species | +12 Inland-sparsely-vegetated-habitat-species</span></span>
-<span><span class="co">#&gt;  9:                                                                                                                          +04 R55-Lowland-moist-or-wet-tall-herb-and-fern-fringe | +11 Eutrophic-deciduous-forest-species</span></span>
-<span><span class="co">#&gt; 10:                                                                                                                                                                                                                     &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 11:                                                                                                                                               Fagus-sylvatica-orientalis | Native-broadleaf-trees | Native-trees | Trees</span></span>
-<span><span class="co">#&gt; 12:                                                                                                                                                                Hemicryptophytes | +11 Eutrophic-deciduous-forest-species</span></span>
-<span><span class="co">#&gt;     Cover_Perc</span></span>
-<span><span class="co">#&gt;          &lt;num&gt;</span></span>
-<span><span class="co">#&gt;  1:        0.1</span></span>
-<span><span class="co">#&gt;  2:        0.1</span></span>
-<span><span class="co">#&gt;  3:        0.5</span></span>
-<span><span class="co">#&gt;  4:        0.5</span></span>
-<span><span class="co">#&gt;  5:        0.5</span></span>
-<span><span class="co">#&gt;  6:        0.5</span></span>
-<span><span class="co">#&gt;  7:        0.5</span></span>
-<span><span class="co">#&gt;  8:        0.5</span></span>
-<span><span class="co">#&gt;  9:        0.5</span></span>
-<span><span class="co">#&gt; 10:        0.5</span></span>
-<span><span class="co">#&gt; 11:       87.5</span></span>
-<span><span class="co">#&gt; 12:        3.0</span></span>
+<span><span class="co">#&gt; Types whose rule holds: T17 (priority 4), T (priority 3)</span></span>
+<span><span class="co">#&gt; Classified as T17 (Fagus forest on non-acid soils), the type with the highest priority.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; T17   Fagus forest on non-acid soils</span></span>
+<span><span class="co">#&gt; Plot AM30: 12 species</span></span>
+<span><span class="co">#&gt;  species                    cover</span></span>
+<span><span class="co">#&gt;  Fagus sylvatica            87.5 </span></span>
+<span><span class="co">#&gt;  Prenanthes purpurea         3.0 </span></span>
+<span><span class="co">#&gt;  Abies alba                  0.5 </span></span>
+<span><span class="co">#&gt;  Acer pseudoplatanus         0.5 </span></span>
+<span><span class="co">#&gt;  Athyrium filix-femina       0.5 </span></span>
+<span><span class="co">#&gt;  Dryopteris filix-mas aggr.  0.5 </span></span>
+<span><span class="co">#&gt;  Hieracium murorum           0.5 </span></span>
+<span><span class="co">#&gt;  Solidago virgaurea          0.5 </span></span>
+<span><span class="co">#&gt;  Sorbus aucuparia            0.5 </span></span>
+<span><span class="co">#&gt;  Veronica urticifolia        0.5 </span></span>
+<span><span class="co">#&gt;  Cicerbita muralis           0.1 </span></span>
+<span><span class="co">#&gt;  Luzula nivea                0.1 </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; (((&lt;#TC Fagus-sylvatica-orientalis GR 30&gt; AND (&lt;Fagus sylvatica GR #SC Trees EXCEPT Fagus sylvatica&gt; OR &lt;Fagus orientalis GR #SC Trees EXCEPT Fagus orientalis&gt;)) AND &lt;### +11 Eutrophic-deciduous-forest-species GR ### +11 Acidophilous-forest-species&gt;) NOT &lt;#TC +11 Acidophilous-forest-species GR 25&gt;) NOT ((&lt;$$C Country EQ Ireland&gt; OR (&lt;$$C Country EQ United Kingdom&gt; AND &lt;$$N DEG_LAT GR 53&gt;)) OR ((&lt;$$N DEG_LAT GR 48&gt; AND &lt;$$N DEG_LON GR 26.5&gt;) OR (&lt;$$N DEG_LAT GR 55&gt; AND &lt;$$N DEG_LON GR 19&gt;)))</span></span>
+<span><span class="co">#&gt; T17 has no lower levels.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Relevant expressions for T17 :</span></span>
-<span><span class="co">#&gt;     expressions                                                                      </span></span>
-<span><span class="co">#&gt; 606 #TC Fagus-sylvatica-orientalis GR 30                                             </span></span>
-<span><span class="co">#&gt; 607 Fagus sylvatica GR #SC Trees EXCEPT Fagus sylvatica                              </span></span>
-<span><span class="co">#&gt; 608 Fagus orientalis GR #SC Trees EXCEPT Fagus orientalis                            </span></span>
-<span><span class="co">#&gt; 609 ### +11 Eutrophic-deciduous-forest-species GR ### +11 Acidophilous-forest-species</span></span>
-<span><span class="co">#&gt; 610 #TC +11 Acidophilous-forest-species GR 25                                        </span></span>
-<span><span class="co">#&gt; 177 $$C Country EQ Ireland                                                           </span></span>
-<span><span class="co">#&gt; 176 $$C Country EQ United Kingdom                                                    </span></span>
-<span><span class="co">#&gt; 611 $$N DEG_LAT GR 53                                                                </span></span>
-<span><span class="co">#&gt; 612 $$N DEG_LAT GR 48                                                                </span></span>
-<span><span class="co">#&gt; 613 $$N DEG_LON GR 26.5                                                              </span></span>
-<span><span class="co">#&gt; 318 $$N DEG_LAT GR 55                                                                </span></span>
-<span><span class="co">#&gt; 614 $$N DEG_LON GR 19                                                                </span></span>
-<span><span class="co">#&gt;     result</span></span>
-<span><span class="co">#&gt; 606 TRUE  </span></span>
-<span><span class="co">#&gt; 607 TRUE  </span></span>
-<span><span class="co">#&gt; 608 FALSE </span></span>
-<span><span class="co">#&gt; 609 TRUE  </span></span>
-<span><span class="co">#&gt; 610 FALSE </span></span>
-<span><span class="co">#&gt; 177 FALSE </span></span>
-<span><span class="co">#&gt; 176 FALSE </span></span>
-<span><span class="co">#&gt; 611 FALSE </span></span>
-<span><span class="co">#&gt; 612 FALSE </span></span>
-<span><span class="co">#&gt; 613 FALSE </span></span>
-<span><span class="co">#&gt; 318 FALSE </span></span>
-<span><span class="co">#&gt; 614 FALSE </span></span>
-<span><span class="co">#&gt;     responsible_taxa                                                                                          </span></span>
-<span><span class="co">#&gt; 606 Fagus sylvatica                                                                                           </span></span>
-<span><span class="co">#&gt; 607 Acer pseudoplatanus | Sorbus aucuparia | Abies alba | Fagus sylvatica                                     </span></span>
-<span><span class="co">#&gt; 608 Acer pseudoplatanus | Sorbus aucuparia | Abies alba | Fagus sylvatica                                     </span></span>
-<span><span class="co">#&gt; 609 Luzula nivea | Hieracium murorum | Veronica urticifolia | Dryopteris filix-mas aggr. | Prenanthes purpurea</span></span>
-<span><span class="co">#&gt; 610 Luzula nivea | Hieracium murorum                                                                          </span></span>
-<span><span class="co">#&gt; 177 &lt;NA&gt;                                                                                                      </span></span>
-<span><span class="co">#&gt; 176 &lt;NA&gt;                                                                                                      </span></span>
-<span><span class="co">#&gt; 611 &lt;NA&gt;                                                                                                      </span></span>
-<span><span class="co">#&gt; 612 &lt;NA&gt;                                                                                                      </span></span>
-<span><span class="co">#&gt; 613 &lt;NA&gt;                                                                                                      </span></span>
-<span><span class="co">#&gt; 318 &lt;NA&gt;                                                                                                      </span></span>
-<span><span class="co">#&gt; 614 &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; T17   Fagus forest on non-acid soils: rule holds</span></span>
+<span><span class="co">#&gt;       Rule: ((([1] and ([2] or [3])) and [4]) and not [5]) and not (([6] or ([7] and [8])) or (([9] and [10]) or ([11] and [12])))</span></span>
+<span><span class="co">#&gt;       [1] met      total cover of Fagus-sylvatica-orientalis is 87.5%, needs more than 30%</span></span>
+<span><span class="co">#&gt;                    Fagus sylvatica 87.5</span></span>
+<span><span class="co">#&gt;       [2] met      cover of Fagus sylvatica is 87.5%, needs more than the highest cover of a single species of Trees not counting Fagus sylvatica (0.5%)</span></span>
+<span><span class="co">#&gt;                    Fagus sylvatica 87.5, Abies alba 0.5, Acer pseudoplatanus 0.5, Sorbus aucuparia 0.5</span></span>
+<span><span class="co">#&gt;       [3] not met  cover of Fagus orientalis is 0%, needs more than the highest cover of a single species of Trees not counting Fagus orientalis (87.5%)</span></span>
+<span><span class="co">#&gt;                    Fagus sylvatica 87.5, Abies alba 0.5, Acer pseudoplatanus 0.5, Sorbus aucuparia 0.5</span></span>
+<span><span class="co">#&gt;       [4] met      number of species of Eutrophic-deciduous-forest-species is 3, needs more than the number of species of Acidophilous-forest-species (2)</span></span>
+<span><span class="co">#&gt;                    Prenanthes purpurea 3, Dryopteris filix-mas aggr. 0.5, Hieracium murorum 0.5, Veronica urticifolia 0.5, Luzula nivea 0.1</span></span>
+<span><span class="co">#&gt;       [5] not met  total cover of Acidophilous-forest-species is 0.6%, needs more than 25%</span></span>
+<span><span class="co">#&gt;                    Hieracium murorum 0.5, Luzula nivea 0.1</span></span>
+<span><span class="co">#&gt;       [6] not met  Country is Italy, needs Ireland</span></span>
+<span><span class="co">#&gt;       [7] not met  Country is Italy, needs United Kingdom</span></span>
+<span><span class="co">#&gt;       [8] not met  DEG_LAT is 44.1, needs more than 53</span></span>
+<span><span class="co">#&gt;       [9] not met  DEG_LAT is 44.1, needs more than 48</span></span>
+<span><span class="co">#&gt;       [10] not met  DEG_LON is 10.7, needs more than 26.5</span></span>
+<span><span class="co">#&gt;       [11] not met  DEG_LAT is 44.1, needs more than 55</span></span>
+<span><span class="co">#&gt;       [12] not met  DEG_LON is 10.7, needs more than 19</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="print-classification-hierarchy">Print classification hierarchy<a class="anchor" aria-label="anchor" href="#print-classification-hierarchy"></a>

@@ -116,7 +116,8 @@ steps are covered in <code><a href="../articles/EUNIS.html">vignette("EUNIS")</a
 <h2 id="load-and-prepare-species-data">1. Load and prepare species data<a class="anchor" aria-label="anchor" href="#load-and-prepare-species-data"></a>
 </h2>
 <p><code><a href="../reference/resy_classify.html">resy_classify()</a></code> expects the observation table to have
-three columns:</p>
+three columns. The species column can have any name, passed as
+<code>species_col</code>:</p>
 <table class="table">
 <thead><tr class="header">
 <th>Column</th>
@@ -129,7 +130,8 @@ three columns:</p>
 </tr>
 <tr class="even">
 <td><code>TaxonName</code></td>
-<td>Species name</td>
+<td>Species name (<code>species_col</code>, here
+<code>scientificName</code>)</td>
 </tr>
 <tr class="odd">
 <td><code>Cover_Perc</code></td>
@@ -239,9 +241,10 @@ returns a <code>resy_result</code> object. Pass <code>scheme</code> to
 select the bundled expert system; it will be loaded automatically.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_apennine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_classify.html">resy_classify</a></span><span class="op">(</span></span>
-<span>  obs    <span class="op">=</span> <span class="va">data_species</span>,</span>
-<span>  header <span class="op">=</span> <span class="va">header</span>,</span>
-<span>  scheme <span class="op">=</span> <span class="st">"Apennine-test"</span></span>
+<span>  obs         <span class="op">=</span> <span class="va">data_species</span>,</span>
+<span>  header      <span class="op">=</span> <span class="va">header</span>,</span>
+<span>  scheme      <span class="op">=</span> <span class="st">"Apennine-test"</span>,</span>
+<span>  species_col <span class="op">=</span> <span class="st">"scientificName"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>
@@ -272,88 +275,84 @@ per plot.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cand_apennine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res_apennine</span>, top_n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cand_apennine</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 × 4</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 variables: plot_id &lt;chr&gt;, type &lt;chr&gt;, priority &lt;chr&gt;, priority_rank &lt;int&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt;    plot_id   type priority priority_rank</span></span>
+<span><span class="co">#&gt;     &lt;char&gt; &lt;char&gt;    &lt;ord&gt;         &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:    AM30      F        2             1</span></span>
+<span><span class="co">#&gt; 2:    AN57      F        2             1</span></span>
+<span><span class="co">#&gt; 3:    BE71      F        2             1</span></span>
+<span><span class="co">#&gt; 4:    BE71     FB        5             3</span></span>
+<span><span class="co">#&gt; 5:    BK34      N        2             1</span></span>
+<span><span class="co">#&gt; 6:    BK34     NS        3             2</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="plot-level-details">Plot-level details<a class="anchor" aria-label="anchor" href="#plot-level-details"></a>
 </h3>
 <p><code><a href="../reference/resy_eval_plot.html">resy_eval_plot()</a></code> prints the full evidence for one plot:
-which species matched, which group conditions fired, and which
-vegetation-type formulas evaluated to <code>TRUE</code>.</p>
+its species, which vegetation-type formulas evaluated to
+<code>TRUE</code>, and the type it is classified as. It then lists the
+lower-level types the plot did not reach, with the result of each of
+their conditions, which shows why the classification stopped at this
+level.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Replace "AN57" with a PlotObservationID present in your data</span></span>
 <span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res_apennine</span>, p <span class="op">=</span> <span class="st">"AN57"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Possible types of plot "AN57" (135): </span></span>
-<span><span class="co">#&gt; Priorities of these types:  </span></span>
-<span><span class="co">#&gt; Classified as: ? </span></span>
-<span><span class="co">#&gt; Plant observations for plot AN57 :</span></span>
-<span><span class="co">#&gt;     PlotObservationID Cover_Perc</span></span>
-<span><span class="co">#&gt;                &lt;char&gt;      &lt;num&gt;</span></span>
-<span><span class="co">#&gt;  1:              AN57        0.1</span></span>
-<span><span class="co">#&gt;  2:              AN57        0.1</span></span>
-<span><span class="co">#&gt;  3:              AN57        0.1</span></span>
-<span><span class="co">#&gt;  4:              AN57        0.1</span></span>
-<span><span class="co">#&gt;  5:              AN57        0.1</span></span>
-<span><span class="co">#&gt;  6:              AN57        0.5</span></span>
-<span><span class="co">#&gt;  7:              AN57        0.5</span></span>
-<span><span class="co">#&gt;  8:              AN57        0.5</span></span>
-<span><span class="co">#&gt;  9:              AN57       62.5</span></span>
-<span><span class="co">#&gt; 10:              AN57       37.5</span></span>
-<span><span class="co">#&gt;                                        scientificName</span></span>
-<span><span class="co">#&gt;                                                &lt;char&gt;</span></span>
-<span><span class="co">#&gt;  1:               Gymnocarpium dryopteris (L.) Newman</span></span>
-<span><span class="co">#&gt;  2:                   Athyrium filix-femina (L.) Roth</span></span>
-<span><span class="co">#&gt;  3:                            Prenanthes purpurea L.</span></span>
-<span><span class="co">#&gt;  4: Dryopteris expansa (C.Presl) Fraser-Jenk. &amp; Jermy</span></span>
-<span><span class="co">#&gt;  5:                             Polypodium vulgare L.</span></span>
-<span><span class="co">#&gt;  6:                              Oxalis acetosella L.</span></span>
-<span><span class="co">#&gt;  7:              Sorbus aucuparia L. subsp. aucuparia</span></span>
-<span><span class="co">#&gt;  8:                                  Abies alba Mill.</span></span>
-<span><span class="co">#&gt;  9:                                Fagus sylvatica L.</span></span>
-<span><span class="co">#&gt; 10:                            Vaccinium myrtillus L.</span></span></code></pre></div>
-<p>Passing <code>type</code> adds, for each named type, its formula as
-written in the expert file and the membership conditions it uses,
-whether each holds for this plot, and the plot’s taxa responsible for
-it:</p>
+<span><span class="co">#&gt; Types whose rule holds: F (priority 2)</span></span>
+<span><span class="co">#&gt; Classified as F (Forest).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Plot AN57: 10 species</span></span>
+<span><span class="co">#&gt;  species                 cover</span></span>
+<span><span class="co">#&gt;  Fagus sylvatica         62.5 </span></span>
+<span><span class="co">#&gt;  Vaccinium myrtillus     37.5 </span></span>
+<span><span class="co">#&gt;  Abies alba               0.5 </span></span>
+<span><span class="co">#&gt;  Oxalis acetosella        0.5 </span></span>
+<span><span class="co">#&gt;  Sorbus aucuparia         0.5 </span></span>
+<span><span class="co">#&gt;  Athyrium filix-femina    0.1 </span></span>
+<span><span class="co">#&gt;  Dryopteris expansa       0.1 </span></span>
+<span><span class="co">#&gt;  Gymnocarpium dryopteris  0.1 </span></span>
+<span><span class="co">#&gt;  Polypodium vulgare       0.1 </span></span>
+<span><span class="co">#&gt;  Prenanthes purpurea      0.1 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Why not a lower level of F:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; FB    Beech-fir montane forest: rule not met</span></span>
+<span><span class="co">#&gt;       Rule: [1] and [2]</span></span>
+<span><span class="co">#&gt;       [1] met      total cover of Beech-forest-trees is 62.7%, needs more than 15%</span></span>
+<span><span class="co">#&gt;                    Fagus sylvatica 62.5, Abies alba 0.5</span></span>
+<span><span class="co">#&gt;       [2] not met  total cover of Beech-forest-herbs is 0.6%, needs more than 10%</span></span>
+<span><span class="co">#&gt;                    Oxalis acetosella 0.5, Prenanthes purpurea 0.1</span></span></code></pre></div>
+<p>Passing <code>type</code> explains any other type in the same way,
+whether or not its rule holds for the plot:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res_apennine</span>, p <span class="op">=</span> <span class="st">"AN57"</span>, type <span class="op">=</span> <span class="st">"F"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Possible types of plot "AN57" (135): </span></span>
-<span><span class="co">#&gt; Priorities of these types:  </span></span>
-<span><span class="co">#&gt; Classified as: ? </span></span>
-<span><span class="co">#&gt; Plant observations for plot AN57 :</span></span>
-<span><span class="co">#&gt;     PlotObservationID Cover_Perc</span></span>
-<span><span class="co">#&gt;                &lt;char&gt;      &lt;num&gt;</span></span>
-<span><span class="co">#&gt;  1:              AN57        0.1</span></span>
-<span><span class="co">#&gt;  2:              AN57        0.1</span></span>
-<span><span class="co">#&gt;  3:              AN57        0.1</span></span>
-<span><span class="co">#&gt;  4:              AN57        0.1</span></span>
-<span><span class="co">#&gt;  5:              AN57        0.1</span></span>
-<span><span class="co">#&gt;  6:              AN57        0.5</span></span>
-<span><span class="co">#&gt;  7:              AN57        0.5</span></span>
-<span><span class="co">#&gt;  8:              AN57        0.5</span></span>
-<span><span class="co">#&gt;  9:              AN57       62.5</span></span>
-<span><span class="co">#&gt; 10:              AN57       37.5</span></span>
-<span><span class="co">#&gt;                                        scientificName</span></span>
-<span><span class="co">#&gt;                                                &lt;char&gt;</span></span>
-<span><span class="co">#&gt;  1:               Gymnocarpium dryopteris (L.) Newman</span></span>
-<span><span class="co">#&gt;  2:                   Athyrium filix-femina (L.) Roth</span></span>
-<span><span class="co">#&gt;  3:                            Prenanthes purpurea L.</span></span>
-<span><span class="co">#&gt;  4: Dryopteris expansa (C.Presl) Fraser-Jenk. &amp; Jermy</span></span>
-<span><span class="co">#&gt;  5:                             Polypodium vulgare L.</span></span>
-<span><span class="co">#&gt;  6:                              Oxalis acetosella L.</span></span>
-<span><span class="co">#&gt;  7:              Sorbus aucuparia L. subsp. aucuparia</span></span>
-<span><span class="co">#&gt;  8:                                  Abies alba Mill.</span></span>
-<span><span class="co">#&gt;  9:                                Fagus sylvatica L.</span></span>
-<span><span class="co">#&gt; 10:                            Vaccinium myrtillus L.</span></span>
+<span><span class="co">#&gt; Types whose rule holds: F (priority 2)</span></span>
+<span><span class="co">#&gt; Classified as F (Forest).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; F     Forest</span></span>
+<span><span class="co">#&gt; Plot AN57: 10 species</span></span>
+<span><span class="co">#&gt;  species                 cover</span></span>
+<span><span class="co">#&gt;  Fagus sylvatica         62.5 </span></span>
+<span><span class="co">#&gt;  Vaccinium myrtillus     37.5 </span></span>
+<span><span class="co">#&gt;  Abies alba               0.5 </span></span>
+<span><span class="co">#&gt;  Oxalis acetosella        0.5 </span></span>
+<span><span class="co">#&gt;  Sorbus aucuparia         0.5 </span></span>
+<span><span class="co">#&gt;  Athyrium filix-femina    0.1 </span></span>
+<span><span class="co">#&gt;  Dryopteris expansa       0.1 </span></span>
+<span><span class="co">#&gt;  Gymnocarpium dryopteris  0.1 </span></span>
+<span><span class="co">#&gt;  Polypodium vulgare       0.1 </span></span>
+<span><span class="co">#&gt;  Prenanthes purpurea      0.1 </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; &lt;#TC Beech-forest-trees GR 10&gt;</span></span>
+<span><span class="co">#&gt; Why not a lower level of F:</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Relevant expressions for F :</span></span>
-<span><span class="co">#&gt;   expressions                  result responsible_taxa</span></span>
-<span><span class="co">#&gt; 1 #TC Beech-forest-trees GR 10 FALSE  &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; FB    Beech-fir montane forest: rule not met</span></span>
+<span><span class="co">#&gt;       Rule: [1] and [2]</span></span>
+<span><span class="co">#&gt;       [1] met      total cover of Beech-forest-trees is 62.7%, needs more than 15%</span></span>
+<span><span class="co">#&gt;                    Fagus sylvatica 62.5, Abies alba 0.5</span></span>
+<span><span class="co">#&gt;       [2] not met  total cover of Beech-forest-herbs is 0.6%, needs more than 10%</span></span>
+<span><span class="co">#&gt;                    Oxalis acetosella 0.5, Prenanthes purpurea 0.1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; F     Forest: rule holds</span></span>
+<span><span class="co">#&gt;       Rule: [1]</span></span>
+<span><span class="co">#&gt;       [1] met      total cover of Beech-forest-trees is 62.7%, needs more than 10%</span></span>
+<span><span class="co">#&gt;                    Fagus sylvatica 62.5, Abies alba 0.5</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

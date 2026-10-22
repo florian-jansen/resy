@@ -18,7 +18,8 @@ resy_harmonize_eunis(
   species_data = NULL,
   parsed = NULL,
   run_coast_dunes = FALSE,
-  coast_buffer = 5000
+  coast_buffer = 5000,
+  verbose = interactive()
 )
 ```
 
@@ -61,6 +62,12 @@ resy_harmonize_eunis(
 - coast_buffer:
 
   Numeric buffer in metres for coastline proximity (default 5000).
+
+- verbose:
+
+  Logical; if \`TRUE\`, informational messages about coordinate
+  interpretation and transformation are shown. Defaults to
+  \[interactive()\].
 
 ## Value
 

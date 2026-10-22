@@ -66,7 +66,8 @@ requirements before running this function.</p>
 <span>  species_data <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  parsed <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  run_coast_dunes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  coast_buffer <span class="op">=</span> <span class="fl">5000</span></span>
+<span>  coast_buffer <span class="op">=</span> <span class="fl">5000</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -110,6 +111,11 @@ Required when `run_taxonomy = TRUE`.</p></dd>
 <dt id="arg-coast-buffer">coast_buffer<a class="anchor" aria-label="anchor" href="#arg-coast-buffer"></a></dt>
 <dd><p>Numeric buffer in metres for coastline proximity
 (default 5000).</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>Logical; if `TRUE`, informational messages about coordinate
+interpretation and transformation are shown. Defaults to [interactive()].</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -121,6 +121,15 @@
   With `resolve_taxa = TRUE`,
   [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
   stores that summary as `taxon_resolution`.
+- [`resy_eval_plot()`](https://florian-jansen.github.io/resy/reference/resy_eval_plot.md)
+  explains a plot’s classification in plain words: the types whose rules
+  hold with their priorities, the type chosen, and the plot’s species
+  with cover. It then lists the lower-level types the plot did not
+  reach, closest first, and shows the closest in full: its rule with
+  numbered conditions, and for each condition whether it is met, the
+  plot’s value, the required value and the species behind it. `type =`
+  shows any type the same way; `lower = FALSE` turns the list off. The
+  `group_names` column is no longer added to the species output.
 
 ### Fixes
 
@@ -151,6 +160,10 @@
   conditions, which were `NA`.
 - `resy_aggregate_taxa()` works with an expert system that has no
   aggregations.
+- [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
+  stops when `obs` has no `species_col` column. Before, it classified
+  every plot as unclassified (`?`). A `species_col` other than
+  `TaxonName` is used even when `obs` also has a `TaxonName` column.
 - [`resy_add_classification()`](https://florian-jansen.github.io/resy/reference/resy_add_classification.md)
   stores the metadata of a `.txt` input as `metadata.json`; it was named
   `expert.json`, which

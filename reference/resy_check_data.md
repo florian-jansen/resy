@@ -10,7 +10,7 @@ maps; missing altitude, coast and dune columns are reported as warnings.
 ## Usage
 
 ``` r
-resy_check_data(data, source_crs = NULL)
+resy_check_data(data, source_crs = NULL, verbose = interactive())
 ```
 
 ## Arguments
@@ -26,6 +26,12 @@ resy_check_data(data, source_crs = NULL)
   latitudes are read as degrees (EPSG:4326); other coordinates need the
   code. Ignored when \`data\` is an \`sf\` object, which carries its own
   CRS.
+
+- verbose:
+
+  Logical; if \`TRUE\`, informational messages about coordinate
+  interpretation and transformation are shown. Defaults to
+  \[interactive()\].
 
 ## Value
 

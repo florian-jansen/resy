@@ -345,8 +345,8 @@ res <- RESY::resy_classify(
 #> Step 5.9  Number of T$ NON conditions: 140
 #> Step 5.10  Header conditions with numeric values: 4
 #>   Header conditions with character values: 4
-#> adapt conditions 2026-10-22 10:01:50.991373
-#> classification from here on 2026-10-22 10:01:51.08339
+#> adapt conditions 2026-10-22 13:30:45.031753
+#> classification from here on 2026-10-22 13:30:45.095583
 ```
 
 ## Inspect results
@@ -410,159 +410,81 @@ cand |>
 ### Plot-level details
 
 [`resy_eval_plot()`](https://florian-jansen.github.io/resy/reference/resy_eval_plot.md)
-prints the full evidence for one plot: which species matched, which
-group conditions fired, and which vegetation-type formulas evaluated to
-`TRUE`.
+prints the full evidence for one plot: its species, which
+vegetation-type formulas evaluated to `TRUE`, and the type it is
+classified as. It then lists the lower-level types the plot did not
+reach, with the result of each of their conditions, which shows why the
+classification stopped at this level.
 
 ``` r
 
 RESY::resy_eval_plot(res, p = "AM30") # p = PlotObservationID
-#> Possible types of plot "AM30" (18): T17, T
-#> Priorities of these types: 4 3 
-#> Classified as: T17 
-#> Plant observations for plot AM30 :
-#>     PlotObservationID                  TaxonName
-#>                <char>                     <char>
-#>  1:              AM30               Luzula nivea
-#>  2:              AM30          Cicerbita muralis
-#>  3:              AM30          Hieracium murorum
-#>  4:              AM30       Veronica urticifolia
-#>  5:              AM30        Acer pseudoplatanus
-#>  6:              AM30           Sorbus aucuparia
-#>  7:              AM30                 Abies alba
-#>  8:              AM30         Solidago virgaurea
-#>  9:              AM30 Dryopteris filix-mas aggr.
-#> 10:              AM30      Athyrium filix-femina
-#> 11:              AM30            Fagus sylvatica
-#> 12:              AM30        Prenanthes purpurea
-#>                                                                                                                                                                                                                  group_names
-#>                                                                                                                                                                                                                       <char>
-#>  1:                                                                                                                                                                       Hemicryptophytes | +11 Acidophilous-forest-species
-#>  2:                                             Hemicryptophytes | +04 R55-Lowland-moist-or-wet-tall-herb-and-fern-fringe | +04 R57-Herbaceous-forest-clearing-vegetation | +12 Grassland-species | +12 Synanthropic-species
-#>  3:                                                                                                                     Chamaephytes | +04 R52-Forest-fringe-of-acidic-nutrient-poor-soils | +11 Acidophilous-forest-species
-#>  4:                                                                                                                                                                Hemicryptophytes | +11 Eutrophic-deciduous-forest-species
-#>  5:                                                                               Native-broadleaf-trees | Native-trees | Noble-hardwood-trees | Noble-hardwood-trees-ravine-specialists | Ravine-forest-specialists | Trees
-#>  6:                                                     Forest-clearing-trees-and-shrubs | Native-broadleaf-trees | Native-trees | Shrubs | Temperate-deciduous-shrubs | Temperate-submediterranean-deciduous-shrubs | Trees
-#>  7:                                                                                                                                                            Native-conifer-trees | Native-trees | Temperate-Abies | Trees
-#>  8: Hemicryptophytes | +03 U2a-Siliceous-high-mountain-scree | +03 U2b-Siliceous-lowland-scree | +04 R52-Forest-fringe-of-acidic-nutrient-poor-soils | +12 Grassland-species | +12 Inland-sparsely-vegetated-habitat-species
-#>  9:                                                                                                                          +04 R55-Lowland-moist-or-wet-tall-herb-and-fern-fringe | +11 Eutrophic-deciduous-forest-species
-#> 10:                                                                                                                                                                                                                     <NA>
-#> 11:                                                                                                                                               Fagus-sylvatica-orientalis | Native-broadleaf-trees | Native-trees | Trees
-#> 12:                                                                                                                                                                Hemicryptophytes | +11 Eutrophic-deciduous-forest-species
-#>     Cover_Perc
-#>          <num>
-#>  1:        0.1
-#>  2:        0.1
-#>  3:        0.5
-#>  4:        0.5
-#>  5:        0.5
-#>  6:        0.5
-#>  7:        0.5
-#>  8:        0.5
-#>  9:        0.5
-#> 10:        0.5
-#> 11:       87.5
-#> 12:        3.0
+#> Types whose rule holds: T17 (priority 4), T (priority 3)
+#> Classified as T17 (Fagus forest on non-acid soils), the type with the highest priority.
+#> 
+#> Plot AM30: 12 species
+#>  species                    cover
+#>  Fagus sylvatica            87.5 
+#>  Prenanthes purpurea         3.0 
+#>  Abies alba                  0.5 
+#>  Acer pseudoplatanus         0.5 
+#>  Athyrium filix-femina       0.5 
+#>  Dryopteris filix-mas aggr.  0.5 
+#>  Hieracium murorum           0.5 
+#>  Solidago virgaurea          0.5 
+#>  Sorbus aucuparia            0.5 
+#>  Veronica urticifolia        0.5 
+#>  Cicerbita muralis           0.1 
+#>  Luzula nivea                0.1 
+#> 
+#> T17 has no lower levels.
 ```
 
-Passing `type` adds, for each named type, its formula as written in the
-expert file and the membership conditions it uses, whether each holds
-for this plot, and the plot’s taxa responsible for it:
+Passing `type` explains any other type in the same way, whether or not
+its rule holds for the plot:
 
 ``` r
 
 RESY::resy_eval_plot(res, p = "AM30", type = "T17")
-#> Possible types of plot "AM30" (18): T17, T
-#> Priorities of these types: 4 3 
-#> Classified as: T17 
-#> Plant observations for plot AM30 :
-#>     PlotObservationID                  TaxonName
-#>                <char>                     <char>
-#>  1:              AM30               Luzula nivea
-#>  2:              AM30          Cicerbita muralis
-#>  3:              AM30          Hieracium murorum
-#>  4:              AM30       Veronica urticifolia
-#>  5:              AM30        Acer pseudoplatanus
-#>  6:              AM30           Sorbus aucuparia
-#>  7:              AM30                 Abies alba
-#>  8:              AM30         Solidago virgaurea
-#>  9:              AM30 Dryopteris filix-mas aggr.
-#> 10:              AM30      Athyrium filix-femina
-#> 11:              AM30            Fagus sylvatica
-#> 12:              AM30        Prenanthes purpurea
-#>                                                                                                                                                                                                                  group_names
-#>                                                                                                                                                                                                                       <char>
-#>  1:                                                                                                                                                                       Hemicryptophytes | +11 Acidophilous-forest-species
-#>  2:                                             Hemicryptophytes | +04 R55-Lowland-moist-or-wet-tall-herb-and-fern-fringe | +04 R57-Herbaceous-forest-clearing-vegetation | +12 Grassland-species | +12 Synanthropic-species
-#>  3:                                                                                                                     Chamaephytes | +04 R52-Forest-fringe-of-acidic-nutrient-poor-soils | +11 Acidophilous-forest-species
-#>  4:                                                                                                                                                                Hemicryptophytes | +11 Eutrophic-deciduous-forest-species
-#>  5:                                                                               Native-broadleaf-trees | Native-trees | Noble-hardwood-trees | Noble-hardwood-trees-ravine-specialists | Ravine-forest-specialists | Trees
-#>  6:                                                     Forest-clearing-trees-and-shrubs | Native-broadleaf-trees | Native-trees | Shrubs | Temperate-deciduous-shrubs | Temperate-submediterranean-deciduous-shrubs | Trees
-#>  7:                                                                                                                                                            Native-conifer-trees | Native-trees | Temperate-Abies | Trees
-#>  8: Hemicryptophytes | +03 U2a-Siliceous-high-mountain-scree | +03 U2b-Siliceous-lowland-scree | +04 R52-Forest-fringe-of-acidic-nutrient-poor-soils | +12 Grassland-species | +12 Inland-sparsely-vegetated-habitat-species
-#>  9:                                                                                                                          +04 R55-Lowland-moist-or-wet-tall-herb-and-fern-fringe | +11 Eutrophic-deciduous-forest-species
-#> 10:                                                                                                                                                                                                                     <NA>
-#> 11:                                                                                                                                               Fagus-sylvatica-orientalis | Native-broadleaf-trees | Native-trees | Trees
-#> 12:                                                                                                                                                                Hemicryptophytes | +11 Eutrophic-deciduous-forest-species
-#>     Cover_Perc
-#>          <num>
-#>  1:        0.1
-#>  2:        0.1
-#>  3:        0.5
-#>  4:        0.5
-#>  5:        0.5
-#>  6:        0.5
-#>  7:        0.5
-#>  8:        0.5
-#>  9:        0.5
-#> 10:        0.5
-#> 11:       87.5
-#> 12:        3.0
+#> Types whose rule holds: T17 (priority 4), T (priority 3)
+#> Classified as T17 (Fagus forest on non-acid soils), the type with the highest priority.
 #> 
-#> T17   Fagus forest on non-acid soils
+#> Plot AM30: 12 species
+#>  species                    cover
+#>  Fagus sylvatica            87.5 
+#>  Prenanthes purpurea         3.0 
+#>  Abies alba                  0.5 
+#>  Acer pseudoplatanus         0.5 
+#>  Athyrium filix-femina       0.5 
+#>  Dryopteris filix-mas aggr.  0.5 
+#>  Hieracium murorum           0.5 
+#>  Solidago virgaurea          0.5 
+#>  Sorbus aucuparia            0.5 
+#>  Veronica urticifolia        0.5 
+#>  Cicerbita muralis           0.1 
+#>  Luzula nivea                0.1 
 #> 
-#> (((<#TC Fagus-sylvatica-orientalis GR 30> AND (<Fagus sylvatica GR #SC Trees EXCEPT Fagus sylvatica> OR <Fagus orientalis GR #SC Trees EXCEPT Fagus orientalis>)) AND <### +11 Eutrophic-deciduous-forest-species GR ### +11 Acidophilous-forest-species>) NOT <#TC +11 Acidophilous-forest-species GR 25>) NOT ((<$$C Country EQ Ireland> OR (<$$C Country EQ United Kingdom> AND <$$N DEG_LAT GR 53>)) OR ((<$$N DEG_LAT GR 48> AND <$$N DEG_LON GR 26.5>) OR (<$$N DEG_LAT GR 55> AND <$$N DEG_LON GR 19>)))
+#> T17 has no lower levels.
 #> 
-#> Relevant expressions for T17 :
-#>     expressions                                                                      
-#> 606 #TC Fagus-sylvatica-orientalis GR 30                                             
-#> 607 Fagus sylvatica GR #SC Trees EXCEPT Fagus sylvatica                              
-#> 608 Fagus orientalis GR #SC Trees EXCEPT Fagus orientalis                            
-#> 609 ### +11 Eutrophic-deciduous-forest-species GR ### +11 Acidophilous-forest-species
-#> 610 #TC +11 Acidophilous-forest-species GR 25                                        
-#> 177 $$C Country EQ Ireland                                                           
-#> 176 $$C Country EQ United Kingdom                                                    
-#> 611 $$N DEG_LAT GR 53                                                                
-#> 612 $$N DEG_LAT GR 48                                                                
-#> 613 $$N DEG_LON GR 26.5                                                              
-#> 318 $$N DEG_LAT GR 55                                                                
-#> 614 $$N DEG_LON GR 19                                                                
-#>     result
-#> 606 TRUE  
-#> 607 TRUE  
-#> 608 FALSE 
-#> 609 TRUE  
-#> 610 FALSE 
-#> 177 FALSE 
-#> 176 FALSE 
-#> 611 FALSE 
-#> 612 FALSE 
-#> 613 FALSE 
-#> 318 FALSE 
-#> 614 FALSE 
-#>     responsible_taxa                                                                                          
-#> 606 Fagus sylvatica                                                                                           
-#> 607 Acer pseudoplatanus | Sorbus aucuparia | Abies alba | Fagus sylvatica                                     
-#> 608 Acer pseudoplatanus | Sorbus aucuparia | Abies alba | Fagus sylvatica                                     
-#> 609 Luzula nivea | Hieracium murorum | Veronica urticifolia | Dryopteris filix-mas aggr. | Prenanthes purpurea
-#> 610 Luzula nivea | Hieracium murorum                                                                          
-#> 177 <NA>                                                                                                      
-#> 176 <NA>                                                                                                      
-#> 611 <NA>                                                                                                      
-#> 612 <NA>                                                                                                      
-#> 613 <NA>                                                                                                      
-#> 318 <NA>                                                                                                      
-#> 614 <NA>
+#> T17   Fagus forest on non-acid soils: rule holds
+#>       Rule: ((([1] and ([2] or [3])) and [4]) and not [5]) and not (([6] or ([7] and [8])) or (([9] and [10]) or ([11] and [12])))
+#>       [1] met      total cover of Fagus-sylvatica-orientalis is 87.5%, needs more than 30%
+#>                    Fagus sylvatica 87.5
+#>       [2] met      cover of Fagus sylvatica is 87.5%, needs more than the highest cover of a single species of Trees not counting Fagus sylvatica (0.5%)
+#>                    Fagus sylvatica 87.5, Abies alba 0.5, Acer pseudoplatanus 0.5, Sorbus aucuparia 0.5
+#>       [3] not met  cover of Fagus orientalis is 0%, needs more than the highest cover of a single species of Trees not counting Fagus orientalis (87.5%)
+#>                    Fagus sylvatica 87.5, Abies alba 0.5, Acer pseudoplatanus 0.5, Sorbus aucuparia 0.5
+#>       [4] met      number of species of Eutrophic-deciduous-forest-species is 3, needs more than the number of species of Acidophilous-forest-species (2)
+#>                    Prenanthes purpurea 3, Dryopteris filix-mas aggr. 0.5, Hieracium murorum 0.5, Veronica urticifolia 0.5, Luzula nivea 0.1
+#>       [5] not met  total cover of Acidophilous-forest-species is 0.6%, needs more than 25%
+#>                    Hieracium murorum 0.5, Luzula nivea 0.1
+#>       [6] not met  Country is Italy, needs Ireland
+#>       [7] not met  Country is Italy, needs United Kingdom
+#>       [8] not met  DEG_LAT is 44.1, needs more than 53
+#>       [9] not met  DEG_LAT is 44.1, needs more than 48
+#>       [10] not met  DEG_LON is 10.7, needs more than 26.5
+#>       [11] not met  DEG_LAT is 44.1, needs more than 55
+#>       [12] not met  DEG_LON is 10.7, needs more than 19
 ```
 
 ### Print classification hierarchy

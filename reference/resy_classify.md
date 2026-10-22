@@ -108,13 +108,12 @@ carries the \`summary()\` of the \[resy_resolve_taxa\] result as
 species <- utils::read.csv(
   system.file("extdata", "data_example_species.csv", package = "RESY")
 )
-names(species)[names(species) == "species"] <- "TaxonName"
-names(species)[names(species) == "cover"]   <- "Cover_Perc"
 
 # A one-row-per-plot header is required even without geographic conditions.
 header <- as.data.frame(unique(species["PlotObservationID"]))
 
-res <- resy_classify(species, header, scheme = "Apennine-test")
+res <- resy_classify(species, header, scheme = "Apennine-test",
+                     species_col = "scientificName")
 #> Step 5.1  Number of conditions with number of species of a group: 0
 #> Step 5.2  Number of conditions with minimum number of species: 0
 #> Step 5.3  Number of conditions with sum of square rooted Cover_Perc of species: 0
@@ -129,10 +128,10 @@ res <- resy_classify(species, header, scheme = "Apennine-test")
 #> Step 5.9  Number of T$ NON conditions: 0
 #> Step 5.10  Header conditions with numeric values: 0
 #>   Header conditions with character values: 0
-#> adapt conditions 2026-10-22 10:01:26.22336
-#> classification from here on 2026-10-22 10:01:26.224521
+#> adapt conditions 2026-10-22 13:30:28.178693
+#> classification from here on 2026-10-22 13:30:28.179539
 head(res$result.classification)
 #> HU32 KW76 YB18 NX70 OL48 YL40 
-#>  "?"  "?"  "?"  "?"  "?"  "?" 
+#>  "F"  "F"  "F"  "F"  "F"  "F" 
 # }
 ```

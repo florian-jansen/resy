@@ -37,13 +37,14 @@ library(RESY)
 ## 1. Load and prepare species data
 
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
-expects the observation table to have three columns:
+expects the observation table to have three columns. The species column
+can have any name, passed as `species_col`:
 
-| Column              | Description                                   |
-|---------------------|-----------------------------------------------|
-| `PlotObservationID` | Plot identifier (auto-detected)               |
-| `TaxonName`         | Species name                                  |
-| `Cover_Perc`        | Cover value (percent or Braun-Blanquet scale) |
+| Column              | Description                                         |
+|---------------------|-----------------------------------------------------|
+| `PlotObservationID` | Plot identifier (auto-detected)                     |
+| `TaxonName`         | Species name (`species_col`, here `scientificName`) |
+| `Cover_Perc`        | Cover value (percent or Braun-Blanquet scale)       |
 
 ``` r
 
@@ -169,9 +170,10 @@ automatically.
 ``` r
 
 res_apennine <- resy_classify(
-  obs    = data_species,
-  header = header,
-  scheme = "Apennine-test"
+  obs         = data_species,
+  header      = header,
+  scheme      = "Apennine-test",
+  species_col = "scientificName"
 )
 ```
 
@@ -206,94 +208,90 @@ of types returned per plot.
 
 cand_apennine <- resy_candidates(res_apennine, top_n = 3)
 head(cand_apennine)
-#> # A tibble: 0 × 4
-#> # ℹ 4 variables: plot_id <chr>, type <chr>, priority <chr>, priority_rank <int>
+#>    plot_id   type priority priority_rank
+#>     <char> <char>    <ord>         <int>
+#> 1:    AM30      F        2             1
+#> 2:    AN57      F        2             1
+#> 3:    BE71      F        2             1
+#> 4:    BE71     FB        5             3
+#> 5:    BK34      N        2             1
+#> 6:    BK34     NS        3             2
 ```
 
 ### Plot-level details
 
 [`resy_eval_plot()`](https://florian-jansen.github.io/resy/reference/resy_eval_plot.md)
-prints the full evidence for one plot: which species matched, which
-group conditions fired, and which vegetation-type formulas evaluated to
-`TRUE`.
+prints the full evidence for one plot: its species, which
+vegetation-type formulas evaluated to `TRUE`, and the type it is
+classified as. It then lists the lower-level types the plot did not
+reach, with the result of each of their conditions, which shows why the
+classification stopped at this level.
 
 ``` r
 
 # Replace "AN57" with a PlotObservationID present in your data
 resy_eval_plot(res_apennine, p = "AN57")
-#> Possible types of plot "AN57" (135): 
-#> Priorities of these types:  
-#> Classified as: ? 
-#> Plant observations for plot AN57 :
-#>     PlotObservationID Cover_Perc
-#>                <char>      <num>
-#>  1:              AN57        0.1
-#>  2:              AN57        0.1
-#>  3:              AN57        0.1
-#>  4:              AN57        0.1
-#>  5:              AN57        0.1
-#>  6:              AN57        0.5
-#>  7:              AN57        0.5
-#>  8:              AN57        0.5
-#>  9:              AN57       62.5
-#> 10:              AN57       37.5
-#>                                        scientificName
-#>                                                <char>
-#>  1:               Gymnocarpium dryopteris (L.) Newman
-#>  2:                   Athyrium filix-femina (L.) Roth
-#>  3:                            Prenanthes purpurea L.
-#>  4: Dryopteris expansa (C.Presl) Fraser-Jenk. & Jermy
-#>  5:                             Polypodium vulgare L.
-#>  6:                              Oxalis acetosella L.
-#>  7:              Sorbus aucuparia L. subsp. aucuparia
-#>  8:                                  Abies alba Mill.
-#>  9:                                Fagus sylvatica L.
-#> 10:                            Vaccinium myrtillus L.
+#> Types whose rule holds: F (priority 2)
+#> Classified as F (Forest).
+#> 
+#> Plot AN57: 10 species
+#>  species                 cover
+#>  Fagus sylvatica         62.5 
+#>  Vaccinium myrtillus     37.5 
+#>  Abies alba               0.5 
+#>  Oxalis acetosella        0.5 
+#>  Sorbus aucuparia         0.5 
+#>  Athyrium filix-femina    0.1 
+#>  Dryopteris expansa       0.1 
+#>  Gymnocarpium dryopteris  0.1 
+#>  Polypodium vulgare       0.1 
+#>  Prenanthes purpurea      0.1 
+#> 
+#> Why not a lower level of F:
+#> 
+#> FB    Beech-fir montane forest: rule not met
+#>       Rule: [1] and [2]
+#>       [1] met      total cover of Beech-forest-trees is 62.7%, needs more than 15%
+#>                    Fagus sylvatica 62.5, Abies alba 0.5
+#>       [2] not met  total cover of Beech-forest-herbs is 0.6%, needs more than 10%
+#>                    Oxalis acetosella 0.5, Prenanthes purpurea 0.1
 ```
 
-Passing `type` adds, for each named type, its formula as written in the
-expert file and the membership conditions it uses, whether each holds
-for this plot, and the plot’s taxa responsible for it:
+Passing `type` explains any other type in the same way, whether or not
+its rule holds for the plot:
 
 ``` r
 
 resy_eval_plot(res_apennine, p = "AN57", type = "F")
-#> Possible types of plot "AN57" (135): 
-#> Priorities of these types:  
-#> Classified as: ? 
-#> Plant observations for plot AN57 :
-#>     PlotObservationID Cover_Perc
-#>                <char>      <num>
-#>  1:              AN57        0.1
-#>  2:              AN57        0.1
-#>  3:              AN57        0.1
-#>  4:              AN57        0.1
-#>  5:              AN57        0.1
-#>  6:              AN57        0.5
-#>  7:              AN57        0.5
-#>  8:              AN57        0.5
-#>  9:              AN57       62.5
-#> 10:              AN57       37.5
-#>                                        scientificName
-#>                                                <char>
-#>  1:               Gymnocarpium dryopteris (L.) Newman
-#>  2:                   Athyrium filix-femina (L.) Roth
-#>  3:                            Prenanthes purpurea L.
-#>  4: Dryopteris expansa (C.Presl) Fraser-Jenk. & Jermy
-#>  5:                             Polypodium vulgare L.
-#>  6:                              Oxalis acetosella L.
-#>  7:              Sorbus aucuparia L. subsp. aucuparia
-#>  8:                                  Abies alba Mill.
-#>  9:                                Fagus sylvatica L.
-#> 10:                            Vaccinium myrtillus L.
+#> Types whose rule holds: F (priority 2)
+#> Classified as F (Forest).
 #> 
-#> F     Forest
+#> Plot AN57: 10 species
+#>  species                 cover
+#>  Fagus sylvatica         62.5 
+#>  Vaccinium myrtillus     37.5 
+#>  Abies alba               0.5 
+#>  Oxalis acetosella        0.5 
+#>  Sorbus aucuparia         0.5 
+#>  Athyrium filix-femina    0.1 
+#>  Dryopteris expansa       0.1 
+#>  Gymnocarpium dryopteris  0.1 
+#>  Polypodium vulgare       0.1 
+#>  Prenanthes purpurea      0.1 
 #> 
-#> <#TC Beech-forest-trees GR 10>
+#> Why not a lower level of F:
 #> 
-#> Relevant expressions for F :
-#>   expressions                  result responsible_taxa
-#> 1 #TC Beech-forest-trees GR 10 FALSE  <NA>
+#> FB    Beech-fir montane forest: rule not met
+#>       Rule: [1] and [2]
+#>       [1] met      total cover of Beech-forest-trees is 62.7%, needs more than 15%
+#>                    Fagus sylvatica 62.5, Abies alba 0.5
+#>       [2] not met  total cover of Beech-forest-herbs is 0.6%, needs more than 10%
+#>                    Oxalis acetosella 0.5, Prenanthes purpurea 0.1
+#> 
+#> F     Forest: rule holds
+#>       Rule: [1]
+#>       [1] met      total cover of Beech-forest-trees is 62.7%, needs more than 10%
+#>                    Fagus sylvatica 62.5, Abies alba 0.5
 ```
 
 ## Next steps
