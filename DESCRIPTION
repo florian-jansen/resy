@@ -67,6 +67,7 @@ Suggests:
     rmarkdown,
     ggplot2,
     terra,
+    tidyr,
     tidyterra,
     rmapshaper,
     testthat (>= 3.0.0),
