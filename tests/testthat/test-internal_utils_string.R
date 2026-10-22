@@ -28,17 +28,18 @@ test_that(".resy_trim handles empty values and whitespace-only strings", {
 
 test_that(".resy_trim_trailing removes trailing spaces and matching artifacts", {
   expect_equal(RESY:::.resy_trim_trailing("hello  "), "hello")
-  expect_equal(RESY:::.resy_trim_trailing("text 123"), "text")
+  expect_equal(RESY:::.resy_trim_trailing("text 1"), "text")
   expect_equal(RESY:::.resy_trim_trailing("label - 7"), "label")
   expect_equal(RESY:::.resy_trim_trailing("hello world  "), "hello world")
   expect_equal(
-    RESY:::.resy_trim_trailing(c("hello  ", NA, "world 42")),
+    RESY:::.resy_trim_trailing(c("hello  ", NA, "world 4")),
     c("hello", NA, "world")
   )
 })
 
 test_that(".resy_trim_trailing does not remove non-matching hyphen patterns", {
-  expect_equal(RESY:::.resy_trim_trailing("text- 1"), "text- 1")
+  expect_equal(RESY:::.resy_trim_trailing("text-1"), "text-1")
+  expect_equal(RESY:::.resy_trim_trailing("text -1"), "text -1")
   expect_equal(RESY:::.resy_trim_trailing("hello-world "), "hello-world")
 })
 

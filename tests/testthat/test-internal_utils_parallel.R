@@ -102,7 +102,7 @@ test_that(".resy_mclapply handles complex FUN", {
   X <- list(a = 1, b = 2, c = 3)
   FUN <- function(x) x^2
   result <- .resy_mclapply(X, FUN, mc = 1L)
-  expect_equal(result, list(1, 4, 9))
+  expect_equal(result, list(a = 1, b = 4, c = 9))
 })
 
 test_that(".resy_mcmapply with single core uses mapply", {
