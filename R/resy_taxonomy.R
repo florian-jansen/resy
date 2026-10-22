@@ -192,16 +192,25 @@ resy_canonical_species <- function(path = NULL) {
 #' @seealso \code{\link{resy_read_synonyms}}, \code{\link{resy_check_taxonomy}},
 #'   \code{\link{resy_classify}}
 #' @export
-resy_resolve_taxa <- function(obs, species_col = "TaxonName",
-                              synonyms = NULL, canonical = NULL) {
+resy_resolve_taxa <- function(
+    obs, species_col = "TaxonName", synonyms = NULL, canonical = NULL
+    ) {
+  
   if (!is.data.frame(obs)) {
     stop("resy_resolve_taxa: `obs` must be a data frame.", call. = FALSE)
+    
   }
+  
   if (!is.character(species_col) || length(species_col) != 1L ||
       !species_col %in% names(obs)) {
-    stop("resy_resolve_taxa: column `", species_col, "` not found in `obs`.",
-         call. = FALSE)
+    
+    stop(
+      "resy_resolve_taxa: column `", species_col, "` not found in `obs`.",
+      call. = FALSE
+      )
+    
   }
+  
   # A character vector of length > 1 is taken as the canonical names directly;
   # NULL / a single path / a data frame are read via resy_canonical_species().
   canon <- if (is.character(canonical) && length(canonical) > 1L) {
