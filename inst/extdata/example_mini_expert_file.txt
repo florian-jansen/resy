@@ -1,0 +1,15 @@
+SECTION 1: Species aggregation
+Achillea millefolium agg.                                 -  0
+     Achillea millefolium                                    0
+     Achillea pratensis                                      0
+Fagus sylvatica                                           -  0
+SECTION 1: End
+SECTION 2: Species groups
+### Beech-forest-trees
+     Fagus sylvatica
+     Abies alba
+SECTION 2: End
+SECTION 3: Group definitions
+F Forest
+N Non-forest
+SECTION 3: End

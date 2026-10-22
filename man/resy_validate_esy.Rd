@@ -60,7 +60,7 @@ problems. Does not assess ecological correctness. The rules are:
 }
 \examples{
 # Validate a .txt file
-result <- resy_validate_esy("path/to/expert.txt", strict = FALSE)
+result <- resy_validate_esy(system.file("extdata", "example_mini_expert_file.txt", package = "RESY"), strict = FALSE)
 if (!result$ok) print(result$errors)
 }
 \seealso{

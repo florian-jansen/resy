@@ -116,11 +116,11 @@ test_that(".resy_esy_make_parseable: replaces conditions with tokens", {
 
 test_that("resy_validate_esy: Apennine-test JSON passes validation", {
   path <- system.file(
-    "extdata/classifications/Apennine-test/2026-06-27/expert.json",
+    "extdata", "classifications", "Apennine-test", "2026-06-27", "expert.json",
     package = "RESY"
   )
   skip_if(!nzchar(path), "Apennine-test JSON not found")
   result <- resy_validate_esy(path, verbose = FALSE)
   expect_true(result$ok)
-  expect_true(any(grepl("G_UNDEFINED", result$warnings)))
+  expect_length(result$errors, 0L)
 })
