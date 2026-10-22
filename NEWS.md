@@ -109,6 +109,9 @@
   row order of `header`, and reports the responsible taxa of `#TC ... GR n`
   conditions, which were `NA`.
 * `resy_aggregate_taxa()` works with an expert system that has no aggregations.
+* `resy_classify()` stops when `obs` has no `species_col` column. Before, it
+  classified every plot as unclassified (`?`). A `species_col` other than
+  `TaxonName` is used even when `obs` also has a `TaxonName` column.
 * `resy_add_classification()` stores the metadata of a `.txt` input as
   `metadata.json`; it was named `expert.json`, which `resy_load_expert()` then
   tried to read as the expert system. `overwrite = TRUE` removes the previous

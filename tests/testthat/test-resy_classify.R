@@ -11,8 +11,7 @@ example_obs <- function() {
     system.file("extdata", "data_example_species.csv", package = "RESY"),
     stringsAsFactors = FALSE
   )
-  names(sp)[names(sp) == "species"] <- "TaxonName"
-  names(sp)[names(sp) == "cover"]   <- "Cover_Perc"
+  names(sp)[names(sp) == "scientificName"] <- "TaxonName"
   sp
 }
 
@@ -85,6 +84,37 @@ test_that("resy_classify is taxonomy-agnostic by default", {
                     res$obs$TaxonName))
   # A plot whose only taxa are unknown to the expert cannot match any type.
   expect_equal(unname(res$result.classification[["p2"]]), "?")
+})
+
+test_that("the example data classifies some plots", {
+  obs    <- example_obs()
+  header <- as.data.frame(unique(obs["PlotObservationID"]))
+  res <- suppressMessages(
+    resy_classify(obs, header, scheme = "Apennine-test", mc = 1L)
+  )
+  expect_true(any(res$result.classification != "?"))
+})
+
+test_that("species_col names the species column", {
+  obs <- data.table::data.table(
+    PlotObservationID = c("p1", "p2"),
+    scientificName    = c("Fagus sylvatica", "Yyy alsoinvented"),
+    TaxonName         = c("Yyy alsoinvented", "Fagus sylvatica"),
+    Cover_Perc        = c(40, 30)
+  )
+  header <- data.frame(PlotObservationID = c("p1", "p2"))
+
+  res <- suppressMessages(
+    resy_classify(obs, header, scheme = "Apennine-test",
+                  species_col = "scientificName", mc = 1L)
+  )
+  expect_equal(res$obs$TaxonName[res$obs$PlotObservationID == "p1"],
+               "Fagus sylvatica")
+
+  expect_error(
+    resy_classify(obs[, !"TaxonName"], header, scheme = "Apennine-test", mc = 1L),
+    "`obs` has no column `TaxonName`", fixed = TRUE
+  )
 })
 
 test_that("resolve_taxa = TRUE reports resolution and never guesses unknowns", {

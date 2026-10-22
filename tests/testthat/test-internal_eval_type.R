@@ -12,8 +12,7 @@ eval_type_result <- local({
         system.file("extdata", "data_example_species.csv", package = "RESY"),
         stringsAsFactors = FALSE
       )
-      names(sp)[names(sp) == "species"] <- "TaxonName"
-      names(sp)[names(sp) == "cover"]   <- "Cover_Perc"
+      names(sp)[names(sp) == "scientificName"] <- "TaxonName"
       header <- as.data.frame(unique(sp["PlotObservationID"]))
       res <<- suppressMessages(
         resy_classify(sp, header, scheme = "Apennine-test", mc = 1L)

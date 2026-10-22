@@ -47,12 +47,13 @@ library(RESY)
 
 ## 1. Load and prepare species data
 
-`resy_classify()` expects the observation table to have three columns:
+`resy_classify()` expects the observation table to have three columns. The
+species column can have any name, passed as `species_col`:
 
 | Column | Description |
 |---|---|
 | `PlotObservationID` | Plot identifier (auto-detected) |
-| `TaxonName` | Species name |
+| `TaxonName` | Species name (`species_col`, here `scientificName`) |
 | `Cover_Perc` | Cover value (percent or Braun-Blanquet scale) |
 
 ```{r load-species, message=FALSE}
@@ -132,9 +133,10 @@ will be loaded automatically.
 
 ```{r classify-apennine, message=FALSE}
 res_apennine <- resy_classify(
-  obs    = data_species,
-  header = header,
-  scheme = "Apennine-test"
+  obs         = data_species,
+  header      = header,
+  scheme      = "Apennine-test",
+  species_col = "scientificName"
 )
 ```
 

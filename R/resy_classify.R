@@ -60,13 +60,12 @@
 #' species <- utils::read.csv(
 #'   system.file("extdata", "data_example_species.csv", package = "RESY")
 #' )
-#' names(species)[names(species) == "species"] <- "TaxonName"
-#' names(species)[names(species) == "cover"]   <- "Cover_Perc"
 #'
 #' # A one-row-per-plot header is required even without geographic conditions.
 #' header <- as.data.frame(unique(species["PlotObservationID"]))
 #'
-#' res <- resy_classify(species, header, scheme = "Apennine-test")
+#' res <- resy_classify(species, header, scheme = "Apennine-test",
+#'                      species_col = "scientificName")
 #' head(res$result.classification)
 #' }
 #' @export
@@ -82,6 +81,10 @@ resy_classify <- function(obs,
                           synonyms = NULL,
                           mc = max(1L, floor(parallel::detectCores() * 0.75))) {
   if (!inherits(obs, "data.table")) obs <- data.table::as.data.table(obs)
+  if (!species_col %in% names(obs)) {
+    stop("`obs` has no column `", species_col, "`. Name the column holding ",
+         "the species names with `species_col`.", call. = FALSE)
+  }
 
   parsed <- resy_load_expert(expertfile = expertfile, scheme = scheme,
                              version = version, location = location)
@@ -94,7 +97,7 @@ resy_classify <- function(obs,
   # Off by default: the classifier is taxonomy-agnostic and resolution is an
   # explicit user step (see resy_resolve_taxa and the taxonomy vignette).
   taxon_resolution <- NULL
-  if (isTRUE(resolve_taxa) && species_col %in% names(obs)) {
+  if (isTRUE(resolve_taxa)) {
     expert_vocab <- unique(c(names(parsed$aggs),
                              unlist(parsed$aggs, use.names = FALSE)))
     resolved <- resy_resolve_taxa(obs, species_col = species_col,
@@ -104,7 +107,7 @@ resy_classify <- function(obs,
     unresolved <- is.na(obs$canonical)
     obs$TaxonName <- ifelse(unresolved, as.character(obs[[species_col]]),
                             obs$canonical)
-  } else if (!"TaxonName" %in% names(obs) && species_col %in% names(obs)) {
+  } else if (species_col != "TaxonName") {
     # Agnostic path: the solver keys on TaxonName; mirror a custom species column
     # into it so a user need not rename their column by hand.
     obs$TaxonName <- as.character(obs[[species_col]])
