@@ -65,7 +65,8 @@ backbones <- utils::read.csv(
 
 The table was built on `r build$built` against the `r build$expert_system`
 expert system `r build$expert_version`, from the backbone releases below.
-`data-raw/build_synonyms.R` in the source repository rebuilds it.
+`data-raw/build_synonyms.R` in the source repository rebuilds it with taxify
+`r build$taxify_version`.
 
 ```{r build-backbones, echo=FALSE}
 knitr::kable(
