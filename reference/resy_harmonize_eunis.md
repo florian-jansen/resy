@@ -28,7 +28,11 @@ resy_harmonize_eunis(
 - data:
 
   A data frame or \`sf\` object containing plot data. If not an \`sf\`
-  object, columns \`Longitude\` and \`Latitude\` must be present.
+  object, columns \`Longitude\` and \`Latitude\` must be present. Darwin
+  Core names are accepted: \`eventID\`, \`decimalLongitude\`,
+  \`decimalLatitude\`, \`country\`, and
+  \`minimumElevationInMeters\`/\`maximumElevationInMeters\` for
+  \`Altitude (m)\`, which can also be given as \`Altitude\`.
 
 - source_crs:
 
@@ -46,8 +50,8 @@ resy_harmonize_eunis(
 
 - species_data:
 
-  A data frame with a column \`species\`. Required when \`run_taxonomy =
-  TRUE\`.
+  A data frame with a column \`scientificName\`. Required when
+  \`run_taxonomy = TRUE\`.
 
 - parsed:
 

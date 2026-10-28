@@ -16,12 +16,7 @@ is never replaced with a best guess.
 ## Usage
 
 ``` r
-resy_resolve_taxa(
-  obs,
-  species_col = "TaxonName",
-  synonyms = NULL,
-  canonical = NULL
-)
+resy_resolve_taxa(obs, species_col = NULL, synonyms = NULL, canonical = NULL)
 ```
 
 ## Arguments
@@ -32,8 +27,8 @@ resy_resolve_taxa(
 
 - species_col:
 
-  Name of the column in `obs` holding the species name (default
-  `"TaxonName"`).
+  Name of the column in `obs` holding the species name. If `NULL`
+  (default), uses `TaxonName`, then Darwin Core `scientificName`.
 
 - synonyms:
 

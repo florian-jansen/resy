@@ -65,7 +65,7 @@ the unmatched names.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">resy_check_taxonomy</span><span class="op">(</span><span class="va">obs</span>, <span class="va">parsed</span>, col <span class="op">=</span> <span class="st">"TaxonName"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">resy_check_taxonomy</span><span class="op">(</span><span class="va">obs</span>, <span class="va">parsed</span>, col <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -81,8 +81,8 @@ the unmatched names.</p>
 
 
 <dt id="arg-col">col<a class="anchor" aria-label="anchor" href="#arg-col"></a></dt>
-<dd><p>Name of the column in `obs` that holds taxon names
-(default `"TaxonName"`).</p></dd>
+<dd><p>Name of the column in `obs` that holds taxon names. If `NULL`
+(default), uses `TaxonName`, then Darwin Core `scientificName`.</p></dd>
 
 </dl></div>
     <div class="section level2">

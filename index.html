@@ -67,7 +67,10 @@
 </div>
 <!-- badges: start -->
 
-<p>The goal of RESY is to use so-called expert files to assign vegetation plots to types. The function <code><a href="reference/resy_classify.html">resy_classify()</a></code> is the core function to classify vegetation plots, which, depending on the rules need to include also site data.</p>
+<p>RESY assigns vegetation plots to vegetation or habitat types based on their plant community. A plot where beech, silver fir and beech-forest herbs such as wood sorrel grow together is a beech-fir montane forest. A plot where mat-grass (<em>Nardus stricta</em>) is abundant is an acidic grassland. RESY takes a species list for each plot (relevé), with the cover or abundance of each species. A relevé lists all plant species in a delimited area of vegetation.</p>
+<p>The rules for this assignment form an expert system (ESy; Chytrý et al. <a href="https://doi.org/10.1111/avsc.12519" class="external-link">2020</a>; Bruelheide et al. <a href="https://doi.org/10.1111/avsc.12562" class="external-link">2021</a>), stored as a text or JSON file. For each type, the rule specifies which groups of indicator species a plot must contain and how much cover they must have. These are species typical of that vegetation or habitat type. In the example below, a plot is a beech-fir montane forest when beech and silver fir together cover more than 15% of it and beech-forest herbs more than 10%. The types form a hierarchy: beech-fir montane forest is one type of forest. Besides the expert systems that come with the package, you can also supply your own expert system.</p>
+<p>RESY ships the expert system for EUNIS (European Nature Information System), the habitat classification of the <a href="https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed" class="external-link">European Environment Agency</a> for the land and sea of Europe. EUNIS defines a habitat by its plant and animal communities together with abiotic conditions. Some of its rules therefore also use site data, such as the ecoregion, the country or the position on the coast.</p>
+<p>The EUNIS expert system uses the species names of <a href="https://europlusmed.org/" class="external-link">Euro+Med PlantBase</a>, the taxonomy used in data from the <a href="https://euroveg.org/eva-database/" class="external-link">European Vegetation Archive (EVA)</a>. Species names in plot data that follow another taxonomy, such as <a href="https://www.gbif.org/" class="external-link">GBIF</a> or <a href="https://www.worldfloraonline.org/" class="external-link">World Flora Online</a>, must first be matched to Euro+Med names, which users can do via <code><a href="reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> (<code><a href="articles/taxonomy.html">vignette("taxonomy")</a></code>).</p>
 <p><strong>Insert figure here. Perhaps of Europe</strong></p>
 <div class="section level2">
 <h2 id="arrow_double_down-installation">
@@ -79,7 +82,7 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://florian-jansen.github.io/resy/">"RESY"</a></span><span class="op">)</span></span></code></pre></div>
 <p>RESY is still under active development. You can install the development version from the GitHub repository using the following commands:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span></span>
 <span>   <span class="st">"https://github.com/florian-jansen/resy"</span>,</span>
 <span>   dependencies <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -87,27 +90,143 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://florian-jansen.github.io/resy/">RESY</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="rocket-usage">
+<span class="emoji" data-emoji="rocket">🚀</span> Usage<a class="anchor" aria-label="anchor" href="#rocket-usage"></a>
+</h2>
+<p>To classify plots, <code><a href="reference/resy_classify.html">resy_classify()</a></code> needs two tables:</p>
+<ul>
+<li>A <strong>species table</strong>, with one row per species in each plot, giving the plot ID, species name and cover.</li>
+<li>A <strong>header table</strong>, with one row per plot, giving the plot ID and any site data used by the classification rules.</li>
+</ul>
+<p>This example uses the bundled plots from Tuscany and <code>Apennine-test</code>, a small expert system whose rules require no site data. The header table therefore contains only plot IDs, but <code><a href="reference/resy_classify.html">resy_classify()</a></code> still requires it.</p>
+<p>In the example data, species names are stored in <code>scientificName</code>, following <a href="https://dwc.tdwg.org/" class="external-link">Darwin Core</a>, a standard set of field names for biodiversity data. By default, <code><a href="reference/resy_classify.html">resy_classify()</a></code> looks for <code>TaxonName</code> or <code>scientificName</code>. For a column with another name, set <code>species_col</code>.</p>
+<p>RESY also accepts the other Darwin Core names for its columns: <code>eventID</code> for the plot ID, <code>organismQuantity</code> with an <code>organismQuantityType</code> of <code>"% cover"</code> for the cover, and <code>decimalLongitude</code>, <code>decimalLatitude</code>, <code>country</code> and the elevation range for the site data.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://florian-jansen.github.io/resy/">RESY</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"data_example_species.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span></span>
+<span><span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span>
+<span><span class="va">header</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">species</span><span class="op">[</span><span class="st">"PlotObservationID"</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/resy_classify.html">resy_classify</a></span><span class="op">(</span><span class="va">species</span>, <span class="va">header</span>, scheme <span class="op">=</span> <span class="st">"Apennine-test"</span><span class="op">)</span></span>
+<span><span class="va">cand</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res</span>, top_n <span class="op">=</span> <span class="fl">3</span>, wide <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">cand</span><span class="op">$</span><span class="va">classification</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  ?  F FB  N NG NS </span></span>
+<span><span class="co">#&gt; 92 33  8  6 20 41</span></span></code></pre></div>
+<p><code>F</code>, <code>FB</code>, <code>N</code>, <code>NG</code> and <code>NS</code> are the five vegetation types of <code>Apennine-test</code>. A plot marked <code>?</code> meets no type’s rule and is not classified. Here that is 92 of the 200 plots: none of the four indicator groups covers more than 4% of any of them, below the lowest cover threshold in the rules (5%).</p>
+<p>Each type has a priority in the expert system. When a plot meets the rules of several types, it is assigned to the one with the highest priority. Each row of <code>cand</code> is one plot: the type it is assigned to, then the types whose rules it meets, highest priority first. Plot <code>CX45</code> meets the rules of <code>FB</code> (beech-fir montane forest, priority 5) and of its parent type <code>F</code> (forest, priority 2), and is assigned to <code>FB</code>:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cand</span><span class="op">[</span><span class="va">cand</span><span class="op">$</span><span class="va">plot_id</span> <span class="op">==</span> <span class="st">"CX45"</span>, <span class="op">]</span></span>
+<span><span class="co">#&gt;    plot_id classification type_1 priority_1 type_2 priority_2</span></span>
+<span><span class="co">#&gt;     &lt;char&gt;         &lt;char&gt; &lt;char&gt;      &lt;ord&gt; &lt;char&gt;      &lt;ord&gt;</span></span>
+<span><span class="co">#&gt; 1:    CX45             FB     FB          5      F          2</span></span></code></pre></div>
+<p><code>resy_eval_plot(res, p = "CX45")</code> shows the species and conditions behind this assignment. For EUNIS, the header table also needs site data such as the ecoregion and the country, which <code><a href="reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> adds from the plot coordinates.</p>
+</div>
+<div class="section level2">
 <h2 id="scroll-vignettes">
 <span class="emoji" data-emoji="scroll">📜</span> Vignettes<a class="anchor" aria-label="anchor" href="#scroll-vignettes"></a>
 </h2>
 <p>We have written several vignettes to help you use the RESY R package: <br></p>
 <ul>
-<li><code><a href="articles/EUNIS.html">vignette("EUNIS")</a></code></li>
-<li><code>vignette("Get altitude data")</code></li>
-<li><code><a href="articles/taxonomy.html">vignette("taxonomy")</a></code></li>
+<li>
+<code><a href="articles/RESY.html">vignette("RESY")</a></code>: start here, from a species table to classified plots</li>
+<li>
+<code><a href="articles/EUNIS.html">vignette("EUNIS")</a></code>: EUNIS habitat types for plots with coordinates</li>
+<li>
+<code><a href="articles/altitude-vignette.html">vignette("altitude-vignette")</a></code>: the altitude column some EUNIS rules use</li>
+<li>
+<code><a href="articles/taxonomy.html">vignette("taxonomy")</a></code>: matching the species names in your data to the names the expert system uses</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="desktop_computer-functions">
 <span class="emoji" data-emoji="desktop_computer">🖥️</span> Functions<a class="anchor" aria-label="anchor" href="#desktop_computer-functions"></a>
 </h2>
-<p>An overview of all functions and data is given in the tab <strong>Reference</strong>.</p>
+<p>These are the main functions:</p>
+<ul>
+<li>
+<code><a href="reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> adds the site data EUNIS needs (ecoregion, country, coast, dunes) from the plot coordinates.</li>
+<li>
+<code><a href="reference/resy_check_taxonomy.html">resy_check_taxonomy()</a></code> checks which species names the expert system knows; <code><a href="reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> matches names from other taxonomies to them.</li>
+<li>
+<code><a href="reference/resy_classify.html">resy_classify()</a></code> assigns each plot to a vegetation or habitat type.</li>
+<li>
+<code><a href="reference/resy_candidates.html">resy_candidates()</a></code> lists the assigned and candidate types per plot.</li>
+<li>
+<code><a href="reference/resy_eval_plot.html">resy_eval_plot()</a></code> explains the assignment of one plot.</li>
+<li>
+<code><a href="reference/resy_validate_esy.html">resy_validate_esy()</a></code> checks your own expert system, and <code><a href="reference/resy_add_classification.html">resy_add_classification()</a></code> makes it available to <code><a href="reference/resy_classify.html">resy_classify()</a></code>.</li>
+</ul>
+<p>An overview of all functions and data is given in the tab <a href="https://florian-jansen.github.io/resy/reference/"><strong>Reference</strong></a>.</p>
+</div>
+<div class="section level2">
+<h2 id="books-papers-and-links">
+<span class="emoji" data-emoji="books">📚</span> Papers and links<a class="anchor" aria-label="anchor" href="#books-papers-and-links"></a>
+</h2>
+<ul>
+<li>Bruelheide et al. (<a href="https://doi.org/10.1111/avsc.12562" class="external-link">2021</a>): the expert-system language that RESY implements.</li>
+<li>Chytrý et al. (<a href="https://doi.org/10.1111/avsc.12519" class="external-link">2020</a>): the EUNIS expert system, its species groups and the habitat distribution maps.</li>
+<li>
+<a href="https://zenodo.org/records/16895007" class="external-link">EUNIS-ESy on Zenodo</a>: the released versions of the EUNIS expert system.</li>
+<li>
+<a href="https://floraveg.eu/habitat/" class="external-link">FloraVeg.EU</a>: descriptions of every EUNIS habitat type.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="memo-how-to-cite">
+<span class="emoji" data-emoji="memo">📝</span> How to cite<a class="anchor" aria-label="anchor" href="#memo-how-to-cite"></a>
+</h2>
+<p>To cite RESY in publications, please cite the package together with Bruelheide et al. (2021), which describes the expert-system language RESY implements, and, when you use the EUNIS expert system, Chytrý et al. (2020).</p>
+<pre class="text"><code>Jansen F, Bauer M, Calbi M, Colling G (2026). _RESY: Vegetation Type
+Expert Classification System_. R package version 0.3,
+&lt;https://florian-jansen.github.io/resy/&gt;.
+
+Bruelheide H, Tichý L, Chytrý M, Jansen F (2021). "Implementing the
+formal language of the vegetation classification expert systems (ESy)
+in the statistical computing environment R." _Applied Vegetation
+Science_, *24*, e12562. doi:10.1111/avsc.12562
+&lt;https://doi.org/10.1111/avsc.12562&gt;.
+
+Chytrý M, Tichý L, Hennekens S, Knollová I, others (2020). "EUNIS
+Habitat Classification: expert system, characteristic species
+combinations and distribution maps of European habitats." _Applied
+Vegetation Science_, *23*, 648-675. doi:10.1111/avsc.12519
+&lt;https://doi.org/10.1111/avsc.12519&gt;.</code></pre>
+<p>BibTeX:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="va">@Manual</span>{<span class="ot">jansen2026resy</span>,</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="dt">title</span> = {{RESY}: Vegetation Type Expert Classification System},</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="dt">author</span> = {Florian Jansen and Markus Bauer and Mariasole Calbi and Gilles Colling},</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="dt">year</span> = {2026},</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="dt">note</span> = {R package version 0.3},</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="dt">url</span> = {https://florian-jansen.github.io/resy/},</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>}</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="va">@Article</span>{<span class="ot">bruelheide2021esy</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="dt">title</span> = {Implementing the formal language of the vegetation classification expert systems ({ESy}) in the statistical computing environment {R}},</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>  <span class="dt">author</span> = {Helge Bruelheide and Lubomír Tichý and Milan Chytrý and Florian Jansen},</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  <span class="dt">journal</span> = {Applied Vegetation Science},</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>  <span class="dt">year</span> = {2021},</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  <span class="dt">volume</span> = {24},</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  <span class="dt">pages</span> = {e12562},</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>  <span class="dt">doi</span> = {10.1111/avsc.12562},</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>}</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="va">@Article</span>{<span class="ot">chytry2020eunis</span>,</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>  <span class="dt">title</span> = {{EUNIS} Habitat Classification: expert system, characteristic species combinations and distribution maps of {European} habitats},</span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>  <span class="dt">author</span> = {Milan Chytrý and Lubomír Tichý and Stephan M. Hennekens and Ilona Knollová and others},</span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>  <span class="dt">journal</span> = {Applied Vegetation Science},</span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>  <span class="dt">year</span> = {2020},</span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>  <span class="dt">volume</span> = {23},</span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>  <span class="dt">pages</span> = {648--675},</span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>  <span class="dt">doi</span> = {10.1111/avsc.12519},</span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="bug-find-a-bug">
 <span class="emoji" data-emoji="bug">🐛</span> Find a bug?<a class="anchor" aria-label="anchor" href="#bug-find-a-bug"></a>
 </h2>
-<p>Thank you for finding it. Head over to the GitHub Issues tab and let us know about it. Alternatively, you can also send us an email. We will try to get to it as soon as possible!</p>
+<p>Thank you for finding it. Head over to the <a href="https://github.com/florian-jansen/resy/issues" class="external-link">GitHub Issues</a> tab and let us know about it. Alternatively, you can also <a href="mailto:florian.jansen@uni-rostock.de">send us an email</a>. We will try to get to it as soon as possible!</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">

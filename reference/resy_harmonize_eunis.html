@@ -77,7 +77,10 @@ requirements before running this function.</p>
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>A data frame or `sf` object containing plot data. If not an
-`sf` object, columns `Longitude` and `Latitude` must be present.</p></dd>
+`sf` object, columns `Longitude` and `Latitude` must be present. Darwin
+Core names are accepted: `eventID`, `decimalLongitude`, `decimalLatitude`,
+`country`, and `minimumElevationInMeters`/`maximumElevationInMeters` for
+`Altitude (m)`, which can also be given as `Altitude`.</p></dd>
 
 
 <dt id="arg-source-crs">source_crs<a class="anchor" aria-label="anchor" href="#arg-source-crs"></a></dt>
@@ -94,8 +97,8 @@ Ignored when `data` is an `sf` object, which carries its own CRS.</p></dd>
 
 
 <dt id="arg-species-data">species_data<a class="anchor" aria-label="anchor" href="#arg-species-data"></a></dt>
-<dd><p>A data frame with a column `species`. Required when
-`run_taxonomy = TRUE`.</p></dd>
+<dd><p>A data frame with a column `scientificName`. Required
+when `run_taxonomy = TRUE`.</p></dd>
 
 
 <dt id="arg-parsed">parsed<a class="anchor" aria-label="anchor" href="#arg-parsed"></a></dt>

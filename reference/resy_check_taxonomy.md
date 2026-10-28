@@ -14,7 +14,7 @@ counts and the unmatched names.
 ## Usage
 
 ``` r
-resy_check_taxonomy(obs, parsed, col = "TaxonName")
+resy_check_taxonomy(obs, parsed, col = NULL)
 ```
 
 ## Arguments
@@ -29,8 +29,8 @@ resy_check_taxonomy(obs, parsed, col = "TaxonName")
 
 - col:
 
-  Name of the column in \`obs\` that holds taxon names (default
-  \`"TaxonName"\`).
+  Name of the column in \`obs\` that holds taxon names. If \`NULL\`
+  (default), uses \`TaxonName\`, then Darwin Core \`scientificName\`.
 
 ## Value
 

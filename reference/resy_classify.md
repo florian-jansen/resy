@@ -1,21 +1,5 @@
 # Classify vegetation plots with the expert system
 
-Loads an expert system (by file or by scheme/version), aggregates taxa,
-evaluates the membership conditions, and returns plot classifications.
-
-The classifier is taxonomy-agnostic: it classifies the species names in
-\`obs\` as they are given. Names should already match the expert
-system's vocabulary. If your plot data uses names from a general
-backbone (GBIF, WFO, POWO, Euro+Med, a national checklist), harmonise
-them first as an explicit step with \[resy_resolve_taxa\] and inspect
-the result with its \`summary()\` before classifying, so the taxonomic
-choices stay visible (see the taxonomy vignette). Setting \`resolve_taxa
-= TRUE\` runs that resolution inside \`resy_classify()\` as a
-convenience: names the expert already knows pass through untouched,
-unknown names are looked up in the synonym table, and names that resolve
-to nothing keep their original value (never a best guess). What was
-resolved is then reported in the result's \`taxon_resolution\`.
-
 ## Usage
 
 ``` r
@@ -27,7 +11,7 @@ resy_classify(
   version = NULL,
   location = c("user", "package"),
   id_col = NULL,
-  species_col = "TaxonName",
+  species_col = NULL,
   resolve_taxa = FALSE,
   synonyms = NULL,
   mc = max(1L, floor(parallel::detectCores() * 0.75))
@@ -38,100 +22,62 @@ resy_classify(
 
 - obs:
 
-  Observations as \`data.table\` with at least columns describing plot
-  id, the species name (see \`species_col\`), and \`Cover_Perc\`.
+  Observations as a data frame or \`data.table\` with at least columns
+  describing plot id, the species name (see \`species_col\`), and the
+  cover \`Cover_Perc\`. Darwin Core names are accepted: \`eventID\` for
+  the plot id, \`scientificName\` for the species, and
+  \`organismQuantity\` for the cover when \`organismQuantityType\` is a
+  percent cover such as \`"
 
-- header:
+  headerPlot header data frame with one row per plot; required for
+  evaluating \$\$C/\$\$N. Darwin Core \`country\` is accepted for
+  \`Country\`, and \`Altitude\` or Darwin Core
+  \`minimumElevationInMeters\`/\`maximumElevationInMeters\` for
+  \`Altitude (m)\`.
 
-  Plot header data.frame; required for evaluating \$\$C/\$\$N.
+  expertfileOptional path to expert-system file (.json/.txt). If set,
+  takes precedence.
 
-- expertfile:
+  schemeScheme name (default: "EUNIS").
 
-  Optional path to expert-system file (.json/.txt). If set, takes
-  precedence.
+  versionVersion identifier. If NULL, uses latest available version for
+  the scheme.
 
-- scheme:
-
-  Scheme name (default: "EUNIS").
-
-- version:
-
-  Version identifier. If NULL, uses latest available version for the
-  scheme.
-
-- location:
-
-  Where to look for \`scheme\`/\`version\`, in search order; see
+  locationWhere to look for \`scheme\`/\`version\`, in search order; see
   \[resy_load_expert()\]. Defaults to both \`"user"\` and \`"package"\`.
 
-- id_col:
+  id_colOptional name of the plot id column. If NULL, tries
+  PlotObservationID, then PlotID, then Darwin Core eventID.
 
-  Optional name of the plot id column. If NULL, tries PlotObservationID,
-  then PlotID.
+  species_colName of the column in \`obs\` holding the species name. If
+  \`NULL\` (default), uses \`TaxonName\`, then Darwin Core
+  \`scientificName\`. Resolved names are written back to \`TaxonName\`.
 
-- species_col:
+  resolve_taxaLogical; if \`FALSE\` (default) the classifier is
+  taxonomy-agnostic and uses the names in \`obs\` as given. If \`TRUE\`,
+  species names are resolved to the expert's vocabulary via
+  \[resy_resolve_taxa\] before classification (see Description).
 
-  Name of the column in \`obs\` holding the species name (default
-  \`"TaxonName"\`). Resolved names are written back to \`TaxonName\`.
-
-- resolve_taxa:
-
-  Logical; if \`FALSE\` (default) the classifier is taxonomy-agnostic
-  and uses the names in \`obs\` as given. If \`TRUE\`, species names are
-  resolved to the expert's vocabulary via \[resy_resolve_taxa\] before
-  classification (see Description).
-
-- synonyms:
-
-  Synonym-table override passed to \[resy_resolve_taxa\] when
+  synonymsSynonym-table override passed to \[resy_resolve_taxa\] when
   \`resolve_taxa = TRUE\`; \`NULL\` uses the shipped table.
 
-- mc:
-
-  Number of CPU cores to use.
-
-## Value
+  mcNumber of CPU cores to use.
 
 An object of class \`resy_result\`. When \`resolve_taxa = TRUE\` it also
 carries the \`summary()\` of the \[resy_resolve_taxa\] result as
-\`taxon_resolution\`; otherwise \`taxon_resolution\` is \`NULL\`.
-
-## See also
-
+\`taxon_resolution\`; otherwise \`taxon_resolution\` is \`NULL\`. Loads
+an expert system (by file or by scheme/version), aggregates taxa,
+evaluates the membership conditions, and returns plot
+classifications.The classifier is taxonomy-agnostic: it classifies the
+species names in \`obs\` as they are given. Names should already match
+the expert system's vocabulary. If your plot data uses names from a
+general backbone (GBIF, WFO, POWO, Euro+Med, a national checklist),
+harmonise them first as an explicit step with \[resy_resolve_taxa\] and
+inspect the result with its \`summary()\` before classifying, so the
+taxonomic choices stay visible (see the taxonomy vignette). Setting
+\`resolve_taxa = TRUE\` runs that resolution inside \`resy_classify()\`
+as a convenience: names the expert already knows pass through untouched,
+unknown names are looked up in the synonym table, and names that resolve
+to nothing keep their original value (never a best guess). What was
+resolved is then reported in the result's \`taxon_resolution\`.
 \[resy_resolve_taxa\], \[resy_check_taxonomy\]
-
-## Examples
-
-``` r
-# \donttest{
-# Classify the bundled example plots with the minimal Apennine-test scheme.
-species <- utils::read.csv(
-  system.file("extdata", "data_example_species.csv", package = "RESY")
-)
-
-# A one-row-per-plot header is required even without geographic conditions.
-header <- as.data.frame(unique(species["PlotObservationID"]))
-
-res <- resy_classify(species, header, scheme = "Apennine-test",
-                     species_col = "scientificName")
-#> Step 5.1  Number of conditions with number of species of a group: 0
-#> Step 5.2  Number of conditions with minimum number of species: 0
-#> Step 5.3  Number of conditions with sum of square rooted Cover_Perc of species: 0
-#> Step 5.4  Number of conditions with total Cover_Perc of the group: 0
-#> Step 5.5  Number of conditions with total Cover_Perc of all other species: 0
-#>           Number of conditions with total Cover_Perc of all other species except those on the left-hand side: 0
-#>           Number of conditions with $05, $25 etc.: 0
-#> Step 5.6  Number of conditions with maximum cover of the group: 0
-#> Step 5.7  Number of conditions with single species, header levels (e.g. country names): 1
-#> Step 5.8  Number of conditions with maximum Cover_Perc in plot: 0
-#>           Number of conditions with maximum Cover_Perc in plot EXCEPT species of target group: 0
-#> Step 5.9  Number of T$ NON conditions: 0
-#> Step 5.10  Header conditions with numeric values: 0
-#>   Header conditions with character values: 0
-#> adapt conditions 2026-10-28 15:43:00.542974
-#> classification from here on 2026-10-28 15:43:00.543962
-head(res$result.classification)
-#> HU32 KW76 YB18 NX70 OL48 YL40 
-#>  "F"  "F"  "F"  "F"  "F"  "F" 
-# }
-```
