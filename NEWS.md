@@ -58,9 +58,9 @@
 * `resy_validate_esy()` resolves group references the way the classifier does.
   The EUNIS-ESy release of 2025-10-03 now gives 3 warnings instead of 234.
 * The shipped synonym table is built by `data-raw/build_synonyms.R` from six
-  taxify backbones. Its build date, the taxify release, and the version and
-  content id of each backbone are shipped in `inst/extdata/esy_synonyms_build.csv`
-  and `esy_synonyms_backbones.csv`, and the taxify lockfile is in `data-raw/`.
+  taxonomic backbones (Euro+Med, WFO, GBIF, COL, ITIS, NCBI). Its build date and
+  the release of each backbone are shipped in `inst/extdata/esy_synonyms_build.csv`
+  and `esy_synonyms_backbones.csv`.
   The table has an `accepted_in` column naming the backbones that list the
   synonym as an accepted name under the same author as the supporting synonym
   rows.

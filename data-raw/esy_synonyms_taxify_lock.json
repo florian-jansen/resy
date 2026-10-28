@@ -1,6 +1,6 @@
 {
-  "taxify_version": "0.5.5",
-  "created": "2026-09-21",
+  "taxify_version": "0.7.0",
+  "created": "2026-10-28",
   "r_version": "R version 4.6.1 (2026-06-24 ucrt)",
   "backbones": [
     {
@@ -20,15 +20,15 @@
     {
       "name": "colxr",
       "version": "2026.09",
-      "content_id": "c454069c5f336c276ca2be32d17dd385",
-      "downloaded_at": "2026-09-14",
+      "content_id": "d745272af67c07d7395e9ed97a1bdb73",
+      "downloaded_at": "2026-10-23",
       "installed": true
     },
     {
       "name": "gbif",
-      "version": "2026.08",
-      "content_id": "4ecece7e2df32dd065f742b72636bcac",
-      "downloaded_at": "2026-08-30",
+      "version": "2023.08",
+      "content_id": "b7b633ae13e9a23a5bca63dd8189c742",
+      "downloaded_at": "2026-09-22",
       "installed": true
     },
     {

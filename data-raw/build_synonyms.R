@@ -29,7 +29,7 @@ suppressMessages({
 
 BACKBONES  <- c("euromed", "wfo", "gbif", "col", "itis", "ncbi")
 EXPERT     <- list(scheme = "EUNIS", version = "2025-10-03")
-TAXIFY_VER <- "0.5.5"
+TAXIFY_VER <- "0.7.0"
 
 stopifnot(as.character(utils::packageVersion("taxify")) == TAXIFY_VER)
 
@@ -230,7 +230,7 @@ write_lf(backbones_out, "inst/extdata/esy_synonyms_backbones.csv")
 build_out <- data.frame(
   built           = as.character(Sys.Date()),
   taxify_version  = TAXIFY_VER,
-  taxify_commit   = utils::packageDescription("taxify")$RemoteSha,
+  taxify_commit   = utils::packageDescription("taxify")$RemoteSha %||% NA_character_,
   expert_system   = EXPERT$scheme,
   expert_version  = EXPERT$version,
   expert_md5      = unname(tools::md5sum(expert_file)),

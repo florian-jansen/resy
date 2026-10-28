@@ -63,10 +63,9 @@ backbones <- utils::read.csv(
 )
 ```
 
-The table was built on `r build$built` with taxify `r build$taxify_version`,
-against the `r build$expert_system` expert system `r build$expert_version`, from
-the backbone releases below. `data-raw/build_synonyms.R` and the taxify lockfile
-next to it in the source repository rebuild it from these versions.
+The table was built on `r build$built` against the `r build$expert_system`
+expert system `r build$expert_version`, from the backbone releases below.
+`data-raw/build_synonyms.R` in the source repository rebuilds it.
 
 ```{r build-backbones, echo=FALSE}
 knitr::kable(
@@ -74,8 +73,6 @@ knitr::kable(
     Backbone      = backbones$backbone,
     Release       = backbones$version,
     `Upstream data` = ifelse(is.na(backbones$upstream_date), "", backbones$upstream_date),
-    Downloaded    = backbones$downloaded,
-    `Content id`  = substr(backbones$content_id, 1, 8),
     check.names   = FALSE
   )
 )
@@ -179,7 +176,10 @@ crosswalk, or leaving them out.
 ## Bring your own crosswalk
 
 `resy_resolve_taxa()` also accepts your own crosswalk, with three columns:
-`synonym`, `esy_canonical`, and `source`. A small example ships with the package.
+`synonym`, `esy_canonical`, and `source`. It can come from a national checklist,
+a Turboveg species list, or a name-matching package such as
+[taxify](https://github.com/gcol33/taxify). A small example ships with the
+package.
 
 ```{r own-csv}
 cw_path <- system.file("extdata", "example_crosswalk.csv", package = "RESY")
@@ -261,15 +261,6 @@ For a quick pass, `resy_classify(..., resolve_taxa = TRUE)` runs the resolution
 against the expert vocabulary and then classifies in a single call, and reports
 what it did in `res$taxon_resolution`. The two-step route above is recommended,
 since it lets you check the unresolved names before they reach the classifier.
-
-## Building a crosswalk with taxify
-
-To assemble a crosswalk from offline backbone tables (no API calls), the
-[taxify](https://github.com/gcol33/taxify) package matches names against
-Euro+Med, WFO, GBIF, Catalogue of Life, ITIS, and NCBI and records the supporting
-backbone for each match. A table with the columns `synonym`, `esy_canonical`, and
-`source` built from those matches can be passed to `resy_resolve_taxa()` as
-`synonyms=`.
 
 ## References
 
