@@ -225,7 +225,8 @@ also accepts your own crosswalk, with three columns: `synonym`,
 `esy_canonical`, and `source`. It can come from a national checklist, a
 Turboveg species list, or a name-matching package such as
 [taxify](https://github.com/gcol33/taxify) or
-[taxize](https://CRAN.R-project.org/package=taxize). A small example
+[taxize](https://CRAN.R-project.org/package=taxize) (Chamberlain & Szocs
+[2013](https://f1000research.com/articles/2-191/v2)). A small example
 ships with the package.
 
 ``` r
@@ -340,6 +341,11 @@ classifies in a single call, and reports what it did in
 it lets you check the unresolved names before they reach the classifier.
 
 ## References
+
+Chamberlain S, Szocs E
+([2013](https://f1000research.com/articles/2-191/v2)) taxize: taxonomic
+search and retrieval in R. – *F1000Research* 2, 191.
+<https://f1000research.com/articles/2-191/v2>
 
 Chytrý M, Tichý L, Hennekens SM, Knollová I et
 al. ([2020](https://doi.org/10.1111/avsc.12519)) EUNIS Habitat

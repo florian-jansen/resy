@@ -327,7 +327,8 @@ to your own crosswalk, or leaving them out.</p>
 <p><code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> also accepts your own crosswalk,
 with three columns: <code>synonym</code>, <code>esy_canonical</code>,
 and <code>source</code>. It can come from a national checklist, a
-Turboveg species list, or a name-matching package such as <a href="https://github.com/gcol33/taxify" class="external-link">taxify</a> or <a href="https://CRAN.R-project.org/package=taxize" class="external-link">taxize</a>. A small
+Turboveg species list, or a name-matching package such as <a href="https://github.com/gcol33/taxify" class="external-link">taxify</a> or <a href="https://CRAN.R-project.org/package=taxize" class="external-link">taxize</a> (Chamberlain
+&amp; Szocs <a href="https://f1000research.com/articles/2-191/v2" class="external-link">2013</a>). A small
 example ships with the package.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cw_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_crosswalk.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span></span>
@@ -431,6 +432,8 @@ reach the classifier.</p>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
+<p>Chamberlain S, Szocs E (<a href="https://f1000research.com/articles/2-191/v2" class="external-link">2013</a>) taxize:
+taxonomic search and retrieval in R. – <em>F1000Research</em> 2, 191. <a href="https://f1000research.com/articles/2-191/v2" class="external-link">https://f1000research.com/articles/2-191/v2</a></p>
 <p>Chytrý M, Tichý L, Hennekens SM, Knollová I et al. (<a href="https://doi.org/10.1111/avsc.12519" class="external-link">2020</a>) EUNIS Habitat
 Classification: expert system, characteristic species combinations and
 distribution maps of European habitats. – <em>Applied Vegetation
