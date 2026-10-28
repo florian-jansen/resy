@@ -184,8 +184,8 @@ crosswalk, or leaving them out.
 `synonym`, `esy_canonical`, and `source`. It can come from a national checklist,
 a Turboveg species list, or a name-matching package such as
 [taxify](https://github.com/gcol33/taxify) or
-[taxize](https://CRAN.R-project.org/package=taxize). A small example ships with
-the package.
+[taxize](https://CRAN.R-project.org/package=taxize) (Chamberlain & Szocs
+[2013](https://f1000research.com/articles/2-191/v2)). A small example ships with the package.
 
 ```{r own-csv}
 cw_path <- system.file("extdata", "example_crosswalk.csv", package = "RESY")
@@ -269,6 +269,8 @@ what it did in `res$taxon_resolution`. The two-step route above is recommended,
 since it lets you check the unresolved names before they reach the classifier.
 
 ## References
+
+Chamberlain S, Szocs E ([2013](https://f1000research.com/articles/2-191/v2)) taxize: taxonomic search and retrieval in R. &ndash; _F1000Research_ 2, 191. [https://f1000research.com/articles/2-191/v2](https://f1000research.com/articles/2-191/v2)
 
 Chytrý M, Tichý L, Hennekens SM, Knollová I et al. ([2020](https://doi.org/10.1111/avsc.12519)) EUNIS Habitat Classification: expert system, characteristic species combinations and distribution maps of European habitats. &ndash; _Applied Vegetation Science_ 23, 648&ndash;675. [https://doi.org/10.1111/avsc.12519](https://doi.org/10.1111/avsc.12519)
 
