@@ -327,8 +327,8 @@ to your own crosswalk, or leaving them out.</p>
 <p><code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> also accepts your own crosswalk,
 with three columns: <code>synonym</code>, <code>esy_canonical</code>,
 and <code>source</code>. It can come from a national checklist, a
-Turboveg species list, or a name-matching package such as <a href="https://github.com/gcol33/taxify" class="external-link">taxify</a>. A small example
-ships with the package.</p>
+Turboveg species list, or a name-matching package such as <a href="https://github.com/gcol33/taxify" class="external-link">taxify</a> or <a href="https://CRAN.R-project.org/package=taxize" class="external-link">taxize</a>. A small
+example ships with the package.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cw_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_crosswalk.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span></span>
 <span><span class="va">crosswalk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_read_synonyms.html">resy_read_synonyms</a></span><span class="op">(</span><span class="va">cw_path</span><span class="op">)</span></span>

@@ -224,8 +224,9 @@ your own crosswalk, or leaving them out.
 also accepts your own crosswalk, with three columns: `synonym`,
 `esy_canonical`, and `source`. It can come from a national checklist, a
 Turboveg species list, or a name-matching package such as
-[taxify](https://github.com/gcol33/taxify). A small example ships with
-the package.
+[taxify](https://github.com/gcol33/taxify) or
+[taxize](https://CRAN.R-project.org/package=taxize). A small example
+ships with the package.
 
 ``` r
 
