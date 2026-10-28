@@ -4,21 +4,17 @@ RESY assigns vegetation plots to vegetation or habitat types based on
 their plant community. A plot where beech, silver fir and beech-forest
 herbs such as wood sorrel grow together is a beech-fir montane forest. A
 plot where mat-grass (*Nardus stricta*) is abundant is an acidic
-grassland. RESY takes a species list for each plot (relevé), with the
-cover or abundance of each species. A relevé lists all plant species in
-a delimited area of vegetation.
+grassland. RESY uses the species composition and cover or abundance
+recorded in each vegetation plot (relevé).
 
 The rules for this assignment form an expert system (ESy; Chytrý et al.
 [2020](https://doi.org/10.1111/avsc.12519); Bruelheide et al.
 [2021](https://doi.org/10.1111/avsc.12562)), stored as a text or JSON
 file. For each type, the rule specifies which groups of indicator
-species a plot must contain and how much cover they must have. These are
-species typical of that vegetation or habitat type. In the example
-below, a plot is a beech-fir montane forest when beech and silver fir
-together cover more than 15% of it and beech-forest herbs more than 10%.
-The types form a hierarchy: beech-fir montane forest is one type of
-forest. Besides the expert systems that come with the package, you can
-also supply your own expert system.
+species a plot must contain and how much cover they must have. In the
+example below, a plot is a beech-fir montane forest when beech and
+silver fir together cover more than 15% of it and beech-forest herbs
+more than 10%. You can also supply your own expert system.
 
 RESY ships the expert system for EUNIS (European Nature Information
 System), the habitat classification of the [European Environment
@@ -34,16 +30,16 @@ PlantBase](https://europlusmed.org/), the taxonomy used in data from the
 Species names in plot data that follow another taxonomy, such as
 [GBIF](https://www.gbif.org/) or [World Flora
 Online](https://www.worldfloraonline.org/), must first be matched to
-Euro+Med names, which users can do via
+Euro+Med names. Use
 [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
+to match them
 ([`vignette("taxonomy")`](https://florian-jansen.github.io/resy/articles/taxonomy.md)).
 
 **Insert figure here. Perhaps of Europe**
 
 ## ⏬ Installation
 
-The package is available on CRAN, you can install and load it using the
-following commands:
+The package is available on CRAN. Install and load it with:
 
 ``` r
 
@@ -81,18 +77,6 @@ therefore contains only plot IDs, but
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
 still requires it.
 
-In the example data, species names are stored in `scientificName`,
-following [Darwin Core](https://dwc.tdwg.org/), a standard set of field
-names for biodiversity data. By default,
-[`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
-looks for `TaxonName` or `scientificName`. For a column with another
-name, set `species_col`.
-
-RESY also accepts the other Darwin Core names for its columns: `eventID`
-for the plot ID, `organismQuantity` with an `organismQuantityType` of
-`"% cover"` for the cover, and `decimalLongitude`, `decimalLatitude`,
-`country` and the elevation range for the site data.
-
 ``` r
 
 library(RESY)
@@ -111,8 +95,8 @@ table(cand$classification)
 
 `F`, `FB`, `N`, `NG` and `NS` are the five vegetation types of
 `Apennine-test`. A plot marked `?` meets no type’s rule and is not
-classified. Here that is 92 of the 200 plots: none of the four indicator
-groups covers more than 4% of any of them, below the lowest cover
+classified. Here, 92 of the 200 plots remain unclassified. In these
+plots, all four indicator groups have at most 4% cover, below the lowest
 threshold in the rules (5%).
 
 Each type has a priority in the expert system. When a plot meets the
@@ -135,6 +119,21 @@ behind this assignment. For EUNIS, the header table also needs site data
 such as the ecoregion and the country, which
 [`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md)
 adds from the plot coordinates.
+
+RESY accepts these column names, or names standardized to [Darwin
+Core](https://dwc.tdwg.org/), a standard set of field names for
+biodiversity data. The example data stores species names in
+`scientificName`.
+
+| Column | Also accepted |
+|----|----|
+| `PlotObservationID` | `PlotID`, `eventID` |
+| `TaxonName` | `scientificName`, or any column set with `species_col` |
+| `Cover_Perc` | `organismQuantity`, with an `organismQuantityType` of `"% cover"` |
+| `Longitude` | `decimalLongitude` |
+| `Latitude` | `decimalLatitude` |
+| `Country` | `country` |
+| `Altitude (m)` | `Altitude`, or `minimumElevationInMeters` and `maximumElevationInMeters` (their midpoint) |
 
 ## 📜 Vignettes
 

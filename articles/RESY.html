@@ -66,7 +66,6 @@
                         <h4 data-toc-skip class="author">Florian Jansen,
 Markus Bauer, Mariasole Calbi &amp; Gilles Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-10-28</h4>
       
 
       <div class="d-none name"><code>RESY.Rmd</code></div>
@@ -102,10 +101,10 @@ types; <a href="https://floraveg.eu/habitat/" class="external-link">FloraVeg.EU<
 <strong>Apennine-test</strong> (a simplified test system for the
 Italian Apennines)</li>
 </ul>
-<p>For EUNIS specifically, many formulas also require geographic columns
+<p>Many EUNIS rules also use site data from the header table
 (<code>Ecoreg</code>, <code>Country</code>, <code>Coast_EEA</code>,
-<code>Dunes_Bohn</code>) in a sites header table. Those preparation
-steps are covered in <code><a href="../articles/EUNIS.html">vignette("EUNIS")</a></code>.</p>
+<code>Dunes_Bohn</code>). <code><a href="../articles/EUNIS.html">vignette("EUNIS")</a></code> shows how to
+add these columns.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -116,29 +115,44 @@ steps are covered in <code><a href="../articles/EUNIS.html">vignette("EUNIS")</a
 <h2 id="load-and-prepare-species-data">1. Load and prepare species data<a class="anchor" aria-label="anchor" href="#load-and-prepare-species-data"></a>
 </h2>
 <p><code><a href="../reference/resy_classify.html">resy_classify()</a></code> expects the observation table to have
-three columns. The species column can have any name, passed as
-<code>species_col</code>:</p>
+one row per species in each plot, with three columns. Each column can
+also have its <a href="https://dwc.tdwg.org/" class="external-link">Darwin Core</a> name, the
+standard set of field names for biodiversity data:</p>
 <table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
 <thead><tr class="header">
 <th>Column</th>
+<th>Darwin Core name</th>
 <th>Description</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td><code>PlotObservationID</code></td>
-<td>Plot identifier (auto-detected)</td>
+<td><code>eventID</code></td>
+<td>Plot identifier</td>
 </tr>
 <tr class="even">
 <td><code>TaxonName</code></td>
-<td>Species name (<code>species_col</code>, here
-<code>scientificName</code>)</td>
+<td><code>scientificName</code></td>
+<td>Species name</td>
 </tr>
 <tr class="odd">
 <td><code>Cover_Perc</code></td>
-<td>Cover value (percent or Braun-Blanquet scale)</td>
+<td>
+<code>organismQuantity</code>, with
+<code>organismQuantityType</code> <code>"% cover"</code>
+</td>
+<td>Cover of the species in percent</td>
 </tr>
 </tbody>
 </table>
+<p>For a species column with any other name, set
+<code>species_col</code>. The example data uses
+<code>scientificName</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"data_example_species.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span>,</span>
@@ -151,9 +165,12 @@ three columns. The species column can have any name, passed as
 <span><span class="co">#&gt; $ PlotObservationID <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "HU32"<span style="color: #949494;">, </span>"HU32"<span style="color: #949494;">, </span>"HU32"<span style="color: #949494;">, </span>"HU32"<span style="color: #949494;">, </span>"HU32"<span style="color: #949494;">, </span>"HU32"<span style="color: #949494;">, </span>"HU3…</span></span>
 <span><span class="co">#&gt; $ Cover_Perc        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 0.1<span style="color: #949494;">, </span>0.1<span style="color: #949494;">, </span>0.5<span style="color: #949494;">, </span>0.5<span style="color: #949494;">, </span>0.5<span style="color: #949494;">, </span>0.5<span style="color: #949494;">, </span>87.5<span style="color: #949494;">, </span>3.0<span style="color: #949494;">, </span>3.0<span style="color: #949494;">, </span>3.0<span style="color: #949494;">, </span>0…</span></span>
 <span><span class="co">#&gt; $ scientificName    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "Dryopteris filix-mas (L.) Schott"<span style="color: #949494;">, </span>"Cephalanthera l…</span></span></code></pre></div>
-<p>A minimal <strong>header</strong> table (one row per plot) is
-required even when no geographic conditions are used. It must contain
-the same plot ID column as the observation table.</p>
+<p>The <strong>header</strong> table has one row per plot, with the plot
+ID and the site data the rules use, such as the country or the altitude.
+<code>Apennine-test</code> uses no site data, so here the header table
+contains only the plot IDs, but <code><a href="../reference/resy_classify.html">resy_classify()</a></code> still
+requires it. It must contain the same plot ID column as the observation
+table.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">header</span> <span class="op">&lt;-</span> <span class="va">data_species</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">PlotObservationID</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -170,33 +187,47 @@ versions bundled with the package.</p>
 <span><span class="co">#&gt;          scheme    version</span></span>
 <span><span class="co">#&gt; 1 Apennine-test 2026-06-27</span></span>
 <span><span class="co">#&gt; 2         EUNIS 2025-10-03</span></span></code></pre></div>
-<p>To add a custom expert system, use
+<p>To add your own expert system, use
 <code><a href="../reference/resy_add_classification.html">resy_add_classification()</a></code>.</p>
-<p><code><a href="../reference/resy_load_expert.html">resy_load_expert()</a></code> parses a bundled classification into
-a <code>resy_parsed_expert</code> object, used here for taxonomy
-checking. <code><a href="../reference/resy_classify.html">resy_classify()</a></code> loads the expert internally from
-<code>scheme</code>/<code>version</code>.</p>
+<p><code><a href="../reference/resy_load_expert.html">resy_load_expert()</a></code> reads a bundled expert system into a
+<code>resy_parsed_expert</code> object, which the taxonomy check below
+uses. <code><a href="../reference/resy_classify.html">resy_classify()</a></code> does not need this object: it loads
+the expert system itself from <code>scheme</code> and
+<code>version</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">parsed_apennine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_load_expert.html">resy_load_expert</a></span><span class="op">(</span>scheme <span class="op">=</span> <span class="st">"Apennine-test"</span><span class="op">)</span></span></code></pre></div>
+<p>The types of an expert system form a hierarchy.
+<code><a href="../reference/resy_expert_tree.html">resy_expert_tree()</a></code> prints it; <code>fill = TRUE</code> adds
+the group levels that the type codes imply but the expert system does
+not list:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tree_filled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_expert_tree.html">resy_expert_tree</a></span><span class="op">(</span><span class="va">parsed_apennine</span>, fill <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tree_filled</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;resy_expert_tree&gt; 5 node(s), 2 top-level</span></span>
+<span><span class="co">#&gt; F Forest</span></span>
+<span><span class="co">#&gt;   FB Beech-fir montane forest</span></span>
+<span><span class="co">#&gt; N Non-forest</span></span>
+<span><span class="co">#&gt;   NG Nardus acidic grassland</span></span>
+<span><span class="co">#&gt;   NS Sub-Mediterranean scrub and woodland</span></span></code></pre></div>
+<p><code>Apennine-test</code> has two top-level types, forest
+(<code>F</code>) and non-forest (<code>N</code>), each with lower-level
+types. To browse the hierarchy in the browser, use
+<code><a href="../reference/resy_view_expert.html">resy_view_expert()</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="check-taxonomy">3. Check taxonomy<a class="anchor" aria-label="anchor" href="#check-taxonomy"></a>
 </h2>
-<p><code><a href="../reference/resy_check_taxonomy.html">resy_check_taxonomy()</a></code> maps observation names against
-Section 1 of the expert system (canonical names + synonyms). This is
-classification-specific: a name may resolve in one system but not
-another. The result has one row per distinct name:
-<code>scientificName</code> is the name as submitted,
+<p><code><a href="../reference/resy_check_taxonomy.html">resy_check_taxonomy()</a></code> checks the species names of the
+observation table against the species list of the expert system,
+including its synonyms. Each expert system has its own list, so a name
+can match in one system and not in another. The result has one row per
+distinct name: <code>scientificName</code> is the name as submitted,
 <code>TaxonName</code> the canonical name the classifier uses
 (<code>NA</code> when unmatched), and <code>matched</code> whether it
 was found. Printing it lists what each column holds and how many names
 matched.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tax_apennine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_check_taxonomy.html">resy_check_taxonomy</a></span><span class="op">(</span></span>
-<span>  obs    <span class="op">=</span> <span class="va">data_species</span>,</span>
-<span>  parsed <span class="op">=</span> <span class="va">parsed_apennine</span>,</span>
-<span>  col    <span class="op">=</span> <span class="st">"scientificName"</span></span>
-<span><span class="op">)</span></span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tax_apennine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_check_taxonomy.html">resy_check_taxonomy</a></span><span class="op">(</span>obs <span class="op">=</span> <span class="va">data_species</span>, parsed <span class="op">=</span> <span class="va">parsed_apennine</span><span class="op">)</span></span>
 <span><span class="va">tax_apennine</span></span>
 <span><span class="co">#&gt; &lt;resy_taxa&gt; 1009 name(s) from column `scientificName` checked against 950 Section 1 species</span></span>
 <span><span class="co">#&gt;   scientificName  Name as submitted</span></span>
@@ -229,50 +260,52 @@ matched.</p>
 <span><span class="co">#&gt; # ... 999 more row(s)</span></span></code></pre></div>
 <p><code><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary()</a></code> gives the match counts and lists the names
 that did not match:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">tax_apennine</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 1009 names checked: 1009 matched (100.0%), 0 not matched (0.0%).</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="classify">4. Classify<a class="anchor" aria-label="anchor" href="#classify"></a>
 </h2>
-<p><code><a href="../reference/resy_classify.html">resy_classify()</a></code> evaluates all membership formulas and
-returns a <code>resy_result</code> object. Pass <code>scheme</code> to
-select the bundled expert system; it will be loaded automatically.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/resy_classify.html">resy_classify()</a></code> evaluates the rules of every type for
+every plot and returns a <code>resy_result</code> object.
+<code>scheme</code> selects the bundled expert system.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res_apennine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_classify.html">resy_classify</a></span><span class="op">(</span></span>
-<span>  obs         <span class="op">=</span> <span class="va">data_species</span>,</span>
-<span>  header      <span class="op">=</span> <span class="va">header</span>,</span>
-<span>  scheme      <span class="op">=</span> <span class="st">"Apennine-test"</span>,</span>
-<span>  species_col <span class="op">=</span> <span class="st">"scientificName"</span></span>
+<span>  obs    <span class="op">=</span> <span class="va">data_species</span>,</span>
+<span>  header <span class="op">=</span> <span class="va">header</span>,</span>
+<span>  scheme <span class="op">=</span> <span class="st">"Apennine-test"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>Each plot is assigned to one type. <code><a href="../reference/resy_candidates.html">resy_candidates()</a></code>
+with <code>wide = TRUE</code> gives one row per plot; counting its
+<code>classification</code> column shows how many plots went to each
+type:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cand_wide</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res_apennine</span>, wide <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">cand_wide</span><span class="op">$</span><span class="va">classification</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  ?  F FB  N NG NS </span></span>
+<span><span class="co">#&gt; 92 33  8  6 20 41</span></span></code></pre></div>
+<p>A plot marked <code>?</code> meets no type’s rule and is not
+classified. Here, 92 of the 200 plots remain unclassified. In these
+plots, all four indicator groups have at most 4% cover, below the lowest
+threshold in the rules (5%).</p>
 <hr>
 </div>
 <div class="section level2">
 <h2 id="inspect-results">5. Inspect results<a class="anchor" aria-label="anchor" href="#inspect-results"></a>
 </h2>
 <div class="section level3">
-<h3 id="print-classification-hierarchy">Print classification hierarchy<a class="anchor" aria-label="anchor" href="#print-classification-hierarchy"></a>
+<h3 id="candidate-types-for-all-plots">Candidate types for all plots<a class="anchor" aria-label="anchor" href="#candidate-types-for-all-plots"></a>
 </h3>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">tree_filled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_expert_tree.html">resy_expert_tree</a></span><span class="op">(</span><span class="va">parsed_apennine</span>, fill <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">tree_filled</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;resy_expert_tree&gt; 5 node(s), 2 top-level</span></span>
-<span><span class="co">#&gt; F Forest</span></span>
-<span><span class="co">#&gt;   FB Beech-fir montane forest</span></span>
-<span><span class="co">#&gt; N Non-forest</span></span>
-<span><span class="co">#&gt;   NG Nardus acidic grassland</span></span>
-<span><span class="co">#&gt;   NS Sub-Mediterranean scrub and woodland</span></span></code></pre></div>
-<p>To browse the type hierarchy of a loaded system, use
-<code><a href="../reference/resy_view_expert.html">resy_view_expert()</a></code>.</p>
-</div>
-<div class="section level3">
-<h3 id="long-table-of-candidates-for-all-plots">Long table of candidates for all plots<a class="anchor" aria-label="anchor" href="#long-table-of-candidates-for-all-plots"></a>
-</h3>
-<p><code><a href="../reference/resy_candidates.html">resy_candidates()</a></code> extracts ranked classification
-results. Use <code>top_n</code> to limit the number of types returned
-per plot.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p>A plot often meets the rules of several types, for example a
+lower-level type and its parent. Each type has a priority in the expert
+system, and the plot is assigned to the type with the highest priority.
+<code><a href="../reference/resy_candidates.html">resy_candidates()</a></code> lists every type whose rule a plot meets,
+highest priority first. <code>priority_rank</code> numbers the priority
+levels of the expert system from the lowest upward. Use
+<code>top_n</code> to limit the number of types returned per plot.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cand_apennine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res_apennine</span>, top_n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cand_apennine</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    plot_id   type priority priority_rank</span></span>
@@ -293,7 +326,7 @@ its species, which vegetation-type formulas evaluated to
 lower-level types the plot did not reach, with the result of each of
 their conditions, which shows why the classification stopped at this
 level.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Replace "AN57" with a PlotObservationID present in your data</span></span>
 <span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res_apennine</span>, p <span class="op">=</span> <span class="st">"AN57"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Types whose rule holds: F (priority 2)</span></span>
@@ -322,8 +355,8 @@ level.</p>
 <span><span class="co">#&gt;                    Oxalis acetosella 0.5, Prenanthes purpurea 0.1</span></span></code></pre></div>
 <p>Passing <code>type</code> explains any other type in the same way,
 whether or not its rule holds for the plot:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res_apennine</span>, p <span class="op">=</span> <span class="st">"AN57"</span>, type <span class="op">=</span> <span class="st">"F"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res_apennine</span>, p <span class="op">=</span> <span class="st">"AN57"</span>, type <span class="op">=</span> <span class="st">"FB"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Types whose rule holds: F (priority 2)</span></span>
 <span><span class="co">#&gt; Classified as F (Forest).</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -349,20 +382,40 @@ whether or not its rule holds for the plot:</p>
 <span><span class="co">#&gt;       [2] not met  total cover of Beech-forest-herbs is 0.6%, needs more than 10%</span></span>
 <span><span class="co">#&gt;                    Oxalis acetosella 0.5, Prenanthes purpurea 0.1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; F     Forest: rule holds</span></span>
-<span><span class="co">#&gt;       Rule: [1]</span></span>
-<span><span class="co">#&gt;       [1] met      total cover of Beech-forest-trees is 62.7%, needs more than 10%</span></span>
-<span><span class="co">#&gt;                    Fagus sylvatica 62.5, Abies alba 0.5</span></span></code></pre></div>
+<span><span class="co">#&gt; FB    Beech-fir montane forest: rule not met</span></span>
+<span><span class="co">#&gt;       Rule: [1] and [2]</span></span>
+<span><span class="co">#&gt;       [1] met      total cover of Beech-forest-trees is 62.7%, needs more than 15%</span></span>
+<span><span class="co">#&gt;                    Fagus sylvatica 62.5, Abies alba 0.5</span></span>
+<span><span class="co">#&gt;       [2] not met  total cover of Beech-forest-herbs is 0.6%, needs more than 10%</span></span>
+<span><span class="co">#&gt;                    Oxalis acetosella 0.5, Prenanthes purpurea 0.1</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="next-steps">Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
 </h2>
+<p>The classification above used an expert system without site data and
+species names that already match it. With your own plots, one of these
+usually comes next:</p>
 <ul>
-<li>For EUNIS with geographic enrichment (ecoregion, country, coast),
-see <code><a href="../articles/EUNIS.html">vignette("EUNIS")</a></code>.</li>
-<li>To validate an ESy text file before importing, use
-<code><a href="../reference/resy_validate_esy.html">resy_validate_esy()</a></code>.</li>
+<li>
+<strong>Your plots have coordinates and you want EUNIS habitat
+types:</strong> <code><a href="../articles/EUNIS.html">vignette("EUNIS")</a></code> adds the ecoregion,
+country and coastal position from the coordinates and classifies the
+plots.</li>
+<li>
+<strong>Your species names follow another taxonomy</strong>, such as
+GBIF or World Flora Online, and <code><a href="../reference/resy_check_taxonomy.html">resy_check_taxonomy()</a></code>
+reports many unmatched names: <code><a href="../articles/taxonomy.html">vignette("taxonomy")</a></code> matches
+them to the names of the expert system.</li>
+<li>
+<strong>Your plots have no altitude:</strong>
+<code><a href="../articles/altitude-vignette.html">vignette("altitude-vignette")</a></code> takes the altitude that some
+EUNIS rules use from a separately downloaded elevation map.</li>
+<li>
+<strong>You have your own expert system:</strong>
+<code><a href="../reference/resy_validate_esy.html">resy_validate_esy()</a></code> checks the file, and
+<code><a href="../reference/resy_add_classification.html">resy_add_classification()</a></code> makes it available to
+<code><a href="../reference/resy_classify.html">resy_classify()</a></code>.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

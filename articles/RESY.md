@@ -20,10 +20,10 @@ vignette uses two bundled systems:
   [FloraVeg.EU](https://floraveg.eu/habitat/))
 - **Apennine-test** (a simplified test system for the Italian Apennines)
 
-For EUNIS specifically, many formulas also require geographic columns
-(`Ecoreg`, `Country`, `Coast_EEA`, `Dunes_Bohn`) in a sites header
-table. Those preparation steps are covered in
-[`vignette("EUNIS")`](https://florian-jansen.github.io/resy/articles/EUNIS.md).
+Many EUNIS rules also use site data from the header table (`Ecoreg`,
+`Country`, `Coast_EEA`, `Dunes_Bohn`).
+[`vignette("EUNIS")`](https://florian-jansen.github.io/resy/articles/EUNIS.md)
+shows how to add these columns.
 
 ``` r
 
@@ -37,14 +37,19 @@ library(RESY)
 ## 1. Load and prepare species data
 
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
-expects the observation table to have three columns. The species column
-can have any name, passed as `species_col`:
+expects the observation table to have one row per species in each plot,
+with three columns. Each column can also have its [Darwin
+Core](https://dwc.tdwg.org/) name, the standard set of field names for
+biodiversity data:
 
-| Column              | Description                                         |
-|---------------------|-----------------------------------------------------|
-| `PlotObservationID` | Plot identifier (auto-detected)                     |
-| `TaxonName`         | Species name (`species_col`, here `scientificName`) |
-| `Cover_Perc`        | Cover value (percent or Braun-Blanquet scale)       |
+| Column | Darwin Core name | Description |
+|----|----|----|
+| `PlotObservationID` | `eventID` | Plot identifier |
+| `TaxonName` | `scientificName` | Species name |
+| `Cover_Perc` | `organismQuantity`, with `organismQuantityType` `"% cover"` | Cover of the species in percent |
+
+For a species column with any other name, set `species_col`. The example
+data uses `scientificName`.
 
 ``` r
 
@@ -61,9 +66,13 @@ glimpse(data_species)
 #> $ scientificName    <chr> "Dryopteris filix-mas (L.) Schott", "Cephalanthera l…
 ```
 
-A minimal **header** table (one row per plot) is required even when no
-geographic conditions are used. It must contain the same plot ID column
-as the observation table.
+The **header** table has one row per plot, with the plot ID and the site
+data the rules use, such as the country or the altitude. `Apennine-test`
+uses no site data, so here the header table contains only the plot IDs,
+but
+[`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
+still requires it. It must contain the same plot ID column as the
+observation table.
 
 ``` r
 
@@ -87,38 +96,57 @@ resy_available_classifications() |> select(scheme, version)
 #> 2         EUNIS 2025-10-03
 ```
 
-To add a custom expert system, use
+To add your own expert system, use
 [`resy_add_classification()`](https://florian-jansen.github.io/resy/reference/resy_add_classification.md).
 
 [`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md)
-parses a bundled classification into a `resy_parsed_expert` object, used
-here for taxonomy checking.
+reads a bundled expert system into a `resy_parsed_expert` object, which
+the taxonomy check below uses.
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
-loads the expert internally from `scheme`/`version`.
+does not need this object: it loads the expert system itself from
+`scheme` and `version`.
 
 ``` r
 
 parsed_apennine <- resy_load_expert(scheme = "Apennine-test")
 ```
 
-## 3. Check taxonomy
-
-[`resy_check_taxonomy()`](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md)
-maps observation names against Section 1 of the expert system (canonical
-names + synonyms). This is classification-specific: a name may resolve
-in one system but not another. The result has one row per distinct name:
-`scientificName` is the name as submitted, `TaxonName` the canonical
-name the classifier uses (`NA` when unmatched), and `matched` whether it
-was found. Printing it lists what each column holds and how many names
-matched.
+The types of an expert system form a hierarchy.
+[`resy_expert_tree()`](https://florian-jansen.github.io/resy/reference/resy_expert_tree.md)
+prints it; `fill = TRUE` adds the group levels that the type codes imply
+but the expert system does not list:
 
 ``` r
 
-tax_apennine <- resy_check_taxonomy(
-  obs    = data_species,
-  parsed = parsed_apennine,
-  col    = "scientificName"
-)
+tree_filled <- resy_expert_tree(parsed_apennine, fill = TRUE)
+print(tree_filled)
+#> <resy_expert_tree> 5 node(s), 2 top-level
+#> F Forest
+#>   FB Beech-fir montane forest
+#> N Non-forest
+#>   NG Nardus acidic grassland
+#>   NS Sub-Mediterranean scrub and woodland
+```
+
+`Apennine-test` has two top-level types, forest (`F`) and non-forest
+(`N`), each with lower-level types. To browse the hierarchy in the
+browser, use
+[`resy_view_expert()`](https://florian-jansen.github.io/resy/reference/resy_view_expert.md).
+
+## 3. Check taxonomy
+
+[`resy_check_taxonomy()`](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md)
+checks the species names of the observation table against the species
+list of the expert system, including its synonyms. Each expert system
+has its own list, so a name can match in one system and not in another.
+The result has one row per distinct name: `scientificName` is the name
+as submitted, `TaxonName` the canonical name the classifier uses (`NA`
+when unmatched), and `matched` whether it was found. Printing it lists
+what each column holds and how many names matched.
+
+``` r
+
+tax_apennine <- resy_check_taxonomy(obs = data_species, parsed = parsed_apennine)
 tax_apennine
 #> <resy_taxa> 1009 name(s) from column `scientificName` checked against 950 Section 1 species
 #>   scientificName  Name as submitted
@@ -163,46 +191,51 @@ summary(tax_apennine)
 ## 4. Classify
 
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
-evaluates all membership formulas and returns a `resy_result` object.
-Pass `scheme` to select the bundled expert system; it will be loaded
-automatically.
+evaluates the rules of every type for every plot and returns a
+`resy_result` object. `scheme` selects the bundled expert system.
 
 ``` r
 
 res_apennine <- resy_classify(
-  obs         = data_species,
-  header      = header,
-  scheme      = "Apennine-test",
-  species_col = "scientificName"
+  obs    = data_species,
+  header = header,
+  scheme = "Apennine-test"
 )
 ```
+
+Each plot is assigned to one type.
+[`resy_candidates()`](https://florian-jansen.github.io/resy/reference/resy_candidates.md)
+with `wide = TRUE` gives one row per plot; counting its `classification`
+column shows how many plots went to each type:
+
+``` r
+
+cand_wide <- resy_candidates(res_apennine, wide = TRUE)
+table(cand_wide$classification)
+#> 
+#>  ?  F FB  N NG NS 
+#> 92 33  8  6 20 41
+```
+
+A plot marked `?` meets no type’s rule and is not classified. Here, 92
+of the 200 plots remain unclassified. In these plots, all four indicator
+groups have at most 4% cover, below the lowest threshold in the rules
+(5%).
 
 ------------------------------------------------------------------------
 
 ## 5. Inspect results
 
-### Print classification hierarchy
+### Candidate types for all plots
 
-``` r
-
-tree_filled <- resy_expert_tree(parsed_apennine, fill = TRUE)
-print(tree_filled)
-#> <resy_expert_tree> 5 node(s), 2 top-level
-#> F Forest
-#>   FB Beech-fir montane forest
-#> N Non-forest
-#>   NG Nardus acidic grassland
-#>   NS Sub-Mediterranean scrub and woodland
-```
-
-To browse the type hierarchy of a loaded system, use
-[`resy_view_expert()`](https://florian-jansen.github.io/resy/reference/resy_view_expert.md).
-
-### Long table of candidates for all plots
-
+A plot often meets the rules of several types, for example a lower-level
+type and its parent. Each type has a priority in the expert system, and
+the plot is assigned to the type with the highest priority.
 [`resy_candidates()`](https://florian-jansen.github.io/resy/reference/resy_candidates.md)
-extracts ranked classification results. Use `top_n` to limit the number
-of types returned per plot.
+lists every type whose rule a plot meets, highest priority first.
+`priority_rank` numbers the priority levels of the expert system from
+the lowest upward. Use `top_n` to limit the number of types returned per
+plot.
 
 ``` r
 
@@ -262,7 +295,7 @@ its rule holds for the plot:
 
 ``` r
 
-resy_eval_plot(res_apennine, p = "AN57", type = "F")
+resy_eval_plot(res_apennine, p = "AN57", type = "FB")
 #> Types whose rule holds: F (priority 2)
 #> Classified as F (Forest).
 #> 
@@ -288,15 +321,37 @@ resy_eval_plot(res_apennine, p = "AN57", type = "F")
 #>       [2] not met  total cover of Beech-forest-herbs is 0.6%, needs more than 10%
 #>                    Oxalis acetosella 0.5, Prenanthes purpurea 0.1
 #> 
-#> F     Forest: rule holds
-#>       Rule: [1]
-#>       [1] met      total cover of Beech-forest-trees is 62.7%, needs more than 10%
+#> FB    Beech-fir montane forest: rule not met
+#>       Rule: [1] and [2]
+#>       [1] met      total cover of Beech-forest-trees is 62.7%, needs more than 15%
 #>                    Fagus sylvatica 62.5, Abies alba 0.5
+#>       [2] not met  total cover of Beech-forest-herbs is 0.6%, needs more than 10%
+#>                    Oxalis acetosella 0.5, Prenanthes purpurea 0.1
 ```
 
 ## Next steps
 
-- For EUNIS with geographic enrichment (ecoregion, country, coast), see
-  [`vignette("EUNIS")`](https://florian-jansen.github.io/resy/articles/EUNIS.md).
-- To validate an ESy text file before importing, use
-  [`resy_validate_esy()`](https://florian-jansen.github.io/resy/reference/resy_validate_esy.md).
+The classification above used an expert system without site data and
+species names that already match it. With your own plots, one of these
+usually comes next:
+
+- **Your plots have coordinates and you want EUNIS habitat types:**
+  [`vignette("EUNIS")`](https://florian-jansen.github.io/resy/articles/EUNIS.md)
+  adds the ecoregion, country and coastal position from the coordinates
+  and classifies the plots.
+- **Your species names follow another taxonomy**, such as GBIF or World
+  Flora Online, and
+  [`resy_check_taxonomy()`](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md)
+  reports many unmatched names:
+  [`vignette("taxonomy")`](https://florian-jansen.github.io/resy/articles/taxonomy.md)
+  matches them to the names of the expert system.
+- **Your plots have no altitude:**
+  [`vignette("altitude-vignette")`](https://florian-jansen.github.io/resy/articles/altitude-vignette.md)
+  takes the altitude that some EUNIS rules use from a separately
+  downloaded elevation map.
+- **You have your own expert system:**
+  [`resy_validate_esy()`](https://florian-jansen.github.io/resy/reference/resy_validate_esy.md)
+  checks the file, and
+  [`resy_add_classification()`](https://florian-jansen.github.io/resy/reference/resy_add_classification.md)
+  makes it available to
+  [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
