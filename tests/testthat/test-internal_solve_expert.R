@@ -160,6 +160,19 @@ test_that("resy_classify warns about header columns the expert system uses but h
   )
 })
 
+test_that("resy_classify warns about missing values in numeric header columns", {
+  obs <- data.frame(PlotObservationID = c("p1", "p2"),
+                    TaxonName = "Fagus sylvatica", Cover_Perc = 50)
+  header <- data.frame(PlotObservationID = c("p1", "p2", "p3"),
+                       Country = "Ireland", Ecoreg = c(7, NA, NA))
+  expect_warning(
+    suppressMessages(resy_classify(
+      obs, header, expertfile = test_path("fixtures", "header-conditions.json"), mc = 1L
+    )),
+    "missing values: Ecoreg \\(1 plot\\)"
+  )
+})
+
 test_that("whole-plot cover conditions do not depend on the row order of obs", {
   expert <- test_path("fixtures", "whole-plot-cover.json")
   parsed <- resy_load_expert(expertfile = expert)

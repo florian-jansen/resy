@@ -143,7 +143,7 @@
   out <- character()
 
   if (!rlang::has_name(data, "Altitude (m)"))
-    out <- c(out, '"Altitude (m)" is missing. See vignette "Altitude data" and mapsforeurope.org for a raster source.')
+    out <- c(out, '"Altitude (m)" is missing. See vignette("altitude-vignette") and mapsforeurope.org for a raster source.')
   else if (anyNA(data$`Altitude (m)`))
     out <- c(out, '"Altitude (m)" contains NA values.')
 
@@ -269,9 +269,11 @@
   bbox <- sf::st_bbox(data_sf)
 
   coastline <- .resy_gis("coastline_regions_epsg25832") |>
-    sf::st_zm() |> sf::st_crop(bbox) |> sf::st_buffer(dist = buffer_dist)
+    sf::st_zm() |> sf::st_set_agr("constant") |> sf::st_crop(bbox) |>
+    sf::st_buffer(dist = buffer_dist)
 
-  dunes <- .resy_gis("dunes_bohn_500mbuffer_epsg25832") |> sf::st_crop(bbox)
+  dunes <- .resy_gis("dunes_bohn_500mbuffer_epsg25832") |>
+    sf::st_set_agr("constant") |> sf::st_crop(bbox)
 
   coast_join <- sf::st_join(data_sf, coastline, left = TRUE)
   

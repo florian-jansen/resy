@@ -36,7 +36,7 @@
 #'   describing plot id, the species name (see `species_col`), and the cover
 #'   `Cover_Perc`. Darwin Core names are accepted: `eventID` for the plot id,
 #'   `scientificName` for the species, and `organismQuantity` for the cover when
-#'   `organismQuantityType` is a percent cover such as `"% cover"`.
+#'   `organismQuantityType` is a percent cover such as `"\% cover"`.
 #' @param header Plot header data frame with one row per plot; required for
 #'   evaluating $$C/$$N. Darwin Core `country` is accepted for `Country`, and
 #'   `Altitude` or Darwin Core
@@ -124,14 +124,29 @@ resy_classify <- function(obs,
   obs <- tmp$obs
   header <- tmp$header
 
-  # Header conditions ($$C, $$N) on a column the header lacks are evaluated as
-  # 0 by the solver, so say which columns are missing.
+  # Header conditions ($$C, $$N) on a column the header lacks, and numeric
+  # conditions ($$N) on a missing value, are evaluated as 0 by the solver, so
+  # say which columns and how many plots this affects.
   header_conds <- parsed$conditions[startsWith(parsed$conditions, "$$C") |
                                       startsWith(parsed$conditions, "$$N")]
-  missing_cols <- setdiff(unique(trimws(substring(header_conds, 4L))), names(header))
+  header_cols <- trimws(substring(header_conds, 4L))
+  missing_cols <- setdiff(unique(header_cols), names(header))
   if (length(missing_cols)) {
     warning("The expert system uses header columns that `header` does not have: ",
             paste(missing_cols, collapse = ", "),
+            ". Conditions on them are evaluated as if the value were 0.",
+            call. = FALSE)
+  }
+  num_cols <- intersect(unique(header_cols[startsWith(header_conds, "$$N")]),
+                        names(header))
+  in_obs <- header$PlotObservationID %in% obs$PlotObservationID
+  n_na <- vapply(num_cols, function(col) sum(is.na(header[[col]][in_obs])),
+                 integer(1))
+  n_na <- n_na[n_na > 0]
+  if (length(n_na)) {
+    warning("Header columns used by the expert system have missing values: ",
+            paste0(names(n_na), " (", n_na, ifelse(n_na == 1, " plot)", " plots)"),
+                   collapse = ", "),
             ". Conditions on them are evaluated as if the value were 0.",
             call. = FALSE)
   }

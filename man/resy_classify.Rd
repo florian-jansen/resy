@@ -23,7 +23,7 @@ resy_classify(
 describing plot id, the species name (see `species_col`), and the cover
 `Cover_Perc`. Darwin Core names are accepted: `eventID` for the plot id,
 `scientificName` for the species, and `organismQuantity` for the cover when
-`organismQuantityType` is a percent cover such as `"% cover"`.}
+`organismQuantityType` is a percent cover such as `"\% cover"`.}
 
 \item{header}{Plot header data frame with one row per plot; required for
 evaluating $$C/$$N. Darwin Core `country` is accepted for `Country`, and
