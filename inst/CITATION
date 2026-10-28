@@ -1,0 +1,61 @@
+citHeader(
+  "To cite RESY in publications, please cite the package together with",
+  "Bruelheide et al. (2021), which describes the expert-system language RESY",
+  "implements, and, when you use the EUNIS expert system, Chytrý et al. (2020)."
+)
+
+bibentry(
+  bibtype = "Manual",
+  key = "jansen2026resy",
+  title = "{RESY}: Vegetation Type Expert Classification System",
+  author = c(
+    person("Florian", "Jansen"),
+    person("Markus", "Bauer"),
+    person("Mariasole", "Calbi"),
+    person("Gilles", "Colling")
+  ),
+  year = "2026",
+  note = paste("R package version", meta$Version),
+  url = "https://florian-jansen.github.io/resy/"
+)
+
+bibentry(
+  bibtype = "Article",
+  key = "bruelheide2021esy",
+  title = paste(
+    "Implementing the formal language of the vegetation classification",
+    "expert systems ({ESy}) in the statistical computing environment {R}"
+  ),
+  author = c(
+    person("Helge", "Bruelheide"),
+    person("Lubomír", "Tichý"),
+    person("Milan", "Chytrý"),
+    person("Florian", "Jansen")
+  ),
+  journal = "Applied Vegetation Science",
+  year = "2021",
+  volume = "24",
+  pages = "e12562",
+  doi = "10.1111/avsc.12562"
+)
+
+bibentry(
+  bibtype = "Article",
+  key = "chytry2020eunis",
+  title = paste(
+    "{EUNIS} Habitat Classification: expert system, characteristic species",
+    "combinations and distribution maps of {European} habitats"
+  ),
+  author = c(
+    person("Milan", "Chytrý"),
+    person("Lubomír", "Tichý"),
+    person("Stephan M.", "Hennekens"),
+    person("Ilona", "Knollová"),
+    person("others")
+  ),
+  journal = "Applied Vegetation Science",
+  year = "2020",
+  volume = "23",
+  pages = "648--675",
+  doi = "10.1111/avsc.12519"
+)
