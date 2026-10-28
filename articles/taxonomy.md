@@ -46,7 +46,8 @@ which backbone it came from.
 The table was built on 2026-10-28 against the EUNIS expert system
 2025-10-03, from the backbone releases below.
 `data-raw/build_synonyms.R` in the source repository rebuilds it with
-taxify 0.7.0.
+taxify 0.7.0 (Colling
+[2026](https://doi.org/10.32614/CRAN.package.taxify)).
 
 | Backbone | Release | Upstream data |
 |:---------|--------:|:--------------|
@@ -342,3 +343,7 @@ al. ([2020](https://doi.org/10.1111/avsc.12519)) EUNIS Habitat
 Classification: expert system, characteristic species combinations and
 distribution maps of European habitats. – *Applied Vegetation Science*
 23, 648–675. <https://doi.org/10.1111/avsc.12519>
+
+Colling G ([2026](https://doi.org/10.32614/CRAN.package.taxify)) taxify:
+Offline Taxonomic Name Matching Against Darwin Core Backbones. – R
+package version 0.7.0. <https://doi.org/10.32614/CRAN.package.taxify>
