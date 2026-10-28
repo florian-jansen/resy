@@ -121,14 +121,20 @@ behind this assignment. For EUNIS, the header table also needs site data
 such as the ecoregion and the country, which `resy_harmonize_eunis()`
 adds from the plot coordinates.
 
-Column names can follow [Darwin Core](https://dwc.tdwg.org/), a standard
-set of field names for biodiversity data. The example data stores
-species names in `scientificName`. RESY looks for the species in
-`TaxonName` or `scientificName` (any other column is set with
-`species_col`), the plot ID in `eventID`, the cover in
-`organismQuantity` with an `organismQuantityType` of `"% cover"`, and
-the site data in `decimalLongitude`, `decimalLatitude`, `country`,
-`minimumElevationInMeters` and `maximumElevationInMeters`.
+RESY accepts these column names, or names standardized to [Darwin
+Core](https://dwc.tdwg.org/), a standard set of field names for
+biodiversity data. The example data stores species names in
+`scientificName`.
+
+| Column | Also accepted |
+|----|----|
+| `PlotObservationID` | `PlotID`, `eventID` |
+| `TaxonName` | `scientificName`, or any column set with `species_col` |
+| `Cover_Perc` | `organismQuantity`, with an `organismQuantityType` of `"% cover"` |
+| `Longitude` | `decimalLongitude` |
+| `Latitude` | `decimalLatitude` |
+| `Country` | `country` |
+| `Altitude (m)` | `Altitude`, or `minimumElevationInMeters` and `maximumElevationInMeters` (their midpoint) |
 
 ## :scroll: Vignettes
 
