@@ -128,8 +128,8 @@ res <- resy_classify(species, header, scheme = "Apennine-test",
 #> Step 5.9  Number of T$ NON conditions: 0
 #> Step 5.10  Header conditions with numeric values: 0
 #>   Header conditions with character values: 0
-#> adapt conditions 2026-10-28 14:20:57.245448
-#> classification from here on 2026-10-28 14:20:57.246379
+#> adapt conditions 2026-10-28 15:28:43.144408
+#> classification from here on 2026-10-28 15:28:43.145367
 head(res$result.classification)
 #> HU32 KW76 YB18 NX70 OL48 YL40 
 #>  "F"  "F"  "F"  "F"  "F"  "F" 

@@ -45,7 +45,8 @@ which backbone it came from.
 
 The table was built on 2026-10-28 against the EUNIS expert system
 2025-10-03, from the backbone releases below.
-`data-raw/build_synonyms.R` in the source repository rebuilds it.
+`data-raw/build_synonyms.R` in the source repository rebuilds it with
+taxify 0.7.0.
 
 | Backbone | Release | Upstream data |
 |:---------|--------:|:--------------|
