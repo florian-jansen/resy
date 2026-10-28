@@ -20,7 +20,7 @@ resy_harmonize_eunis(
 `sf` object, columns `Longitude` and `Latitude` must be present. Darwin
 Core names are accepted: `eventID`, `decimalLongitude`, `decimalLatitude`,
 `country`, and `minimumElevationInMeters`/`maximumElevationInMeters` for
-`Altitude (m)`.}
+`Altitude (m)`, which can also be given as `Altitude`.}
 
 \item{source_crs}{Integer EPSG code of the coordinates in a plain data
 frame, in any coordinate reference system; they are converted as needed.

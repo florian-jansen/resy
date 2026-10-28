@@ -91,7 +91,8 @@
   `scientificName` for the species, `organismQuantity` with a percent-cover
   `organismQuantityType` for the cover, `decimalLongitude`, `decimalLatitude`
   and `country` for the site, and `minimumElevationInMeters` /
-  `maximumElevationInMeters` for `Altitude (m)`. `species_col` in
+  `maximumElevationInMeters` for `Altitude (m)`, which is also read from a
+  column `Altitude`. `species_col` in
   `resy_classify()` and `resy_resolve_taxa()` and `col` in
   `resy_check_taxonomy()` default to `NULL`, which uses `TaxonName`, then
   `scientificName`.

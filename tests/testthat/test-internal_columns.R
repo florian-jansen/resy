@@ -54,6 +54,14 @@ test_that("altitude is taken from the Darwin Core elevation range", {
   expect_null(RESY:::.resy_dwc_elevation(data.frame(x = 1)))
 })
 
+test_that("Altitude is accepted for Altitude (m) before the elevation range", {
+  d <- data.frame(Altitude = 120, minimumElevationInMeters = 500)
+  expect_equal(RESY:::.resy_adopt_columns(d, "Altitude (m)")$`Altitude (m)`, 120)
+
+  d$Altitude <- NULL
+  expect_equal(RESY:::.resy_adopt_columns(d, "Altitude (m)")$`Altitude (m)`, 500)
+})
+
 test_that("RESY columns already present are kept", {
   d <- data.frame(Country = "Italy", country = "Austria")
   expect_equal(RESY:::.resy_adopt_columns(d, "Country")$Country, "Italy")

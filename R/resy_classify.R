@@ -38,9 +38,9 @@
 #'   `scientificName` for the species, and `organismQuantity` for the cover when
 #'   `organismQuantityType` is a percent cover such as `"% cover"`.
 #' @param header Plot header data frame with one row per plot; required for
-#'   evaluating $$C/$$N. Darwin Core `country` and
-#'   `minimumElevationInMeters`/`maximumElevationInMeters` are accepted for
-#'   `Country` and `Altitude (m)`.
+#'   evaluating $$C/$$N. Darwin Core `country` is accepted for `Country`, and
+#'   `Altitude` or Darwin Core
+#'   `minimumElevationInMeters`/`maximumElevationInMeters` for `Altitude (m)`.
 #' @param expertfile Optional path to expert-system file (.json/.txt). If set, takes precedence.
 #' @param scheme Scheme name (default: "EUNIS").
 #' @param version Version identifier. If NULL, uses latest available version for the scheme.

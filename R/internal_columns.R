@@ -8,7 +8,8 @@
   TaxonName         = "scientificName",
   Longitude         = "decimalLongitude",
   Latitude          = "decimalLatitude",
-  Country           = "country"
+  Country           = "country",
+  `Altitude (m)`    = "Altitude"
 )
 
 # Columns computed from Darwin Core terms that do not map one to one: cover from
@@ -30,13 +31,13 @@
   if (length(hit)) hit[1] else NULL
 }
 
-# Value of `column` taken from an accepted name or derived from Darwin Core
-# terms, or NULL when `data` has neither.
+# Value of `column` taken from an accepted name, otherwise derived from Darwin
+# Core terms, or NULL when `data` has neither.
 .resy_column_value <- function(data, column) {
-  derive <- .resy_column_derived[[column]]
-  if (!is.null(derive)) return(derive(data))
   hit <- .resy_find_column(data, column)
-  if (is.null(hit)) NULL else data[[hit]]
+  if (!is.null(hit)) return(data[[hit]])
+  derive <- .resy_column_derived[[column]]
+  if (is.null(derive)) NULL else derive(data)
 }
 
 # Adds each of `columns` that `data` lacks under its RESY name, from an accepted
