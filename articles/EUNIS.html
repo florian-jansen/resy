@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Get additional data • RESY</title>
+<title>Get EUNIS habitat types • RESY</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Get additional data">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Get EUNIS habitat types">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -40,8 +40,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/altitude-vignette.html">Get altitude data</a></li>
-    <li><a class="dropdown-item" href="../articles/EUNIS.html">Get additional data</a></li>
-    <li><a class="dropdown-item" href="../articles/taxonomy.html">RESY taxonomy</a></li>
+    <li><a class="dropdown-item" href="../articles/EUNIS.html">Get EUNIS habitat types</a></li>
+    <li><a class="dropdown-item" href="../articles/taxonomy.html">Match species names</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -62,11 +62,10 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>Get additional data</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Get EUNIS habitat types</h1>
                         <h4 data-toc-skip class="author">Markus Bauer,
 Mariasole Calbi &amp; Gilles Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-10-28</h4>
       
 
       <div class="d-none name"><code>EUNIS.Rmd</code></div>
@@ -74,31 +73,17 @@ Mariasole Calbi &amp; Gilles Colling</h4>
 
     
     
-<p>This vignette illustrates a common use of the package: to classify
-European vegetation relevés to <strong>EUNIS habitat types</strong> (<a href="https://floraveg.eu/" class="external-link">FloraVeg.EU</a>; Chytrý et al. <a href="https://doi.org/10.1111/avsc.12798" class="external-link">2024</a>; European Environment
-Agency EUNIS <a href="https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed" class="external-link">Website</a>)
-according to the <strong>Expert System (ESy)</strong> of Chytrý et
-al. (<a href="https://doi.org/10.1111/avsc.12519" class="external-link">2020</a>) (see <a href="https://floraveg.eu/habitat/" class="external-link">FloraVeg.EU</a>). The function
-<code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> incorporates several functions to
-collect geographic information about the vegetation survey like the
-country, ecoregion, or coastal position. Furthermore, the format of the
-coordinates and the taxonomy are checked and adjusted to the
-requirements for the expert system (ESy). The function
-<code><a href="../reference/resy_classify.html">resy_classify()</a></code> does the classification of the vegation
-relevés including the sites data.</p>
-<ol style="list-style-type: decimal">
-<li>
-<strong>Prepare the format</strong> of the sites including the right
-<strong>coordination system</strong> and add information like
-<strong>ecoregion</strong>, <strong>country</strong> or if it is on a
-<strong>coast</strong>.</li>
-<li>
-<strong>Check of taxonomy</strong> of the species data</li>
-<li>Evaluation of your vegetation relevés and <strong>assigning EUNIS
-habitat types</strong>
-</li>
-<li><strong>Present the results</strong></li>
-</ol>
+<p>This vignette shows how to classify European vegetation relevés into
+<strong>EUNIS habitat types</strong> using the expert system of Chytrý
+et al. (<a href="https://doi.org/10.1111/avsc.12519" class="external-link">2020</a>). Habitat
+descriptions are available on <a href="https://floraveg.eu/habitat/" class="external-link">FloraVeg.EU</a> (Chytrý et al. <a href="https://doi.org/10.1111/avsc.12798" class="external-link">2024</a>) and the <a href="https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed" class="external-link">EEA
+EUNIS website</a>.</p>
+<p>First, <code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> prepares the plot data. It
+adds geographic information such as country, ecoregion and coastal
+position, and checks and adjusts the coordinate format and species names
+to meet the expert system’s requirements. Then,
+<code><a href="../reference/resy_classify.html">resy_classify()</a></code> assigns the relevés to habitat types using
+their species composition and site data.</p>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
@@ -108,18 +93,17 @@ vignette:</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://florian-jansen.github.io/resy/">RESY</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
-<h3 id="load-the-example-data-">Load the example data.<a class="anchor" aria-label="anchor" href="#load-the-example-data-"></a>
+<h3 id="load-the-example-data">Load the example data<a class="anchor" aria-label="anchor" href="#load-the-example-data"></a>
 </h3>
-<p>The example data include the species data with the vegetation relevés
-and the sites data with further information to the location of the
-relevés.</p>
+<p>The example data include the species table with the vegetation
+relevés and the header table with the location of each relevé.</p>
 <p>First, load the vegetation relevés:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"data_example_species.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span>,</span>
-<span>  skip <span class="op">=</span> <span class="fl">0</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"data_example_species.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="va">data_species</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3,580 × 3</span></span></span>
@@ -136,14 +120,14 @@ relevés.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> HU32                     3   Abies alba Mill.                                </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> HU32                     3   Oxalis acetosella L.                            </span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 3,570 more rows</span></span></span></code></pre></div>
-<p>Clean names with RESY’s native cleaner: drops author strings but
-keeps ranks</p>
+<p><code><a href="../reference/resy_clean_names.html">resy_clean_names()</a></code> removes the author names from the
+species names and keeps rank markers such as <code>subsp.</code> and
+<code>var.</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">data_species</span><span class="op">$</span><span class="va">scientificName</span> <span class="op">&lt;-</span> <span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_clean_names.html">resy_clean_names</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">data_species</span><span class="op">$</span><span class="va">scientificName</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_clean_names.html">resy_clean_names</a></span><span class="op">(</span></span>
 <span>  <span class="va">data_species</span><span class="op">$</span><span class="va">scientificName</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co"># data_species$species &lt;- vegdata::taxname.removeAuthors(data_species$species)</span></span></code></pre></div>
-<p>Second, load the sites data:</p>
+<span>  <span class="op">)</span></span></code></pre></div>
+<p>Second, load the header table:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_sites</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
 <span>   <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"data_example_sites.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span></span>
@@ -176,60 +160,53 @@ keeps ranks</p>
 <p>The vegetation relevés of the example dataset are in Tuscany in
 Italy.</p>
 <p><img src="EUNIS_files/figure-html/base-map-1.png" class="r-plt" alt="" width="700"></p>
-<p>We see a part of Italy: mainly Tuscany and the Mediterranean or more
-specific the Tyrrhenian Sea. The dots are the locations of the
-vegetation relevés. Some are on islands.</p>
+<p>The map shows part of Italy, mainly Tuscany, and the Tyrrhenian Sea.
+The dots are the locations of the vegetation relevés. Some are on
+islands.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="get-additional-data">Get additional data<a class="anchor" aria-label="anchor" href="#get-additional-data"></a>
 </h2>
 <div class="section level3">
-<h3 id="load-the-expert-file">Load the expert file<a class="anchor" aria-label="anchor" href="#load-the-expert-file"></a>
+<h3 id="load-the-expert-system">Load the expert system<a class="anchor" aria-label="anchor" href="#load-the-expert-system"></a>
 </h3>
-<p>We have to parse the expert file which is the base for every
-evaluation. We use <code>resy_load_expert</code>.</p>
+<p><code><a href="../reference/resy_load_expert.html">resy_load_expert()</a></code> reads the EUNIS expert system.
+<code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> uses it to check the species
+names.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">parsed_expert_file</span> <span class="op">&lt;-</span> <span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_load_expert.html">resy_load_expert</a></span><span class="op">(</span>scheme <span class="op">=</span> <span class="st">"EUNIS"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">parsed_expert_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_load_expert.html">resy_load_expert</a></span><span class="op">(</span>scheme <span class="op">=</span> <span class="st">"EUNIS"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="apply-resy_harmonize_eunis">Apply <code>resy_harmonize_eunis()</code><a class="anchor" aria-label="anchor" href="#apply-resy_harmonize_eunis"></a>
 </h3>
-<p>We prepare the sites and the species data with
-<code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code>.</p>
+<p><code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> prepares the header table and the
+species table:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">outcome</span> <span class="op">&lt;-</span> <span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">outcome</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis</a></span><span class="op">(</span></span>
 <span>   data <span class="op">=</span> <span class="va">data_sites</span>,</span>
-<span>   source_crs <span class="op">=</span> <span class="fl">25832</span>,</span>
 <span>   run_taxonomy <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>   species_data <span class="op">=</span> <span class="va">data_species</span>,</span>
 <span>   parsed <span class="op">=</span> <span class="va">parsed_expert_file</span>,</span>
 <span>   run_coast_dunes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>   coast_buffer <span class="op">=</span> <span class="fl">5000</span></span>
 <span>   <span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: "Altitude (m)" is missing. See vignette "Altitude data" and</span></span>
+<span><span class="co">#&gt; Warning: "Altitude (m)" is missing. See vignette("altitude-vignette") and</span></span>
 <span><span class="co">#&gt; mapsforeurope.org for a raster source.</span></span>
 <span><span class="co">#&gt; Warning: "Ecoreg" contains NA values: some sites are outside the ecoregion base</span></span>
-<span><span class="co">#&gt; map.</span></span>
-<span><span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant throughout</span></span>
-<span><span class="co">#&gt; all geometries</span></span>
-<span><span class="co">#&gt; Warning: attribute variables are assumed to be spatially constant throughout</span></span>
-<span><span class="co">#&gt; all geometries</span></span></code></pre></div>
-<p>We have one information and two warnings of RESY: The information
-says the transformation to the coordination system UTM zone 32N.
-Furthermore, the warning says that the column <code>Altitude (m)</code>
-is missing and this could not be covered by
-<code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code>, but we provide a
-<code>vignette("Get altitude data")</code>. <code>NAs</code> are in the
-ecoregions (<code>Ecoreg</code>) column. This could be the vegetation
-relevés on islands which is not covered by the base map.</p>
+<span><span class="co">#&gt; map.</span></span></code></pre></div>
+<p><code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> gives two warnings. The first
+says that the column <code>Altitude (m)</code> is missing:
+<code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> cannot add it, but
+<code><a href="../articles/altitude-vignette.html">vignette("altitude-vignette")</a></code> shows how to get it. The
+second says that the ecoregion column (<code>Ecoreg</code>) contains
+<code>NA</code> values for sites outside the ecoregion base map.</p>
 </div>
 <div class="section level3">
 <h3 id="inspect-additional-data">Inspect additional data<a class="anchor" aria-label="anchor" href="#inspect-additional-data"></a>
 </h3>
-<p>Here are the additional information of ecoregions and countries which
-were successfully identified with
-<code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code>:</p>
+<p>Here is the header table with the ecoregions and countries that
+<code><a href="../reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> added:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outcome</span><span class="op">$</span><span class="va">sites</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 200 × 11</span></span></span>
@@ -252,8 +229,7 @@ were successfully identified with
 <div class="section level3">
 <h3 id="missing-info">Missing info<a class="anchor" aria-label="anchor" href="#missing-info"></a>
 </h3>
-<p>Let us see which vegetation relevés could not get an ecoregion and
-country:</p>
+<p>These vegetation relevés did not get an ecoregion:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outcome</span><span class="op">$</span><span class="va">sites</span> <span class="op">|&gt;</span></span>
 <span>   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Ecoreg</span><span class="op">)</span><span class="op">)</span></span>
@@ -273,16 +249,22 @@ country:</p>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 13 more rows</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: Longitude &lt;dbl&gt;, Latitude &lt;dbl&gt;, DEG_LON &lt;dbl&gt;,</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;">#   DEG_LAT &lt;dbl&gt;</span></span></span></code></pre></div>
-<p>Species on the coast (‘MED_COAST’) often have <code>NAs</code> for
-ecoregion and country. This has to be corrected by yourself.</p>
-<p>Here is the updated map with ecoregions as differetn colors</p>
+<p>All 23 of these plots are on the Mediterranean coast
+(<code>Coast_EEA</code> is <code>MED_COAST</code>), where the ecoregion
+base map does not reach. Their country was found. In your own data, set
+their ecoregion before classifying. This example leaves them unset, so
+<code><a href="../reference/resy_classify.html">resy_classify()</a></code> evaluates their ecoregion as 0 and
+warns.</p>
+<p>Here is the updated map with the ecoregions in different colors:</p>
 <p><img src="EUNIS_files/figure-html/map-2-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="checked-species-names">Checked species names<a class="anchor" aria-label="anchor" href="#checked-species-names"></a>
 </h3>
-<p>Let’s have a look on the checked and transformed species names. There
-are for example no author names anymore:</p>
+<p><code>outcome$species_checked</code> has one row per species name:
+the name in the data (<code>scientificName</code>), the name the expert
+system uses (<code>TaxonName</code>) and whether it matched
+(<code>matched</code>):</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outcome</span><span class="op">$</span><span class="va">species_checked</span></span>
 <span><span class="co">#&gt; &lt;resy_taxa&gt; 1006 name(s) from column `scientificName` checked against 20159 Section 1 species</span></span>
@@ -332,8 +314,9 @@ are for example no author names anymore:</p>
 <div class="section level3">
 <h3 id="finalize-species-data">Finalize species data<a class="anchor" aria-label="anchor" href="#finalize-species-data"></a>
 </h3>
-<p>We have to merge the species abundances with the checked species
-names.</p>
+<p><code><a href="../reference/resy_classify.html">resy_classify()</a></code> needs the checked names together with
+the cover of each species, so the species table is joined to the checked
+names:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outcome_species</span> <span class="op">&lt;-</span> <span class="va">data_species</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">outcome</span><span class="op">$</span><span class="va">species_checked</span>, by <span class="op">=</span> <span class="st">"scientificName"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -363,16 +346,19 @@ names.</p>
 <div class="section level2">
 <h2 id="classify-relevés">Classify relevés<a class="anchor" aria-label="anchor" href="#classify-relev%C3%A9s"></a>
 </h2>
-<p>Classify your vegetation relevés (<code>obs</code>) which includes
-sites data (<code>header</code>).</p>
+<p><code><a href="../reference/resy_classify.html">resy_classify()</a></code> classifies the vegetation relevés
+(<code>obs</code>) using the site data in the header table
+(<code>header</code>):</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_classify.html">resy_classify</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_classify.html">resy_classify</a></span><span class="op">(</span></span>
 <span>  obs <span class="op">=</span> <span class="va">outcome_species</span>,</span>
 <span>  header <span class="op">=</span> <span class="va">outcome</span><span class="op">$</span><span class="va">sites</span>,</span>
 <span>  scheme <span class="op">=</span> <span class="st">"EUNIS"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: The expert system uses header columns that `header` does not have:</span></span>
 <span><span class="co">#&gt; Dataset, Altitude (m). Conditions on them are evaluated as if the value were 0.</span></span>
+<span><span class="co">#&gt; Warning: Header columns used by the expert system have missing values: Ecoreg</span></span>
+<span><span class="co">#&gt; (23 plots). Conditions on them are evaluated as if the value were 0.</span></span>
 <span><span class="co">#&gt; Step 5.1  Number of conditions with number of species of a group: 15</span></span>
 <span><span class="co">#&gt; Step 5.2  Number of conditions with minimum number of species: 127</span></span>
 <span><span class="co">#&gt; Step 5.3  Number of conditions with sum of square rooted Cover_Perc of species: 140</span></span>
@@ -387,8 +373,12 @@ sites data (<code>header</code>).</p>
 <span><span class="co">#&gt; Step 5.9  Number of T$ NON conditions: 140</span></span>
 <span><span class="co">#&gt; Step 5.10  Header conditions with numeric values: 4</span></span>
 <span><span class="co">#&gt;   Header conditions with character values: 4</span></span>
-<span><span class="co">#&gt; adapt conditions 2026-10-28 17:15:49.343346</span></span>
-<span><span class="co">#&gt; classification from here on 2026-10-28 17:15:49.437472</span></span></code></pre></div>
+<span><span class="co">#&gt; adapt conditions 2026-10-28 17:57:17.895982</span></span>
+<span><span class="co">#&gt; classification from here on 2026-10-28 17:57:17.960332</span></span></code></pre></div>
+<p><code><a href="../reference/resy_classify.html">resy_classify()</a></code> warns about the site data that is
+missing: the header has no <code>Altitude (m)</code> and no
+<code>Dataset</code> column (one EUNIS rule excludes the Swedish
+National Forest Inventory), and 23 plots have no ecoregion.</p>
 </div>
 <div class="section level2">
 <h2 id="inspect-results">Inspect results<a class="anchor" aria-label="anchor" href="#inspect-results"></a>
@@ -396,10 +386,10 @@ sites data (<code>header</code>).</p>
 <div class="section level3">
 <h3 id="long-table-of-candidates-for-all-plots">Long table of candidates for all plots<a class="anchor" aria-label="anchor" href="#long-table-of-candidates-for-all-plots"></a>
 </h3>
-<p>You can see that the plot AM30 was classified with two EUNIS habitat
-types, but with different priorities.</p>
+<p>Plot AM30 meets the rules of two EUNIS habitat types, T17 and its
+parent T. It is assigned to T17, which has the higher priority.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cand</span> <span class="op">&lt;-</span> <span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res</span>, top_n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cand</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res</span>, top_n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="va">cand</span></span>
 <span><span class="co">#&gt;      plot_id   type priority priority_rank</span></span>
 <span><span class="co">#&gt;       &lt;char&gt; &lt;char&gt;    &lt;ord&gt;         &lt;int&gt;</span></span>
@@ -418,7 +408,7 @@ types, but with different priorities.</p>
 classified as, then its candidate types with their priorities, highest
 priority first:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res</span>, top_n <span class="op">=</span> <span class="fl">3</span>, wide <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res</span>, top_n <span class="op">=</span> <span class="fl">3</span>, wide <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      plot_id classification type_1 priority_1 type_2 priority_2 type_3</span></span>
 <span><span class="co">#&gt;       &lt;char&gt;         &lt;char&gt; &lt;char&gt;      &lt;ord&gt; &lt;char&gt;      &lt;ord&gt; &lt;char&gt;</span></span>
 <span><span class="co">#&gt;   1:    HU32            T17    T17          4      T          3   &lt;NA&gt;</span></span>
@@ -456,7 +446,7 @@ lower-level types the plot did not reach, with the result of each of
 their conditions, which shows why the classification stopped at this
 level.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res</span>, p <span class="op">=</span> <span class="st">"AM30"</span><span class="op">)</span> <span class="co"># p = PlotObservationID</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res</span>, p <span class="op">=</span> <span class="st">"AM30"</span><span class="op">)</span> <span class="co"># p = PlotObservationID</span></span>
 <span><span class="co">#&gt; Types whose rule holds: T17 (priority 4), T (priority 3)</span></span>
 <span><span class="co">#&gt; Classified as T17 (Fagus forest on non-acid soils), the type with the highest priority.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -479,7 +469,7 @@ level.</p>
 <p>Passing <code>type</code> explains any other type in the same way,
 whether or not its rule holds for the plot:</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res</span>, p <span class="op">=</span> <span class="st">"AM30"</span>, type <span class="op">=</span> <span class="st">"T17"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_eval_plot.html">resy_eval_plot</a></span><span class="op">(</span><span class="va">res</span>, p <span class="op">=</span> <span class="st">"AM30"</span>, type <span class="op">=</span> <span class="st">"T17"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Types whose rule holds: T17 (priority 4), T (priority 3)</span></span>
 <span><span class="co">#&gt; Classified as T17 (Fagus forest on non-acid soils), the type with the highest priority.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -523,11 +513,16 @@ whether or not its rule holds for the plot:</p>
 <div class="section level3">
 <h3 id="print-classification-hierarchy">Print classification hierarchy<a class="anchor" aria-label="anchor" href="#print-classification-hierarchy"></a>
 </h3>
-<p>You can find all habitat types on <a href="https://floraveg.eu/habitat/" class="external-link">FloraVEG.EU</a>. Here, you can see
-all identified habitat types of your dataset.</p>
+<p><code><a href="../reference/resy_expert_tree.html">resy_expert_tree()</a></code> prints the type hierarchy of an
+expert system. In this example, it is the <a href="https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed" class="external-link">EUNIS</a>
+expert system, and the tree lists all its types, whether or not they
+occur in your data. <code>fill = TRUE</code> adds the group levels that
+the type codes imply but the expert system does not list, here
+<code>MA2</code> and <code>MA22</code>. The output is cut to the first
+10 types. Descriptions of all EUNIS habitat types are on <a href="https://floraveg.eu/habitat/" class="external-link">FloraVeg.EU</a>.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">RESY</span><span class="fu">::</span><span class="fu"><a href="../reference/resy_expert_tree.html">resy_expert_tree</a></span><span class="op">(</span><span class="va">parsed_expert_file</span>, fill <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span> <span class="co"># We truncate the output in this example to save space</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_expert_tree.html">resy_expert_tree</a></span><span class="op">(</span><span class="va">parsed_expert_file</span>, fill <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;resy_expert_tree&gt; 10 node(s), 1 top-level, 2 synthesised group(s)</span></span>
 <span><span class="co">#&gt; MA Coastal saltmarshes</span></span>
 <span><span class="co">#&gt;   MA2</span></span>
@@ -547,18 +542,10 @@ all identified habitat types of your dataset.</p>
 <p>Chytrý M, Řezníčková M, Novotný P, Holubová D et al. (<a href="https://doi.org/10.1111/avsc.12798" class="external-link">2024</a>) FloraVeg.EU – an
 online database of European vegetation, habitats and flora. –
 <em>Applied Vegetation Science</em> 27, e12798. <a href="https://doi.org/10.1111/avsc.12798" class="external-link">https://doi.org/10.1111/avsc.12798</a></p>
-<p>Bruelheide H, Tichý L, Chytrý M, Jansen F (<a href="https://doi.org/10.1111/avsc.12562" class="external-link">2021</a>) Implementing the
-formal language of the vegetation classification expert systems (ESy) in
-the statistical computing environment R. – <em>Applied Vegetation
-Science</em> 24, e12562 <a href="https://doi.org/10.1111/avsc.12562" class="external-link">https://doi.org/10.1111/avsc.12562</a></p>
 <p>Chytrý M, Tichý L, Hennekens SM, Knollová I et al. (<a href="https://doi.org/10.1111/avsc.12519" class="external-link">2020</a>) EUNIS Habitat
 Classification: expert system, characteristic species combinations and
 distribution maps of European habitats. – <em>Applied Vegetation
 Science</em> 23, 648–675. <a href="https://doi.org/10.1111/avsc.12519" class="external-link">https://doi.org/10.1111/avsc.12519</a></p>
-<p>Mucina L, Bültmann H, Dierßen K, Theurillat J-P et al. (<a href="https://doi.org/10.1111/avsc.12257" class="external-link">2016</a>) Vegetation of
-Europe: hierarchical floristic classification system of vascular plant,
-bryophyte, lichen, and algal communities. – <em>Applied Vegetation
-Science</em> 19(Suppl. 1), 3–264.<a href="https://doi.org/10.1111/avsc.12257" class="external-link">https://doi.org/10.1111/avsc.12257</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

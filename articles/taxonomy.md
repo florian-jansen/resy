@@ -1,26 +1,24 @@
-# RESY taxonomy
+# Match species names
 
-This vignette illustrates how to harmonise the species names of a
-vegetation survey before it is classified with
+This vignette shows how to match species names before classifying
+vegetation plots with
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
-RESY implements the **Expert System (ESy)** framework (Chytrý et al.
-[2020](https://doi.org/10.1111/avsc.12519); Bruelheide et al.
-[2021](https://doi.org/10.1111/avsc.12562)), and
-[`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
-matches the species names it is given against the vocabulary of the
-expert system. That works directly for data from the European Vegetation
-Archive. Plot data named under a general backbone (GBIF, World Flora
-Online, POWO, Euro+Med, a national checklist) often uses different
-strings for the same taxon: an accepted-name synonym, an author
-citation, or a spelling variant. Those names have to be harmonised to
-the expert vocabulary first. RESY treats this as a separate step, so you
-can check the taxonomic decisions before they affect a classification.
+Each expert system uses a particular set of species names, and the names
+in your plot data need to match.
 
-1.  **Resolve** the species names to the vocabulary of the expert system
-    with
+The EUNIS expert system (Chytrý et al.
+[2020](https://doi.org/10.1111/avsc.12519)), for example, uses the same
+species names as the European Vegetation Archive, so data from there can
+be used directly. Data following other taxonomic sources, such as GBIF,
+World Flora Online, POWO or a national checklist, may use synonyms,
+different author citations or spelling variants. RESY matches these
+names in a separate step so you can review the matches before
+classification.
+
+1.  **Resolve** the species names with
     [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md).
-2.  **Inspect** the result with
-    [`summary()`](https://rspatial.github.io/terra/reference/summary.html).
+2.  **Inspect** the matches with
+    [`summary()`](https://rdrr.io/r/base/summary.html).
 3.  **Classify** the resolved data with
     [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
 
@@ -33,15 +31,21 @@ vignette:
 
 library(RESY)
 library(ggplot2)
+library(readr)
 ```
 
-## The shipped synonym table
+### The shipped synonym table
 
-RESY ships a synonym table that maps alternate species names to the
-canonical name used by the EUNIS-ESy expert system. It pools synonymy
-from six backbones (Euro+Med, WFO, GBIF, Catalogue of Life, ITIS, NCBI),
-so a name coming from any of them can resolve without you having to say
-which backbone it came from.
+RESY ships a synonym table built for the EUNIS expert system: it maps
+alternate species names to the names that EUNIS uses. It pools the
+synonyms of six taxonomic backbones, the reference lists of accepted
+names and their synonyms that taxonomic databases publish (Euro+Med,
+WFO, GBIF, Catalogue of Life, ITIS, NCBI), so a name coming from any of
+them can resolve without you having to say which backbone it came from.
+With another expert system, the table resolves only names that point to
+a species name the two systems share; for the other names, use your own
+synonym table (see [Bring your own
+crosswalk](#bring-your-own-crosswalk)).
 
 The table was built on 2026-10-28 against the EUNIS expert system
 2025-10-03, from the backbone releases below.
@@ -77,8 +81,8 @@ head(syn)
 #> 6      Hibiscus ficifolius Abelmoschus esculentus col;gbif;wfo        <NA>
 ```
 
-Each row is one alternate spelling (`synonym`), the canonical ESy name
-it resolves to (`esy_canonical`), and the backbone(s) that support the
+Each row is one alternate spelling (`synonym`), the EUNIS name it
+resolves to (`esy_canonical`), and the backbone(s) that support the
 pairing (`source`). The column `accepted_in` names the backbones that
 list the synonym as an accepted name under the same author as the
 synonym rows supporting the pair. A backbone appears in both `source`
@@ -144,13 +148,16 @@ ggplot(support_n, aes(x = n_backbones, y = pairs)) +
 
 ![](taxonomy_files/figure-html/support-plot-1.png)
 
-## Resolve names
+### Resolve names
 
 [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
-maps a column of names to the canonical vocabulary. A name already equal
-to a canonical name resolves to itself (`"exact"`); otherwise it is
-looked up in the synonym table (`"synonym"`). A name that matches
-neither is matched again with its author citation removed by
+maps a column of names to the species names of an expert system, called
+the canonical names. By default, these are the EUNIS names and the
+shipped synonym table; `canonical` and `synonyms` set others (see [Bring
+your own crosswalk](#bring-your-own-crosswalk)). A name that is already
+a canonical name resolves to itself (`"exact"`); otherwise it is looked
+up in the synonym table (`"synonym"`). A name that matches neither is
+matched again with its author citation removed by
 [`resy_clean_names()`](https://florian-jansen.github.io/resy/reference/resy_clean_names.md)
 (`"cleaned_exact"`, `"cleaned_synonym"`); the name in your data is left
 as it is. A name that still matches nothing stays `NA` and is flagged
@@ -211,7 +218,7 @@ summary(resolved)
 Unresolved names can be fixed by correcting a spelling, adding a row to
 your own crosswalk, or leaving them out.
 
-## Bring your own crosswalk
+### Bring your own crosswalk
 
 [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
 also accepts your own crosswalk, with three columns: `synonym`,
@@ -276,18 +283,19 @@ resy_resolve_taxa(my_plots, synonyms = crosswalk,
 A synonym that maps to more than one canonical name is dropped, so an
 ambiguous table cannot produce a silent substitution.
 
-## Classify the resolved data
+### Classify the resolved data
 
-Once names are in the expert vocabulary, classify as usual. Resolve them
-against the vocabulary of the expert system you classify with (here
-`Apennine-test`), write the resolved canonical name back to the name
-column, keeping the original where a name did not resolve, and pass the
-result to
+Once the names match the species list of the expert system, classify as
+usual. Resolve them against the species list of the expert system you
+classify with (here `Apennine-test`), write the resolved name back to
+the name column, keeping the original where a name did not resolve, and
+pass the result to
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
+The species list is taken from `expert$aggs`, which holds the taxa of
+the expert system: each name is a taxon the rules use, and its elements
+are the names counted as that taxon.
 
 ``` r
-
-library(readr)
 
 species <- read_csv(
   system.file("extdata", "data_example_species.csv", package = "RESY"),
@@ -325,20 +333,14 @@ head(res$result.classification)
 ```
 
 For a quick pass, `resy_classify(..., resolve_taxa = TRUE)` runs the
-resolution against the expert vocabulary and then classifies in a single
-call, and reports what it did in `res$taxon_resolution`. The two-step
-route above is recommended, since it lets you check the unresolved names
-before they reach the classifier.
+resolution against the species list of the expert system and then
+classifies in a single call, and reports what it did in
+`res$taxon_resolution`. The two-step route above is recommended, since
+it lets you check the unresolved names before they reach the classifier.
 
 ## References
 
-Bruelheide H, Tichý L, Chytrý M, Jansen F
-([2021](https://doi.org/10.1111/avsc.12562)) Implementing the formal
-language of the vegetation classification expert systems (ESy) in the
-statistical computing environment R. – *Applied Vegetation Science* 24,
-e12562 <https://doi.org/10.1111/avsc.12562>
-
-Chytrý M, Tichý L, Hennekens SM et
+Chytrý M, Tichý L, Hennekens SM, Knollová I et
 al. ([2020](https://doi.org/10.1111/avsc.12519)) EUNIS Habitat
 Classification: expert system, characteristic species combinations and
 distribution maps of European habitats. – *Applied Vegetation Science*

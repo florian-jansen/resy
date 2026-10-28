@@ -1,29 +1,30 @@
-# Classifying vegetation surveys with RESY
+# Classifying vegetation plots with RESY
 
-## Introduction
+This vignette classifies 200 example vegetation plots from Tuscany with
+[`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md),
+from reading the species table to looking at why a plot was assigned to
+its type. It assumes basic knowledge of R and data frames.
 
-RESY implements the **Expert System (ESy)** framework for vegetation
-classification (Bruelheide [1997](https://doi.org/10.1007/BF02803883);
-Chytrý et al. [2020](https://doi.org/10.1111/avsc.12519)). An ESy file
-encodes three sections:
+RESY assigns plots to vegetation or habitat types with an expert system
+(ESy; Bruelheide [1997](https://doi.org/10.1007/BF02803883); Bruelheide
+et al. [2021](https://doi.org/10.1111/avsc.12562)), a text file of rules
+with three sections:
 
-1.  **Taxonomy** – species aggregations and synonyms  
-2.  **Taxon groups** – species assemblages referenced in classification
-    conditions  
-3.  **Vegetation types** – logical formulas that combine group
-    thresholds into named habitat types
+1.  **Taxonomy**: which species names count as one taxon, for example a
+    species and its subspecies.
+2.  **Species groups**: sets of indicator species, such as beech-forest
+    herbs, that the rules refer to.
+3.  **Vegetation types**: for each type, a rule on the cover of the
+    species groups, for example “beech and silver fir together cover
+    more than 15%”.
 
-The package can work with any ESy-compliant classification. This
-vignette uses two bundled systems:
-
-- **EUNIS** (European Nature Information System habitat types;
-  [FloraVeg.EU](https://floraveg.eu/habitat/))
-- **Apennine-test** (a simplified test system for the Italian Apennines)
-
-Many EUNIS rules also use site data from the header table (`Ecoreg`,
-`Country`, `Coast_EEA`, `Dunes_Bohn`).
+RESY can use any expert system written in this format. This vignette
+uses `Apennine-test`, a small expert system for the Italian Apennines
+whose rules need no site data. The EUNIS expert system (Chytrý et al.
+[2020](https://doi.org/10.1111/avsc.12519)) also uses site data, such as
+the ecoregion and the country;
 [`vignette("EUNIS")`](https://florian-jansen.github.io/resy/articles/EUNIS.md)
-shows how to add these columns.
+shows how to add them.
 
 ``` r
 
@@ -32,13 +33,11 @@ library(dplyr)
 library(RESY)
 ```
 
-------------------------------------------------------------------------
-
-## 1. Load and prepare species data
+## Load and prepare species data
 
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
-expects the observation table to have one row per species in each plot,
-with three columns. Each column can also have its [Darwin
+expects a species table (argument `obs`) with one row per species in
+each plot and three columns. Each column can also have its [Darwin
 Core](https://dwc.tdwg.org/) name, the standard set of field names for
 biodiversity data:
 
@@ -72,7 +71,7 @@ uses no site data, so here the header table contains only the plot IDs,
 but
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
 still requires it. It must contain the same plot ID column as the
-observation table.
+species table.
 
 ``` r
 
@@ -81,9 +80,7 @@ header <- data_species |>
   as.data.frame()
 ```
 
-------------------------------------------------------------------------
-
-## 2. Load expert systems
+## Load expert systems
 
 [`resy_available_classifications()`](https://florian-jansen.github.io/resy/reference/resy_available_classifications.md)
 lists the schemes and versions bundled with the package.
@@ -133,16 +130,16 @@ print(tree_filled)
 browser, use
 [`resy_view_expert()`](https://florian-jansen.github.io/resy/reference/resy_view_expert.md).
 
-## 3. Check taxonomy
+## Check taxonomy
 
 [`resy_check_taxonomy()`](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md)
-checks the species names of the observation table against the species
-list of the expert system, including its synonyms. Each expert system
-has its own list, so a name can match in one system and not in another.
-The result has one row per distinct name: `scientificName` is the name
-as submitted, `TaxonName` the canonical name the classifier uses (`NA`
-when unmatched), and `matched` whether it was found. Printing it lists
-what each column holds and how many names matched.
+checks the species names of the species table against the species list
+of the expert system, including its synonyms. Each expert system has its
+own list, so a name can match in one system and not in another. The
+result has one row per distinct name: `scientificName` is the name as
+submitted, `TaxonName` the name the expert system uses for it (`NA` when
+unmatched), and `matched` whether it was found. Printing it lists what
+each column holds and how many names matched.
 
 ``` r
 
@@ -188,7 +185,7 @@ summary(tax_apennine)
 #> 1009 names checked: 1009 matched (100.0%), 0 not matched (0.0%).
 ```
 
-## 4. Classify
+## Classify
 
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
 evaluates the rules of every type for every plot and returns a
@@ -222,9 +219,7 @@ of the 200 plots remain unclassified. In these plots, all four indicator
 groups have at most 4% cover, below the lowest threshold in the rules
 (5%).
 
-------------------------------------------------------------------------
-
-## 5. Inspect results
+## Inspect results
 
 ### Candidate types for all plots
 
@@ -233,9 +228,9 @@ type and its parent. Each type has a priority in the expert system, and
 the plot is assigned to the type with the highest priority.
 [`resy_candidates()`](https://florian-jansen.github.io/resy/reference/resy_candidates.md)
 lists every type whose rule a plot meets, highest priority first.
-`priority_rank` numbers the priority levels of the expert system from
-the lowest upward. Use `top_n` to limit the number of types returned per
-plot.
+`priority_rank` is the priority level of the type: the higher the rank,
+the higher the priority. Use `top_n` to limit the number of types
+returned per plot.
 
 ``` r
 
@@ -355,3 +350,21 @@ usually comes next:
   [`resy_add_classification()`](https://florian-jansen.github.io/resy/reference/resy_add_classification.md)
   makes it available to
   [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
+
+## References
+
+Bruelheide H ([1997](https://doi.org/10.1007/BF02803883)) Using formal
+logic to classify vegetation. – *Folia Geobotanica* 32, 41–46.
+<https://doi.org/10.1007/BF02803883>
+
+Bruelheide H, Tichý L, Chytrý M, Jansen F
+([2021](https://doi.org/10.1111/avsc.12562)) Implementing the formal
+language of the vegetation classification expert systems (ESy) in the
+statistical computing environment R. – *Applied Vegetation Science* 24,
+e12562. <https://doi.org/10.1111/avsc.12562>
+
+Chytrý M, Tichý L, Hennekens SM, Knollová I et
+al. ([2020](https://doi.org/10.1111/avsc.12519)) EUNIS Habitat
+Classification: expert system, characteristic species combinations and
+distribution maps of European habitats. – *Applied Vegetation Science*
+23, 648–675. <https://doi.org/10.1111/avsc.12519>

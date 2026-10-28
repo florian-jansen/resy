@@ -7,32 +7,39 @@ plot where mat-grass (*Nardus stricta*) is abundant is an acidic
 grassland. RESY uses the species composition and cover or abundance
 recorded in each vegetation plot (relevé).
 
-The rules for this assignment form an expert system (ESy; Chytrý et al.
-[2020](https://doi.org/10.1111/avsc.12519); Bruelheide et al.
-[2021](https://doi.org/10.1111/avsc.12562)), stored as a text or JSON
-file. For each type, the rule specifies which groups of indicator
+The rules for this assignment form an expert system (ESy; Bruelheide et
+al. [2021](https://doi.org/10.1111/avsc.12562)), stored as a text or
+JSON file. For each type, the rule specifies which groups of indicator
 species a plot must contain and how much cover they must have. In the
 example below, a plot is a beech-fir montane forest when beech and
 silver fir together cover more than 15% of it and beech-forest herbs
 more than 10%. You can also supply your own expert system.
 
-RESY ships the expert system for EUNIS (European Nature Information
-System), the habitat classification of the [European Environment
+RESY ships the expert system of Chytrý et al.
+([2020](https://doi.org/10.1111/avsc.12519)) for EUNIS (European Nature
+Information System), the habitat classification of the [European
+Environment
 Agency](https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed)
 for the land and sea of Europe. EUNIS defines a habitat by its plant and
 animal communities together with abiotic conditions. Some of its rules
 therefore also use site data, such as the ecoregion, the country or the
 position on the coast.
 
-The EUNIS expert system uses the species names of [Euro+Med
+Each expert system uses its own list of species names. The EUNIS expert
+system, for example, uses the names of [Euro+Med
 PlantBase](https://europlusmed.org/), the taxonomy used in data from the
 [European Vegetation Archive (EVA)](https://euroveg.org/eva-database/).
 Species names in plot data that follow another taxonomy, such as
 [GBIF](https://www.gbif.org/) or [World Flora
-Online](https://www.worldfloraonline.org/), must first be matched to
-Euro+Med names. Use
+Online](https://www.worldfloraonline.org/), must first be matched to the
+names of the expert system.
 [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
-to match them
+does this for any expert system: it removes author names and looks up
+synonyms. The synonym table that comes with RESY links about 65,000
+synonyms from six taxonomies (Euro+Med, World Flora Online, GBIF,
+Catalogue of Life, ITIS and NCBI) to the species names of the EUNIS
+expert system. For an expert system with other species names, you can
+supply your own synonym table
 ([`vignette("taxonomy")`](https://florian-jansen.github.io/resy/articles/taxonomy.md)).
 
 **Insert figure here. Perhaps of Europe**
@@ -44,7 +51,7 @@ The package is available on CRAN. Install and load it with:
 ``` r
 
 install.packages("RESY")
-library("RESY")
+library(RESY)
 ```
 
 RESY is still under active development. You can install the development
@@ -137,7 +144,7 @@ biodiversity data. The example data stores species names in
 
 ## 📜 Vignettes
 
-We have written several vignettes to help you use the RESY R package:  
+These vignettes show how to use RESY:
 
 - [`vignette("RESY")`](https://florian-jansen.github.io/resy/articles/RESY.md):
   start here, from a species table to classified plots

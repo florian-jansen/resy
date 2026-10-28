@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>RESY taxonomy • RESY</title>
+<title>Match species names • RESY</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="RESY taxonomy">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Match species names">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -40,8 +40,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/altitude-vignette.html">Get altitude data</a></li>
-    <li><a class="dropdown-item" href="../articles/EUNIS.html">Get additional data</a></li>
-    <li><a class="dropdown-item" href="../articles/taxonomy.html">RESY taxonomy</a></li>
+    <li><a class="dropdown-item" href="../articles/EUNIS.html">Get EUNIS habitat types</a></li>
+    <li><a class="dropdown-item" href="../articles/taxonomy.html">Match species names</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -62,11 +62,10 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.png" class="logo" alt=""><h1>RESY taxonomy</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Match species names</h1>
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-10-28</h4>
       
 
       <div class="d-none name"><code>taxonomy.Rmd</code></div>
@@ -74,26 +73,23 @@ Colling</h4>
 
     
     
-<p>This vignette illustrates how to harmonise the species names of a
-vegetation survey before it is classified with
-<code><a href="../reference/resy_classify.html">resy_classify()</a></code>. RESY implements the <strong>Expert System
-(ESy)</strong> framework (Chytrý et al. <a href="https://doi.org/10.1111/avsc.12519" class="external-link">2020</a>; Bruelheide et al. <a href="https://doi.org/10.1111/avsc.12562" class="external-link">2021</a>), and
-<code><a href="../reference/resy_classify.html">resy_classify()</a></code> matches the species names it is given
-against the vocabulary of the expert system. That works directly for
-data from the European Vegetation Archive. Plot data named under a
-general backbone (GBIF, World Flora Online, POWO, Euro+Med, a national
-checklist) often uses different strings for the same taxon: an
-accepted-name synonym, an author citation, or a spelling variant. Those
-names have to be harmonised to the expert vocabulary first. RESY treats
-this as a separate step, so you can check the taxonomic decisions before
-they affect a classification.</p>
+<p>This vignette shows how to match species names before classifying
+vegetation plots with <code><a href="../reference/resy_classify.html">resy_classify()</a></code>. Each expert system
+uses a particular set of species names, and the names in your plot data
+need to match.</p>
+<p>The EUNIS expert system (Chytrý et al. <a href="https://doi.org/10.1111/avsc.12519" class="external-link">2020</a>), for example, uses
+the same species names as the European Vegetation Archive, so data from
+there can be used directly. Data following other taxonomic sources, such
+as GBIF, World Flora Online, POWO or a national checklist, may use
+synonyms, different author citations or spelling variants. RESY matches
+these names in a separate step so you can review the matches before
+classification.</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Resolve</strong> the species names to the vocabulary of the
-expert system with <code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code>.</li>
+<strong>Resolve</strong> the species names with
+<code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code>.</li>
 <li>
-<strong>Inspect</strong> the result with
-<code><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary()</a></code>.</li>
+<strong>Inspect</strong> the matches with <a href="https://rdrr.io/r/base/summary.html" class="external-link"><code>summary()</code></a>.</li>
 <li>
 <strong>Classify</strong> the resolved data with
 <code><a href="../reference/resy_classify.html">resy_classify()</a></code>.</li>
@@ -105,16 +101,21 @@ expert system with <code><a href="../reference/resy_resolve_taxa.html">resy_reso
 vignette:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://florian-jansen.github.io/resy/">RESY</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="the-shipped-synonym-table">The shipped synonym table<a class="anchor" aria-label="anchor" href="#the-shipped-synonym-table"></a>
-</h2>
-<p>RESY ships a synonym table that maps alternate species names to the
-canonical name used by the EUNIS-ESy expert system. It pools synonymy
-from six backbones (Euro+Med, WFO, GBIF, Catalogue of Life, ITIS, NCBI),
-so a name coming from any of them can resolve without you having to say
-which backbone it came from.</p>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="the-shipped-synonym-table">The shipped synonym table<a class="anchor" aria-label="anchor" href="#the-shipped-synonym-table"></a>
+</h3>
+<p>RESY ships a synonym table built for the EUNIS expert system: it maps
+alternate species names to the names that EUNIS uses. It pools the
+synonyms of six taxonomic backbones, the reference lists of accepted
+names and their synonyms that taxonomic databases publish (Euro+Med,
+WFO, GBIF, Catalogue of Life, ITIS, NCBI), so a name coming from any of
+them can resolve without you having to say which backbone it came from.
+With another expert system, the table resolves only names that point to
+a species name the two systems share; for the other names, use your own
+synonym table (see <a href="#bring-your-own-crosswalk">Bring your own
+crosswalk</a>).</p>
 <p>The table was built on 2026-10-28 against the EUNIS expert system
 2025-10-03, from the backbone releases below.
 <code>data-raw/build_synonyms.R</code> in the source repository rebuilds
@@ -173,9 +174,9 @@ of that kind is not resolved through it.</p>
 <span><span class="co">#&gt; 4 Abelmoschus tuberculatus Abelmoschus esculentus col;gbif;wfo        &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 5          Hibiscus bammia Abelmoschus esculentus col;gbif;wfo        &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 6      Hibiscus ficifolius Abelmoschus esculentus col;gbif;wfo        &lt;NA&gt;</span></span></code></pre></div>
-<p>Each row is one alternate spelling (<code>synonym</code>), the
-canonical ESy name it resolves to (<code>esy_canonical</code>), and the
-backbone(s) that support the pairing (<code>source</code>). The column
+<p>Each row is one alternate spelling (<code>synonym</code>), the EUNIS
+name it resolves to (<code>esy_canonical</code>), and the backbone(s)
+that support the pairing (<code>source</code>). The column
 <code>accepted_in</code> names the backbones that list the synonym as an
 accepted name under the same author as the synonym rows supporting the
 pair. A backbone appears in both <code>source</code> and
@@ -259,19 +260,21 @@ per backbone add up to more than the number of rows.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_classic</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="taxonomy_files/figure-html/support-plot-1.png" class="r-plt" alt="" width="576"></p>
 </div>
-<div class="section level2">
-<h2 id="resolve-names">Resolve names<a class="anchor" aria-label="anchor" href="#resolve-names"></a>
-</h2>
+<div class="section level3">
+<h3 id="resolve-names">Resolve names<a class="anchor" aria-label="anchor" href="#resolve-names"></a>
+</h3>
 <p><code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> maps a column of names to the
-canonical vocabulary. A name already equal to a canonical name resolves
-to itself (<code>"exact"</code>); otherwise it is looked up in the
-synonym table (<code>"synonym"</code>). A name that matches neither is
-matched again with its author citation removed by
-<code><a href="../reference/resy_clean_names.html">resy_clean_names()</a></code> (<code>"cleaned_exact"</code>,
-<code>"cleaned_synonym"</code>); the name in your data is left as it is.
-A name that still matches nothing stays <code>NA</code> and is flagged
-<code>"unresolved"</code>. Nothing is ever replaced with a best
-guess.</p>
+species names of an expert system, called the canonical names. By
+default, these are the EUNIS names and the shipped synonym table;
+<code>canonical</code> and <code>synonyms</code> set others (see <a href="#bring-your-own-crosswalk">Bring your own crosswalk</a>). A name
+that is already a canonical name resolves to itself
+(<code>"exact"</code>); otherwise it is looked up in the synonym table
+(<code>"synonym"</code>). A name that matches neither is matched again
+with its author citation removed by <code><a href="../reference/resy_clean_names.html">resy_clean_names()</a></code>
+(<code>"cleaned_exact"</code>, <code>"cleaned_synonym"</code>); the name
+in your data is left as it is. A name that still matches nothing stays
+<code>NA</code> and is flagged <code>"unresolved"</code>. Nothing is
+ever replaced with a best guess.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  TaxonName <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -318,9 +321,9 @@ and the distinct names that stayed unresolved.</p>
 <p>Unresolved names can be fixed by correcting a spelling, adding a row
 to your own crosswalk, or leaving them out.</p>
 </div>
-<div class="section level2">
-<h2 id="bring-your-own-crosswalk">Bring your own crosswalk<a class="anchor" aria-label="anchor" href="#bring-your-own-crosswalk"></a>
-</h2>
+<div class="section level3">
+<h3 id="bring-your-own-crosswalk">Bring your own crosswalk<a class="anchor" aria-label="anchor" href="#bring-your-own-crosswalk"></a>
+</h3>
 <p><code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> also accepts your own crosswalk,
 with three columns: <code>synonym</code>, <code>esy_canonical</code>,
 and <code>source</code>. It can come from a national checklist, a
@@ -371,18 +374,19 @@ needs no Excel package as a dependency:</p>
 <p>A synonym that maps to more than one canonical name is dropped, so an
 ambiguous table cannot produce a silent substitution.</p>
 </div>
-<div class="section level2">
-<h2 id="classify-the-resolved-data">Classify the resolved data<a class="anchor" aria-label="anchor" href="#classify-the-resolved-data"></a>
-</h2>
-<p>Once names are in the expert vocabulary, classify as usual. Resolve
-them against the vocabulary of the expert system you classify with (here
-<code>Apennine-test</code>), write the resolved canonical name back to
-the name column, keeping the original where a name did not resolve, and
-pass the result to <code><a href="../reference/resy_classify.html">resy_classify()</a></code>.</p>
+<div class="section level3">
+<h3 id="classify-the-resolved-data">Classify the resolved data<a class="anchor" aria-label="anchor" href="#classify-the-resolved-data"></a>
+</h3>
+<p>Once the names match the species list of the expert system, classify
+as usual. Resolve them against the species list of the expert system you
+classify with (here <code>Apennine-test</code>), write the resolved name
+back to the name column, keeping the original where a name did not
+resolve, and pass the result to <code><a href="../reference/resy_classify.html">resy_classify()</a></code>. The
+species list is taken from <code>expert$aggs</code>, which holds the
+taxa of the expert system: each name is a taxon the rules use, and its
+elements are the names counted as that taxon.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org" class="external-link">readr</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">read_csv</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"data_example_species.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span>,</span>
 <span>  show_col_types <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
@@ -417,19 +421,17 @@ pass the result to <code><a href="../reference/resy_classify.html">resy_classify
 <span><span class="co">#&gt;  "F"  "F"  "F"  "F"  "F"  "F"</span></span></code></pre></div>
 <p>For a quick pass,
 <code>resy_classify(..., resolve_taxa = TRUE)</code> runs the resolution
-against the expert vocabulary and then classifies in a single call, and
-reports what it did in <code>res$taxon_resolution</code>. The two-step
-route above is recommended, since it lets you check the unresolved names
-before they reach the classifier.</p>
+against the species list of the expert system and then classifies in a
+single call, and reports what it did in
+<code>res$taxon_resolution</code>. The two-step route above is
+recommended, since it lets you check the unresolved names before they
+reach the classifier.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>Bruelheide H, Tichý L, Chytrý M, Jansen F (<a href="https://doi.org/10.1111/avsc.12562" class="external-link">2021</a>) Implementing the
-formal language of the vegetation classification expert systems (ESy) in
-the statistical computing environment R. – <em>Applied Vegetation
-Science</em> 24, e12562 <a href="https://doi.org/10.1111/avsc.12562" class="external-link">https://doi.org/10.1111/avsc.12562</a></p>
-<p>Chytrý M, Tichý L, Hennekens SM et al. (<a href="https://doi.org/10.1111/avsc.12519" class="external-link">2020</a>) EUNIS Habitat
+<p>Chytrý M, Tichý L, Hennekens SM, Knollová I et al. (<a href="https://doi.org/10.1111/avsc.12519" class="external-link">2020</a>) EUNIS Habitat
 Classification: expert system, characteristic species combinations and
 distribution maps of European habitats. – <em>Applied Vegetation
 Science</em> 23, 648–675. <a href="https://doi.org/10.1111/avsc.12519" class="external-link">https://doi.org/10.1111/avsc.12519</a></p>

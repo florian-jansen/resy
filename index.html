@@ -43,8 +43,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/altitude-vignette.html">Get altitude data</a></li>
-    <li><a class="dropdown-item" href="articles/EUNIS.html">Get additional data</a></li>
-    <li><a class="dropdown-item" href="articles/taxonomy.html">RESY taxonomy</a></li>
+    <li><a class="dropdown-item" href="articles/EUNIS.html">Get EUNIS habitat types</a></li>
+    <li><a class="dropdown-item" href="articles/taxonomy.html">Match species names</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -68,9 +68,9 @@
 <!-- badges: start -->
 
 <p>RESY assigns vegetation plots to vegetation or habitat types based on their plant community. A plot where beech, silver fir and beech-forest herbs such as wood sorrel grow together is a beech-fir montane forest. A plot where mat-grass (<em>Nardus stricta</em>) is abundant is an acidic grassland. RESY uses the species composition and cover or abundance recorded in each vegetation plot (relevé).</p>
-<p>The rules for this assignment form an expert system (ESy; Chytrý et al. <a href="https://doi.org/10.1111/avsc.12519" class="external-link">2020</a>; Bruelheide et al. <a href="https://doi.org/10.1111/avsc.12562" class="external-link">2021</a>), stored as a text or JSON file. For each type, the rule specifies which groups of indicator species a plot must contain and how much cover they must have. In the example below, a plot is a beech-fir montane forest when beech and silver fir together cover more than 15% of it and beech-forest herbs more than 10%. You can also supply your own expert system.</p>
-<p>RESY ships the expert system for EUNIS (European Nature Information System), the habitat classification of the <a href="https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed" class="external-link">European Environment Agency</a> for the land and sea of Europe. EUNIS defines a habitat by its plant and animal communities together with abiotic conditions. Some of its rules therefore also use site data, such as the ecoregion, the country or the position on the coast.</p>
-<p>The EUNIS expert system uses the species names of <a href="https://europlusmed.org/" class="external-link">Euro+Med PlantBase</a>, the taxonomy used in data from the <a href="https://euroveg.org/eva-database/" class="external-link">European Vegetation Archive (EVA)</a>. Species names in plot data that follow another taxonomy, such as <a href="https://www.gbif.org/" class="external-link">GBIF</a> or <a href="https://www.worldfloraonline.org/" class="external-link">World Flora Online</a>, must first be matched to Euro+Med names. Use <code><a href="reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> to match them (<code><a href="articles/taxonomy.html">vignette("taxonomy")</a></code>).</p>
+<p>The rules for this assignment form an expert system (ESy; Bruelheide et al. <a href="https://doi.org/10.1111/avsc.12562" class="external-link">2021</a>), stored as a text or JSON file. For each type, the rule specifies which groups of indicator species a plot must contain and how much cover they must have. In the example below, a plot is a beech-fir montane forest when beech and silver fir together cover more than 15% of it and beech-forest herbs more than 10%. You can also supply your own expert system.</p>
+<p>RESY ships the expert system of Chytrý et al. (<a href="https://doi.org/10.1111/avsc.12519" class="external-link">2020</a>) for EUNIS (European Nature Information System), the habitat classification of the <a href="https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed" class="external-link">European Environment Agency</a> for the land and sea of Europe. EUNIS defines a habitat by its plant and animal communities together with abiotic conditions. Some of its rules therefore also use site data, such as the ecoregion, the country or the position on the coast.</p>
+<p>Each expert system uses its own list of species names. The EUNIS expert system, for example, uses the names of <a href="https://europlusmed.org/" class="external-link">Euro+Med PlantBase</a>, the taxonomy used in data from the <a href="https://euroveg.org/eva-database/" class="external-link">European Vegetation Archive (EVA)</a>. Species names in plot data that follow another taxonomy, such as <a href="https://www.gbif.org/" class="external-link">GBIF</a> or <a href="https://www.worldfloraonline.org/" class="external-link">World Flora Online</a>, must first be matched to the names of the expert system. <code><a href="reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> does this for any expert system: it removes author names and looks up synonyms. The synonym table that comes with RESY links about 65,000 synonyms from six taxonomies (Euro+Med, World Flora Online, GBIF, Catalogue of Life, ITIS and NCBI) to the species names of the EUNIS expert system. For an expert system with other species names, you can supply your own synonym table (<code><a href="articles/taxonomy.html">vignette("taxonomy")</a></code>).</p>
 <p><strong>Insert figure here. Perhaps of Europe</strong></p>
 <div class="section level2">
 <h2 id="arrow_double_down-installation">
@@ -79,7 +79,7 @@
 <p>The package is available on CRAN. Install and load it with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"RESY"</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://florian-jansen.github.io/resy/">"RESY"</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://florian-jansen.github.io/resy/">RESY</a></span><span class="op">)</span></span></code></pre></div>
 <p>RESY is still under active development. You can install the development version from the GitHub repository using the following commands:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
@@ -173,7 +173,7 @@
 <h2 id="scroll-vignettes">
 <span class="emoji" data-emoji="scroll">📜</span> Vignettes<a class="anchor" aria-label="anchor" href="#scroll-vignettes"></a>
 </h2>
-<p>We have written several vignettes to help you use the RESY R package: <br></p>
+<p>These vignettes show how to use RESY:</p>
 <ul>
 <li>
 <code><a href="articles/RESY.html">vignette("RESY")</a></code>: start here, from a species table to classified plots</li>
