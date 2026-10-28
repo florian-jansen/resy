@@ -43,19 +43,18 @@ from six backbones (Euro+Med, WFO, GBIF, Catalogue of Life, ITIS, NCBI),
 so a name coming from any of them can resolve without you having to say
 which backbone it came from.
 
-The table was built on 2026-09-21 with taxify 0.5.5, against the EUNIS
-expert system 2025-10-03, from the backbone releases below.
-`data-raw/build_synonyms.R` and the taxify lockfile next to it in the
-source repository rebuild it from these versions.
+The table was built on 2026-10-28 against the EUNIS expert system
+2025-10-03, from the backbone releases below.
+`data-raw/build_synonyms.R` in the source repository rebuilds it.
 
-| Backbone | Release | Upstream data | Downloaded | Content id |
-|:---------|--------:|:--------------|:-----------|:-----------|
-| euromed  | 2026.08 | 2026-07-11    | 2026-08-27 | 06668202   |
-| wfo      | 2026.06 | 2026-06-21    | 2026-09-15 | 0db73976   |
-| gbif     | 2026.08 | 2023-08-28    | 2026-08-30 | 4ecece7e   |
-| col      | 2026.09 | 2026-09-11    | 2026-09-14 | c2999654   |
-| itis     | 2026.09 | 2026-08-27    | 2026-09-14 | c506652f   |
-| ncbi     | 2026.09 | 2026-09       | 2026-09-14 | 7553eb41   |
+| Backbone | Release | Upstream data |
+|:---------|--------:|:--------------|
+| euromed  | 2026.08 | 2026-07-11    |
+| wfo      | 2026.06 | 2026-06-21    |
+| gbif     | 2023.08 | 2023-08-28    |
+| col      | 2026.09 | 2026-09-11    |
+| itis     | 2026.09 | 2026-08-27    |
+| ncbi     | 2026.09 | 2026-09       |
 
 The synonyms are binomials (genus and species epithet). Infraspecific
 names, hybrid formulas, and bare genera are not in the table, so a name
@@ -214,7 +213,10 @@ your own crosswalk, or leaving them out.
 
 [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
 also accepts your own crosswalk, with three columns: `synonym`,
-`esy_canonical`, and `source`. A small example ships with the package.
+`esy_canonical`, and `source`. It can come from a national checklist, a
+Turboveg species list, or a name-matching package such as
+[taxify](https://github.com/gcol33/taxify). A small example ships with
+the package.
 
 ``` r
 
@@ -325,16 +327,6 @@ resolution against the expert vocabulary and then classifies in a single
 call, and reports what it did in `res$taxon_resolution`. The two-step
 route above is recommended, since it lets you check the unresolved names
 before they reach the classifier.
-
-## Building a crosswalk with taxify
-
-To assemble a crosswalk from offline backbone tables (no API calls), the
-[taxify](https://github.com/gcol33/taxify) package matches names against
-Euro+Med, WFO, GBIF, Catalogue of Life, ITIS, and NCBI and records the
-supporting backbone for each match. A table with the columns `synonym`,
-`esy_canonical`, and `source` built from those matches can be passed to
-[`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
-as `synonyms=`.
 
 ## References
 

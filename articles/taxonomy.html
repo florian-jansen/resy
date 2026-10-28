@@ -66,7 +66,7 @@
                         <h4 data-toc-skip class="author">Gilles
 Colling</h4>
             
-            <h4 data-toc-skip class="date">2026-10-22</h4>
+            <h4 data-toc-skip class="date">2026-10-28</h4>
       
 
       <div class="d-none name"><code>taxonomy.Rmd</code></div>
@@ -115,60 +115,46 @@ canonical name used by the EUNIS-ESy expert system. It pools synonymy
 from six backbones (Euro+Med, WFO, GBIF, Catalogue of Life, ITIS, NCBI),
 so a name coming from any of them can resolve without you having to say
 which backbone it came from.</p>
-<p>The table was built on 2026-09-21 with taxify 0.5.5, against the
-EUNIS expert system 2025-10-03, from the backbone releases below.
-<code>data-raw/build_synonyms.R</code> and the taxify lockfile next to
-it in the source repository rebuild it from these versions.</p>
+<p>The table was built on 2026-10-28 against the EUNIS expert system
+2025-10-03, from the backbone releases below.
+<code>data-raw/build_synonyms.R</code> in the source repository rebuilds
+it.</p>
 <table class="table">
 <thead><tr class="header">
 <th align="left">Backbone</th>
 <th align="right">Release</th>
 <th align="left">Upstream data</th>
-<th align="left">Downloaded</th>
-<th align="left">Content id</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="left">euromed</td>
 <td align="right">2026.08</td>
 <td align="left">2026-07-11</td>
-<td align="left">2026-08-27</td>
-<td align="left">06668202</td>
 </tr>
 <tr class="even">
 <td align="left">wfo</td>
 <td align="right">2026.06</td>
 <td align="left">2026-06-21</td>
-<td align="left">2026-09-15</td>
-<td align="left">0db73976</td>
 </tr>
 <tr class="odd">
 <td align="left">gbif</td>
-<td align="right">2026.08</td>
+<td align="right">2023.08</td>
 <td align="left">2023-08-28</td>
-<td align="left">2026-08-30</td>
-<td align="left">4ecece7e</td>
 </tr>
 <tr class="even">
 <td align="left">col</td>
 <td align="right">2026.09</td>
 <td align="left">2026-09-11</td>
-<td align="left">2026-09-14</td>
-<td align="left">c2999654</td>
 </tr>
 <tr class="odd">
 <td align="left">itis</td>
 <td align="right">2026.09</td>
 <td align="left">2026-08-27</td>
-<td align="left">2026-09-14</td>
-<td align="left">c506652f</td>
 </tr>
 <tr class="even">
 <td align="left">ncbi</td>
 <td align="right">2026.09</td>
 <td align="left">2026-09</td>
-<td align="left">2026-09-14</td>
-<td align="left">7553eb41</td>
 </tr>
 </tbody>
 </table>
@@ -337,7 +323,9 @@ to your own crosswalk, or leaving them out.</p>
 </h2>
 <p><code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> also accepts your own crosswalk,
 with three columns: <code>synonym</code>, <code>esy_canonical</code>,
-and <code>source</code>. A small example ships with the package.</p>
+and <code>source</code>. It can come from a national checklist, a
+Turboveg species list, or a name-matching package such as <a href="https://github.com/gcol33/taxify" class="external-link">taxify</a>. A small example
+ships with the package.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cw_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_crosswalk.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span></span>
 <span><span class="va">crosswalk</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_read_synonyms.html">resy_read_synonyms</a></span><span class="op">(</span><span class="va">cw_path</span><span class="op">)</span></span>
@@ -433,17 +421,6 @@ against the expert vocabulary and then classifies in a single call, and
 reports what it did in <code>res$taxon_resolution</code>. The two-step
 route above is recommended, since it lets you check the unresolved names
 before they reach the classifier.</p>
-</div>
-<div class="section level2">
-<h2 id="building-a-crosswalk-with-taxify">Building a crosswalk with taxify<a class="anchor" aria-label="anchor" href="#building-a-crosswalk-with-taxify"></a>
-</h2>
-<p>To assemble a crosswalk from offline backbone tables (no API calls),
-the <a href="https://github.com/gcol33/taxify" class="external-link">taxify</a> package
-matches names against Euro+Med, WFO, GBIF, Catalogue of Life, ITIS, and
-NCBI and records the supporting backbone for each match. A table with
-the columns <code>synonym</code>, <code>esy_canonical</code>, and
-<code>source</code> built from those matches can be passed to
-<code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> as <code>synonyms=</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
