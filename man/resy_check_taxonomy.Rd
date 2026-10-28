@@ -4,15 +4,15 @@
 \alias{resy_check_taxonomy}
 \title{Check species names against an expert system's species list}
 \usage{
-resy_check_taxonomy(obs, parsed, col = "TaxonName")
+resy_check_taxonomy(obs, parsed, col = NULL)
 }
 \arguments{
 \item{obs}{A data frame or `data.table` with a column holding taxon names.}
 
 \item{parsed}{A `resy_parsed_expert` object from [resy_load_expert()].}
 
-\item{col}{Name of the column in `obs` that holds taxon names
-(default `"TaxonName"`).}
+\item{col}{Name of the column in `obs` that holds taxon names. If `NULL`
+(default), uses `TaxonName`, then Darwin Core `scientificName`.}
 }
 \value{
 A `resy_taxa` data frame with one row per unique taxon name in `obs`:

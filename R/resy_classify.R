@@ -32,17 +32,25 @@
 #' resolve to nothing keep their original value (never a best guess). What was
 #' resolved is then reported in the result's `taxon_resolution`.
 #'
-#' @param obs Observations as `data.table` with at least columns describing plot id,
-#'   the species name (see `species_col`), and `Cover_Perc`.
-#' @param header Plot header data.frame; required for evaluating $$C/$$N.
+#' @param obs Observations as a data frame or `data.table` with at least columns
+#'   describing plot id, the species name (see `species_col`), and the cover
+#'   `Cover_Perc`. Darwin Core names are accepted: `eventID` for the plot id,
+#'   `scientificName` for the species, and `organismQuantity` for the cover when
+#'   `organismQuantityType` is a percent cover such as `"% cover"`.
+#' @param header Plot header data frame with one row per plot; required for
+#'   evaluating $$C/$$N. Darwin Core `country` and
+#'   `minimumElevationInMeters`/`maximumElevationInMeters` are accepted for
+#'   `Country` and `Altitude (m)`.
 #' @param expertfile Optional path to expert-system file (.json/.txt). If set, takes precedence.
 #' @param scheme Scheme name (default: "EUNIS").
 #' @param version Version identifier. If NULL, uses latest available version for the scheme.
 #' @param location Where to look for `scheme`/`version`, in search order; see
 #'   [resy_load_expert()]. Defaults to both `"user"` and `"package"`.
-#' @param id_col Optional name of the plot id column. If NULL, tries PlotObservationID, then PlotID.
-#' @param species_col Name of the column in `obs` holding the species name
-#'   (default `"TaxonName"`). Resolved names are written back to `TaxonName`.
+#' @param id_col Optional name of the plot id column. If NULL, tries
+#'   PlotObservationID, then PlotID, then Darwin Core eventID.
+#' @param species_col Name of the column in `obs` holding the species name. If
+#'   `NULL` (default), uses `TaxonName`, then Darwin Core `scientificName`.
+#'   Resolved names are written back to `TaxonName`.
 #' @param resolve_taxa Logical; if `FALSE` (default) the classifier is
 #'   taxonomy-agnostic and uses the names in `obs` as given. If `TRUE`, species
 #'   names are resolved to the expert's vocabulary via [resy_resolve_taxa] before
@@ -76,15 +84,14 @@ resy_classify <- function(obs,
                           version = NULL,
                           location = c("user", "package"),
                           id_col = NULL,
-                          species_col = "TaxonName",
+                          species_col = NULL,
                           resolve_taxa = FALSE,
                           synonyms = NULL,
                           mc = max(1L, floor(parallel::detectCores() * 0.75))) {
   if (!inherits(obs, "data.table")) obs <- data.table::as.data.table(obs)
-  if (!species_col %in% names(obs)) {
-    stop("`obs` has no column `", species_col, "`. Name the column holding ",
-         "the species names with `species_col`.", call. = FALSE)
-  }
+  species_col <- .resy_species_col(obs, species_col)
+  obs <- .resy_adopt_columns(obs, "Cover_Perc")
+  header <- .resy_adopt_columns(header, c("Country", "Altitude (m)"))
 
   parsed <- resy_load_expert(expertfile = expertfile, scheme = scheme,
                              version = version, location = location)

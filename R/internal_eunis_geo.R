@@ -38,16 +38,20 @@
 # CRS of the bundled GIS layers and of the sites while they are matched to them.
 .resy_eunis_crs <- 25832
 
-# Sites as an sf object in .resy_eunis_crs. An sf object keeps its own CRS; a
-# data frame needs `Longitude` and `Latitude` in the CRS `source_crs`. Without
-# `source_crs`, coordinates that are all valid longitudes and latitudes are read
-# as degrees (EPSG:4326); other coordinates need the code.
+# Sites as an sf object in .resy_eunis_crs, with the site columns under their
+# RESY names (Darwin Core names are accepted, see .resy_column_aliases). An sf
+# object keeps its own CRS; a data frame needs `Longitude` and `Latitude` in the
+# CRS `source_crs`. Without `source_crs`, coordinates that are all valid
+# longitudes and latitudes are read as degrees (EPSG:4326); other coordinates
+# need the code.
 .resy_check_coordinates <- function(
     data,
     source_crs = NULL,
     verbose = interactive()
 ) {
-  
+
+  data <- .resy_adopt_columns(data, .resy_site_cols)
+
   if (!inherits(data, "sf")) {
     
     if (!rlang::has_name(data, "Longitude") ||
@@ -99,6 +103,11 @@
 }
 
 # ---- EUNIS site columns -----------------------------------------------------
+
+# Site columns that can be given under a Darwin Core name.
+.resy_site_cols <- c(
+  "PlotObservationID", "Longitude", "Latitude", "Country", "Altitude (m)"
+)
 
 # Header columns of the EUNIS workflow, in the order they are put first.
 .resy_eunis_cols <- c(

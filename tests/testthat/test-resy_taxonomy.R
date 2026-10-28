@@ -123,7 +123,7 @@ test_that("ambiguous synonyms resolve to nothing (no silent pick)", {
 test_that("resolver validates its arguments", {
   expect_error(resy_resolve_taxa(list(), "TaxonName"), "must be a data frame")
   expect_error(resy_resolve_taxa(data.frame(a = 1), "TaxonName"),
-               "not found in `obs`")
+               "`obs` has no column `TaxonName`", fixed = TRUE)
 })
 
 test_that("canonical_species returns the sorted unique canonical names", {

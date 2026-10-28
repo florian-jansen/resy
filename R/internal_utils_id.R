@@ -12,8 +12,8 @@
 #' consistency. These utilities handle the following tasks:
 #'
 #' - **Detection**: Automatically identify ID columns by looking for standard
-#'   names (`PlotObservationID`, `PlotID`) across both observation and header
-#'   data frames.
+#'   names (`PlotObservationID`, `PlotID`, Darwin Core `eventID`) across both
+#'   observation and header data frames.
 #'
 #' - **Standardization**: Convert user-specified or auto-detected ID columns
 #'   to the internal `PlotObservationID` standard while preserving the original
@@ -42,8 +42,8 @@
 #' @keywords internal
 #' @noRd
 .resy_guess_id_col <- function(obs, header) {
-  
-  candidates <- c("PlotObservationID", "PlotID")
+
+  candidates <- .resy_column_names("PlotObservationID")
   for (nm in candidates) {
     if (nm %in% names(obs) && nm %in% names(header)) return(nm)
     
@@ -92,7 +92,8 @@
     if (is.null(id_used)) {
       stop(
         "No plot id column found in both obs and header. ",
-        "Please provide id_col, or include one of: PlotObservationID, PlotID."
+        "Please provide id_col, or include one of: ",
+        paste(.resy_column_names("PlotObservationID"), collapse = ", "), "."
       )
       
     }
@@ -123,7 +124,7 @@
 #' @noRd
 .resy_get_id_col <- function(obs, header, id_col = NULL) {
   
-  candidates <- c("PlotObservationID", "PlotID")
+  candidates <- .resy_column_names("PlotObservationID")
   if (!is.null(id_col)) candidates <- c(id_col, candidates)
   
   for (cand in unique(candidates)) {

@@ -10,7 +10,10 @@
 #' requirements before running this function.
 #'
 #' @param data A data frame or `sf` object containing plot data. If not an
-#'   `sf` object, columns `Longitude` and `Latitude` must be present.
+#'   `sf` object, columns `Longitude` and `Latitude` must be present. Darwin
+#'   Core names are accepted: `eventID`, `decimalLongitude`, `decimalLatitude`,
+#'   `country`, and `minimumElevationInMeters`/`maximumElevationInMeters` for
+#'   `Altitude (m)`.
 #' @param source_crs Integer EPSG code of the coordinates in a plain data
 #'   frame, in any coordinate reference system; they are converted as needed.
 #'   When `NULL` (default), coordinates that are all valid longitudes and
@@ -18,8 +21,8 @@
 #'   Ignored when `data` is an `sf` object, which carries its own CRS.
 #' @param run_taxonomy Logical; if `TRUE`, runs [resy_check_taxonomy()] on
 #'   `species_data`.
-#' @param species_data A data frame with a column `species`. Required when
-#'   `run_taxonomy = TRUE`.
+#' @param species_data A data frame with a column `scientificName`. Required
+#'   when `run_taxonomy = TRUE`.
 #' @param parsed A `resy_parsed_expert` object from [resy_load_expert()].
 #'   Required when `run_taxonomy = TRUE`.
 #' @param run_coast_dunes Logical; if `TRUE`, assigns `Coast_EEA` and

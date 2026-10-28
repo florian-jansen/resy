@@ -12,17 +12,23 @@ resy_classify(
   version = NULL,
   location = c("user", "package"),
   id_col = NULL,
-  species_col = "TaxonName",
+  species_col = NULL,
   resolve_taxa = FALSE,
   synonyms = NULL,
   mc = max(1L, floor(parallel::detectCores() * 0.75))
 )
 }
 \arguments{
-\item{obs}{Observations as `data.table` with at least columns describing plot id,
-the species name (see `species_col`), and `Cover_Perc`.}
+\item{obs}{Observations as a data frame or `data.table` with at least columns
+describing plot id, the species name (see `species_col`), and the cover
+`Cover_Perc`. Darwin Core names are accepted: `eventID` for the plot id,
+`scientificName` for the species, and `organismQuantity` for the cover when
+`organismQuantityType` is a percent cover such as `"% cover"`.}
 
-\item{header}{Plot header data.frame; required for evaluating $$C/$$N.}
+\item{header}{Plot header data frame with one row per plot; required for
+evaluating $$C/$$N. Darwin Core `country` and
+`minimumElevationInMeters`/`maximumElevationInMeters` are accepted for
+`Country` and `Altitude (m)`.}
 
 \item{expertfile}{Optional path to expert-system file (.json/.txt). If set, takes precedence.}
 
@@ -33,10 +39,12 @@ the species name (see `species_col`), and `Cover_Perc`.}
 \item{location}{Where to look for `scheme`/`version`, in search order; see
 [resy_load_expert()]. Defaults to both `"user"` and `"package"`.}
 
-\item{id_col}{Optional name of the plot id column. If NULL, tries PlotObservationID, then PlotID.}
+\item{id_col}{Optional name of the plot id column. If NULL, tries
+PlotObservationID, then PlotID, then Darwin Core eventID.}
 
-\item{species_col}{Name of the column in `obs` holding the species name
-(default `"TaxonName"`). Resolved names are written back to `TaxonName`.}
+\item{species_col}{Name of the column in `obs` holding the species name. If
+`NULL` (default), uses `TaxonName`, then Darwin Core `scientificName`.
+Resolved names are written back to `TaxonName`.}
 
 \item{resolve_taxa}{Logical; if `FALSE` (default) the classifier is
 taxonomy-agnostic and uses the names in `obs` as given. If `TRUE`, species

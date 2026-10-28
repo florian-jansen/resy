@@ -87,6 +87,14 @@
   the species behind it. `type =` shows any type the same way; `lower = FALSE`
   turns the list off. The `group_names` column is no longer added to the species
   output.
+* Plot data can use Darwin Core column names: `eventID` for the plot ID,
+  `scientificName` for the species, `organismQuantity` with a percent-cover
+  `organismQuantityType` for the cover, `decimalLongitude`, `decimalLatitude`
+  and `country` for the site, and `minimumElevationInMeters` /
+  `maximumElevationInMeters` for `Altitude (m)`. `species_col` in
+  `resy_classify()` and `resy_resolve_taxa()` and `col` in
+  `resy_check_taxonomy()` default to `NULL`, which uses `TaxonName`, then
+  `scientificName`.
 
 ## Fixes
 

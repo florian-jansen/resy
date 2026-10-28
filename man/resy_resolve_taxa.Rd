@@ -4,18 +4,14 @@
 \alias{resy_resolve_taxa}
 \title{Resolve plot species names to canonical ESy names}
 \usage{
-resy_resolve_taxa(
-  obs,
-  species_col = "TaxonName",
-  synonyms = NULL,
-  canonical = NULL
-)
+resy_resolve_taxa(obs, species_col = NULL, synonyms = NULL, canonical = NULL)
 }
 \arguments{
 \item{obs}{A data frame (or \code{data.table}) of plot observations.}
 
-\item{species_col}{Name of the column in \code{obs} holding the species name
-(default \code{"TaxonName"}).}
+\item{species_col}{Name of the column in \code{obs} holding the species name.
+If \code{NULL} (default), uses \code{TaxonName}, then Darwin Core
+\code{scientificName}.}
 
 \item{synonyms}{\code{NULL} (default) uses the shipped synonym table; pass a
 path or data frame to override it.}

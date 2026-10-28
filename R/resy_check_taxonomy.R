@@ -14,8 +14,8 @@
 #'
 #' @param obs A data frame or `data.table` with a column holding taxon names.
 #' @param parsed A `resy_parsed_expert` object from [resy_load_expert()].
-#' @param col Name of the column in `obs` that holds taxon names
-#'   (default `"TaxonName"`).
+#' @param col Name of the column in `obs` that holds taxon names. If `NULL`
+#'   (default), uses `TaxonName`, then Darwin Core `scientificName`.
 #' @return A `resy_taxa` data frame with one row per unique taxon name in `obs`:
 #'   \describe{
 #'     \item{`scientificName`}{The name as submitted in `obs`.}
@@ -42,12 +42,11 @@
 #' names(obs)[2] <- "species"
 #' resy_check_taxonomy(obs, parsed, col = "species")
 #' @export
-resy_check_taxonomy <- function(obs, parsed, col = "TaxonName") {
-  
+resy_check_taxonomy <- function(obs, parsed, col = NULL) {
+
   if (!inherits(parsed, "resy_parsed_expert"))
     stop("`parsed` must be a resy_parsed_expert object (from resy_load_expert()).")
-  if (!col %in% names(obs))
-    stop("Column '", col, "' not found in `obs`.")
+  col <- .resy_species_col(obs, col, arg = "col")
 
   canon_names <- names(parsed$aggs)
   lookup      <- .resy_agg_lookup(parsed$aggs)

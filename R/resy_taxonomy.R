@@ -176,8 +176,9 @@ resy_canonical_species <- function(path = NULL) {
 #' stayed unresolved.
 #'
 #' @param obs A data frame (or \code{data.table}) of plot observations.
-#' @param species_col Name of the column in \code{obs} holding the species name
-#'   (default \code{"TaxonName"}).
+#' @param species_col Name of the column in \code{obs} holding the species name.
+#'   If \code{NULL} (default), uses \code{TaxonName}, then Darwin Core
+#'   \code{scientificName}.
 #' @param synonyms \code{NULL} (default) uses the shipped synonym table; pass a
 #'   path or data frame to override it.
 #' @param canonical \code{NULL} (default) uses the shipped canonical list for the
@@ -193,23 +194,20 @@ resy_canonical_species <- function(path = NULL) {
 #'   \code{\link{resy_classify}}
 #' @export
 resy_resolve_taxa <- function(
-    obs, species_col = "TaxonName", synonyms = NULL, canonical = NULL
+    obs, species_col = NULL, synonyms = NULL, canonical = NULL
     ) {
-  
+
   if (!is.data.frame(obs)) {
     stop("resy_resolve_taxa: `obs` must be a data frame.", call. = FALSE)
-    
+
   }
-  
-  if (!is.character(species_col) || length(species_col) != 1L ||
-      !species_col %in% names(obs)) {
-    
-    stop(
-      "resy_resolve_taxa: column `", species_col, "` not found in `obs`.",
-      call. = FALSE
-      )
-    
+
+  if (!is.null(species_col) &&
+      (!is.character(species_col) || length(species_col) != 1L)) {
+    stop("resy_resolve_taxa: `species_col` must be a single column name.",
+         call. = FALSE)
   }
+  species_col <- .resy_species_col(obs, species_col)
   
   # A character vector of length > 1 is taken as the canonical names directly;
   # NULL / a single path / a data frame are read via resy_canonical_species().

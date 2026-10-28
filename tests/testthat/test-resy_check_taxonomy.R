@@ -76,7 +76,7 @@ test_that("invalid input is rejected", {
   expect_error(resy_check_taxonomy(obs, list(aggs = list())),
                "resy_parsed_expert")
   expect_error(resy_check_taxonomy(obs, toy_expert(), col = "scientificName"),
-               "Column 'scientificName' not found")
+               "`obs` has no column `scientificName`", fixed = TRUE)
 })
 
 test_that("every species of the example data is known to Apennine-test", {

@@ -112,9 +112,38 @@ test_that("species_col names the species column", {
                "Fagus sylvatica")
 
   expect_error(
-    resy_classify(obs[, !"TaxonName"], header, scheme = "Apennine-test", mc = 1L),
-    "`obs` has no column `TaxonName`", fixed = TRUE
+    resy_classify(obs, header, scheme = "Apennine-test",
+                  species_col = "species", mc = 1L),
+    "`obs` has no column `species`", fixed = TRUE
   )
+  expect_error(
+    resy_classify(obs[, !c("TaxonName", "scientificName")], header,
+                  scheme = "Apennine-test", mc = 1L),
+    "`obs` has no species column", fixed = TRUE
+  )
+})
+
+test_that("without species_col, TaxonName is used before scientificName", {
+  obs <- data.table::data.table(
+    PlotObservationID = c("p1", "p2"),
+    scientificName    = c("Fagus sylvatica", "Yyy alsoinvented"),
+    TaxonName         = c("Yyy alsoinvented", "Fagus sylvatica"),
+    Cover_Perc        = c(40, 30)
+  )
+  header <- data.frame(PlotObservationID = c("p1", "p2"))
+
+  res <- suppressMessages(
+    resy_classify(obs, header, scheme = "Apennine-test", mc = 1L)
+  )
+  expect_equal(res$obs$TaxonName[res$obs$PlotObservationID == "p2"],
+               "Fagus sylvatica")
+
+  res_dwc <- suppressMessages(
+    resy_classify(obs[, !"TaxonName"], header, scheme = "Apennine-test",
+                  mc = 1L)
+  )
+  expect_equal(res_dwc$obs$TaxonName[res_dwc$obs$PlotObservationID == "p1"],
+               "Fagus sylvatica")
 })
 
 test_that("resolve_taxa = TRUE reports resolution and never guesses unknowns", {
