@@ -15,7 +15,8 @@ resy_classify(
   species_col = NULL,
   resolve_taxa = FALSE,
   synonyms = NULL,
-  mc = max(1L, floor(parallel::detectCores() * 0.75))
+  mc = max(1L, floor(parallel::detectCores() * 0.75)),
+  expert = NULL
 )
 }
 \arguments{
@@ -55,6 +56,10 @@ classification (see Description).}
 `resolve_taxa = TRUE`; `NULL` uses the shipped table.}
 
 \item{mc}{Number of CPU cores to use.}
+
+\item{expert}{An expert system already read with [resy_load_expert()]. When
+given, `expertfile`, `scheme`, `version` and `location` are not used, so
+data classified in several parts reads the expert system only once.}
 }
 \value{
 An object of class `resy_result`. When `resolve_taxa = TRUE` it also

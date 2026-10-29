@@ -143,7 +143,7 @@
   out <- character()
 
   if (!rlang::has_name(data, "Altitude (m)"))
-    out <- c(out, '"Altitude (m)" is missing. See vignette("altitude-vignette") and mapsforeurope.org for a raster source.')
+    out <- c(out, '"Altitude (m)" is missing. See the "Get altitude data" vignette; altitude rasters are available from mapsforeurope.org.')
   else if (anyNA(data$`Altitude (m)`))
     out <- c(out, '"Altitude (m)" contains NA values.')
 
@@ -155,7 +155,7 @@
           "No site falls inside the %s base map. Check that `source_crs`",
           "matches the coordinates (longitude/latitude in degrees is 4326)."), map))
       else if (anyNA(data[[col]]))
-        out <- c(out, sprintf('"%s" contains NA values: some sites are outside the %s base map.', col, map))
+        out <- c(out, sprintf('"%s" is missing for some plots because they fall outside the %s map.', col, map))
     } else if (!rlang::has_name(data, col)) {
       out <- c(out, sprintf('"%s" is missing and will be assigned by resy_harmonize_eunis().', col))
     } else if (anyNA(data[[col]])) {
@@ -266,27 +266,27 @@
       "`buffer_dist` must be a single positive number (metres).", call. = FALSE
       )
 
+  # The maps are cropped to the plots' extent widened by the buffer distance, so
+  # every coastline part within `buffer_dist` of a plot is kept and a plot's
+  # flags do not depend on the other plots classified with it.
   bbox <- sf::st_bbox(data_sf)
+  bbox[c("xmin", "ymin")] <- bbox[c("xmin", "ymin")] - buffer_dist
+  bbox[c("xmax", "ymax")] <- bbox[c("xmax", "ymax")] + buffer_dist
 
   coastline <- .resy_gis("coastline_regions_epsg25832") |>
-    sf::st_zm() |> sf::st_set_agr("constant") |> sf::st_crop(bbox) |>
-    sf::st_buffer(dist = buffer_dist)
+    sf::st_zm() |> sf::st_set_agr("constant") |> sf::st_crop(bbox)
 
   dunes <- .resy_gis("dunes_bohn_500mbuffer_epsg25832") |>
     sf::st_set_agr("constant") |> sf::st_crop(bbox)
 
-  coast_join <- sf::st_join(data_sf, coastline, left = TRUE)
-  
-  coast_flag <- coast_join$COAST_EEA
-  
-  if (length(coast_flag) != nrow(data_sf)) {
-    
-    coast_flag <- vapply(sf::st_intersects(data_sf, coastline), function(x)
-      if (length(x) == 0L) "N_COAST" else coastline$COAST_EEA[x[1L]], character(1))
-    
-  }
-  
-  coast_flag[is.na(coast_flag)] <- "N_COAST"
+  # A plot within `buffer_dist` of a coastline takes the coast of the first
+  # such coastline. The distance is measured directly, without a buffer
+  # polygon, so it is exact.
+  coast_flag <- vapply(
+    sf::st_is_within_distance(data_sf, coastline, dist = buffer_dist),
+    function(x) if (length(x) == 0L) "N_COAST" else coastline$COAST_EEA[x[1L]],
+    character(1)
+    )
 
   dune_flag <- ifelse(
     rowSums(sf::st_intersects(data_sf, dunes, sparse = FALSE)) > 0,

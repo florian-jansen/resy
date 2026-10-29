@@ -156,7 +156,7 @@ test_that("resy_classify warns about header columns the expert system uses but h
     suppressMessages(resy_classify(
       obs, header, expertfile = test_path("fixtures", "header-conditions.json"), mc = 1L
     )),
-    "does not have: Ecoreg"
+    "used by the expert system: Ecoreg"
   )
 })
 

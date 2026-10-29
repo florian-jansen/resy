@@ -58,6 +58,9 @@
 #' @param synonyms Synonym-table override passed to [resy_resolve_taxa] when
 #'   `resolve_taxa = TRUE`; `NULL` uses the shipped table.
 #' @param mc Number of CPU cores to use.
+#' @param expert An expert system already read with [resy_load_expert()]. When
+#'   given, `expertfile`, `scheme`, `version` and `location` are not used, so
+#'   data classified in several parts reads the expert system only once.
 #' @return An object of class `resy_result`. When `resolve_taxa = TRUE` it also
 #'   carries the `summary()` of the [resy_resolve_taxa] result as
 #'   `taxon_resolution`; otherwise `taxon_resolution` is `NULL`.
@@ -87,14 +90,15 @@ resy_classify <- function(obs,
                           species_col = NULL,
                           resolve_taxa = FALSE,
                           synonyms = NULL,
-                          mc = max(1L, floor(parallel::detectCores() * 0.75))) {
+                          mc = max(1L, floor(parallel::detectCores() * 0.75)),
+                          expert = NULL) {
   if (!inherits(obs, "data.table")) obs <- data.table::as.data.table(obs)
   species_col <- .resy_species_col(obs, species_col)
   obs <- .resy_adopt_columns(obs, "Cover_Perc")
   header <- .resy_adopt_columns(header, c("Country", "Altitude (m)"))
 
-  parsed <- resy_load_expert(expertfile = expertfile, scheme = scheme,
-                             version = version, location = location)
+  parsed <- expert %||% resy_load_expert(expertfile = expertfile, scheme = scheme,
+                                         version = version, location = location)
 
   # Optional convenience: resolve species names to the expert's vocabulary. The
   # expert system carries its own synonymy (aggregation targets + members), so a
@@ -132,9 +136,9 @@ resy_classify <- function(obs,
   header_cols <- trimws(substring(header_conds, 4L))
   missing_cols <- setdiff(unique(header_cols), names(header))
   if (length(missing_cols)) {
-    warning("The expert system uses header columns that `header` does not have: ",
+    warning("`header` is missing columns used by the expert system: ",
             paste(missing_cols, collapse = ", "),
-            ". Conditions on them are evaluated as if the value were 0.",
+            ". Rules using these columns are evaluated with a value of 0.",
             call. = FALSE)
   }
   num_cols <- intersect(unique(header_cols[startsWith(header_conds, "$$N")]),
@@ -170,25 +174,17 @@ resy_classify <- function(obs,
     priority_rank = integer()
   )
   cand <- empty_cand
-  if (!is.null(res$types) && length(res$types) > 0) {
-    vt_names <- parsed$vegtype.formula.names.short
-    vt_prio  <- parsed$vegtype.priority
-    rows <- lapply(names(res$types), function(pid) {
-      ty <- res$types[[pid]]
-      if (!length(ty)) return(NULL)
-      pr <- vt_prio[fastmatch::fmatch(ty, vt_names)]
-      data.table::data.table(
-        plot_id       = as.character(pid),
-        type          = as.character(ty),
-        priority      = pr,
-        priority_rank = as.integer(pr)
-      )
-    })
-    rows <- Filter(Negate(is.null), rows)
-    if (length(rows)) {
-      cand <- data.table::rbindlist(rows, use.names = TRUE, fill = TRUE)
-      data.table::setorder(cand, plot_id, -priority_rank, type)
-    }
+  n_types <- lengths(res$types)
+  if (sum(n_types) > 0) {
+    ty <- as.character(unlist(res$types, use.names = FALSE))
+    pr <- parsed$vegtype.priority[fastmatch::fmatch(ty, parsed$vegtype.formula.names.short)]
+    cand <- data.table::data.table(
+      plot_id       = rep(as.character(names(res$types)), n_types),
+      type          = ty,
+      priority      = pr,
+      priority_rank = as.integer(pr)
+    )
+    data.table::setorder(cand, plot_id, -priority_rank, type)
   }
   
   structure(

@@ -65,6 +65,27 @@ test_that("classification is deterministic", {
   expect_identical(r1$result.classification, r2$result.classification)
 })
 
+test_that("an expert system read once classifies like the scheme name", {
+  obs    <- example_obs()
+  header <- as.data.frame(unique(obs["PlotObservationID"]))
+  expert <- resy_load_expert(scheme = "Apennine-test")
+
+  r1 <- suppressMessages(resy_classify(obs, header, scheme = "Apennine-test", mc = 1L))
+  r2 <- suppressMessages(resy_classify(obs, header, expert = expert, mc = 1L))
+  expect_identical(r1$result.classification, r2$result.classification)
+  expect_identical(r1$candidates, r2$candidates)
+
+  # Two parts classified separately give the classification of the whole.
+  ids <- unique(obs$PlotObservationID)
+  part <- function(i) {
+    o <- obs[obs$PlotObservationID %in% ids[i], ]
+    suppressMessages(resy_classify(o, header, expert = expert, mc = 1L))$result.classification
+  }
+  half <- seq_len(length(ids) %/% 2)
+  both <- c(part(half), part(-half))
+  expect_identical(both[names(r1$result.classification)], r1$result.classification)
+})
+
 test_that("resy_classify is taxonomy-agnostic by default", {
   obs <- data.table::data.table(
     PlotObservationID = c("p1", "p1", "p2"),

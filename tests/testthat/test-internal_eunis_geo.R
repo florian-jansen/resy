@@ -115,5 +115,33 @@ test_that(".resy_assign_coast_dunes errors on wrong CRS", {
     sf::st_sf()
   
   expect_error(RESY:::.resy_assign_coast_dunes(df), "EPSG:25832")
-  
+
+})
+
+test_that("a plot's coast flag does not depend on the other plots", {
+
+  # A plot 4 km from the Albanian coast, alone and together with a plot in
+  # the Alps.
+  pts <- sf::st_sfc(sf::st_point(c(19.449, 41.86875)), sf::st_point(c(11.39, 47.27)),
+                    crs = 4326) |>
+    sf::st_transform(25832) |>
+    sf::st_sf()
+
+  alone <- RESY:::.resy_assign_coast_dunes(pts[1, ])
+  both  <- RESY:::.resy_assign_coast_dunes(pts)
+  expect_identical(alone$Coast_EEA, both$Coast_EEA[1])
+  expect_identical(alone$Coast_EEA, "MED_COAST")
+  expect_identical(both$Coast_EEA[2], "N_COAST")
+
+})
+
+test_that("plots 100 and 250 m from a short stretch of coastline are coastal", {
+
+  pts <- sf::st_sfc(sf::st_point(c(11.09433, 42.25280)), sf::st_point(c(11.10, 42.25036)),
+                    crs = 4326) |>
+    sf::st_transform(25832) |>
+    sf::st_sf()
+
+  expect_identical(RESY:::.resy_assign_coast_dunes(pts)$Coast_EEA, c("MED_COAST", "MED_COAST"))
+
 })

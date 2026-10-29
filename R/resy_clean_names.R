@@ -50,32 +50,35 @@ resy_clean_names <- function(x) {
   # intToUtf8 to keep this source file ASCII-only).
   hybrid_marks <- c("x", intToUtf8(215L))
 
-  vapply(x, function(nm) {
-    if (is.na(nm)) return(NA_character_)
-    nm <- trimws(nm)
-    # Normalise sensu-lato / sensu-stricto qualifiers to the compact marker so
-    # they are kept, not dropped as a sensu-concept ("sens. lat." -> "s.l.",
-    # "sensu stricto" -> "s.str.").
-    nm <- gsub(
-      "\\bsens(?:u|\\.)?\\s+lat(?:o|\\.)",    "s.l.",   nm,
-      perl = TRUE, ignore.case = TRUE
-      )
-    nm <- gsub(
-      "\\bsens(?:u|\\.)?\\s+str(?:icto|\\.)", "s.str.", nm,
-      perl = TRUE, ignore.case = TRUE
-      )
-    # Collapse spaced sensu-lato abbreviations so they survive tokenisation as
-    # a single marker ("s. l." -> "s.l.").
-    nm <- gsub("\\bs\\.\\s+l\\.",   "s.l.",   nm, perl = TRUE)
-    nm <- gsub("\\bs\\.\\s+lat\\.", "s.lat.", nm, perl = TRUE)
-    nm <- gsub("\\bs\\.\\s+str\\.", "s.str.", nm, perl = TRUE)
-    # Sensu stricto in the compact "s.s." / "s. s." form -> canonical "s.str.".
-    nm <- gsub("\\bs\\.\\s*s\\.", "s.str.", nm, perl = TRUE)
-    # The "ssp." abbreviation is the subspecies rank marker; normalise to the
-    # canonical "subsp." so its epithet is kept by the infraspecific rule below.
-    nm <- gsub("\\bssp\\.", "subsp.", nm, perl = TRUE)
-    w <- strsplit(nm, "\\s+")[[1]]
-    if (length(w) < 2L) return(nm)
+  # Each distinct name is cleaned once.
+  u <- unique(x)
+  nm <- trimws(u)
+  # Normalise sensu-lato / sensu-stricto qualifiers to the compact marker so
+  # they are kept, not dropped as a sensu-concept ("sens. lat." -> "s.l.",
+  # "sensu stricto" -> "s.str.").
+  nm <- gsub(
+    "\\bsens(?:u|\\.)?\\s+lat(?:o|\\.)",    "s.l.",   nm,
+    perl = TRUE, ignore.case = TRUE
+    )
+  nm <- gsub(
+    "\\bsens(?:u|\\.)?\\s+str(?:icto|\\.)", "s.str.", nm,
+    perl = TRUE, ignore.case = TRUE
+    )
+  # Collapse spaced sensu-lato abbreviations so they survive tokenisation as
+  # a single marker ("s. l." -> "s.l.").
+  nm <- gsub("\\bs\\.\\s+l\\.",   "s.l.",   nm, perl = TRUE)
+  nm <- gsub("\\bs\\.\\s+lat\\.", "s.lat.", nm, perl = TRUE)
+  nm <- gsub("\\bs\\.\\s+str\\.", "s.str.", nm, perl = TRUE)
+  # Sensu stricto in the compact "s.s." / "s. s." form -> canonical "s.str.".
+  nm <- gsub("\\bs\\.\\s*s\\.", "s.str.", nm, perl = TRUE)
+  # The "ssp." abbreviation is the subspecies rank marker; normalise to the
+  # canonical "subsp." so its epithet is kept by the infraspecific rule below.
+  nm <- gsub("\\bssp\\.", "subsp.", nm, perl = TRUE)
+  words <- strsplit(nm, "\\s+")
+  cleaned <- vapply(seq_along(u), function(k) {
+    if (is.na(u[k])) return(NA_character_)
+    w <- words[[k]]
+    if (length(w) < 2L) return(nm[k])
 
     n <- length(w)
     # Establish the core genus + epithet, keeping the hybrid sign whether it is
@@ -114,4 +117,5 @@ resy_clean_names <- function(x) {
     }
     paste(out, collapse = " ")
   }, character(1), USE.NAMES = FALSE)
+  cleaned[match(x, u)]
 }
