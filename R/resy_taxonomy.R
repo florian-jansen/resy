@@ -18,12 +18,12 @@
 #' Read the taxonomy synonym table
 #'
 #' Loads the shipped table of alternate species names mapped to their canonical
-#' ESy name. Each synonym is an alternate string a plot dataset might carry, keyed
+#' ESy name. Each row is a synonym pair: an alternate string a plot dataset might carry, keyed
 #' to the canonical ESy species it resolves to; \code{source} records the taxonomic
-#' backbone(s) that support the pairing (\code{;}-separated when more than one).
+#' backbone(s) that support the synonym pair (\code{;}-separated when more than one).
 #' The shipped table also has an \code{accepted_in} column: the backbones that list
 #' the synonym as an accepted name under the same author as the synonym rows
-#' supporting the pair. A backbone appears in both \code{source} and
+#' supporting the synonym pair. A backbone appears in both \code{source} and
 #' \code{accepted_in} when it holds an accepted row and a synonym row for the
 #' name. The column is empty when no backbone accepts the name. The shipped
 #' synonyms are binomials (genus and species epithet); infraspecific
