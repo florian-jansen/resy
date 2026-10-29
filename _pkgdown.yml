@@ -19,5 +19,6 @@ articles:
   - EUNIS
   - taxonomy
 - title: internal
+  navbar: ~
   contents:
   - articles/app
