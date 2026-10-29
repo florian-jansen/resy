@@ -15,7 +15,9 @@ main#main + aside { display: none; }
 #resy-app .choice .form-check-input { margin-right: 4px; }
 #resy-app .choice .hint { display: block; color: var(--bs-secondary-color); font-size: 0.875rem; margin-top: 4px; }
 #resy-app #sys-info.error { color: var(--bs-danger); }
-#resy-app #eunis-opts[hidden] { display: none; }
+/* The EUNIS-ESy site options stay in place for other systems, greyed out, so
+   switching the system does not move the rest of the page. */
+#resy-app #eunis-opts:disabled { opacity: 0.5; }
 #resy-app .options { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-top: 14px; font-size: 0.9rem; }
 #resy-app .options input[type=number] { width: 90px; }
 #resy-app #o-sessions { width: 6.5rem; }

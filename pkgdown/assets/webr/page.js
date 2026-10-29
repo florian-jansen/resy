@@ -81,7 +81,7 @@ async function startSession(first) {
     utils::untar("/tmp/resylib.tar.gz", exdir = "/resylib", tar = "internal")
     .libPaths(c("/resylib", .libPaths()))
     source("/tmp/resy_page.R")`);
-  const s = { webR, busy: false, key: null, sf: false };
+  const s = { webR, busy: false, key: null, info: null, sf: false };
   if (system) await applySystem(s, first);
   pool.push(s);
   release(s);
@@ -114,20 +114,22 @@ function closeSession(s) {
 }
 
 // Reads the selected expert system into a session, and installs sf there when
-// the system needs the EUNIS-ESy site step.
+// the system needs the EUNIS-ESy site step. A session keeps what it read, so
+// a system already in the session is not read again.
 async function applySystem(s, first = false) {
-  if (s.key === system.key) return;
+  if (s.key === system.key) return s.info;
   if (system.file) {
     await s.webR.evalRVoid('dir.create("/tmp/upload", showWarnings = FALSE)');
     await s.webR.FS.writeFile(system.file.path, system.file.bytes);
   }
-  if (first) stage('parse');
+  if (first) { status('Reading the expert system…'); stage('parse'); }
   const out = JSON.parse(await s.webR.evalRString(system.call));
   if (out.eunis && !s.sf) {
     if (first) { status('Installing sf for the EUNIS-ESy site step…'); stage('sf'); }
     await ensureSf(s);
   }
   s.key = system.key;
+  s.info = out;
   return out;
 }
 
@@ -207,7 +209,6 @@ async function describeSystem(s) {
   status('Reading the expert system…');
   let out;
   try {
-    s.key = null;
     out = await applySystem(s, !loaderDone);
   } catch (e) {
     $('sys-info').className = 'small mt-3 mb-0 error';
@@ -216,7 +217,7 @@ async function describeSystem(s) {
     throw e;
   }
   system.info = out;
-  $('eunis-opts').hidden = !out.eunis;
+  $('eunis-opts').disabled = !out.eunis;
   const codes = (xs) => {
     const c = xs.map((x) => `<code>${escapeHtml(x)}</code>`);
     return c.length > 1 ? `${c.slice(0, -1).join(', ')} and ${c.at(-1)}` : c[0];
@@ -227,7 +228,17 @@ async function describeSystem(s) {
   if (own.length) text += ` It ${out.derived_cols.length ? 'also ' : ''}reads ${codes(own)} from the sites file if ${own.length > 1 ? 'those columns are' : 'that column is'} present.`;
   if (!out.header_cols.length) text += ' It reads no columns from the sites file.';
   $('sys-info').className = 'small mt-3 mb-0';
-  $('sys-info').innerHTML = text;
+  setKeepingHeight($('sys-info'), text);
+}
+
+// The description of the expert system changes length with the system; it
+// keeps the largest height it has had, so the page below it does not move up
+// and down as systems are switched.
+function setKeepingHeight(el, html) {
+  const before = el.offsetHeight;
+  el.style.minHeight = '';
+  el.innerHTML = html;
+  el.style.minHeight = `${Math.max(before, el.offsetHeight)}px`;
 }
 
 async function onSystemChange() {
