@@ -27,15 +27,19 @@ main#main + aside { display: none; }
 #resy-app #status.error { color: var(--bs-danger); }
 
 #loader { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
-  min-height: 320px; margin-top: 16px; transition: opacity 0.4s; }
+  min-height: max(320px, 70vh); margin-top: 16px; transition: opacity 0.4s; }
 #loader.done { opacity: 0; }
+/* The loader holds about the height of the app, so the page does not shrink
+   and grow again when the app replaces it. */
+#tool:not([hidden]) { animation: resy-in 0.4s ease-out; }
+@keyframes resy-in { from { opacity: 0; } }
 #loader .hex { position: relative; width: 140px; aspect-ratio: 240 / 278; }
 #loader .hex img { position: absolute; inset: 0; width: 100%; height: 100%; }
 #loader .base { filter: grayscale(1); opacity: 0.22; }
 #loader .fill { clip-path: inset(calc(100% - var(--p, 0%)) 0 0 0); transition: clip-path var(--dur, 0.3s) cubic-bezier(0.2, 0.6, 0.4, 1); }
 #loader-step { color: var(--bs-secondary-color); margin: 0; text-align: center; max-width: 30rem; min-height: 1.5em; }
 #loader.error #loader-step { color: var(--bs-danger); }
-@media (prefers-reduced-motion: reduce) { #loader, #loader .fill { transition: none; } }
+@media (prefers-reduced-motion: reduce) { #loader, #loader .fill { transition: none; } #tool:not([hidden]) { animation: none; } }
 
 #resy-app .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
 #resy-app .stat { border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); padding: 10px 12px; }
@@ -64,7 +68,32 @@ main#main + aside { display: none; }
 #resy-app th { position: sticky; top: 0; background: var(--bs-body-bg); font-weight: 500; }
 #resy-app tbody tr { cursor: pointer; }
 #resy-app td.num, #resy-app th.num { text-align: right; font-variant-numeric: tabular-nums; }
-#resy-app #d-text { background: var(--bs-tertiary-bg); border-radius: var(--bs-border-radius); padding: 12px; font-size: 0.8rem;
-  line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+#resy-app #d-body { font-size: 0.9rem; overflow-wrap: anywhere; }
+#resy-app #d-body .species summary, #resy-app #d-body details > summary { cursor: pointer; color: var(--bs-secondary-color); }
+#resy-app #d-body .species table { font-size: 0.85rem; max-width: 26rem; margin-top: 4px; }
+#resy-app #d-body .species td { padding: 1px 6px; }
+#resy-app .near { list-style: none; margin: 0; padding: 0; }
+#resy-app .near li { display: grid; grid-template-columns: 3rem minmax(0, 1fr) 7.5rem; gap: 8px; align-items: center;
+  padding: 3px 6px; border-radius: var(--bs-border-radius-sm); cursor: pointer; }
+#resy-app .near li:hover, #resy-app .near li.active { background: var(--bs-primary-bg-subtle); }
+#resy-app .near li:focus-visible { outline: 2px solid var(--bs-primary); outline-offset: -2px; }
+#resy-app .near .frac { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--bs-secondary-color);
+  font-variant-numeric: tabular-nums; white-space: nowrap; }
+#resy-app .near .bar { flex: 0 0 3rem; height: 5px; background: var(--bs-tertiary-bg); border-radius: 3px; overflow: hidden; }
+#resy-app .near .bar i { display: block; height: 100%; background: var(--bs-primary); opacity: 0.6; }
+#resy-app #d-body details > .near { margin-top: 4px; }
+#resy-app .full { margin-top: 12px; }
+#resy-app .rule { background: var(--bs-tertiary-bg); border-radius: var(--bs-border-radius); padding: 10px 12px; }
+#resy-app .rule + .rule { margin-top: 8px; }
+#resy-app .verdict { font-size: 0.8rem; margin-left: 6px; }
+#resy-app .verdict.ok, #resy-app .conds .ok .st { color: var(--bs-success-text-emphasis); }
+#resy-app .verdict.no, #resy-app .conds .no .st { color: var(--bs-danger-text-emphasis); }
+#resy-app .formula { font-family: var(--bs-font-monospace); font-size: 0.8rem; color: var(--bs-secondary-color); margin-bottom: 6px; }
+#resy-app .conds { list-style: none; margin: 0; padding: 0; }
+#resy-app .conds li { display: grid; grid-template-columns: 2.2rem 4.4rem minmax(0, 1fr); gap: 4px; padding: 4px 0;
+  border-top: 1px solid var(--bs-border-color-translucent); font-size: 0.85rem; }
+#resy-app .conds .n { color: var(--bs-secondary-color); font-variant-numeric: tabular-nums; }
+#resy-app .conds .st { font-weight: 500; }
+#resy-app .conds .sp { display: block; color: var(--bs-secondary-color); font-size: 0.8rem; margin-top: 2px; }
 #resy-app .warn { margin: 12px 0 0; padding-left: 18px; }
 #resy-app .warn:empty { display: none; }

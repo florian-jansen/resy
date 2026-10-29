@@ -37,7 +37,7 @@ Flag coast and dunes Coast buffer m
 
 Classify
 
-R sessions
+R sessions running in parallel, one per processor core
 
 plots
 
@@ -51,6 +51,8 @@ to classify
 
 Plots
 
+Download map (SVG)
+
 Types
 
 Classification
@@ -63,8 +65,5 @@ Download all candidates (CSV)
 Why this type?
 
 Select a plot in the table or on the map.
-
-``` mb-0
-```
 
 runs on [webR](https://docs.r-wasm.org/webr/latest/) ·

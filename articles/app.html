@@ -129,7 +129,7 @@ anywhere.</p>
         </div>
         <div class="actions">
           <button type="button" class="btn btn-primary" id="run" disabled>Classify</button>
-          <label class="small">R sessions <input class="form-control form-control-sm d-inline-block" type="number" id="o-sessions" min="1" max="8" step="1"></label>
+          <label class="small">R sessions <input class="form-control form-control-sm d-inline-block" type="number" id="o-sessions" min="1" max="8" step="1" aria-describedby="sessions-hint"><span id="sessions-hint" class="text-body-secondary">running in parallel, one per processor core</span></label>
           <span id="status" class="small text-body-secondary"></span>
         </div>
         <div class="progress mt-2" id="progress" role="progressbar" aria-label="Share of the species file classified" aria-valuemin="0" aria-valuemax="100" hidden><div class="progress-bar" id="progress-bar"></div></div>
@@ -158,6 +158,9 @@ anywhere.</p>
           <p class="card-title h5">Plots</p>
           <div id="map" role="region" aria-label="Map of the plots coloured by type"></div>
           <div class="legend" id="legend"></div>
+          <div class="actions">
+            <button type="button" class="btn btn-outline-primary btn-sm" id="download-map">Download map (SVG)</button>
+          </div>
         </div>
       </div></div>
 
@@ -199,7 +202,7 @@ anywhere.</p>
         <div class="card-body">
           <p class="card-title h5" id="d-title">Why this type?</p>
           <p class="text-body-secondary mb-0" id="d-empty">Select a plot in the table or on the map.</p>
-          <pre id="d-text" class="mb-0" hidden></pre>
+          <div id="d-body" hidden></div>
         </div>
       </div></div>
       </div>
