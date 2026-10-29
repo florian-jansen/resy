@@ -105,6 +105,30 @@ test_that("an unclassified plot is shown against the top-level types", {
   expect_match(out, "Closest, in full", fixed = TRUE)
 })
 
+test_that("a type defined by several rules is listed once, by its closest rule", {
+  file <- system.file("extdata", "classifications", "Apennine-test", "2026-06-27",
+                      "expert.json", package = "RESY")
+  x <- jsonlite::read_json(file)
+  i <- which(vapply(x$rules, function(t) identical(t$code, "FB"), logical(1)))
+  second <- x$rules[[i]]
+  second$description <- "Beech-fir montane forest 2"
+  second$expression <- "(<Abies alba GR 50> AND <#TC Beech-forest-herbs GR 10>)"
+  x$rules <- append(x$rules, list(second), after = i)
+  path <- tempfile(fileext = ".json")
+  jsonlite::write_json(x, path, auto_unbox = TRUE, pretty = TRUE)
+
+  sp <- eval_plot_data()
+  header <- as.data.frame(unique(sp["PlotObservationID"]))
+  res <- suppressMessages(resy_classify(sp, header, expert = resy_load_expert(expertfile = path),
+                                        mc = 1L))
+  ev <- .resy_plot_evidence(res, "AN57")
+  ty <- ev$lower[[1]]$types
+  expect_equal(sum(ty$code == "FB"), 1L)
+  expect_equal(ty$rules[ty$code == "FB"], 2L)
+  expect_equal(ty$name[ty$code == "FB"], "Beech-fir montane forest")
+  expect_length(.resy_plot_evidence(res, "AN57", type = "FB", lower = FALSE)$types[[1]]$rules, 2L)
+})
+
 test_that("lower = FALSE leaves the lower levels out", {
   out <- capture.output(resy_eval_plot(apennine_result(), "AN57", lower = FALSE))
   expect_false(any(grepl("lower level", out, fixed = TRUE)))
