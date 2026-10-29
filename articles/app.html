@@ -123,11 +123,11 @@ anywhere.</p>
         <label class="form-label small d-block mt-2">Sites file: <code>PlotObservationID</code>, plus <code>Longitude</code> and <code>Latitude</code> (WGS84) for EUNIS-ESy and the map, plus the header columns the expert system reads
           <input class="form-control form-control-sm mt-1" type="file" id="f-sites" accept=".csv,.tsv,.txt,text/csv"></label>
         <button type="button" class="btn btn-link btn-sm p-0" id="reset-data" hidden>Use the example data again</button>
-        <div class="options" id="eunis-opts">
-          <label class="form-check-label"><input class="form-check-input" type="checkbox" id="o-coast" checked> Flag coast and dunes</label>
+        <fieldset class="options" id="eunis-opts">
+<label class="form-check-label"><input class="form-check-input" type="checkbox" id="o-coast" checked> Flag coast and dunes</label>
           <label>Coast buffer <input class="form-control form-control-sm d-inline-block" type="number" id="o-buffer" value="5000" min="0" step="500"> m</label>
-        </div>
-        <div class="actions">
+        </fieldset>
+<div class="actions">
           <button type="button" class="btn btn-primary" id="run" disabled>Classify</button>
           <label class="small">R sessions <input class="form-control form-control-sm d-inline-block" type="number" id="o-sessions" min="1" max="8" step="1" aria-describedby="sessions-hint"><span id="sessions-hint" class="text-body-secondary">running in parallel, one per processor core</span></label>
           <span id="status" class="small text-body-secondary"></span>
