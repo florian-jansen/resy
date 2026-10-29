@@ -1,0 +1,70 @@
+/* Styles for vignettes/articles/app.Rmd. Colours come from the site's
+   Bootstrap variables; the --lv-* colours mark EUNIS habitat groups on the map. */
+#resy-app {
+  --lv-M: #c55a11; --lv-N: #3a8fc8; --lv-Q: #1f5f9e; --lv-R: #d49a00; --lv-S: #b4508f;
+  --lv-P: #2a9d8f; --lv-T: #1e8a5a; --lv-U: #8a6a46; --lv-V: #7a7d2a; --lv-other: #5f6b8a; --lv-none: #9a9d96;
+  container-type: inline-size;
+}
+/* The app uses the whole page width: no table of contents column. */
+main#main { flex: 0 0 100%; max-width: 100%; width: 100%; }
+main#main + aside { display: none; }
+#resy-app code { font-size: 0.85em; }
+#resy-app .choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+#resy-app .choice { border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); padding: 12px; cursor: pointer; display: block; }
+#resy-app .choice:has(input[type=radio]:checked) { border-color: var(--bs-primary); background: var(--bs-primary-bg-subtle); }
+#resy-app .choice .form-check-input { margin-right: 4px; }
+#resy-app .choice .hint { display: block; color: var(--bs-secondary-color); font-size: 0.875rem; margin-top: 4px; }
+#resy-app #sys-info.error { color: var(--bs-danger); }
+#resy-app #eunis-opts[hidden] { display: none; }
+#resy-app .options { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-top: 14px; font-size: 0.9rem; }
+#resy-app .options input[type=number] { width: 90px; }
+#resy-app #o-sessions { width: 70px; }
+#resy-app .colpick { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: end; margin-top: 8px; }
+#resy-app .colpick select { width: auto; min-width: 10rem; max-width: 16rem; }
+#resy-app .progress { height: 6px; }
+#resy-app .progress-bar { transition: width 0.4s; }
+#resy-app .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 14px; }
+#resy-app #status.error { color: var(--bs-danger); }
+
+#loader { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+  min-height: 320px; margin-top: 16px; transition: opacity 0.4s; }
+#loader.done { opacity: 0; }
+#loader .hex { position: relative; width: 140px; aspect-ratio: 240 / 278; }
+#loader .hex img { position: absolute; inset: 0; width: 100%; height: 100%; }
+#loader .base { filter: grayscale(1); opacity: 0.22; }
+#loader .fill { clip-path: inset(calc(100% - var(--p, 0%)) 0 0 0); transition: clip-path var(--dur, 0.3s) cubic-bezier(0.2, 0.6, 0.4, 1); }
+#loader-step { color: var(--bs-secondary-color); margin: 0; text-align: center; max-width: 30rem; min-height: 1.5em; }
+#loader.error #loader-step { color: var(--bs-danger); }
+@media (prefers-reduced-motion: reduce) { #loader, #loader .fill { transition: none; } }
+
+#resy-app .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+#resy-app .stat { border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); padding: 10px 12px; }
+#resy-app .stat b { display: block; font-size: 1.4rem; font-weight: 500; line-height: 1.2; }
+#resy-app .stat span { color: var(--bs-secondary-color); font-size: 0.85rem; }
+
+#resy-app #map { height: 420px; border-radius: var(--bs-border-radius); border: 1px solid var(--bs-border-color); }
+#resy-app .leaflet-container { background: var(--bs-tertiary-bg); font: inherit; }
+#resy-app .resy-dots { position: absolute; left: 0; top: 0; pointer-events: none; }
+#resy-app .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 10px; font-size: 0.85rem; color: var(--bs-secondary-color); }
+#resy-app .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
+
+#resy-app .types { list-style: none; margin: 0; padding: 0; max-height: 420px; overflow-y: auto; }
+#resy-app .types li { display: grid; grid-template-columns: 14px 3.4rem minmax(0, 1fr) auto; gap: 8px; align-items: center;
+  padding: 4px 6px; border-radius: var(--bs-border-radius-sm); cursor: pointer; font-size: 0.9rem; }
+#resy-app .types li:hover, #resy-app .types li.active { background: var(--bs-primary-bg-subtle); }
+#resy-app .types .sw { width: 12px; height: 12px; border-radius: 3px; }
+#resy-app .types .mid { min-width: 0; }
+#resy-app .types .nm { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--bs-secondary-color); }
+#resy-app .types .bar { height: 5px; background: var(--bs-primary); border-radius: 3px; margin-top: 3px; opacity: 0.6; }
+
+#resy-app .tablehead { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+#resy-app .tablehead input { max-width: 260px; }
+#resy-app .tablewrap { max-height: 380px; overflow: auto; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); }
+#resy-app table { display: table; width: 100%; font-size: 0.875rem; }
+#resy-app th { position: sticky; top: 0; background: var(--bs-body-bg); font-weight: 500; }
+#resy-app tbody tr { cursor: pointer; }
+#resy-app td.num, #resy-app th.num { text-align: right; font-variant-numeric: tabular-nums; }
+#resy-app #d-text { background: var(--bs-tertiary-bg); border-radius: var(--bs-border-radius); padding: 12px; font-size: 0.8rem;
+  line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+#resy-app .warn { margin: 12px 0 0; padding-left: 18px; }
+#resy-app .warn:empty { display: none; }

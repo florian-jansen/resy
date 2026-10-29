@@ -1,0 +1,135 @@
+---
+title: "RESY App"
+---
+
+Classify your plots with EUNIS-ESy or your own expert system, then explore the
+rules behind each assignment. RESY runs directly in your browser through
+[webR](https://docs.r-wasm.org/webr/latest/). Your files are read inside this
+browser tab and are not uploaded anywhere.
+
+```{=html}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="../webr/page.css">
+<div id="resy-app">
+  <div id="loader" role="status" aria-live="polite">
+    <div class="hex">
+      <img class="base" src="../logo.png" alt="">
+      <img class="fill" id="hex-fill" src="../logo.png" alt="RESY">
+    </div>
+    <p id="loader-step">Starting R…</p>
+  </div>
+
+  <div id="tool" hidden>
+    <section class="card mt-3" aria-labelledby="sys-h">
+      <div class="card-body">
+        <p class="card-title h5" id="sys-h">Expert system</p>
+        <div class="choices">
+          <label class="choice">
+            <input class="form-check-input" type="radio" name="system" value="EUNIS" checked> EUNIS-ESy
+            <span class="hint">European habitat types (Chytrý et al. 2020), shipped with RESY.</span>
+          </label>
+          <label class="choice">
+            <input class="form-check-input" type="radio" name="system" value="Apennine-test"> Apennine test system
+            <span class="hint">A small system with five types for the example data, shipped with RESY.</span>
+          </label>
+          <label class="choice">
+            <input class="form-check-input" type="radio" name="system" value="file"> Your own expert system
+            <span class="hint">Expert system file, <code>.json</code> or <code>.txt</code></span>
+            <input class="form-control form-control-sm mt-2" type="file" id="f-expert" accept=".json,.txt">
+          </label>
+        </div>
+        <p id="sys-info" class="small mt-3 mb-0" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="card mt-3" aria-labelledby="data-h">
+      <div class="card-body">
+        <p class="card-title h5" id="data-h">Data</p>
+        <p class="small text-body-secondary">The files below are the example data shipped with RESY: 200 plots from Tuscany with 3,580 species records. Choose your own files to replace them. Files can be comma, semicolon or tab separated and of any size, such as a full EVA export; RESY reads them in parts.</p>
+        <label class="form-label small d-block">Species file: one row per species in each plot
+          <input class="form-control form-control-sm mt-1" type="file" id="f-species" accept=".csv,.tsv,.txt,text/csv"></label>
+        <div class="colpick small">
+          <label>Plot <select class="form-select form-select-sm" id="c-id"></select></label>
+          <label>Species <select class="form-select form-select-sm" id="c-name"></select></label>
+          <label>Cover (%) <select class="form-select form-select-sm" id="c-cover"></select></label>
+          <span id="size-note" class="text-body-secondary"></span>
+        </div>
+        <label class="form-label small d-block mt-2">Sites file: <code>PlotObservationID</code>, plus <code>Longitude</code> and <code>Latitude</code> (WGS84) for EUNIS-ESy and the map, plus the header columns the expert system reads
+          <input class="form-control form-control-sm mt-1" type="file" id="f-sites" accept=".csv,.tsv,.txt,text/csv"></label>
+        <button type="button" class="btn btn-link btn-sm p-0" id="reset-data" hidden>Use the example data again</button>
+        <div class="options" id="eunis-opts">
+          <label class="form-check-label"><input class="form-check-input" type="checkbox" id="o-coast" checked> Flag coast and dunes</label>
+          <label>Coast buffer <input class="form-control form-control-sm d-inline-block" type="number" id="o-buffer" value="5000" min="0" step="500"> m</label>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn btn-primary" id="run" disabled>Classify</button>
+          <label class="small">R sessions <input class="form-control form-control-sm d-inline-block" type="number" id="o-sessions" min="1" max="16" step="1"></label>
+          <span id="status" class="small text-body-secondary"></span>
+        </div>
+        <div class="progress mt-2" id="progress" role="progressbar" aria-label="Share of the species file classified" aria-valuemin="0" aria-valuemax="100" hidden><div class="progress-bar" id="progress-bar"></div></div>
+      </div>
+    </section>
+
+    <section id="results" hidden>
+      <div class="stats mt-3">
+        <div class="stat"><b id="s-plots"></b><span>plots</span></div>
+        <div class="stat"><b id="s-class"></b><span>classified</span></div>
+        <div class="stat"><b id="s-none"></b><span>no type's rule holds</span></div>
+        <div class="stat"><b id="s-tie"></b><span>tied at highest priority</span></div>
+        <div class="stat"><b id="s-time"></b><span>to classify</span></div>
+      </div>
+
+      <div class="row g-3 mt-0">
+      <div class="col-lg-7"><div class="card h-100">
+        <div class="card-body">
+          <p class="card-title h5">Plots</p>
+          <div id="map" role="region" aria-label="Map of the plots coloured by type"></div>
+          <div class="legend" id="legend"></div>
+        </div>
+      </div></div>
+
+      <div class="col-lg-5"><div class="card h-100">
+        <div class="card-body">
+          <p class="card-title h5">Types</p>
+          <ul class="types" id="types"></ul>
+        </div>
+      </div></div>
+      </div>
+
+      <div class="row g-3 mt-0">
+      <div class="col-lg-7"><div class="card h-100">
+        <div class="card-body">
+          <div class="tablehead">
+            <p class="card-title h5 mb-0">Classification</p>
+            <input class="form-control form-control-sm" type="search" id="q" placeholder="Filter by plot, code or name" aria-label="Filter the table">
+          </div>
+          <div class="tablewrap">
+            <table class="table table-sm table-hover mb-0">
+              <thead><tr><th>Plot</th><th>Type</th><th>Name</th><th class="num">Species</th></tr></thead>
+              <tbody id="rows"></tbody>
+            </table>
+          </div>
+          <div class="actions">
+            <button type="button" class="btn btn-outline-primary btn-sm" id="download">Download all candidates (CSV)</button>
+            <span id="shown" class="small text-body-secondary"></span>
+          </div>
+          <ul class="warn small text-body-secondary" id="warnings"></ul>
+        </div>
+      </div></div>
+
+      <div class="col-lg-5"><div class="card h-100" id="detail">
+        <div class="card-body">
+          <p class="card-title h5" id="d-title">Why this type?</p>
+          <p class="text-body-secondary mb-0" id="d-empty">Select a plot in the table or on the map.</p>
+          <pre id="d-text" class="mb-0" hidden></pre>
+        </div>
+      </div></div>
+      </div>
+    </section>
+
+    <p id="footer" class="small text-body-secondary mt-3">runs on <a href="https://docs.r-wasm.org/webr/latest/">webR</a> · <span id="workers"></span></p>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script type="module" src="../webr/page.js"></script>
+```

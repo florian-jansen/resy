@@ -46,6 +46,8 @@ distribution maps of European habitats. *Applied Vegetation Science* 23,
 Useful links:
 \itemize{
   \item \url{https://florian-jansen.github.io/resy/}
+  \item \url{https://github.com/florian-jansen/resy}
+  \item Report bugs at \url{https://github.com/florian-jansen/resy/issues}
 }
 
 }

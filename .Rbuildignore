@@ -8,6 +8,7 @@
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^vignettes/articles$
 ^\.positai$
 ^\.claude$
 ^inst/shiny/\.positai$

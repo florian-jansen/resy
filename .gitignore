@@ -5,7 +5,11 @@
 .Ruserdata
 .Rcheck/
 docs/
-pkgdown/
+pkgdown/*
+!pkgdown/favicon/
+!pkgdown/assets/
+!pkgdown/build_webr_bundle.R
+pkgdown/assets/webr/bundle.json
 *.tar.gz
 *.Rproj
 .claude/

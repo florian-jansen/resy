@@ -2,3 +2,22 @@ url: https://florian-jansen.github.io/resy/
 template:
   bootstrap: 5
 
+navbar:
+  structure:
+    left: [intro, reference, articles, tutorials, news]
+    right: [search, github, app]
+  components:
+    app:
+      text: RESY App ✨
+      href: articles/app.html
+
+articles:
+- title: Articles
+  navbar: ~
+  contents:
+  - altitude-vignette
+  - EUNIS
+  - taxonomy
+- title: internal
+  contents:
+  - articles/app
