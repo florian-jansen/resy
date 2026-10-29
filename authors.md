@@ -13,6 +13,9 @@
 
 ## Citation
 
+Source:
+[`inst/CITATION`](https://github.com/florian-jansen/resy/blob/main/inst/CITATION)
+
 Jansen F, Bauer M, Calbi M, Colling G (2026). *RESY: Vegetation Type
 Expert Classification System*. R package version 0.3,
 <https://florian-jansen.github.io/resy/>.

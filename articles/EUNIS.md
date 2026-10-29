@@ -138,10 +138,10 @@ outcome <- resy_harmonize_eunis(
    run_coast_dunes = TRUE,
    coast_buffer = 5000
    )
-#> Warning: "Altitude (m)" is missing. See vignette("altitude-vignette") and
-#> mapsforeurope.org for a raster source.
-#> Warning: "Ecoreg" contains NA values: some sites are outside the ecoregion base
-#> map.
+#> Warning: "Altitude (m)" is missing. See the "Get altitude data" vignette;
+#> altitude rasters are available from mapsforeurope.org.
+#> Warning: "Ecoreg" is missing for some plots because they fall outside the
+#> ecoregion map.
 ```
 
 [`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md)
@@ -321,8 +321,8 @@ res <- resy_classify(
   header = outcome$sites,
   scheme = "EUNIS"
   )
-#> Warning: The expert system uses header columns that `header` does not have:
-#> Dataset, Altitude (m). Conditions on them are evaluated as if the value were 0.
+#> Warning: `header` is missing columns used by the expert system: Dataset,
+#> Altitude (m). Rules using these columns are evaluated with a value of 0.
 #> Warning: Header columns used by the expert system have missing values: Ecoreg
 #> (23 plots). Conditions on them are evaluated as if the value were 0.
 #> Step 5.1  Number of conditions with number of species of a group: 15
@@ -339,8 +339,8 @@ res <- resy_classify(
 #> Step 5.9  Number of T$ NON conditions: 140
 #> Step 5.10  Header conditions with numeric values: 4
 #>   Header conditions with character values: 4
-#> adapt conditions 2026-10-29 09:58:43.599876
-#> classification from here on 2026-10-29 09:58:43.663507
+#> adapt conditions 2026-10-29 11:48:58.162436
+#> classification from here on 2026-10-29 11:48:58.262675
 ```
 
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)

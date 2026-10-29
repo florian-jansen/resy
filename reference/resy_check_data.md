@@ -52,7 +52,7 @@ the front: \`PlotObservationID\`, \`Altitude (m)\`, \`Coast_EEA\`,
   ) |>
     sf::st_as_sf(coords = c("x", "y"), crs = 25832)
   resy_check_data(data, source_crs = 25832)
-#> Warning: "Altitude (m)" is missing. See vignette("altitude-vignette") and mapsforeurope.org for a raster source.
+#> Warning: "Altitude (m)" is missing. See the "Get altitude data" vignette; altitude rasters are available from mapsforeurope.org.
 #> Warning: "Coast_EEA" is missing. Use run_coast_dunes = TRUE in resy_harmonize_eunis().
 #> Warning: "Dunes_Bohn" is missing. Use run_coast_dunes = TRUE in resy_harmonize_eunis().
 #> Simple feature collection with 1 feature and 5 fields

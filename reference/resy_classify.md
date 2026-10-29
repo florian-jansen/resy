@@ -30,7 +30,8 @@ resy_classify(
   species_col = NULL,
   resolve_taxa = FALSE,
   synonyms = NULL,
-  mc = max(1L, floor(parallel::detectCores() * 0.75))
+  mc = max(1L, floor(parallel::detectCores() * 0.75)),
+  expert = NULL
 )
 ```
 
@@ -99,6 +100,12 @@ resy_classify(
 
   Number of CPU cores to use.
 
+- expert:
+
+  An expert system already read with \[resy_load_expert()\]. When given,
+  \`expertfile\`, \`scheme\`, \`version\` and \`location\` are not used,
+  so data classified in several parts reads the expert system only once.
+
 ## Value
 
 An object of class \`resy_result\`. When \`resolve_taxa = TRUE\` it also
@@ -137,8 +144,8 @@ res <- resy_classify(species, header, scheme = "Apennine-test",
 #> Step 5.9  Number of T$ NON conditions: 0
 #> Step 5.10  Header conditions with numeric values: 0
 #>   Header conditions with character values: 0
-#> adapt conditions 2026-10-29 09:58:25.569782
-#> classification from here on 2026-10-29 09:58:25.570609
+#> adapt conditions 2026-10-29 11:48:33.001342
+#> classification from here on 2026-10-29 11:48:33.002104
 head(res$result.classification)
 #> HU32 KW76 YB18 NX70 OL48 YL40 
 #>  "F"  "F"  "F"  "F"  "F"  "F" 

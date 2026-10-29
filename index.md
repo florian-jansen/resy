@@ -42,6 +42,11 @@ expert system. For an expert system with other species names, you can
 supply your own synonym table
 ([`vignette("taxonomy")`](https://florian-jansen.github.io/resy/articles/taxonomy.md)).
 
+The [RESY App](https://florian-jansen.github.io/resy/articles/app.html)
+runs RESY in your browser, without installing R. It classifies the
+example plots or your own files with EUNIS-ESy or your own expert
+system, and shows the rules behind each assignment.
+
 **Insert figure here. Perhaps of Europe**
 
 ## ⏬ Installation

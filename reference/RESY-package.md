@@ -39,6 +39,10 @@ Useful links:
 
 - <https://florian-jansen.github.io/resy/>
 
+- <https://github.com/florian-jansen/resy>
+
+- Report bugs at <https://github.com/florian-jansen/resy/issues>
+
 ## Author
 
 **Maintainer**: Florian Jansen <florian.jansen@uni-rostock.de>
