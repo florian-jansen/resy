@@ -42,8 +42,10 @@ const hideLoader = () => {
 
 // ---- R sessions ------------------------------------------------------------
 // Each webR session is one R process in its own worker. Batches go to whichever
-// session is free; the first session starts before the page opens, the others
-// join in the background.
+// session is free; the first session starts before the page opens. The others
+// start when a run has a batch ready and every session is busy, so a small run,
+// such as the example data, needs no more than one session, and a phone does
+// not hold several R sessions in memory just to open the page.
 // Unless a number is entered, the page runs as many sessions as fit: one less
 // than the number of processor cores, at most 8, and no more than fit in 60%
 // of the device's memory (`navigator.deviceMemory`, given by Chromium browsers;
@@ -94,10 +96,12 @@ const showSessions = () => {
   $('o-sessions').placeholder = `auto: ${Math.max(1, Math.min(autoSessions(), memoryCap))}`;
 };
 
-// Starts or closes sessions until there are `poolSize()`. A busy or still
-// starting session is closed once it is free.
-function resizePool() {
-  while (pool.length + starting < poolSize()) {
+// Closes sessions until there are no more than `poolSize()`, and with `grow`
+// starts sessions until there are `poolSize()`. A busy or still starting
+// session is closed once it is free. An entered number of sessions starts
+// at once.
+function resizePool(grow = manualSessions !== null) {
+  while (grow && pool.length + starting < poolSize()) {
     starting++;
     showSessions();
     startSession(false).catch((e) => console.warn('[resy] R session failed to start', e))
@@ -521,7 +525,10 @@ async function run() {
           const site = sites.index.get(id);
           if (site === undefined ? R.readUnplaced.has(id) : R.readSites[site]) throw new Error(`The rows of plot ${id} are not together in the species file. Sort the file by plot.`);
           if (batch.ids.length >= target || batch.lines.length > MAX_RECORDS) {
-            while (inFlight.size >= pool.length) await Promise.race(inFlight);
+            while (inFlight.size >= pool.length) {
+              resizePool(true);
+              await Promise.race(inFlight);
+            }
             if (stopRequested) break;
             dispatch(chunk.starts[j]);
           }
