@@ -10,8 +10,10 @@
 # names of the same length that R does not export; webR then links them to a
 # stub and fmatch() itself is unchanged.
 #
-# Usage: Rscript --vanilla pkgdown/build_webr_bundle.R [resy_repo] [git_ref] [webr_r_version]
-# The R version must match the webR release imported in pkgdown/assets/webr/page.js.
+# Usage: Rscript pkgdown/build_webr_bundle.R [resy_repo] [git_ref] [webr_r_version]
+# Run it from an R whose libraries hold RESY's dependencies (add --vanilla when
+# they are in the user library rather than the renv project library). The R
+# version must match the webR release imported in pkgdown/assets/webr/page.js.
 
 args <- commandArgs(trailingOnly = TRUE)
 resy_repo <- if (length(args) >= 1) args[1] else "."
@@ -33,16 +35,23 @@ status <- system2("git", c("-C", shQuote(resy_repo), "archive", "--format=tar", 
                            "-o", shQuote(src_tar), git_ref))
 stopifnot(status == 0)
 utils::untar(src_tar, exdir = work)
-# The install runs with an empty user profile, so the repository's .Rprofile
-# (renv) does not switch it to a project library without RESY's dependencies.
+# The install sees the libraries of this R session and no user profile, so the
+# repository's .Rprofile (renv) does not choose a different library for it.
 profile <- file.path(work, "Rprofile")
-file.create(profile)
-Sys.setenv(R_PROFILE_USER = profile)
-status <- system2(file.path(R.home("bin"), "R"),
-                  c("CMD", "INSTALL", "--no-test-load", "--no-docs", "--no-multiarch",
-                    paste0("--library=", shQuote(lib)), shQuote(file.path(work, "RESY"))))
-Sys.unsetenv("R_PROFILE_USER")
-stopifnot(status == 0)
+invisible(file.create(profile))
+old_env <- Sys.getenv(c("R_PROFILE_USER", "R_LIBS"), unset = NA)
+Sys.setenv(R_PROFILE_USER = profile, R_LIBS = paste(.libPaths(), collapse = .Platform$path.sep))
+install_log <- suppressWarnings(system2(
+  file.path(R.home("bin"), "R"),
+  c("CMD", "INSTALL", "--no-test-load", "--no-docs", "--no-multiarch",
+    paste0("--library=", shQuote(lib)), shQuote(file.path(work, "RESY"))),
+  stdout = TRUE, stderr = TRUE
+))
+for (v in names(old_env)) if (is.na(old_env[[v]])) Sys.unsetenv(v) else do.call(Sys.setenv, as.list(old_env[v]))
+if (!is.null(attr(install_log, "status"))) {
+  stop("R CMD INSTALL of RESY failed (library paths: ", paste(.libPaths(), collapse = ", "), "):\n",
+       paste(utils::tail(install_log, 15), collapse = "\n"), call. = FALSE)
+}
 
 meta <- file.path(lib, "RESY", "Meta", "package.rds")
 p <- readRDS(meta)

@@ -35,7 +35,7 @@ jobs:
           needs: website
 
       - name: Build webR bundle
-        run: Rscript --vanilla pkgdown/build_webr_bundle.R . HEAD 4.6.0
+        run: Rscript pkgdown/build_webr_bundle.R . HEAD 4.6.0
 
       - name: Build site
         run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
