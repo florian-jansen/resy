@@ -53,18 +53,21 @@ The table was built on 2026-10-28 against the EUNIS expert system
 taxify 0.7.0 (Colling
 [2026](https://doi.org/10.32614/CRAN.package.taxify)).
 
-| Backbone | Release | Upstream data |
-|:---------|--------:|:--------------|
-| euromed  | 2026.08 | 2026-07-11    |
-| wfo      | 2026.06 | 2026-06-21    |
-| gbif     | 2023.08 | 2023-08-28    |
-| col      | 2026.09 | 2026-09-11    |
-| itis     | 2026.09 | 2026-08-27    |
-| ncbi     | 2026.09 | 2026-09       |
+| Backbone | Upstream data |
+|:---------|:--------------|
+| euromed  | 2026-07-11    |
+| wfo      | 2026-06-21    |
+| gbif     | 2023-08-28    |
+| col      | 2026-09-11    |
+| itis     | 2026-08-27    |
+| ncbi     | 2026-09       |
 
 The synonyms are binomials (genus and species epithet). Infraspecific
 names, hybrid formulas, and bare genera are not in the table, so a name
 of that kind is not resolved through it.
+
+[`resy_read_synonyms()`](https://florian-jansen.github.io/resy/reference/resy_read_synonyms.md)
+without arguments reads the shipped table:
 
 ``` r
 
@@ -81,13 +84,14 @@ head(syn)
 #> 6      Hibiscus ficifolius Abelmoschus esculentus col;gbif;wfo        <NA>
 ```
 
-Each row is one alternate spelling (`synonym`), the EUNIS name it
-resolves to (`esy_canonical`), and the backbone(s) that support the
-pairing (`source`). The column `accepted_in` names the backbones that
-list the synonym as an accepted name under the same author as the
-synonym rows supporting the pair. A backbone appears in both `source`
-and `accepted_in` when it holds an accepted row and a synonym row for
-the name. The column is empty for 89% of the pairs.
+Each row of the shipped table is a synonym pair: an alternate spelling
+(`synonym`) and the EUNIS name it resolves to (`esy_canonical`), with
+the backbone(s) that support the synonym pair (`source`). The column
+`accepted_in` names the backbones that list the synonym as an accepted
+name under the same author as the synonym rows supporting the synonym
+pair. A backbone appears in both `source` and `accepted_in` when it
+holds an accepted row and a synonym row for the name. The column is
+empty for 89% of the synonym pairs.
 
 ``` r
 
@@ -99,8 +103,9 @@ head(syn[!is.na(syn$accepted_in), ], 4)
 #> 45    Picea cephalonica Abies cephalonica col;gbif;wfo         wfo
 ```
 
-A pair is listed under every backbone that supports it, so the counts
-per backbone add up to more than the number of rows.
+A synonym pair with several backbones in `source` is counted once for
+each of them, so the counts per backbone add up to more than the number
+of rows.
 
 ``` r
 
@@ -129,7 +134,7 @@ knitr::kable(
 | ncbi     |           864 |        1.3 |
 | euromed  |           588 |        0.9 |
 
-Most pairs are supported by more than one backbone:
+Most synonym pairs are supported by more than one backbone:
 
 ``` r
 
@@ -142,7 +147,7 @@ support_n <- data.frame(
 ggplot(support_n, aes(x = n_backbones, y = pairs)) +
   geom_col() +
   scale_y_continuous(labels = function(x) format(x, big.mark = ",")) +
-  labs(x = "Number of backbones supporting a pair", y = "Synonym pairs") +
+  labs(x = "Number of backbones supporting a synonym pair", y = "Synonym pairs") +
   theme_classic()
 ```
 
