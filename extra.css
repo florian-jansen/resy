@@ -1,0 +1,3 @@
+/* The RESY App has its own button in the navbar, so it is left out of the
+   Articles menu. */
+.dropdown-item[href$="articles/app.html"] { display: none; }
