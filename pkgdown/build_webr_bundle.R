@@ -33,9 +33,15 @@ status <- system2("git", c("-C", shQuote(resy_repo), "archive", "--format=tar", 
                            "-o", shQuote(src_tar), git_ref))
 stopifnot(status == 0)
 utils::untar(src_tar, exdir = work)
+# The install runs with an empty user profile, so the repository's .Rprofile
+# (renv) does not switch it to a project library without RESY's dependencies.
+profile <- file.path(work, "Rprofile")
+file.create(profile)
+Sys.setenv(R_PROFILE_USER = profile)
 status <- system2(file.path(R.home("bin"), "R"),
                   c("CMD", "INSTALL", "--no-test-load", "--no-docs", "--no-multiarch",
                     paste0("--library=", shQuote(lib)), shQuote(file.path(work, "RESY"))))
+Sys.unsetenv("R_PROFILE_USER")
 stopifnot(status == 0)
 
 meta <- file.path(lib, "RESY", "Meta", "package.rds")
