@@ -12,7 +12,7 @@ Starting R…
 Expert system
 
 EUNIS-ESy European habitat types (Chytrý et al. 2020), shipped with
-RESY. Apennine test system A small system with five types for the
+RESY. Apennine example system A small system with five types for the
 example data, shipped with RESY. Your own expert system Expert system
 file, `.json` or `.txt`
 

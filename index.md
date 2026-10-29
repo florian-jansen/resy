@@ -151,13 +151,17 @@ biodiversity data. The example data stores species names in
 
 These vignettes show how to use RESY:
 
-- [`vignette("RESY")`](https://florian-jansen.github.io/resy/articles/RESY.md):
-  start here, from a species table to classified plots
-- [`vignette("EUNIS")`](https://florian-jansen.github.io/resy/articles/EUNIS.md):
+- [Classifying vegetation plots with
+  RESY](https://florian-jansen.github.io/resy/articles/RESY.html): start
+  here, from a species table to classified plots
+- [Get EUNIS habitat
+  types](https://florian-jansen.github.io/resy/articles/EUNIS.html):
   EUNIS habitat types for plots with coordinates
-- [`vignette("altitude-vignette")`](https://florian-jansen.github.io/resy/articles/altitude-vignette.md):
+- [Get altitude
+  data](https://florian-jansen.github.io/resy/articles/altitude-vignette.html):
   the altitude column some EUNIS rules use
-- [`vignette("taxonomy")`](https://florian-jansen.github.io/resy/articles/taxonomy.md):
+- [Match species
+  names](https://florian-jansen.github.io/resy/articles/taxonomy.html):
   matching the species names in your data to the names the expert system
   uses
 
