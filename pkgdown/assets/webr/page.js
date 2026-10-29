@@ -125,11 +125,18 @@ async function applySystem(s, first = false) {
   const out = JSON.parse(await s.webR.evalRString(system.call));
   if (out.eunis && !s.sf) {
     if (first) { status('Installing sf for the EUNIS-ESy site step…'); stage('sf'); }
-    await s.webR.evalRVoid('webr::install("sf", quiet = TRUE); library(sf)');
-    s.sf = true;
+    await ensureSf(s);
   }
   s.key = system.key;
   return out;
+}
+
+// sf is installed in a session when it first needs it: for the EUNIS-ESy site
+// step or for the country outlines of the map download.
+async function ensureSf(s) {
+  if (s.sf) return;
+  await s.webR.evalRVoid('webr::install("sf", quiet = TRUE); library(sf)');
+  s.sf = true;
 }
 
 function release(s) {
@@ -661,21 +668,29 @@ function render(now) {
   renderTable();
 }
 
-function renderLegend() {
+// The colours on the map and their labels, for the legend under the map and
+// the one in the downloaded SVG. EUNIS-ESy types are coloured by habitat
+// group; other systems colour their most frequent types.
+function legendItems() {
   const levels = new Map(system.info.levels.map((l) => [l.code, l.name]));
-  const swatch = (bg, text) => `<span><i style="background:${bg}"></i>${escapeHtml(text)}</span>`;
   const used = R.codes.map((c, k) => [c, R.counts[k]]).filter(([, n]) => n > 0);
+  const unclassified = { colour: colourOf('?'), label: 'not classified or tie' };
   if (system.info.eunis) {
     typeColour = null;
     const present = [...new Set(used.map(([c]) => (c === '?' || c === '+') ? 'none' : level(c)))].sort();
-    $('legend').innerHTML = present.map((l) => swatch(l === 'none' ? colourOf('?') : colourOf(l), l === 'none' ? 'not classified or tie' : [l, levels.get(l)].filter(Boolean).join(' '))).join('');
-  } else {
-    const ranked = used.filter(([c]) => c !== '?' && c !== '+').sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([c]) => c);
-    typeColour = new Map(ranked.slice(0, PALETTE.length).map((c, i) => [c, PALETTE[i]]));
-    $('legend').innerHTML = [...typeColour.keys()].map((c) => swatch(colourOf(c), [c, levels.get(c)].filter(Boolean).join(' '))).join('') +
-      (ranked.length > PALETTE.length ? swatch(cssVar('--lv-other'), 'other types') : '') +
-      (used.some(([c]) => c === '?' || c === '+') ? swatch(colourOf('?'), 'not classified or tie') : '');
+    return present.map((l) => l === 'none' ? unclassified : { colour: colourOf(l), label: [l, levels.get(l)].filter(Boolean).join(' ') });
   }
+  const ranked = used.filter(([c]) => c !== '?' && c !== '+').sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([c]) => c);
+  typeColour = new Map(ranked.slice(0, PALETTE.length).map((c, i) => [c, PALETTE[i]]));
+  return [
+    ...[...typeColour.keys()].map((c) => ({ colour: colourOf(c), label: [c, levels.get(c)].filter(Boolean).join(' ') })),
+    ...(ranked.length > PALETTE.length ? [{ colour: cssVar('--lv-other'), label: 'other types' }] : []),
+    ...(used.some(([c]) => c === '?' || c === '+') ? [unclassified] : []),
+  ];
+}
+
+function renderLegend() {
+  $('legend').innerHTML = legendItems().map((l) => `<span><i style="background:${l.colour}"></i>${escapeHtml(l.label)}</span>`).join('');
 }
 
 function renderTypes() {
@@ -766,6 +781,27 @@ const dots = {
     const o = this.map.getPixelBounds().min;
     return { size, scale, ox: o.x, oy: o.y };
   },
+  // Dot radius in CSS pixels: smaller as more plots are shown.
+  radius() {
+    const n = R.done;
+    return n > 200000 ? 1 : n > 20000 ? 1.5 : n > 2000 ? 2.5 : 4.5;
+  },
+  // Calls fn(x, y, k) for each classified plot in the view, x and y in CSS
+  // pixels of the map and k the index of its type, or -1 for a plot greyed out
+  // by the type filter. Greyed plots come first, so the others are drawn on top.
+  eachDot({ size, scale, ox, oy }, fn) {
+    const want = filterType === null ? null : R.codeIndex.get(filterType);
+    const pad = this.radius() + 1;
+    const visit = (i, k) => {
+      const p = this.pixel(i, scale, ox, oy);
+      if (p && p[0] > -pad && p[1] > -pad && p[0] < size.x + pad && p[1] < size.y + pad) fn(p[0], p[1], k);
+    };
+    if (want !== null) for (let i = 0; i < R.n; i++) if (R.code[i] >= 0 && R.code[i] !== want) visit(i, -1);
+    for (let i = 0; i < R.n; i++) {
+      const k = R.code[i];
+      if (k >= 0 && (want === null || k === want)) visit(i, k);
+    }
+  },
   draw() {
     if (!this.map || !R) return;
     const { size, scale, ox, oy } = this.view();
@@ -776,32 +812,23 @@ const dots = {
     L.DomUtil.setPosition(c, this.map.containerPointToLayerPoint([0, 0]));
     const ctx = c.getContext('2d');
     const img = ctx.createImageData(c.width, c.height), px = new Uint32Array(img.data.buffer);
-    const n = R.done, r = Math.max(1, Math.round((n > 200000 ? 1 : n > 20000 ? 1.5 : n > 2000 ? 2.5 : 4.5) * ratio));
+    const r = Math.max(1, Math.round(this.radius() * ratio));
     const disc = [];
     for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (dx * dx + dy * dy <= r * r + r) disc.push([dx, dy]);
     const rgba = (hex, a) => {
       const v = parseInt(hex.replace('#', ''), 16);
       return ((a << 24) | ((v & 255) << 16) | (((v >> 8) & 255) << 8) | (v >> 16)) >>> 0;
     };
-    const want = filterType === null ? null : R.codeIndex.get(filterType);
     const colours = R.codes.map((code) => rgba(colourOf(code), 235));
     const faded = rgba(cssVar("--lv-none"), 110);
     const W = c.width, H = c.height;
-    const plot = (i, colour) => {
-      const p = this.pixel(i, scale, ox, oy);
-      if (!p) return;
-      const x = Math.round(p[0] * ratio), y = Math.round(p[1] * ratio);
-      if (x < -r || y < -r || x >= W + r || y >= H + r) return;
+    this.eachDot({ size, scale, ox, oy }, (cx, cy, k) => {
+      const x = Math.round(cx * ratio), y = Math.round(cy * ratio), colour = k < 0 ? faded : colours[k];
       for (const [dx, dy] of disc) {
         const xx = x + dx, yy = y + dy;
         if (xx >= 0 && yy >= 0 && xx < W && yy < H) px[yy * W + xx] = colour;
       }
-    };
-    if (want !== null) for (let i = 0; i < R.n; i++) if (R.code[i] >= 0 && R.code[i] !== want) plot(i, faded);
-    for (let i = 0; i < R.n; i++) {
-      const k = R.code[i];
-      if (k >= 0 && (want === null || k === want)) plot(i, colours[k]);
-    }
+    });
     ctx.putImageData(img, 0, 0);
     if (selected !== null) {
       const p = this.pixel(selected, scale, ox, oy);
@@ -828,8 +855,76 @@ const dots = {
 };
 
 // ---- Why this type? ------------------------------------------------------------
+// The panel shows what RESY's resy_eval_plot() prints, as HTML: the decision,
+// the species, the lower-level types not reached (closest first) and the rule
+// of one of them condition by condition. Selecting another type in the list
+// shows its rule instead.
 function clearDetail() {
-  $('d-empty').hidden = false; $('d-text').hidden = true; $('d-title').textContent = 'Why this type?';
+  $('d-empty').hidden = false; $('d-body').hidden = true; $('d-title').textContent = 'Why this type?';
+}
+
+const NEAR_SHOWN = 8;
+const plural = (n, word) => `${fmt(n)} ${word}${n === 1 ? '' : 's'}`;
+
+function ruleHtml(t, label = '') {
+  const conds = t.conditions.map((c, k) => `
+    <li class="${c.satisfied ? 'ok' : 'no'}">
+      <span class="n">[${k + 1}]</span><span class="st">${escapeHtml(c.status)}</span>
+      <span class="tx">${escapeHtml(c.text)}${c.species ? `<span class="sp">${escapeHtml(c.species)}</span>` : ''}</span>
+    </li>`).join('');
+  return `<div class="rule">
+    <p class="mb-1"><b>${escapeHtml(t.code)}</b> ${escapeHtml(t.name)}${label}
+      <span class="verdict ${t.holds ? 'ok' : 'no'}">${t.holds ? 'rule holds' : 'rule not met'}</span></p>
+    <p class="formula">${escapeHtml(t.rule)}</p>
+    <ol class="conds">${conds}</ol>
+  </div>`;
+}
+
+function nearHtml(ty) {
+  const item = (t) => `
+    <li data-type="${escapeHtml(t.code)}" tabindex="0" title="Show the rule of ${escapeHtml(t.code)}"${t === ty[0] ? ' class="active"' : ''}>
+      <b>${escapeHtml(t.code)}</b>
+      <span class="nm">${escapeHtml(nameOf(t.code) || t.name)}${t.rules > 1 ? `<span class="text-body-secondary">, closest of ${t.rules} rules</span>` : ''}</span>
+      <span class="frac"><span class="bar"><i style="width:${(100 * t.satisfied / Math.max(1, t.conditions)).toFixed(0)}%"></i></span>${t.satisfied} of ${t.conditions}</span>
+    </li>`;
+  const head = ty.slice(0, NEAR_SHOWN).map(item).join('');
+  const rest = ty.slice(NEAR_SHOWN);
+  return `<ul class="near">${head}</ul>` + (rest.length ?
+    `<details><summary class="small">Show the other ${plural(rest.length, 'type')}</summary><ul class="near">${rest.map(item).join('')}</ul></details>` : '');
+}
+
+function evidenceHtml(ev) {
+  const out = [`<p class="mb-1">${escapeHtml(ev.sentence ?? '')}</p>`];
+  if (ev.holds?.length) out.push(`<p class="small text-body-secondary">Rules that hold: ${ev.holds.map((h) => `${escapeHtml(h.code)} (priority ${escapeHtml(h.priority)})`).join(', ')}</p>`);
+  out.push(`<details class="species" open><summary>${fmt(ev.species.length)} species</summary>
+    <table class="table table-sm mb-0"><tbody>${ev.species.map((s) => `<tr><td>${escapeHtml(s.species)}</td><td class="num">${s.cover ?? ''}</td></tr>`).join('')}</tbody></table></details>`);
+  ev.lower.forEach((lv) => {
+    if (!lv.below) { out.push(`<p class="small mt-3 mb-0">${escapeHtml(lv.anchor)} has no lower levels.</p>`); return; }
+    if (!lv.types?.length) return;
+    const heading = lv.anchor === '?' ? 'Top-level types not reached' : `Why not a lower level of ${lv.anchor}?`;
+    out.push(`<section class="lower">
+      <p class="h6 mt-3 mb-1">${escapeHtml(heading)}</p>
+      <p class="small text-body-secondary mb-2">Conditions of each rule that the plot meets, closest first. Select a type to see its rule.</p>
+      ${nearHtml(lv.types)}
+      <div class="full">${ruleHtml(lv.closest)}</div>
+    </section>`);
+  });
+  return out.join('');
+}
+
+// The rule(s) of `type` in place of the closest rule under the list it was picked from.
+function showType(li) {
+  const full = li.closest('.lower')?.querySelector('.full');
+  const i = selected;
+  if (!full || i === null) return;
+  for (const x of $('d-body').querySelectorAll('.near li.active')) x.classList.remove('active');
+  li.classList.add('active');
+  full.innerHTML = '<p class="text-body-secondary small">Evaluating…</p>';
+  evaluatePlot(i, li.dataset.type).then((ev) => {
+    if (selected !== i) return;
+    const ty = ev.types[0];
+    full.innerHTML = ty.rules.map((r, k) => ruleHtml(r, ty.rules.length > 1 ? `<span class="text-body-secondary">, rule ${k + 1} of ${ty.rules.length}</span>` : '')).join('');
+  }).catch((e) => { full.textContent = cleanError(e); });
 }
 
 async function explain(i) {
@@ -839,32 +934,37 @@ async function explain(i) {
   const code = R.codes[R.code[i]];
   $('d-title').textContent = `Plot ${R.ids[i]}: ${code} ${nameOf(code)}`;
   $('d-empty').hidden = true;
-  $('d-text').hidden = false;
-  $('d-text').textContent = 'Evaluating…';
-  const src = R.source;
+  $('d-body').hidden = false;
+  $('d-body').innerHTML = '<p class="text-body-secondary mb-0">Evaluating…</p>';
   try {
-    const lines = ['PlotObservationID\tname\tcover'];
-    for await (const chunk of lineChunks(src.blob, R.start[i], R.end[i])) {
-      for (const line of chunk.lines) {
-        if (!line) continue;
-        const f = splitFields(line, src.delim);
-        lines.push(`${tsvValue(f[src.col.id])}\t${tsvValue(f[src.col.name])}\t${tsvValue(f[src.col.cover])}`);
-      }
-    }
-    const s = await acquire();
-    let res;
-    try {
-      await s.webR.FS.writeFile('/tmp/explain_species.tsv', new TextEncoder().encode(lines.join('\n') + '\n'));
-      await s.webR.FS.writeFile('/tmp/explain_sites.tsv', new TextEncoder().encode(sitesTsv(src.sites, [R.ids[i]])));
-      res = JSON.parse(await s.webR.evalRString(`resy_page_explain("/tmp/explain_species.tsv", "/tmp/explain_sites.tsv", ${rString(R.ids[i])}, ${src.opts})`));
-    } finally {
-      release(s);
-    }
-    if (selected === i) $('d-text').textContent = res.text;
+    const ev = await evaluatePlot(i);
+    if (selected === i) $('d-body').innerHTML = evidenceHtml(ev);
   } catch (e) {
-    $('d-text').textContent = cleanError(e);
+    $('d-body').textContent = cleanError(e);
   }
   $('detail').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Classifies plot i alone, from its rows of the species file, and returns
+// resy_page_explain()'s account of it, with the rules of `type` in full.
+async function evaluatePlot(i, type = null) {
+  const src = R.source;
+  const lines = ['PlotObservationID\tname\tcover'];
+  for await (const chunk of lineChunks(src.blob, R.start[i], R.end[i])) {
+    for (const line of chunk.lines) {
+      if (!line) continue;
+      const f = splitFields(line, src.delim);
+      lines.push(`${tsvValue(f[src.col.id])}\t${tsvValue(f[src.col.name])}\t${tsvValue(f[src.col.cover])}`);
+    }
+  }
+  const s = await acquire();
+  try {
+    await s.webR.FS.writeFile('/tmp/explain_species.tsv', new TextEncoder().encode(lines.join('\n') + '\n'));
+    await s.webR.FS.writeFile('/tmp/explain_sites.tsv', new TextEncoder().encode(sitesTsv(src.sites, [R.ids[i]])));
+    return JSON.parse(await s.webR.evalRString(`resy_page_explain("/tmp/explain_species.tsv", "/tmp/explain_sites.tsv", ${rString(R.ids[i])}, ${src.opts}${type ? `, type = ${rString(type)}` : ''})`));
+  } finally {
+    release(s);
+  }
 }
 
 // ---- Download --------------------------------------------------------------------
@@ -880,11 +980,73 @@ function download() {
     if (block.length === 50000) { parts.push(block.join('')); block = []; }
   }
   parts.push(block.join(''));
+  saveBlob(new Blob(parts, { type: 'text/csv' }), 'classification.csv');
+}
+
+function saveBlob(blob, suffix) {
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob(parts, { type: 'text/csv' }));
-  a.download = `resy_${String(system.info.scheme).replace(/\.(json|txt)$/i, '').replace(/[^A-Za-z0-9_-]/g, '_')}_classification.csv`;
+  a.href = URL.createObjectURL(blob);
+  a.download = `resy_${String(system.info.scheme).replace(/\.(json|txt)$/i, '').replace(/[^A-Za-z0-9_-]/g, '_')}_${suffix}`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+// The map as it is shown, as an SVG: the country outlines, the plots in their
+// colours, the selected plot and the legend. Plots that fall on the same spot
+// in the same colour are drawn once, and each colour is one path of round dots,
+// so the file stays small with millions of plots.
+async function downloadMap() {
+  if (!R || !dots.map) return;
+  const button = $('download-map');
+  button.disabled = true;
+  try {
+    const v = dots.view(), W = v.size.x, H = v.size.y;
+    const s = await acquire();
+    let land;
+    try {
+      await ensureSf(s);
+      land = JSON.parse(await s.webR.evalRString(`resy_page_land(${v.scale}, ${v.ox}, ${v.oy}, ${W}, ${H})`));
+    } finally {
+      release(s);
+    }
+    const faded = cssVar('--lv-none');
+    const spots = new Map();
+    dots.eachDot(v, (x, y, k) => {
+      const key = k < 0 ? 'faded' : colourOf(R.codes[k]);
+      if (!spots.has(key)) spots.set(key, new Set());
+      spots.get(key).add(`${x.toFixed(1)} ${y.toFixed(1)}`);
+    });
+    const r = dots.radius();
+    const items = legendItems();
+    const total = H + 12 + 16 * items.length + 6;
+    const svg = [
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${total}" viewBox="0 0 ${W} ${total}" font-family="Helvetica, Arial, sans-serif">`,
+      `<rect width="${W}" height="${total}" fill="#fff"/>`,
+      `<clipPath id="view"><rect width="${W}" height="${H}"/></clipPath>`,
+      `<g clip-path="url(#view)">`,
+      `<rect width="${W}" height="${H}" fill="#e6edf2"/>`,
+      `<g fill="#fbfbf8" stroke="#9aa4ad" stroke-width="0.6" stroke-linejoin="round" fill-rule="evenodd">${land.paths.map((d) => `<path d="${d}"/>`).join('')}</g>`,
+      `<g fill="none" stroke-linecap="round" stroke-width="${2 * r}">`,
+      ...[...spots].map(([key, set]) => `<path stroke="${key === 'faded' ? faded : key}" stroke-opacity="${key === 'faded' ? 0.43 : 0.92}" d="${[...set].map((p) => `M${p}h0`).join('')}"/>`),
+      '</g>',
+    ];
+    const p = selected === null ? null : dots.pixel(selected, v.scale, v.ox, v.oy);
+    if (p && p[0] >= 0 && p[1] >= 0 && p[0] <= W && p[1] <= H) {
+      svg.push(`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${r + 5}" fill="none" stroke="#000" stroke-width="2"/>`);
+    }
+    svg.push(`<text x="${W - 6}" y="${H - 6}" font-size="9" fill="#6b7178" text-anchor="end">Country borders: Eurostat GISCO</text>`,
+      '</g>',
+      `<g transform="translate(0 ${H + 12})" font-size="11">`,
+      ...items.map((l, k) => `<circle cx="6" cy="${4 + 16 * k}" r="4" fill="${l.colour}"/><text x="16" y="${8 + 16 * k}" fill="#333">${escapeHtml(l.label)}</text>`),
+      '</g>',
+      '</svg>');
+    saveBlob(new Blob([svg.join('\n')], { type: 'image/svg+xml' }), 'map.svg');
+  } catch (e) {
+    console.error(e);
+    status(cleanError(e), 'error');
+  } finally {
+    button.disabled = false;
+  }
 }
 
 // ---- Example data ------------------------------------------------------------------
@@ -924,8 +1086,14 @@ $('o-sessions').addEventListener('change', () => {
 showSessions();
 $('run').addEventListener('click', run);
 $('download').addEventListener('click', download);
+$('download-map').addEventListener('click', downloadMap);
 $('q').addEventListener('input', renderTable);
 $('rows').addEventListener('click', (e) => { const tr = e.target.closest('tr'); if (tr) explain(Number(tr.dataset.i)); });
+$('d-body').addEventListener('click', (e) => { const li = e.target.closest('.near li'); if (li) showType(li); });
+$('d-body').addEventListener('keydown', (e) => {
+  const li = e.target.closest('.near li');
+  if (li && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showType(li); }
+});
 $('types').addEventListener('click', (e) => {
   const li = e.target.closest('li'); if (!li) return;
   filterType = filterType === li.dataset.code ? null : li.dataset.code;

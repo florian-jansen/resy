@@ -48,8 +48,9 @@ expert system: it removes author names and looks up synonyms. The
 synonym table that comes with RESY links about 65,000 synonyms from six
 taxonomies (Euro+Med, World Flora Online, GBIF, Catalogue of Life, ITIS
 and NCBI) to the species names of the EUNIS expert system. For an expert
-system with other species names, you can supply your own synonym table
-(`vignette("taxonomy")`).
+system with other species names, you can supply your own synonym table,
+as shown in [Match species
+names](https://florian-jansen.github.io/resy/articles/taxonomy.html).
 
 The [RESY App](https://florian-jansen.github.io/resy/articles/app.html)
 runs RESY in your browser, without installing R. It classifies the

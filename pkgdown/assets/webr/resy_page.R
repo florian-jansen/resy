@@ -44,9 +44,12 @@ resy_page_set_expert <- function(scheme = "EUNIS", path = NULL) {
   header_cols <- .page_header_cols(parsed)
   eunis <- any(header_cols %in% .page_eunis_site_cols)
   names <- .page_type_names(parsed)
+  # A code with several rules has one description per rule ("... trees 1",
+  # "... trees 2"); the EUNIS names table gives the type's own name.
+  names <- names[!duplicated(names$code), ]
   if (eunis) {
-    eunis_names <- resy_eunis_names()
-    names <- rbind(names, eunis_names[!eunis_names$code %in% names$code, c("code", "name")])
+    eunis_names <- resy_eunis_names()[c("code", "name")]
+    names <- rbind(eunis_names, names[!names$code %in% eunis_names$code, ])
   }
   .page$system <- list(
     scheme = if (is.null(path)) scheme else basename(path),
@@ -59,7 +62,7 @@ resy_page_set_expert <- function(scheme = "EUNIS", path = NULL) {
   .page_json(list(
     scheme = .page$system$scheme,
     eunis = eunis,
-    n_types = length(parsed$vegtype.formula.names.short),
+    n_types = length(unique(parsed$vegtype.formula.names.short)),
     n_species = length(parsed$aggs),
     header_cols = I(header_cols),
     derived_cols = I(derived),
@@ -164,12 +167,50 @@ resy_page_batch <- function(species_tsv, sites_tsv, coast_dunes = TRUE, coast_bu
   res
 }
 
-# Why one plot is classified as it is: the text of resy_eval_plot() for a
-# batch holding only that plot.
-resy_page_explain <- function(species_tsv, sites_tsv, plot_id, coast_dunes = TRUE, coast_buffer = 5000) {
+# Why one plot is classified as it is: what resy_eval_plot() prints, as data,
+# for a batch holding only that plot. `type` adds the rules of further types in
+# full.
+resy_page_explain <- function(species_tsv, sites_tsv, plot_id, coast_dunes = TRUE, coast_buffer = 5000,
+                              type = character()) {
   res <- suppressWarnings(suppressMessages(.page_classify(species_tsv, sites_tsv, coast_dunes, coast_buffer)))
-  text <- utils::capture.output(suppressWarnings(resy_eval_plot(res, plot_id)))
-  .page_json(list(text = paste(text, collapse = "\n")))
+  .page_json(suppressWarnings(RESY:::.resy_plot_evidence(res, plot_id, type = type)))
+}
+
+# Country outlines inside the map view, as SVG path data in screen pixels, for
+# the map download. The outlines are the Eurostat GISCO NUTS boundaries RESY
+# uses to find the country of a plot: the 1:60 million layer for a view of the
+# continent, the 1:1 million layer closer in, simplified to half a pixel. The
+# view is given as the page draws it: `scale` pixels per unit of Web Mercator
+# scaled to [0, 1] (x east, y south), `ox`, `oy` the pixel position of the
+# view's corner and `w`, `h` its size. Each country is one path; holes are
+# kept as rings of the same path.
+resy_page_land <- function(scale, ox, oy, w, h) {
+  earth <- 2 * pi * 6378137
+  metres_per_pixel <- earth / scale
+  layer <- if (metres_per_pixel > 5000) "europe_resolution_60_epsg25832" else "europe_resolution_1_epsg25832"
+  if (is.null(.page$land[[layer]])) {
+    .page$land[[layer]] <- sf::st_geometry(sf::st_transform(RESY:::.resy_gis(layer), 3857))
+  }
+  pad <- 2 / scale
+  unit <- c(xmin = ox / scale - pad, xmax = (ox + w) / scale + pad,
+            ymin = oy / scale - pad, ymax = (oy + h) / scale + pad)
+  box <- sf::st_bbox(c(xmin = (unit[["xmin"]] - 0.5) * earth, xmax = (unit[["xmax"]] - 0.5) * earth,
+                       ymin = (0.5 - unit[["ymax"]]) * earth, ymax = (0.5 - unit[["ymin"]]) * earth),
+                     crs = sf::st_crs(3857))
+  g <- suppressWarnings(sf::st_crop(.page$land[[layer]], box))
+  g <- sf::st_simplify(g, dTolerance = metres_per_pixel / 2)
+  g <- g[!sf::st_is_empty(g)]
+  if (!length(g)) return(.page_json(list(paths = I(character()))))
+  g <- suppressWarnings(sf::st_cast(sf::st_collection_extract(g, "POLYGON"), "MULTIPOLYGON"))
+  xy <- sf::st_coordinates(g)
+  px <- round((xy[, "X"] / earth + 0.5) * scale - ox, 1)
+  py <- round((0.5 - xy[, "Y"] / earth) * scale - oy, 1)
+  ring <- paste(xy[, "L1"], xy[, "L2"], xy[, "L3"])
+  feature <- xy[, "L3"]
+  rings <- vapply(split(paste(px, py, sep = ","), factor(ring, levels = unique(ring))),
+                  function(p) paste0("M", p[1], "L", paste(p[-1], collapse = " "), "Z"), character(1))
+  owner <- feature[!duplicated(ring)]
+  .page_json(list(paths = I(unname(vapply(split(rings, owner), paste, character(1), collapse = "")))))
 }
 
 # The example files shipped with RESY.
