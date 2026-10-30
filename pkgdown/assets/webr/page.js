@@ -20,18 +20,25 @@ const status = (text, kind = 'busy') => {
   }
 };
 
-// Startup steps as [start, end] of the hex fill and the seconds each usually
-// takes; the fill eases towards the end of the running step and waits there.
-const STAGES = { init: [0, 0.12, 0.8], install: [0.12, 0.43, 2], resy: [0.43, 0.69, 1.7], parse: [0.69, 0.77, 0.5], sf: [0.77, 1, 1.5] };
+// Startup steps as [start, end] of the hex fill and the seconds each takes on
+// a desktop computer; the fill eases towards the end of the running step and
+// waits there. The seconds are scaled by how much longer than these times the
+// steps so far have taken, so that the fill keeps moving on a slower device.
+const STAGES = { init: [0, 0.08, 0.6], install: [0.08, 0.28, 1.6], resy: [0.28, 0.51, 1.9], parse: [0.51, 0.63, 0.9], sf: [0.63, 1, 2.9] };
 let loaderDone = false;
+let stageStart = null, stageSeconds = 0, previousStage = null;
 const fill = (f, seconds) => {
   $('hex-fill').style.setProperty('--dur', `${seconds}s`);
   $('hex-fill').style.setProperty('--p', `${(100 * f).toFixed(1)}%`);
 };
 const stage = (name) => {
   if (loaderDone) return;
+  const now = performance.now() / 1000;
+  if (previousStage) stageSeconds += STAGES[previousStage][2]; else stageStart = now;
+  previousStage = name;
+  const slower = stageSeconds ? Math.max(1, (now - stageStart) / stageSeconds) : 1;
   const [a, b, seconds] = STAGES[name];
-  fill(a + 0.9 * (b - a), seconds);
+  fill(a + 0.9 * (b - a), seconds * slower);
 };
 const hideLoader = () => {
   if (loaderDone) return;
@@ -210,7 +217,7 @@ async function chooseSystem() {
 
 // Reads the expert system in one session and describes it under the choices.
 async function describeSystem(s) {
-  status('Reading the expert system…');
+  if (loaderDone) status('Reading the expert system…');
   let out;
   try {
     out = await applySystem(s, !loaderDone);
