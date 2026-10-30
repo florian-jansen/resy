@@ -204,7 +204,6 @@ async function chooseSystem() {
     return;
   }
   const f = $('f-expert').files[0];
-  if (!f) throw new Error('Choose an expert system file, or pick EUNIS-ESy.');
   if (!/\.(json|txt)$/i.test(f.name)) throw new Error('The expert system file must end in .json or .txt.');
   const path = `/tmp/upload/${f.name.replace(/[^A-Za-z0-9._-]/g, '_')}`;
   system = {
@@ -255,6 +254,13 @@ function setKeepingHeight(el, html) {
 async function onSystemChange() {
   if (!pool.length || running) return;
   $('run').disabled = true;
+  if (systemChoice() === 'file' && !$('f-expert').files[0]) {
+    system = null;
+    $('sys-info').className = 'small mt-3 mb-0';
+    setKeepingHeight($('sys-info'), 'Choose an expert system file, <code>.json</code> or <code>.txt</code>, to classify with it.');
+    status('', 'idle');
+    return;
+  }
   try {
     await chooseSystem();
     const s = await acquire();
