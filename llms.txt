@@ -269,25 +269,28 @@ as soon as possible!
 
 # Package index
 
-## All functions
+## Main functions
+
+- [`resy_available_classifications()`](https://florian-jansen.github.io/resy/reference/resy_available_classifications.md)
+  : List available classifications
+- [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
+  : Classify vegetation plots with the expert system
+- [`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md)
+  : Harmonize plot data for EUNIS classification
+- [`resy_eval_plot()`](https://florian-jansen.github.io/resy/reference/resy_eval_plot.md)
+  : Evaluate and print details for a single plot
+- [`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md)
+  : Load a classification
+- [`resy_read_expert()`](https://florian-jansen.github.io/resy/reference/resy_read_expert.md)
+  : Read an expert-system file losslessly
+
+## Other functions
 
 - [`RESY`](https://florian-jansen.github.io/resy/reference/RESY-package.md)
   [`RESY-package`](https://florian-jansen.github.io/resy/reference/RESY-package.md)
   : RESY: rule-based expert classification of vegetation plots
-- [`coastline_regions_epsg25832`](https://florian-jansen.github.io/resy/reference/coastline_regions_epsg25832.md)
-  : Regional seas around Europe (EPSG:25832)
-- [`dunes_bohn_500mbuffer_epsg25832`](https://florian-jansen.github.io/resy/reference/dunes_bohn_500mbuffer_epsg25832.md)
-  : Coastal vegetation of the Bohn map with a 500 m buffer (EPSG:25832)
-- [`ecoregions2017_epsg25832`](https://florian-jansen.github.io/resy/reference/ecoregions2017_epsg25832.md)
-  : Ecoregions of Europe (EPSG:25832)
-- [`europe_resolution_1_epsg25832`](https://florian-jansen.github.io/resy/reference/europe_resolution_1_epsg25832.md)
-  : European countries at high resolution (EPSG:25832)
-- [`europe_resolution_60_epsg25832`](https://florian-jansen.github.io/resy/reference/europe_resolution_60_epsg25832.md)
-  : European countries at low resolution (EPSG:25832)
 - [`resy_add_classification()`](https://florian-jansen.github.io/resy/reference/resy_add_classification.md)
   : Add a new classification to the RESY store
-- [`resy_available_classifications()`](https://florian-jansen.github.io/resy/reference/resy_available_classifications.md)
-  : List available classifications
 - [`resy_candidates()`](https://florian-jansen.github.io/resy/reference/resy_candidates.md)
   : List possible assignments per plot
 - [`resy_canonical_species()`](https://florian-jansen.github.io/resy/reference/resy_canonical_species.md)
@@ -298,24 +301,14 @@ as soon as possible!
   : Check plot data for EUNIS classification requirements
 - [`resy_check_taxonomy()`](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md)
   : Check species names against an expert system's species list
-- [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
-  : Classify vegetation plots with the expert system
 - [`resy_clean_names()`](https://florian-jansen.github.io/resy/reference/resy_clean_names.md)
   : Remove taxonomic authorities from scientific names
 - [`resy_eunis_names()`](https://florian-jansen.github.io/resy/reference/resy_eunis_names.md)
   : Official EUNIS habitat names
-- [`resy_eval_plot()`](https://florian-jansen.github.io/resy/reference/resy_eval_plot.md)
-  : Evaluate and print details for a single plot
 - [`resy_expert_path()`](https://florian-jansen.github.io/resy/reference/resy_expert_path.md)
   : Get the path to a bundled classification file
 - [`resy_expert_tree()`](https://florian-jansen.github.io/resy/reference/resy_expert_tree.md)
   : Build the classification hierarchy of an expert system
-- [`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md)
-  : Harmonize plot data for EUNIS classification
-- [`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md)
-  : Load a classification
-- [`resy_read_expert()`](https://florian-jansen.github.io/resy/reference/resy_read_expert.md)
-  : Read an expert-system file losslessly
 - [`resy_read_synonyms()`](https://florian-jansen.github.io/resy/reference/resy_read_synonyms.md)
   : Read the taxonomy synonym table
 - [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)

@@ -17,7 +17,7 @@ system combines them.
 ## Usage
 
 ``` r
-resy_eval_plot(res, p, type, lower = TRUE)
+resy_eval_plot(res, p, type = character(), lower = TRUE)
 ```
 
 ## Arguments

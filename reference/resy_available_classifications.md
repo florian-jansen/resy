@@ -41,9 +41,9 @@ resy_available_classifications()
 #>          scheme    version
 #> 1 Apennine-test 2026-06-27
 #> 2         EUNIS 2025-10-03
-#>                                                                                                                                                       expert_json
-#> 1 /home/runner/.cache/R/renv/library/resy-ae7cf081/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu/RESY/extdata/classifications/Apennine-test/2026-06-27/expert.json
-#> 2         /home/runner/.cache/R/renv/library/resy-ae7cf081/linux-ubuntu-noble/R-4.6/x86_64-pc-linux-gnu/RESY/extdata/classifications/EUNIS/2025-10-03/expert.json
+#>                                                                                                                                                          expert_json
+#> 1 /home/runner/.cache/R/renv/library/resy-ae7cf081/linux-ubuntu-resolute/R-4.6/x86_64-pc-linux-gnu/RESY/extdata/classifications/Apennine-test/2026-06-27/expert.json
+#> 2         /home/runner/.cache/R/renv/library/resy-ae7cf081/linux-ubuntu-resolute/R-4.6/x86_64-pc-linux-gnu/RESY/extdata/classifications/EUNIS/2025-10-03/expert.json
 #>   expert_txt
 #> 1       <NA>
 #> 2       <NA>
