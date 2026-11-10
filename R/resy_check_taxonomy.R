@@ -10,7 +10,7 @@
 #' called.
 #'
 #' The result is a `resy_taxa` data frame. Printing it shows what each column
-#' holds and how many names matched; [RESY::summary()] returns the match counts and
+#' holds and how many names matched; [summary()] returns the match counts and
 #' the unmatched names.
 #'
 #' @param obs A data frame or `data.table` with a column holding taxon names.
@@ -37,7 +37,7 @@
 #' )
 #' checked <- resy_check_taxonomy(obs, parsed)
 #' checked
-#' RESY::summary(checked)
+#' summary(checked)
 #'
 #' # Names held in a differently named column
 #' names(obs)[2] <- "species"

@@ -50,7 +50,7 @@ library(readr)
 RESY ships a synonym table built for the EUNIS expert system: it maps alternate
 species names to the names that EUNIS uses. It pools the synonyms of six taxonomic backbones, the reference lists of
 accepted names and their synonyms that taxonomic databases publish
-([Euro+Med](https://europlusmed.org/), [WFO](https://www.worldfloraonline.org/),
+(Euro+Med (europlusmed.org), [WFO](https://www.worldfloraonline.org/),
 [GBIF](https://www.gbif.org/),
 [Catalogue of Life](https://www.catalogueoflife.org/),
 [ITIS](https://www.itis.gov/),
