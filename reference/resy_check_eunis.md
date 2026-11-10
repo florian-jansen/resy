@@ -65,3 +65,23 @@ A list with:
 ## See also
 
 [`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md)
+
+## Examples
+
+``` r
+plots <- data.frame(
+  PlotObservationID = "plot_1",
+  Longitude = 8.15,
+  Latitude = 53.55
+)
+
+check <- resy_check_eunis(plots, source_crs = 4326, verbose = FALSE)
+check$ok
+#> [1] TRUE
+check$warnings
+#> [1] "\"Altitude (m)\" is missing. See the \"Get altitude data\" vignette; altitude rasters are available from mapsforeurope.org."
+#> [2] "\"Ecoreg\" is missing and will be assigned by resy_harmonize_eunis()."                                                      
+#> [3] "\"Country\" is missing and will be assigned by resy_harmonize_eunis()."                                                     
+#> [4] "\"Coast_EEA\" is missing. Use run_coast_dunes = TRUE in resy_harmonize_eunis()."                                            
+#> [5] "\"Dunes_Bohn\" is missing. Use run_coast_dunes = TRUE in resy_harmonize_eunis()."                                           
+```

@@ -40,3 +40,17 @@ A data frame with columns `synonym`, `esy_canonical`, and `source`, and
 
 [`resy_resolve_taxa`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md),
 [`resy_canonical_species`](https://florian-jansen.github.io/resy/reference/resy_canonical_species.md)
+
+## Examples
+
+``` r
+synonyms <- resy_read_synonyms()
+head(synonyms)
+#>                    synonym          esy_canonical       source accepted_in
+#> 1       Abelmoschus bammia Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 2  Abelmoschus longifolius Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 3      Abelmoschus praecox Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 4 Abelmoschus tuberculatus Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 5          Hibiscus bammia Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 6      Hibiscus ficifolius Abelmoschus esculentus col;gbif;wfo        <NA>
+```

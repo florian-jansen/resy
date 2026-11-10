@@ -82,8 +82,11 @@ checked
 #> 1  Fagus sylvatica Fagus sylvatica    TRUE
 #> 2 Abies alba Mill.      Abies alba    TRUE
 #> 3   Planta inventa            <NA>   FALSE
-RESY::summary(checked)
-#> Error: 'summary' is not an exported object from 'namespace:RESY'
+summary(checked)
+#> 3 names checked: 2 matched (66.7%), 1 not matched (33.3%).
+#> 
+#> Not matched:
+#>   species (1): Planta inventa
 
 # Names held in a differently named column
 names(obs)[2] <- "species"

@@ -69,3 +69,26 @@ and the names that stayed unresolved.
 [`resy_read_synonyms`](https://florian-jansen.github.io/resy/reference/resy_read_synonyms.md),
 [`resy_check_taxonomy`](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md),
 [`resy_classify`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
+
+## Examples
+
+``` r
+obs <- data.frame(
+  PlotObservationID = c("p1", "p2"),
+  TaxonName = c("Quercus robur", "Poa annua")
+)
+
+resolved <- resy_resolve_taxa(obs, species_col = "TaxonName")
+resolved[, c("PlotObservationID", "TaxonName", "canonical", "taxon_confidence", "matched")]
+#> <resy_taxa> 2 name(s) from column `TaxonName` resolved against 20158 reference names
+#>   TaxonName         name as submitted
+#>   canonical         resolved canonical name; NA when unresolved
+#>   taxon_confidence  exact, synonym, cleaned_exact, cleaned_synonym or unresolved
+#>   matched           TRUE if the name resolved
+#>   (1 other column(s) not shown: PlotObservationID)
+#> 1 matched (50.0%), 1 unmatched; summary() lists them
+#> 
+#>       TaxonName     canonical taxon_confidence matched
+#> 1 Quercus robur Quercus robur            exact    TRUE
+#> 2     Poa annua          <NA>       unresolved   FALSE
+```

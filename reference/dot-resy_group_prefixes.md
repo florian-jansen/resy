@@ -9,3 +9,7 @@ variables.
 ``` r
 .resy_group_prefixes
 ```
+
+## Value
+
+A character vector of recognized Section 2 group prefixes.

@@ -98,3 +98,30 @@ A named list:
 [`resy_check_eunis()`](https://florian-jansen.github.io/resy/reference/resy_check_eunis.md),
 [`resy_check_taxonomy()`](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md),
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
+
+## Examples
+
+``` r
+plots <- data.frame(
+  PlotObservationID = c("site_1", "site_2"),
+  Longitude = c(8.15, 8.35),
+  Latitude = c(53.55, 53.65)
+)
+
+harmonized <- resy_harmonize_eunis(
+  data = plots,
+  source_crs = 4326,
+  verbose = FALSE
+)
+#> Warning: "Altitude (m)" is missing. See the "Get altitude data" vignette; altitude rasters are available from mapsforeurope.org.
+#> Warning: No site falls inside the ecoregion base map. Check that `source_crs`matches the coordinates (longitude/latitude in degrees is 4326).
+#> Warning: "Country" is missing for some plots because they fall outside the country map.
+
+harmonized$sites
+#> # A tibble: 2 × 9
+#>   PlotObservationID Ecoreg Ecoreg_name Country Country_ID Longitude Latitude
+#>   <chr>              <dbl> <chr>       <chr>   <chr>          <dbl>    <dbl>
+#> 1 site_1                NA NA          Germany DE              8.15     53.6
+#> 2 site_2                NA NA          NA      NA              8.35     53.6
+#> # ℹ 2 more variables: DEG_LON <dbl>, DEG_LAT <dbl>
+```

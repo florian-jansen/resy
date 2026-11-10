@@ -29,3 +29,12 @@ A sorted character vector of unique canonical ESy species names.
 
 [`resy_read_synonyms`](https://florian-jansen.github.io/resy/reference/resy_read_synonyms.md),
 [`resy_resolve_taxa`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
+
+## Examples
+
+``` r
+canonical <- resy_canonical_species()
+head(canonical)
+#> [1] "Abelmoschus esculentus" "Abies alba"             "Abies balsamea"        
+#> [4] "Abies borisii-regis"    "Abies cephalonica"      "Abies cilicica"        
+```

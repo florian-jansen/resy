@@ -108,6 +108,62 @@ plot did not reach, with their conditions.</p></dd>
     <p><code>NULL</code>, invisibly. Called for the printed output.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"data_example_species.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">header</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">species</span><span class="op">[</span><span class="st">"PlotObservationID"</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="resy_classify.html">resy_classify</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">species</span>,</span></span>
+<span class="r-in"><span>  <span class="va">header</span>,</span></span>
+<span class="r-in"><span>  scheme <span class="op">=</span> <span class="st">"Apennine-test"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.1  Number of conditions with number of species of a group: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.2  Number of conditions with minimum number of species: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.3  Number of conditions with sum of square rooted Cover_Perc of species: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.4  Number of conditions with total Cover_Perc of the group: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.5  Number of conditions with total Cover_Perc of all other species: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           Number of conditions with total Cover_Perc of all other species except those on the left-hand side: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           Number of conditions with $05, $25 etc.: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.6  Number of conditions with maximum cover of the group: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.7  Number of conditions with single species, header levels (e.g. country names): 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.8  Number of conditions with maximum Cover_Perc in plot: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           Number of conditions with maximum Cover_Perc in plot EXCEPT species of target group: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.9  Number of T$ NON conditions: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.10  Header conditions with numeric values: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Header conditions with character values: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> adapt conditions 2026-11-10 16:45:02.476618</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> classification from here on 2026-11-10 16:45:02.477363</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">resy_eval_plot</span><span class="op">(</span><span class="va">res</span>, p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">header</span><span class="op">$</span><span class="va">PlotObservationID</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Types whose rule holds: F (priority 2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Classified as F (Forest).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Plot HU32: 10 species</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  species                  cover</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Fagus sylvatica          87.5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Abies alba                3.0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Oxalis acetosella         3.0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Rubus hirtus              3.0 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Anemone nemorosa          0.5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Epipactis helleborine     0.5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Prenanthes purpurea       0.5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Sorbus aucuparia          0.5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Cephalanthera longifolia  0.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Dryopteris filix-mas      0.1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Why not a lower level of F:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FB    Beech-fir montane forest: rule not met</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Rule: [1] and [2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [1] met      total cover of Beech-forest-trees is 87.9%, needs more than 15%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    Fagus sylvatica 87.5, Abies alba 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [2] not met  total cover of Beech-forest-herbs is 4.2%, needs more than 10%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    Oxalis acetosella 3, Anemone nemorosa 0.5, Prenanthes purpurea 0.5, Cephalanthera longifolia 0.1, Dryopteris filix-mas 0.1</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

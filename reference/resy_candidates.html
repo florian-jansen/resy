@@ -113,6 +113,51 @@ With <code>wide = TRUE</code>, a <code>data.table</code> with one row per plot a
 columns.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">species</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"data_example_species.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">header</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">species</span><span class="op">[</span><span class="st">"PlotObservationID"</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="resy_classify.html">resy_classify</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">species</span>,</span></span>
+<span class="r-in"><span>  <span class="va">header</span>,</span></span>
+<span class="r-in"><span>  scheme <span class="op">=</span> <span class="st">"Apennine-test"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.1  Number of conditions with number of species of a group: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.2  Number of conditions with minimum number of species: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.3  Number of conditions with sum of square rooted Cover_Perc of species: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.4  Number of conditions with total Cover_Perc of the group: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.5  Number of conditions with total Cover_Perc of all other species: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           Number of conditions with total Cover_Perc of all other species except those on the left-hand side: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           Number of conditions with $05, $25 etc.: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.6  Number of conditions with maximum cover of the group: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.7  Number of conditions with single species, header levels (e.g. country names): 1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.8  Number of conditions with maximum Cover_Perc in plot: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>           Number of conditions with maximum Cover_Perc in plot EXCEPT species of target group: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.9  Number of T$ NON conditions: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.10  Header conditions with numeric values: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Header conditions with character values: 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> adapt conditions 2026-11-10 16:44:59.940452</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> classification from here on 2026-11-10 16:44:59.941209</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">resy_candidates</span><span class="op">(</span><span class="va">res</span>, top_n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      plot_id   type priority priority_rank</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;char&gt; &lt;char&gt;    &lt;ord&gt;         &lt;int&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:    AM30      F        2             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2:    AN57      F        2             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:    BE71     FB        5             3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:    BE71      F        2             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5:    BK34     NS        3             2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 173:    ZS46     NS        3             2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 174:    ZS46      N        2             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 175:    ZX20      F        2             1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 176:    ZX92     FB        5             3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 177:    ZX92      F        2             1</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

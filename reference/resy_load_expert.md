@@ -63,3 +63,15 @@ A list of class `resy_parsed_expert`.
 
 [`resy_available_classifications()`](https://florian-jansen.github.io/resy/reference/resy_available_classifications.md),
 [`resy_add_classification()`](https://florian-jansen.github.io/resy/reference/resy_add_classification.md)
+
+## Examples
+
+``` r
+expert <- resy_load_expert(scheme = "Apennine-test")
+expert$vegtype.formula.names
+#> [1] "F     Forest"                              
+#> [2] "FB    Beech-fir montane forest"            
+#> [3] "N     Non-forest"                          
+#> [4] "NG    Nardus acidic grassland"             
+#> [5] "NS    Sub-Mediterranean scrub and woodland"
+```
