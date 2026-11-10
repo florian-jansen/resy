@@ -1,29 +1,35 @@
 # RESY
 
-RESY assigns vegetation plots to vegetation or habitat types based on
-their plant community. A plot where beech, silver fir and beech-forest
+**RESY assigns vegetation plots to vegetation or habitat types based on
+their plant community.** A plot where beech, silver fir and beech-forest
 herbs such as wood sorrel grow together is a beech-fir montane forest. A
 plot where mat-grass (*Nardus stricta*) is abundant is an acidic
 grassland. RESY uses the species composition and cover or abundance
 recorded in each vegetation plot (relevé).
 
-The rules for this assignment form an expert system (ESy; Bruelheide et
-al. [2021](https://doi.org/10.1111/avsc.12562)), stored as a text or
+The **rules** for this assignment **form an expert system** (ESy; Chytrý
+et al. ([2020](https://doi.org/10.1111/avsc.12519)), stored as a text or
 JSON file. For each type, the rule specifies which groups of indicator
 species a plot must contain and how much cover they must have. In the
 example below, a plot is a beech-fir montane forest when beech and
 silver fir together cover more than 15% of it and beech-forest herbs
 more than 10%. You can also supply your own expert system.
 
-RESY ships the expert system of Chytrý et al.
-([2020](https://doi.org/10.1111/avsc.12519)) for EUNIS (European Nature
-Information System), the habitat classification of the [European
-Environment
-Agency](https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed)
-for the land and sea of Europe. EUNIS defines a habitat by its plant and
-animal communities together with abiotic conditions. Some of its rules
-therefore also use site data, such as the ecoregion, the country or the
-position on the coast.
+RESY ships the expert system of Chytrý et
+al. ([2020](https://doi.org/10.1111/avsc.12519)) for EUNIS (European
+Nature Information System), the habitat classification of the European
+Environment Agency for the land and sea of Europe ([EUNIS
+habitats](https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed)).
+EUNIS defines a habitat by its plant and animal communities together
+with abiotic conditions. Some of its rules therefore also use site data,
+such as the ecoregion, the country or the position on the coast. With
+[`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md)
+you can get such [additional
+information](https://florian-jansen.github.io/resy/articles/EUNIS.html).
+Afterwards you can [apply an expert
+system](https://florian-jansen.github.io/resy/articles/RESY.html) with
+[`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
+to your vegetation relevés.
 
 Each expert system uses its own list of species names. The EUNIS expert
 system, for example, uses the names of [Euro+Med
@@ -46,8 +52,6 @@ The [RESY App](https://florian-jansen.github.io/resy/articles/app.html)
 runs RESY in your browser, without installing R. It classifies the
 example plots or your own files with EUNIS-ESy or your own expert
 system, and shows the rules behind each assignment.
-
-**Insert figure here. Perhaps of Europe**
 
 ## ⏬ Installation
 
@@ -98,11 +102,10 @@ species <- read.csv(file)
 header <- unique(species["PlotObservationID"])
 
 res <- resy_classify(species, header, scheme = "Apennine-test")
-cand <- resy_candidates(res, top_n = 3, wide = TRUE)
+cand <- resy_candidates(res, top_n = 3)
 table(cand$classification)
-#> 
-#>  ?  F FB  N NG NS 
-#> 92 33  8  6 20 41
+#> Warning: Unknown or uninitialised column: `classification`.
+#> < table of extent 0 >
 ```
 
 `F`, `FB`, `N`, `NG` and `NS` are the five vegetation types of
@@ -121,9 +124,8 @@ its parent type `F` (forest, priority 2), and is assigned to `FB`:
 ``` r
 
 cand[cand$plot_id == "CX45", ]
-#>    plot_id classification type_1 priority_1 type_2 priority_2
-#>     <char>         <char> <char>      <ord> <char>      <ord>
-#> 1:    CX45             FB     FB          5      F          2
+#> # A tibble: 0 × 4
+#> # ℹ 4 variables: plot_id <chr>, type <chr>, priority <chr>, priority_rank <int>
 ```
 
 `resy_eval_plot(res, p = "CX45")` shows the species and conditions
@@ -153,13 +155,14 @@ These vignettes show how to use RESY:
 
 - [Classifying vegetation plots with
   RESY](https://florian-jansen.github.io/resy/articles/RESY.html): start
-  here, from a species table to classified plots
+  here to get from a species table to classified plots
 - [Get EUNIS habitat
-  types](https://florian-jansen.github.io/resy/articles/EUNIS.html):
-  EUNIS habitat types for plots with coordinates
+  types](https://florian-jansen.github.io/resy/articles/EUNIS.html): get
+  additional information to classify EUNIS habitat types to plots with
+  coordinates
 - [Get altitude
   data](https://florian-jansen.github.io/resy/articles/altitude-vignette.html):
-  the altitude column some EUNIS rules use
+  get the altitude column which some EUNIS rules use
 - [Match species
   names](https://florian-jansen.github.io/resy/articles/taxonomy.html):
   matching the species names in your data to the names the expert system
@@ -169,93 +172,49 @@ These vignettes show how to use RESY:
 
 These are the main functions:
 
+- [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
+  assigns each plot to a vegetation or habitat type
+- [`resy_candidates()`](https://florian-jansen.github.io/resy/reference/resy_candidates.md)
+  lists the assigned and candidate types per plot
 - [`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md)
   adds the site data EUNIS needs (ecoregion, country, coast, dunes) from
-  the plot coordinates.
-- [`resy_check_taxonomy()`](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md)
-  checks which species names the expert system knows;
+  the plot coordinates
   [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
-  matches names from other taxonomies to them.
-- [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
-  assigns each plot to a vegetation or habitat type.
-- [`resy_candidates()`](https://florian-jansen.github.io/resy/reference/resy_candidates.md)
-  lists the assigned and candidate types per plot.
-- [`resy_eval_plot()`](https://florian-jansen.github.io/resy/reference/resy_eval_plot.md)
-  explains the assignment of one plot.
-- [`resy_validate_esy()`](https://florian-jansen.github.io/resy/reference/resy_validate_esy.md)
-  checks your own expert system, and
-  [`resy_add_classification()`](https://florian-jansen.github.io/resy/reference/resy_add_classification.md)
-  makes it available to
-  [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
+  matches names from other taxonomies to them
 
 An overview of all functions and data is given in the tab
 [**Reference**](https://florian-jansen.github.io/resy/reference/).
 
-## 📚 Papers and links
+## 📚 Papers and Links
 
-- Bruelheide et al. ([2021](https://doi.org/10.1111/avsc.12562)): the
-  expert-system language that RESY implements.
-- Chytrý et al. ([2020](https://doi.org/10.1111/avsc.12519)): the EUNIS
-  expert system, its species groups and the habitat distribution maps.
-- [EUNIS-ESy on Zenodo](https://zenodo.org/records/16895007): the
-  released versions of the EUNIS expert system.
-- [FloraVeg.EU](https://floraveg.eu/habitat/): descriptions of every
-  EUNIS habitat type.
+- Chytrý et al. ([2025](https://doi.org/10.5281/zenodo.16895007)): the
+  released EUNIS expert system versions on Zenodo (first release 2020)
+- Chytrý et al. ([2024](https://doi.org/10.1111/avsc.12798)): the
+  platform [FloraVeg.EU](https://floraveg.eu/habitat/) has the
+  descriptions of every EUNIS habitat type
+- Bruelheide et al. ([2021](https://doi.org/10.1111/avsc.12562)):
+  translates the expert system of Chytrý et al. (2020) into R
+- Chytrý et al. ([2020](https://doi.org/10.1111/avsc.12519)): the expert
+  system (ESy) uses vegetation surveys and site data to derive EUNIS
+  habitat types.
 
 ## 📝 How to cite
-
-To cite RESY in publications, please cite the package together with
-Bruelheide et al. (2021), which describes the expert-system language
-RESY implements, and, when you use the EUNIS expert system, Chytrý et
-al. (2020).
 
 ``` text
 Jansen F, Bauer M, Calbi M, Colling G (2026). _RESY: Vegetation Type
 Expert Classification System_. R package version 0.3,
 <https://florian-jansen.github.io/resy/>.
-
-Bruelheide H, Tichý L, Chytrý M, Jansen F (2021). "Implementing the
-formal language of the vegetation classification expert systems (ESy)
-in the statistical computing environment R." _Applied Vegetation
-Science_, *24*, e12562. doi:10.1111/avsc.12562
-<https://doi.org/10.1111/avsc.12562>.
-
-Chytrý M, Tichý L, Hennekens S, Knollová I, others (2020). "EUNIS
-Habitat Classification: expert system, characteristic species
-combinations and distribution maps of European habitats." _Applied
-Vegetation Science_, *23*, 648-675. doi:10.1111/avsc.12519
-<https://doi.org/10.1111/avsc.12519>.
 ```
 
 BibTeX:
 
 ``` bibtex
-@Manual{jansen2026resy,
-  title = {{RESY}: Vegetation Type Expert Classification System},
+@Manual{,
+  title = {RESY: Vegetation Type Expert Classification System},
   author = {Florian Jansen and Markus Bauer and Mariasole Calbi and Gilles Colling},
   year = {2026},
   note = {R package version 0.3},
   url = {https://florian-jansen.github.io/resy/},
-}
-
-@Article{bruelheide2021esy,
-  title = {Implementing the formal language of the vegetation classification expert systems ({ESy}) in the statistical computing environment {R}},
-  author = {Helge Bruelheide and Lubomír Tichý and Milan Chytrý and Florian Jansen},
-  journal = {Applied Vegetation Science},
-  year = {2021},
-  volume = {24},
-  pages = {e12562},
-  doi = {10.1111/avsc.12562},
-}
-
-@Article{chytry2020eunis,
-  title = {{EUNIS} Habitat Classification: expert system, characteristic species combinations and distribution maps of {European} habitats},
-  author = {Milan Chytrý and Lubomír Tichý and Stephan M. Hennekens and Ilona Knollová and others},
-  journal = {Applied Vegetation Science},
-  year = {2020},
-  volume = {23},
-  pages = {648--675},
-  doi = {10.1111/avsc.12519},
 }
 ```
 
