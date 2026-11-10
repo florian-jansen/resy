@@ -15,8 +15,8 @@ articles:
 - title: Articles
   navbar: ~
   contents:
-  - altitude-vignette
   - EUNIS
+  - altitude-vignette
   - taxonomy
 - title: internal
   navbar: ~
