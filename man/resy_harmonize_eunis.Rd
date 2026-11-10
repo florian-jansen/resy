@@ -16,55 +16,56 @@ resy_harmonize_eunis(
 )
 }
 \arguments{
-\item{data}{A data frame or `sf` object containing plot data. If not an
-`sf` object, columns `Longitude` and `Latitude` must be present. Darwin
-Core names are accepted: `eventID`, `decimalLongitude`, `decimalLatitude`,
-`country`, and `minimumElevationInMeters`/`maximumElevationInMeters` for
-`Altitude (m)`, which can also be given as `Altitude`.}
+\item{data}{A data frame or \code{sf} object containing plot data. If not an
+\code{sf} object, columns \code{Longitude} and \code{Latitude} must be present. Darwin
+Core names are accepted: \code{eventID}, \code{decimalLongitude}, \code{decimalLatitude},
+\code{country}, and \code{minimumElevationInMeters}/\code{maximumElevationInMeters} for
+\code{Altitude (m)}, which can also be given as \code{Altitude}.}
 
 \item{source_crs}{Integer EPSG code of the coordinates in a plain data
 frame, in any coordinate reference system; they are converted as needed.
-When `NULL` (default), coordinates that are all valid longitudes and
+When \code{NULL} (default), coordinates that are all valid longitudes and
 latitudes are read as degrees (EPSG:4326); other coordinates need the code.
-Ignored when `data` is an `sf` object, which carries its own CRS.}
+Ignored when \code{data} is an \code{sf} object, which carries its own CRS.}
 
-\item{run_taxonomy}{Logical; if `TRUE`, runs [resy_check_taxonomy()] on
-`species_data`.}
+\item{run_taxonomy}{Logical; if \code{TRUE}, runs \code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}} on
+\code{species_data}.}
 
-\item{species_data}{A data frame with a column `scientificName`. Required
-when `run_taxonomy = TRUE`.}
+\item{species_data}{A data frame with a column \code{scientificName}. Required
+when \code{run_taxonomy = TRUE}.}
 
-\item{parsed}{A `resy_parsed_expert` object from [resy_load_expert()].
-Required when `run_taxonomy = TRUE`.}
+\item{parsed}{A \code{resy_parsed_expert} object from \code{\link[=resy_load_expert]{resy_load_expert()}}.
+Required when \code{run_taxonomy = TRUE}.}
 
-\item{run_coast_dunes}{Logical; if `TRUE`, assigns `Coast_EEA` and
-`Dunes_Bohn` flags via spatial intersection.}
+\item{run_coast_dunes}{Logical; if \code{TRUE}, assigns \code{Coast_EEA} and
+\code{Dunes_Bohn} flags via spatial intersection.}
 
 \item{coast_buffer}{Numeric buffer in metres for coastline proximity
 (default 5000).}
 
-\item{verbose}{Logical; if `TRUE`, informational messages about coordinate
-interpretation and transformation are shown. Defaults to [interactive()].}
+\item{verbose}{Logical; if \code{TRUE}, informational messages about coordinate
+interpretation and transformation are shown. Defaults to \code{\link[=interactive]{interactive()}}.}
 }
 \value{
 A named list:
-  \describe{
-    \item{`sites`}{Tibble of harmonised plot data, geometry dropped,
-      WGS84 `Longitude` and `Latitude` added, and the same values as
-      `DEG_LON` and `DEG_LAT`, the header fields EUNIS-ESy reads.}
-    \item{`species_checked`}{Output from [resy_check_taxonomy()] when
-      `run_taxonomy = TRUE`, otherwise `NULL`.}
-  }
+\describe{
+\item{\code{sites}}{Tibble of harmonised plot data, geometry dropped,
+WGS84 \code{Longitude} and \code{Latitude} added, and the same values as
+\code{DEG_LON} and \code{DEG_LAT}, the header fields EUNIS-ESy reads.}
+\item{\code{species_checked}}{Output from \code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}} when
+\code{run_taxonomy = TRUE}, otherwise \code{NULL}.}
+}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Prepares vegetation plot header data for EUNIS habitat classification.
 Converts coordinates to EPSG:25832 (ETRS89 / UTM zone 32N), assigns WWF
 ecoregions and country identifiers, optionally computes coast/dune flags,
 and optionally checks and harmonizes species taxonomy.
 
-Use [resy_check_eunis()] first to verify that the input data meets all
+Use \code{\link[=resy_check_eunis]{resy_check_eunis()}} first to verify that the input data meets all
 requirements before running this function.
 }
 \seealso{
-[resy_check_eunis()], [resy_check_taxonomy()], [resy_classify()]
+\code{\link[=resy_check_eunis]{resy_check_eunis()}}, \code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}}, \code{\link[=resy_classify]{resy_classify()}}
 }

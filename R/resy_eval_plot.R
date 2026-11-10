@@ -1,6 +1,7 @@
 #' Evaluate and print details for a single plot
 #'
 #' @description
+#' `r lifecycle::badge("experimental")`
 #' Prints, in plain words, why one plot is classified as it is: the
 #' vegetation types whose rules hold for it with their priorities, the type it
 #' is classified as, and its species. Below that it lists the lower-level types of the

@@ -1,6 +1,7 @@
 #' Harmonize plot data for EUNIS classification
 #'
 #' @description
+#' `r lifecycle::badge("experimental")`
 #' Prepares vegetation plot header data for EUNIS habitat classification.
 #' Converts coordinates to EPSG:25832 (ETRS89 / UTM zone 32N), assigns WWF
 #' ecoregions and country identifiers, optionally computes coast/dune flags,

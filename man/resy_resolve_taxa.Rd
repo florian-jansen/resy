@@ -23,10 +23,10 @@ vocabulary here, so any name the expert already knows is left untouched).}
 }
 \value{
 A \code{resy_taxa} data frame: \code{obs} with three appended columns,
-  \code{canonical} (the resolved ESy name, \code{NA} when unresolved),
-  \code{taxon_confidence} (\code{"exact"}, \code{"synonym"},
-  \code{"cleaned_exact"}, \code{"cleaned_synonym"}, or \code{"unresolved"}),
-  and \code{matched} (\code{TRUE} unless unresolved).
+\code{canonical} (the resolved ESy name, \code{NA} when unresolved),
+\code{taxon_confidence} (\code{"exact"}, \code{"synonym"},
+\code{"cleaned_exact"}, \code{"cleaned_synonym"}, or \code{"unresolved"}),
+and \code{matched} (\code{TRUE} unless unresolved).
 }
 \description{
 Maps a column of plot species names to the canonical ESy names used by the
@@ -53,5 +53,5 @@ stayed unresolved.
 }
 \seealso{
 \code{\link{resy_read_synonyms}}, \code{\link{resy_check_taxonomy}},
-  \code{\link{resy_classify}}
+\code{\link{resy_classify}}
 }

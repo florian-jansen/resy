@@ -12,7 +12,7 @@ citations (for example \code{"Fagus sylvatica L."}).}
 }
 \value{
 A character vector the same length as \code{x} with author citations
-  removed and taxonomic structure preserved. \code{NA} values are preserved.
+removed and taxonomic structure preserved. \code{NA} values are preserved.
 }
 \description{
 Strips author citations from scientific plant names while keeping the

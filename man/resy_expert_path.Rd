@@ -7,18 +7,18 @@
 resy_expert_path(scheme, version, format = c("json", "txt"), mustWork = TRUE)
 }
 \arguments{
-\item{scheme}{Classification scheme, e.g. `"EUNIS"`.}
+\item{scheme}{Classification scheme, e.g. \code{"EUNIS"}.}
 
-\item{version}{Version identifier, e.g. `"2025-10-03"`.}
+\item{version}{Version identifier, e.g. \code{"2025-10-03"}.}
 
-\item{format}{One of `"json"` (default) or `"txt"`.}
+\item{format}{One of \code{"json"} (default) or \code{"txt"}.}
 
-\item{mustWork}{Logical; if `TRUE` (default) an error is thrown when the
+\item{mustWork}{Logical; if \code{TRUE} (default) an error is thrown when the
 file does not exist.}
 }
 \value{
-A file path string, or `NA` (invisibly) when `mustWork = FALSE` and
-  the file is absent.
+A file path string, or \code{NA} (invisibly) when \code{mustWork = FALSE} and
+the file is absent.
 }
 \description{
 Returns the full path to an expert-system file bundled with the package.

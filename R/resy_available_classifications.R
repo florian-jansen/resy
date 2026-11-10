@@ -1,6 +1,7 @@
 #' List available classifications
 #'
 #' @description
+#' `r lifecycle::badge("experimental")`
 #' Lists the classification schemes and versions bundled with the package
 #' (under `inst/extdata/classifications/`).
 #'

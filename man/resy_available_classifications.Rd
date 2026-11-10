@@ -7,21 +7,22 @@
 resy_available_classifications()
 }
 \value{
-A data frame with columns `scheme`, `version`, `expert_json`,
-  `expert_txt`. The `expert_*` columns contain the full file path when the
-  file exists, otherwise `NA`.
+A data frame with columns \code{scheme}, \code{version}, \code{expert_json},
+\code{expert_txt}. The \verb{expert_*} columns contain the full file path when the
+file exists, otherwise \code{NA}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Lists the classification schemes and versions bundled with the package
-(under `inst/extdata/classifications/`).
+(under \verb{inst/extdata/classifications/}).
 }
 \details{
 The function scans the package's classification store directory structure:
 \itemize{
-  \item Top-level directories represent classification schemes (e.g., "EUNIS").
-  \item Second-level directories represent versions within each scheme.
-  \item Within each version directory, the function looks for `expert.json`
-    and `expert.txt` files.
+\item Top-level directories represent classification schemes (e.g., "EUNIS").
+\item Second-level directories represent versions within each scheme.
+\item Within each version directory, the function looks for \code{expert.json}
+and \code{expert.txt} files.
 }
 }
 \examples{
@@ -30,5 +31,5 @@ resy_available_classifications()
 
 }
 \seealso{
-[resy_load_expert()], [resy_add_classification()], [resy_classify()]
+\code{\link[=resy_load_expert]{resy_load_expert()}}, \code{\link[=resy_add_classification]{resy_add_classification()}}, \code{\link[=resy_classify]{resy_classify()}}
 }

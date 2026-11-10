@@ -1,6 +1,7 @@
 #' Check species names against an expert system's species list
 #'
 #' @description
+#' `r lifecycle::badge("experimental")`
 #' Validates taxon names in a plot observation table against the canonical
 #' names and synonyms declared in Section 1 of the loaded expert system.
 #' Returns a per-taxon table of matches and canonical name mappings.
@@ -9,7 +10,7 @@
 #' called.
 #'
 #' The result is a `resy_taxa` data frame. Printing it shows what each column
-#' holds and how many names matched; [summary()] returns the match counts and
+#' holds and how many names matched; [RESY::summary()] returns the match counts and
 #' the unmatched names.
 #'
 #' @param obs A data frame or `data.table` with a column holding taxon names.
@@ -36,7 +37,7 @@
 #' )
 #' checked <- resy_check_taxonomy(obs, parsed)
 #' checked
-#' summary(checked)
+#' RESY::summary(checked)
 #'
 #' # Names held in a differently named column
 #' names(obs)[2] <- "species"

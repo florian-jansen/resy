@@ -7,55 +7,55 @@
 resy_validate_esy(path, strict = FALSE, verbose = TRUE)
 }
 \arguments{
-\item{path}{Path to a `.txt` or `.json` expert file.}
+\item{path}{Path to a \code{.txt} or \code{.json} expert file.}
 
-\item{strict}{Logical; if `TRUE`, treat warnings as errors.}
+\item{strict}{Logical; if \code{TRUE}, treat warnings as errors.}
 
-\item{verbose}{Logical; if `TRUE` (default), print a one-line summary.}
+\item{verbose}{Logical; if \code{TRUE} (default), print a one-line summary.}
 }
 \value{
 A list with:
-  \describe{
-    \item{`ok`}{`TRUE` when no errors were found.}
-    \item{`errors`}{Character vector of error messages.}
-    \item{`warnings`}{Character vector of warning messages.}
-    \item{`meta`}{Named list: `path`, and counts of groups and vegetation
-      types defined.}
-  }
+\describe{
+\item{\code{ok}}{\code{TRUE} when no errors were found.}
+\item{\code{errors}}{Character vector of error messages.}
+\item{\code{warnings}}{Character vector of warning messages.}
+\item{\code{meta}}{Named list: \code{path}, and counts of groups and vegetation
+types defined.}
+}
 }
 \description{
-Checks an ESy expert file (`.txt` or `.json`) for structural and syntactic
+Checks an ESy expert file (\code{.txt} or \code{.json}) for structural and syntactic
 problems. Does not assess ecological correctness. The rules are:
 
-**Errors** (always fatal — the file cannot be imported):
+\strong{Errors} (always fatal — the file cannot be imported):
 \enumerate{
-  \item All required sections / top-level keys must be present and, for
-    `.txt`, in the correct order (Section 1 < 2 < 3).
-  \item Every vegetation type must have a non-empty code with no whitespace.
-  \item Every vegetation type must have a formula / expression.
-  \item Every formula must contain at least one membership condition
-    \code{<...>}.
-  \item Brackets inside formulas must be balanced (\code{()}, \code{[]},
-    \code{\{\}}).
-  \item Priority must be a single character in \code{0-9}, \code{A-Z} or
-    \code{a-z}.
-  \item Group keys in Section 2 / \code{"groups"} must start with a
-    recognised prefix (\code{###}, \code{##D}, \code{##Q}, \code{##C},
-    \code{$$C}, \code{$$N}).
+\item All required sections / top-level keys must be present and, for
+\code{.txt}, in the correct order (Section 1 < 2 < 3).
+\item Every vegetation type must have a non-empty code with no whitespace.
+\item Every vegetation type must have a formula / expression.
+\item Every formula must contain at least one membership condition
+\code{<...>}.
+\item Brackets inside formulas must be balanced (\code{()}, \code{[]},
+\code{\{\}}).
+\item Priority must be a single character in \code{0-9}, \code{A-Z} or
+\code{a-z}.
+\item Group keys in Section 2 / \code{"groups"} must start with a
+recognised prefix (\code{###}, \code{##D}, \code{##Q}, \code{##C},
+\code{$$C}, \code{$$N}).
 }
 
-**Warnings** (errors when \code{strict = TRUE}):
+\strong{Warnings} (errors when \code{strict = TRUE}):
 \enumerate{
-  \item Duplicate vegetation type codes.
-  \item Group names referenced in formulas that are not defined.
-  \item Dangling logical operators (\code{AND}/\code{OR}/\code{NOT} at the
-    start or end of a formula).
-  \item Legacy relational operator \code{UP} (deprecated in JUICE 7.0).
-  \item For `.txt`: relational operators found outside \code{<...>} angle
-    brackets.
-  \item For `.json`: missing or empty \code{metadata.scheme} /
-    \code{metadata.version}.
-  \item Empty description for a vegetation type.
+\item Duplicate vegetation type codes.
+\item Group names referenced in formulas that are not defined.
+\item Dangling logical operators (\code{AND}/\code{OR}/\code{NOT} at the
+start or end of a formula).
+\item Legacy relational operator \code{UP} (deprecated in JUICE 7.0).
+\item For \code{.txt}: relational operators found outside \code{<...>} angle
+brackets.
+\item For \code{.json}: missing or empty \code{metadata.scheme} /
+\code{metadata.version}.
+\item Empty description for a vegetation type.
 }
 }
 \examples{
@@ -66,6 +66,6 @@ system.file("extdata", "example_mini_expert_file.txt", package = "RESY"
 if (!result$ok) print(result$errors)
 }
 \seealso{
-[resy_read_expert()], [resy_load_expert()],
-  [resy_add_classification()]
+\code{\link[=resy_read_expert]{resy_read_expert()}}, \code{\link[=resy_load_expert]{resy_load_expert()}},
+\code{\link[=resy_add_classification]{resy_add_classification()}}
 }

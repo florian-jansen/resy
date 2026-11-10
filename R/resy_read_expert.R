@@ -12,6 +12,7 @@
 #' Read an expert-system file losslessly
 #'
 #' @description
+#' `r lifecycle::badge("experimental")`
 #' Parses an expert-system definition file (the EUNIS-ESy \code{.txt} format and
 #' compatible expert systems) into a structured tree that preserves the source
 #' byte-for-byte.

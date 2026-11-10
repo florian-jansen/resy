@@ -1,6 +1,7 @@
 #' Load a classification
 #'
 #' @description
+#' `r lifecycle::badge("experimental")`
 #' Loads a parsed expert-system object ready for use with [resy_classify()].
 #'
 #' If `expertfile` is given it takes precedence over `scheme`/`version`. The

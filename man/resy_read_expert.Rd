@@ -18,22 +18,23 @@ view is not needed.}
 }
 \value{
 An object of class \code{resy_expert}: a list with components
-  \describe{
-    \item{\code{meta}}{File-level metadata: \code{line_terminator} (CRLF or
-      LF) and \code{trailing_newline} (whether the file ends with a
-      terminator).}
-    \item{\code{preamble}}{Character vector of any lines before the first
-      \code{SECTION} header.}
-    \item{\code{sections}}{A list, in source order, of section objects. Each
-      has \code{number}, \code{name}, \code{header_line}, \code{body_lines},
-      \code{end_line} (\code{NA} when the section has no matching
-      \code{SECTION N: End}), \code{trailing} (lines between this section's
-      end and the next section or end of file), and, when
-      \code{entries = TRUE} and the section type is known, \code{entries}: a
-      structured view of the section content.}
-  }
+\describe{
+\item{\code{meta}}{File-level metadata: \code{line_terminator} (CRLF or
+LF) and \code{trailing_newline} (whether the file ends with a
+terminator).}
+\item{\code{preamble}}{Character vector of any lines before the first
+\code{SECTION} header.}
+\item{\code{sections}}{A list, in source order, of section objects. Each
+has \code{number}, \code{name}, \code{header_line}, \code{body_lines},
+\code{end_line} (\code{NA} when the section has no matching
+\code{SECTION N: End}), \code{trailing} (lines between this section's
+end and the next section or end of file), and, when
+\code{entries = TRUE} and the section type is known, \code{entries}: a
+structured view of the section content.}
+}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Parses an expert-system definition file (the EUNIS-ESy \code{.txt} format and
 compatible expert systems) into a structured tree that preserves the source
 byte-for-byte.

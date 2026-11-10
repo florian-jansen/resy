@@ -14,47 +14,47 @@ resy_add_classification(
 )
 }
 \arguments{
-\item{file}{Path to an ESy expert file (`.txt` or `.json`).}
+\item{file}{Path to an ESy expert file (\code{.txt} or \code{.json}).}
 
-\item{scheme}{Scheme name to store under (e.g. `"MyClassification"`).}
+\item{scheme}{Scheme name to store under (e.g. \code{"MyClassification"}).}
 
-\item{version}{Version string to store under (e.g. `"2026-07-05"`).}
+\item{version}{Version string to store under (e.g. \code{"2026-07-05"}).}
 
-\item{location}{Where to store: `"user"` (default, recommended) or
-`"package"` (requires a writable library).}
+\item{location}{Where to store: \code{"user"} (default, recommended) or
+\code{"package"} (requires a writable library).}
 
 \item{overwrite}{Logical; overwrite an existing classification. Defaults to
-`FALSE`.}
+\code{FALSE}.}
 
-\item{validate}{Logical; run [resy_validate_esy()] before storing. Defaults
-to `TRUE`. Set to `FALSE` only if you are certain the file is valid.}
+\item{validate}{Logical; run \code{\link[=resy_validate_esy]{resy_validate_esy()}} before storing. Defaults
+to \code{TRUE}. Set to \code{FALSE} only if you are certain the file is valid.}
 }
 \value{
 Invisibly, a named list with the paths of the files written:
-  \describe{
-    \item{`txt`}{Path to the stored `.txt` file, or `NULL` for JSON input.}
-    \item{`json`}{Path to the stored `.json` file, or `NULL` for `.txt`
-      input.}
-  }
+\describe{
+\item{\code{txt}}{Path to the stored \code{.txt} file, or \code{NULL} for JSON input.}
+\item{\code{json}}{Path to the stored \code{.json} file, or \code{NULL} for \code{.txt}
+input.}
+}
 }
 \description{
-Validates and copies an ESy expert file (`.txt` or `.json`) into the RESY
-classification store so that it becomes available to [resy_load_expert()] and
-[resy_classify()].
+Validates and copies an ESy expert file (\code{.txt} or \code{.json}) into the RESY
+classification store so that it becomes available to \code{\link[=resy_load_expert]{resy_load_expert()}} and
+\code{\link[=resy_classify]{resy_classify()}}.
 
-The file is validated with [resy_validate_esy()] before anything is written.
+The file is validated with \code{\link[=resy_validate_esy]{resy_validate_esy()}} before anything is written.
 If validation fails the function stops with a message that lists every error
-found, so you can fix the file and try again. Pass `validate = FALSE` to skip
+found, so you can fix the file and try again. Pass \code{validate = FALSE} to skip
 validation (not recommended).
 }
 \details{
-The file is stored as `<root>/<scheme>/<version>/expert.txt` or
-`expert.json`, where `<root>` is `tools::R_user_dir("RESY", "data")` for
-`location = "user"`. A `.txt` file is stored unchanged, together with a
-`metadata.json` sidecar recording the scheme, version, source path and
-time of storage. Replacing a classification with `overwrite = TRUE` removes
-the files of the previous one, so a `.txt` never sits beside a stale
-`.json` that [resy_load_expert()] would read first.
+The file is stored as \verb{<root>/<scheme>/<version>/expert.txt} or
+\code{expert.json}, where \verb{<root>} is \code{tools::R_user_dir("RESY", "data")} for
+\code{location = "user"}. A \code{.txt} file is stored unchanged, together with a
+\code{metadata.json} sidecar recording the scheme, version, source path and
+time of storage. Replacing a classification with \code{overwrite = TRUE} removes
+the files of the previous one, so a \code{.txt} never sits beside a stale
+\code{.json} that \code{\link[=resy_load_expert]{resy_load_expert()}} would read first.
 }
 \examples{
 # Store the bundled Apennine-test system under a new name. The store is
@@ -75,6 +75,6 @@ parsed$vegtype.formula.names.short
 Sys.setenv(R_USER_DATA_DIR = old)
 }
 \seealso{
-[resy_validate_esy()], [resy_load_expert()],
-  [resy_available_classifications()]
+\code{\link[=resy_validate_esy]{resy_validate_esy()}}, \code{\link[=resy_load_expert]{resy_load_expert()}},
+\code{\link[=resy_available_classifications]{resy_available_classifications()}}
 }

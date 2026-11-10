@@ -12,37 +12,38 @@ resy_load_expert(
 )
 }
 \arguments{
-\item{expertfile}{Optional path to a `.json` or `.txt` file.}
+\item{expertfile}{Optional path to a \code{.json} or \code{.txt} file.}
 
-\item{scheme}{Classification scheme name (default `"EUNIS"`).}
+\item{scheme}{Classification scheme name (default \code{"EUNIS"}).}
 
-\item{version}{Version identifier. If `NULL`, the newest available version
+\item{version}{Version identifier. If \code{NULL}, the newest available version
 is used.}
 
-\item{location}{Where to look for `scheme`/`version`, in search order. One
-or both of `"user"` and `"package"`; the default searches both, user
+\item{location}{Where to look for \code{scheme}/\code{version}, in search order. One
+or both of \code{"user"} and \code{"package"}; the default searches both, user
 first, so a user-stored classification takes precedence over a shipped
 one with the same scheme and version.}
 }
 \value{
-A list of class `resy_parsed_expert`.
+A list of class \code{resy_parsed_expert}.
 }
 \description{
-Loads a parsed expert-system object ready for use with [resy_classify()].
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+Loads a parsed expert-system object ready for use with \code{\link[=resy_classify]{resy_classify()}}.
 
-If `expertfile` is given it takes precedence over `scheme`/`version`. The
+If \code{expertfile} is given it takes precedence over \code{scheme}/\code{version}. The
 file format is detected from the extension:
 \describe{
-  \item{`.json`}{Parsed directly via the internal JSON parser (preferred).}
-  \item{`.txt`}{Parsed via the legacy text parser.}
+\item{\code{.json}}{Parsed directly via the internal JSON parser (preferred).}
+\item{\code{.txt}}{Parsed via the legacy text parser.}
 }
 
-When no `expertfile` is supplied, the function looks for
-`expert.json`, then `expert.txt` (in that order) under
-`<root>/<scheme>/<version>/`, where the roots are searched in the order
-given by `location`: classifications stored with [resy_add_classification()]
-(`"user"`) and the classifications shipped with the package (`"package"`).
+When no \code{expertfile} is supplied, the function looks for
+\code{expert.json}, then \code{expert.txt} (in that order) under
+\verb{<root>/<scheme>/<version>/}, where the roots are searched in the order
+given by \code{location}: classifications stored with \code{\link[=resy_add_classification]{resy_add_classification()}}
+(\code{"user"}) and the classifications shipped with the package (\code{"package"}).
 }
 \seealso{
-[resy_available_classifications()], [resy_add_classification()]
+\code{\link[=resy_available_classifications]{resy_available_classifications()}}, \code{\link[=resy_add_classification]{resy_add_classification()}}
 }

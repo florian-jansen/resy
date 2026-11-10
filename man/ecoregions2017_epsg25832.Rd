@@ -5,18 +5,18 @@
 \alias{ecoregions2017_epsg25832}
 \title{Ecoregions of Europe (EPSG:25832)}
 \format{
-An `sf` object with 159 polygons.
+An \code{sf} object with 159 polygons.
 }
 \source{
 Dinerstein, E. et al. (2017): An ecoregion-based approach to
-  protecting half the terrestrial realm. BioScience 67. Licence CC-BY 4.0.
+protecting half the terrestrial realm. BioScience 67. Licence CC-BY 4.0.
 }
 \usage{
 data(ecoregions2017_epsg25832)
 }
 \description{
 The terrestrial ecoregions of Europe from the RESOLVE Ecoregions 2017 map, in
-EPSG:25832. Used to set `Ecoreg` (column `ECO_ID`) in
-[resy_harmonize_eunis()].
+EPSG:25832. Used to set \code{Ecoreg} (column \code{ECO_ID}) in
+\code{\link[=resy_harmonize_eunis]{resy_harmonize_eunis()}}.
 }
 \keyword{internal}

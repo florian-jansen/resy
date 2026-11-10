@@ -1,6 +1,7 @@
 #' List possible assignments per plot
 #'
 #' @description
+#' `r lifecycle::badge("experimental")`
 #' The result object returned by [resy_classify()] contains a long table of all
 #' vegetation types that were evaluated as possible for each plot (i.e. the
 #' corresponding vegtype formula evaluated to `TRUE`).

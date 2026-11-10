@@ -5,7 +5,7 @@
 \alias{europe_resolution_60_epsg25832}
 \title{European countries at low resolution (EPSG:25832)}
 \format{
-An `sf` object with 37 polygons.
+An \code{sf} object with 37 polygons.
 }
 \source{
 Eurostat GISCO: NUTS boundaries.
@@ -14,7 +14,7 @@ Eurostat GISCO: NUTS boundaries.
 data(europe_resolution_60_epsg25832)
 }
 \description{
-Country boundaries (NUTS level 0, columns `NUTS_ID` and `NUTS_NAME`) at the
+Country boundaries (NUTS level 0, columns \code{NUTS_ID} and \code{NUTS_NAME}) at the
 1:60 million scale, in EPSG:25832, for maps.
 }
 \keyword{internal}

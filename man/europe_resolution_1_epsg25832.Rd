@@ -5,7 +5,7 @@
 \alias{europe_resolution_1_epsg25832}
 \title{European countries at high resolution (EPSG:25832)}
 \format{
-An `sf` object with 37 polygons.
+An \code{sf} object with 37 polygons.
 }
 \source{
 Eurostat GISCO: NUTS boundaries.
@@ -14,8 +14,8 @@ Eurostat GISCO: NUTS boundaries.
 data(europe_resolution_1_epsg25832)
 }
 \description{
-Country boundaries (NUTS level 0, columns `NUTS_ID` and `NUTS_NAME`) at the
-1:1 million scale, in EPSG:25832. Used to set `Country` in
-[resy_harmonize_eunis()].
+Country boundaries (NUTS level 0, columns \code{NUTS_ID} and \code{NUTS_NAME}) at the
+1:1 million scale, in EPSG:25832. Used to set \code{Country} in
+\code{\link[=resy_harmonize_eunis]{resy_harmonize_eunis()}}.
 }
 \keyword{internal}

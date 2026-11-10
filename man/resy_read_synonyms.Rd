@@ -14,7 +14,7 @@ validated and returned unchanged.}
 }
 \value{
 A data frame with columns \code{synonym}, \code{esy_canonical}, and
-  \code{source}, and \code{accepted_in} when the table has it.
+\code{source}, and \code{accepted_in} when the table has it.
 }
 \description{
 Loads the shipped table of alternate species names mapped to their canonical

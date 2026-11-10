@@ -7,26 +7,26 @@
 resy_check_data(data, source_crs = NULL, verbose = interactive())
 }
 \arguments{
-\item{data}{A data frame, tibble, or point `sf` object.}
+\item{data}{A data frame, tibble, or point \code{sf} object.}
 
 \item{source_crs}{Integer EPSG code of the coordinates in a plain data
-frame. When `NULL` (default), coordinates that are all valid longitudes and
+frame. When \code{NULL} (default), coordinates that are all valid longitudes and
 latitudes are read as degrees (EPSG:4326); other coordinates need the code.
-Ignored when `data` is an `sf` object, which carries its own CRS.}
+Ignored when \code{data} is an \code{sf} object, which carries its own CRS.}
 
-\item{verbose}{Logical; if `TRUE`, informational messages about coordinate
-interpretation and transformation are shown. Defaults to [interactive()].}
+\item{verbose}{Logical; if \code{TRUE}, informational messages about coordinate
+interpretation and transformation are shown. Defaults to \code{\link[=interactive]{interactive()}}.}
 }
 \value{
-An `sf` object in EPSG:25832 with all available ESy columns ordered
-  to the front: `PlotObservationID`, `Altitude (m)`, `Coast_EEA`, `Dunes_Bohn`,
-  `Ecoreg`, `Ecoreg_name`, `Country`, `Country_ID`, `geometry`.
+An \code{sf} object in EPSG:25832 with all available ESy columns ordered
+to the front: \code{PlotObservationID}, \code{Altitude (m)}, \code{Coast_EEA}, \code{Dunes_Bohn},
+\code{Ecoreg}, \code{Ecoreg_name}, \code{Country}, \code{Country_ID}, \code{geometry}.
 }
 \description{
 Validates that the input data frame or sf object has the structure and
-columns expected by [resy_classify()]. Performs coordinate transformation to
-EPSG:25832 and checks for `PlotObservationID`, altitude, ecoregion, country,
-coast, and dune columns. Missing `Ecoreg` and `Country` columns are
+columns expected by \code{\link[=resy_classify]{resy_classify()}}. Performs coordinate transformation to
+EPSG:25832 and checks for \code{PlotObservationID}, altitude, ecoregion, country,
+coast, and dune columns. Missing \code{Ecoreg} and \code{Country} columns are
 assigned from the bundled base maps; missing altitude, coast and dune
 columns are reported as warnings.
 }
@@ -38,5 +38,5 @@ columns are reported as warnings.
   resy_check_data(data, source_crs = 25832)
 }
 \seealso{
-[resy_harmonize_eunis()] for the EUNIS-specific enrichment workflow.
+\code{\link[=resy_harmonize_eunis]{resy_harmonize_eunis()}} for the EUNIS-specific enrichment workflow.
 }

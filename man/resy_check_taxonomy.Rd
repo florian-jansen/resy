@@ -7,24 +7,25 @@
 resy_check_taxonomy(obs, parsed, col = NULL)
 }
 \arguments{
-\item{obs}{A data frame or `data.table` with a column holding taxon names.}
+\item{obs}{A data frame or \code{data.table} with a column holding taxon names.}
 
-\item{parsed}{A `resy_parsed_expert` object from [resy_load_expert()].}
+\item{parsed}{A \code{resy_parsed_expert} object from \code{\link[=resy_load_expert]{resy_load_expert()}}.}
 
-\item{col}{Name of the column in `obs` that holds taxon names. If `NULL`
-(default), uses `TaxonName`, then Darwin Core `scientificName`.}
+\item{col}{Name of the column in \code{obs} that holds taxon names. If \code{NULL}
+(default), uses \code{TaxonName}, then Darwin Core \code{scientificName}.}
 }
 \value{
-A `resy_taxa` data frame with one row per unique taxon name in `obs`:
-  \describe{
-    \item{`scientificName`}{The name as submitted in `obs`.}
-    \item{`TaxonName`}{The canonical name used by [resy_classify()], or `NA`
-      when unmatched.}
-    \item{`matched`}{`TRUE` if the name was found as a canonical name or
-      synonym in Section 1 of the expert system.}
-  }
+A \code{resy_taxa} data frame with one row per unique taxon name in \code{obs}:
+\describe{
+\item{\code{scientificName}}{The name as submitted in \code{obs}.}
+\item{\code{TaxonName}}{The canonical name used by \code{\link[=resy_classify]{resy_classify()}}, or \code{NA}
+when unmatched.}
+\item{\code{matched}}{\code{TRUE} if the name was found as a canonical name or
+synonym in Section 1 of the expert system.}
+}
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Validates taxon names in a plot observation table against the canonical
 names and synonyms declared in Section 1 of the loaded expert system.
 Returns a per-taxon table of matches and canonical name mappings.
@@ -32,8 +33,8 @@ Returns a per-taxon table of matches and canonical name mappings.
 This is a purely offline check; no external name-resolution service is
 called.
 
-The result is a `resy_taxa` data frame. Printing it shows what each column
-holds and how many names matched; [summary()] returns the match counts and
+The result is a \code{resy_taxa} data frame. Printing it shows what each column
+holds and how many names matched; \code{\link[=summary]{summary()}} returns the match counts and
 the unmatched names.
 }
 \examples{
@@ -47,12 +48,12 @@ obs <- data.frame(
 )
 checked <- resy_check_taxonomy(obs, parsed)
 checked
-summary(checked)
+RESY::summary(checked)
 
 # Names held in a differently named column
 names(obs)[2] <- "species"
 resy_check_taxonomy(obs, parsed, col = "species")
 }
 \seealso{
-[resy_load_expert()], [resy_harmonize_eunis()]
+\code{\link[=resy_load_expert]{resy_load_expert()}}, \code{\link[=resy_harmonize_eunis]{resy_harmonize_eunis()}}
 }

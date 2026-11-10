@@ -57,7 +57,8 @@ Imports:
     stats,
     stringi,
     tools,
-    utils
+    utils,
+    lifecycle
 Suggests:
     here,
     tibble,
@@ -77,3 +78,4 @@ NeedsCompilation: no
 Config/roxygen2/version: 8.1.0
 URL: https://florian-jansen.github.io/resy/, https://github.com/florian-jansen/resy
 BugReports: https://github.com/florian-jansen/resy/issues
+Roxygen: list(markdown = TRUE)

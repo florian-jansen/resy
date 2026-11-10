@@ -17,6 +17,7 @@
 #' Classify vegetation plots with the expert system
 #'
 #' @description
+#' `r lifecycle::badge("experimental")`
 #' Loads an expert system (by file or by scheme/version), aggregates taxa,
 #' evaluates the membership conditions, and returns plot classifications.
 #'

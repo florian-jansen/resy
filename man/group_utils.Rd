@@ -11,11 +11,12 @@ header variables.
 }
 \details{
 RESY expert-system definitions use structured Section 2 group labels with
-prefixes such as `###`, `##D`, `##Q`, `##C`, `$$C`, and `$$N`. These helpers
+prefixes such as \verb{###}, \verb{##D}, \verb{##Q}, \verb{##C}, \verb{$$C}, and \verb{$$N}. These helpers
 make it easier to:
-
-- recognize valid group markers,
-- extract the group name from a prefixed key,
-- locate the line numbers of `SECTION <n>` markers in parsed text.
+\itemize{
+\item recognize valid group markers,
+\item extract the group name from a prefixed key,
+\item locate the line numbers of \verb{SECTION <n>} markers in parsed text.
+}
 }
 \keyword{internal}

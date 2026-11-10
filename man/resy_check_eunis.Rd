@@ -7,40 +7,40 @@
 resy_check_eunis(data, source_crs = NULL, verbose = TRUE)
 }
 \arguments{
-\item{data}{A data frame, tibble, or point `sf` object.}
+\item{data}{A data frame, tibble, or point \code{sf} object.}
 
 \item{source_crs}{Integer EPSG code of the coordinates in a plain data
-frame. When `NULL` (default), coordinates that are all valid longitudes and
+frame. When \code{NULL} (default), coordinates that are all valid longitudes and
 latitudes are read as degrees (EPSG:4326); other coordinates need the code.
-Ignored when `data` is an `sf` object, which carries its own CRS.}
+Ignored when \code{data} is an \code{sf} object, which carries its own CRS.}
 
-\item{verbose}{Logical; if `TRUE` (default), print a summary of issues.}
+\item{verbose}{Logical; if \code{TRUE} (default), print a summary of issues.}
 }
 \value{
 A list with:
-  \describe{
-    \item{`ok`}{`TRUE` when no blocking issues were found.}
-    \item{`errors`}{Character vector of errors that will prevent classification.}
-    \item{`warnings`}{Character vector of warnings about missing or incomplete
-      columns that [resy_harmonize_eunis()] can fill automatically.}
-  }
+\describe{
+\item{\code{ok}}{\code{TRUE} when no blocking issues were found.}
+\item{\code{errors}}{Character vector of errors that will prevent classification.}
+\item{\code{warnings}}{Character vector of warnings about missing or incomplete
+columns that \code{\link[=resy_harmonize_eunis]{resy_harmonize_eunis()}} can fill automatically.}
+}
 }
 \description{
 Validates that the input data frame or sf object meets the structural
 requirements for EUNIS habitat classification. This is a pure check: it
-reports issues without modifying data. Use [resy_harmonize_eunis()] to
+reports issues without modifying data. Use \code{\link[=resy_harmonize_eunis]{resy_harmonize_eunis()}} to
 actually enrich and prepare the data.
 
 Checks performed:
 \itemize{
-  \item `PlotObservationID` column is present.
-  \item Coordinates are present and can be transformed to EPSG:25832.
-  \item `Altitude (m)` column is present and free of `NA`.
-  \item `Ecoreg` and `Country` columns are present (or will need to be assigned).
-  \item `Coast_EEA` and `Dunes_Bohn` columns are present when coastal/dune
-    classification is relevant.
+\item \code{PlotObservationID} column is present.
+\item Coordinates are present and can be transformed to EPSG:25832.
+\item \code{Altitude (m)} column is present and free of \code{NA}.
+\item \code{Ecoreg} and \code{Country} columns are present (or will need to be assigned).
+\item \code{Coast_EEA} and \code{Dunes_Bohn} columns are present when coastal/dune
+classification is relevant.
 }
 }
 \seealso{
-[resy_harmonize_eunis()]
+\code{\link[=resy_harmonize_eunis]{resy_harmonize_eunis()}}
 }

@@ -36,12 +36,12 @@ habitat names in this form. Defaults to \code{NULL} (no external names).}
 }
 \value{
 An object of class \code{resy_expert_tree}: a data frame with one row
-  per node and columns \code{id}, \code{parent} (\code{NA} for top-level
-  nodes), \code{code}, \code{description}, \code{priority}, \code{expression},
-  \code{level} (1 for top-level nodes), \code{leaf}, \code{synthetic}
-  (\code{TRUE} for a reconstructed group node the expert does not define) and
-  \code{name_source} (\code{"expert"}, \code{"lookup"} or \code{""}). A
-  \code{print} method renders it as an indented text tree.
+per node and columns \code{id}, \code{parent} (\code{NA} for top-level
+nodes), \code{code}, \code{description}, \code{priority}, \code{expression},
+\code{level} (1 for top-level nodes), \code{leaf}, \code{synthetic}
+(\code{TRUE} for a reconstructed group node the expert does not define) and
+\code{name_source} (\code{"expert"}, \code{"lookup"} or \code{""}). A
+\code{print} method renders it as an indented text tree.
 }
 \description{
 Turns the type definitions of a \code{resy_expert} object (Section 3,
@@ -73,6 +73,6 @@ if (nzchar(f)) {
 }
 \seealso{
 \code{\link{resy_write_expert_html}} and
-  \code{\link{resy_view_expert}} to render the hierarchy as a self-contained
-  interactive HTML page.
+\code{\link{resy_view_expert}} to render the hierarchy as a self-contained
+interactive HTML page.
 }

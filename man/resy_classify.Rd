@@ -20,16 +20,16 @@ resy_classify(
 )
 }
 \arguments{
-\item{obs}{Observations as a data frame or `data.table` with at least columns
-describing plot id, the species name (see `species_col`), and the cover
-`Cover_Perc`. Darwin Core names are accepted: `eventID` for the plot id,
-`scientificName` for the species, and `organismQuantity` for the cover when
-`organismQuantityType` is a percent cover such as `"\% cover"`.}
+\item{obs}{Observations as a data frame or \code{data.table} with at least columns
+describing plot id, the species name (see \code{species_col}), and the cover
+\code{Cover_Perc}. Darwin Core names are accepted: \code{eventID} for the plot id,
+\code{scientificName} for the species, and \code{organismQuantity} for the cover when
+\code{organismQuantityType} is a percent cover such as \code{"\\\% cover"}.}
 
 \item{header}{Plot header data frame with one row per plot; required for
-evaluating $$C/$$N. Darwin Core `country` is accepted for `Country`, and
-`Altitude` or Darwin Core
-`minimumElevationInMeters`/`maximumElevationInMeters` for `Altitude (m)`.}
+evaluating $$C/$$N. Darwin Core \code{country} is accepted for \code{Country}, and
+\code{Altitude} or Darwin Core
+\code{minimumElevationInMeters}/\code{maximumElevationInMeters} for \code{Altitude (m)}.}
 
 \item{expertfile}{Optional path to expert-system file (.json/.txt). If set, takes precedence.}
 
@@ -37,50 +37,51 @@ evaluating $$C/$$N. Darwin Core `country` is accepted for `Country`, and
 
 \item{version}{Version identifier. If NULL, uses latest available version for the scheme.}
 
-\item{location}{Where to look for `scheme`/`version`, in search order; see
-[resy_load_expert()]. Defaults to both `"user"` and `"package"`.}
+\item{location}{Where to look for \code{scheme}/\code{version}, in search order; see
+\code{\link[=resy_load_expert]{resy_load_expert()}}. Defaults to both \code{"user"} and \code{"package"}.}
 
 \item{id_col}{Optional name of the plot id column. If NULL, tries
 PlotObservationID, then PlotID, then Darwin Core eventID.}
 
-\item{species_col}{Name of the column in `obs` holding the species name. If
-`NULL` (default), uses `TaxonName`, then Darwin Core `scientificName`.
-Resolved names are written back to `TaxonName`.}
+\item{species_col}{Name of the column in \code{obs} holding the species name. If
+\code{NULL} (default), uses \code{TaxonName}, then Darwin Core \code{scientificName}.
+Resolved names are written back to \code{TaxonName}.}
 
-\item{resolve_taxa}{Logical; if `FALSE` (default) the classifier is
-taxonomy-agnostic and uses the names in `obs` as given. If `TRUE`, species
-names are resolved to the expert's vocabulary via [resy_resolve_taxa] before
+\item{resolve_taxa}{Logical; if \code{FALSE} (default) the classifier is
+taxonomy-agnostic and uses the names in \code{obs} as given. If \code{TRUE}, species
+names are resolved to the expert's vocabulary via \link{resy_resolve_taxa} before
 classification (see Description).}
 
-\item{synonyms}{Synonym-table override passed to [resy_resolve_taxa] when
-`resolve_taxa = TRUE`; `NULL` uses the shipped table.}
+\item{synonyms}{Synonym-table override passed to \link{resy_resolve_taxa} when
+\code{resolve_taxa = TRUE}; \code{NULL} uses the shipped table.}
 
 \item{mc}{Number of CPU cores to use.}
 
-\item{expert}{An expert system already read with [resy_load_expert()]. When
-given, `expertfile`, `scheme`, `version` and `location` are not used, so
+\item{expert}{An expert system already read with \code{\link[=resy_load_expert]{resy_load_expert()}}. When
+given, \code{expertfile}, \code{scheme}, \code{version} and \code{location} are not used, so
 data classified in several parts reads the expert system only once.}
 }
 \value{
-An object of class `resy_result`. When `resolve_taxa = TRUE` it also
-  carries the `summary()` of the [resy_resolve_taxa] result as
-  `taxon_resolution`; otherwise `taxon_resolution` is `NULL`.
+An object of class \code{resy_result}. When \code{resolve_taxa = TRUE} it also
+carries the \code{summary()} of the \link{resy_resolve_taxa} result as
+\code{taxon_resolution}; otherwise \code{taxon_resolution} is \code{NULL}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Loads an expert system (by file or by scheme/version), aggregates taxa,
 evaluates the membership conditions, and returns plot classifications.
 
-The classifier is taxonomy-agnostic: it classifies the species names in `obs`
+The classifier is taxonomy-agnostic: it classifies the species names in \code{obs}
 as they are given. Names should already match the expert system's vocabulary.
 If your plot data uses names from a general backbone (GBIF, WFO, POWO,
 Euro+Med, a national checklist), harmonise them first as an explicit step with
-[resy_resolve_taxa] and inspect the result with its `summary()` before
+\link{resy_resolve_taxa} and inspect the result with its \code{summary()} before
 classifying, so the taxonomic choices stay visible (see the taxonomy
-vignette). Setting `resolve_taxa = TRUE` runs that resolution inside
-`resy_classify()` as a convenience: names the expert already knows pass through
+vignette). Setting \code{resolve_taxa = TRUE} runs that resolution inside
+\code{resy_classify()} as a convenience: names the expert already knows pass through
 untouched, unknown names are looked up in the synonym table, and names that
 resolve to nothing keep their original value (never a best guess). What was
-resolved is then reported in the result's `taxon_resolution`.
+resolved is then reported in the result's \code{taxon_resolution}.
 }
 \examples{
 \donttest{
@@ -98,5 +99,5 @@ head(res$result.classification)
 }
 }
 \seealso{
-[resy_resolve_taxa], [resy_check_taxonomy]
+\link{resy_resolve_taxa}, \link{resy_check_taxonomy}
 }
