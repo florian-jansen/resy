@@ -26,10 +26,11 @@ articles:
 reference:
   - title: Main functions
     contents:
-      - resy_available_classifications
       - resy_classify
-      - resy_harmonize_eunis
       - resy_eval_plot
+      - resy_harmonize_eunis
+      - resy_resolve_taxa
+      - resy_available_classifications
       - resy_load_expert
       - resy_read_expert
   - title: Other functions
@@ -46,7 +47,6 @@ reference:
       - resy_expert_path
       - resy_expert_tree
       - resy_read_synonyms
-      - resy_resolve_taxa
       - resy_validate_esy
       - resy_view_expert
       - resy_write_expert
