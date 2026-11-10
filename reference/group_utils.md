@@ -8,9 +8,11 @@ and header variables.
 ## Details
 
 RESY expert-system definitions use structured Section 2 group labels
-with prefixes such as \`###\`, \`##D\`, \`##Q\`, \`##C\`, \`\$\$C\`, and
-\`\$\$N\`. These helpers make it easier to:
+with prefixes such as `###`, `##D`, `##Q`, `##C`, `$$C`, and `$$N`.
+These helpers make it easier to:
 
-\- recognize valid group markers, - extract the group name from a
-prefixed key, - locate the line numbers of \`SECTION \<n\>\` markers in
-parsed text.
+- recognize valid group markers,
+
+- extract the group name from a prefixed key,
+
+- locate the line numbers of `SECTION <n>` markers in parsed text.

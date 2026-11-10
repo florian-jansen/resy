@@ -1,9 +1,10 @@
 # Regional seas around Europe (EPSG:25832)
 
 The regional seas around Europe (Marine Strategy Framework Directive
-regions) in EPSG:25832. The dataset holds the \`sf\` object \`co\`; its
-column \`COAST_EEA\` gives the coast code of each sea (for example
-\`MED_COAST\`). Used to set \`Coast_EEA\` in \[resy_harmonize_eunis()\].
+regions) in EPSG:25832. The dataset holds the `sf` object `co`; its
+column `COAST_EEA` gives the coast code of each sea (for example
+`MED_COAST`). Used to set `Coast_EEA` in
+[`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md).
 
 ## Usage
 
@@ -13,7 +14,7 @@ data(coastline_regions_epsg25832)
 
 ## Format
 
-An \`sf\` object with 5 polygons.
+An `sf` object with 5 polygons.
 
 ## Source
 

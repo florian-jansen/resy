@@ -1,14 +1,16 @@
 # Check species names against an expert system's species list
 
-Validates taxon names in a plot observation table against the canonical
-names and synonyms declared in Section 1 of the loaded expert system.
-Returns a per-taxon table of matches and canonical name mappings.
+**\[experimental\]** Validates taxon names in a plot observation table
+against the canonical names and synonyms declared in Section 1 of the
+loaded expert system. Returns a per-taxon table of matches and canonical
+name mappings.
 
 This is a purely offline check; no external name-resolution service is
 called.
 
-The result is a \`resy_taxa\` data frame. Printing it shows what each
-column holds and how many names matched; \[summary()\] returns the match
+The result is a `resy_taxa` data frame. Printing it shows what each
+column holds and how many names matched;
+[`summary()`](https://rdrr.io/r/base/summary.html) returns the match
 counts and the unmatched names.
 
 ## Usage
@@ -21,39 +23,41 @@ resy_check_taxonomy(obs, parsed, col = NULL)
 
 - obs:
 
-  A data frame or \`data.table\` with a column holding taxon names.
+  A data frame or `data.table` with a column holding taxon names.
 
 - parsed:
 
-  A \`resy_parsed_expert\` object from \[resy_load_expert()\].
+  A `resy_parsed_expert` object from
+  [`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md).
 
 - col:
 
-  Name of the column in \`obs\` that holds taxon names. If \`NULL\`
-  (default), uses \`TaxonName\`, then Darwin Core \`scientificName\`.
+  Name of the column in `obs` that holds taxon names. If `NULL`
+  (default), uses `TaxonName`, then Darwin Core `scientificName`.
 
 ## Value
 
-A \`resy_taxa\` data frame with one row per unique taxon name in
-\`obs\`:
+A `resy_taxa` data frame with one row per unique taxon name in `obs`:
 
-- \`scientificName\`:
+- `scientificName`:
 
-  The name as submitted in \`obs\`.
+  The name as submitted in `obs`.
 
-- \`TaxonName\`:
+- `TaxonName`:
 
-  The canonical name used by \[resy_classify()\], or \`NA\` when
-  unmatched.
+  The canonical name used by
+  [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md),
+  or `NA` when unmatched.
 
-- \`matched\`:
+- `matched`:
 
-  \`TRUE\` if the name was found as a canonical name or synonym in
-  Section 1 of the expert system.
+  `TRUE` if the name was found as a canonical name or synonym in Section
+  1 of the expert system.
 
 ## See also
 
-\[resy_load_expert()\], \[resy_harmonize_eunis()\]
+[`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md),
+[`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md)
 
 ## Examples
 
@@ -78,11 +82,8 @@ checked
 #> 1  Fagus sylvatica Fagus sylvatica    TRUE
 #> 2 Abies alba Mill.      Abies alba    TRUE
 #> 3   Planta inventa            <NA>   FALSE
-summary(checked)
-#> 3 names checked: 2 matched (66.7%), 1 not matched (33.3%).
-#> 
-#> Not matched:
-#>   species (1): Planta inventa
+RESY::summary(checked)
+#> Error: 'summary' is not an exported object from 'namespace:RESY'
 
 # Names held in a differently named column
 names(obs)[2] <- "species"

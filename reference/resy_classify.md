@@ -1,20 +1,24 @@
 # Classify vegetation plots with the expert system
 
-Loads an expert system (by file or by scheme/version), aggregates taxa,
-evaluates the membership conditions, and returns plot classifications.
+**\[experimental\]** Loads an expert system (by file or by
+scheme/version), aggregates taxa, evaluates the membership conditions,
+and returns plot classifications.
 
 The classifier is taxonomy-agnostic: it classifies the species names in
-\`obs\` as they are given. Names should already match the expert
-system's vocabulary. If your plot data uses names from a general
-backbone (GBIF, WFO, POWO, Euro+Med, a national checklist), harmonise
-them first as an explicit step with \[resy_resolve_taxa\] and inspect
-the result with its \`summary()\` before classifying, so the taxonomic
-choices stay visible (see the taxonomy vignette). Setting \`resolve_taxa
-= TRUE\` runs that resolution inside \`resy_classify()\` as a
-convenience: names the expert already knows pass through untouched,
-unknown names are looked up in the synonym table, and names that resolve
-to nothing keep their original value (never a best guess). What was
-resolved is then reported in the result's \`taxon_resolution\`.
+`obs` as they are given. Names should already match the expert system's
+vocabulary. If your plot data uses names from a general backbone (GBIF,
+WFO, POWO, Euro+Med, a national checklist), harmonise them first as an
+explicit step with
+[resy_resolve_taxa](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
+and inspect the result with its
+[`summary()`](https://rdrr.io/r/base/summary.html) before classifying,
+so the taxonomic choices stay visible (see the taxonomy vignette).
+Setting `resolve_taxa = TRUE` runs that resolution inside
+`resy_classify()` as a convenience: names the expert already knows pass
+through untouched, unknown names are looked up in the synonym table, and
+names that resolve to nothing keep their original value (never a best
+guess). What was resolved is then reported in the result's
+`taxon_resolution`.
 
 ## Usage
 
@@ -39,20 +43,20 @@ resy_classify(
 
 - obs:
 
-  Observations as a data frame or \`data.table\` with at least columns
-  describing plot id, the species name (see \`species_col\`), and the
-  cover \`Cover_Perc\`. Darwin Core names are accepted: \`eventID\` for
-  the plot id, \`scientificName\` for the species, and
-  \`organismQuantity\` for the cover when \`organismQuantityType\` is a
-  percent cover such as \`"% cover"\`.
+  Observations as a data frame or `data.table` with at least columns
+  describing plot id, the species name (see `species_col`), and the
+  cover `Cover_Perc`. Darwin Core names are accepted: `eventID` for the
+  plot id, `scientificName` for the species, and `organismQuantity` for
+  the cover when `organismQuantityType` is a percent cover such as
+  `"\% cover"`.
 
 - header:
 
   Plot header data frame with one row per plot; required for evaluating
-  \$\$C/\$\$N. Darwin Core \`country\` is accepted for \`Country\`, and
-  \`Altitude\` or Darwin Core
-  \`minimumElevationInMeters\`/\`maximumElevationInMeters\` for
-  \`Altitude (m)\`.
+  \$\$C/\$\$N. Darwin Core `country` is accepted for `Country`, and
+  `Altitude` or Darwin Core
+  `minimumElevationInMeters`/`maximumElevationInMeters` for
+  `Altitude (m)`.
 
 - expertfile:
 
@@ -70,8 +74,9 @@ resy_classify(
 
 - location:
 
-  Where to look for \`scheme\`/\`version\`, in search order; see
-  \[resy_load_expert()\]. Defaults to both \`"user"\` and \`"package"\`.
+  Where to look for `scheme`/`version`, in search order; see
+  [`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md).
+  Defaults to both `"user"` and `"package"`.
 
 - id_col:
 
@@ -80,21 +85,23 @@ resy_classify(
 
 - species_col:
 
-  Name of the column in \`obs\` holding the species name. If \`NULL\`
-  (default), uses \`TaxonName\`, then Darwin Core \`scientificName\`.
-  Resolved names are written back to \`TaxonName\`.
+  Name of the column in `obs` holding the species name. If `NULL`
+  (default), uses `TaxonName`, then Darwin Core `scientificName`.
+  Resolved names are written back to `TaxonName`.
 
 - resolve_taxa:
 
-  Logical; if \`FALSE\` (default) the classifier is taxonomy-agnostic
-  and uses the names in \`obs\` as given. If \`TRUE\`, species names are
-  resolved to the expert's vocabulary via \[resy_resolve_taxa\] before
-  classification (see Description).
+  Logical; if `FALSE` (default) the classifier is taxonomy-agnostic and
+  uses the names in `obs` as given. If `TRUE`, species names are
+  resolved to the expert's vocabulary via
+  [resy_resolve_taxa](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
+  before classification (see Description).
 
 - synonyms:
 
-  Synonym-table override passed to \[resy_resolve_taxa\] when
-  \`resolve_taxa = TRUE\`; \`NULL\` uses the shipped table.
+  Synonym-table override passed to
+  [resy_resolve_taxa](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
+  when `resolve_taxa = TRUE`; `NULL` uses the shipped table.
 
 - mc:
 
@@ -102,19 +109,23 @@ resy_classify(
 
 - expert:
 
-  An expert system already read with \[resy_load_expert()\]. When given,
-  \`expertfile\`, \`scheme\`, \`version\` and \`location\` are not used,
-  so data classified in several parts reads the expert system only once.
+  An expert system already read with
+  [`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md).
+  When given, `expertfile`, `scheme`, `version` and `location` are not
+  used, so data classified in several parts reads the expert system only
+  once.
 
 ## Value
 
-An object of class \`resy_result\`. When \`resolve_taxa = TRUE\` it also
-carries the \`summary()\` of the \[resy_resolve_taxa\] result as
-\`taxon_resolution\`; otherwise \`taxon_resolution\` is \`NULL\`.
+An object of class `resy_result`. When `resolve_taxa = TRUE` it also
+carries the [`summary()`](https://rdrr.io/r/base/summary.html) of the
+[resy_resolve_taxa](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
+result as `taxon_resolution`; otherwise `taxon_resolution` is `NULL`.
 
 ## See also
 
-\[resy_resolve_taxa\], \[resy_check_taxonomy\]
+[resy_resolve_taxa](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md),
+[resy_check_taxonomy](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md)
 
 ## Examples
 
@@ -144,8 +155,8 @@ res <- resy_classify(species, header, scheme = "Apennine-test",
 #> Step 5.9  Number of T$ NON conditions: 0
 #> Step 5.10  Header conditions with numeric values: 0
 #>   Header conditions with character values: 0
-#> adapt conditions 2026-11-10 15:42:45.9715
-#> classification from here on 2026-11-10 15:42:45.972186
+#> adapt conditions 2026-11-10 16:04:42.44662
+#> classification from here on 2026-11-10 16:04:42.447367
 head(res$result.classification)
 #> HU32 KW76 YB18 NX70 OL48 YL40 
 #>  "F"  "F"  "F"  "F"  "F"  "F" 

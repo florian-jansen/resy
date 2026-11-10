@@ -113,7 +113,7 @@ vignette:</p>
 <p>RESY ships a synonym table built for the EUNIS expert system: it maps
 alternate species names to the names that EUNIS uses. It pools the
 synonyms of six taxonomic backbones, the reference lists of accepted
-names and their synonyms that taxonomic databases publish (<a href="https://europlusmed.org/" class="external-link">Euro+Med</a>, <a href="https://www.worldfloraonline.org/" class="external-link">WFO</a>, <a href="https://www.gbif.org/" class="external-link">GBIF</a>, <a href="https://www.catalogueoflife.org/" class="external-link">Catalogue of Life</a>, <a href="https://www.itis.gov/ncb" class="external-link">ITIS</a>, <a href="https://www.ncbi.nlm.nih.gov/datasets/taxonomy/" class="external-link">NCBI</a>), so a
+names and their synonyms that taxonomic databases publish (<a href="https://europlusmed.org/" class="external-link">Euro+Med</a>, <a href="https://www.worldfloraonline.org/" class="external-link">WFO</a>, <a href="https://www.gbif.org/" class="external-link">GBIF</a>, <a href="https://www.catalogueoflife.org/" class="external-link">Catalogue of Life</a>, <a href="https://www.itis.gov/" class="external-link">ITIS</a>, <a href="https://www.ncbi.nlm.nih.gov/datasets/taxonomy/" class="external-link">NCBI</a>), so a
 name coming from any of them can resolve without you having to say which
 backbone it came from. With another expert system, the table resolves
 only names that point to a species name the two systems share; for the
@@ -326,8 +326,8 @@ to your own crosswalk, or leaving them out.</p>
 <p><code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> also accepts your own crosswalk,
 with three columns: <code>synonym</code>, <code>esy_canonical</code>,
 and <code>source</code>. It can come from a national checklist, a
-Turboveg species list, or a name-matching package such as <a href="https://github.com/gcol33/taxify" class="external-link">taxify</a> or <a href="https://CRAN.R-project.org/package=taxize" class="external-link">taxize</a> (Chamberlain
-&amp; Szocs <a href="https://f1000research.com/articles/2-191/v2" class="external-link">2013</a>). A small
+Turboveg species list, or a name-matching package such as <a href="https://github.com/gcol33/taxify" class="external-link">taxify</a> or <a href="https://doi.org/10.32614/CRAN.package.taxize" class="external-link">taxize</a>
+(Chamberlain &amp; Szocs <a href="https://f1000research.com/articles/2-191/v2" class="external-link">2013</a>). A small
 example ships with the package.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cw_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_crosswalk.csv"</span>, package <span class="op">=</span> <span class="st">"RESY"</span><span class="op">)</span></span>

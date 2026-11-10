@@ -1,13 +1,13 @@
 # Validate an expert classification file
 
-Checks an ESy expert file (\`.txt\` or \`.json\`) for structural and
+Checks an ESy expert file (`.txt` or `.json`) for structural and
 syntactic problems. Does not assess ecological correctness. The rules
 are:
 
-\*\*Errors\*\* (always fatal — the file cannot be imported):
+**Errors** (always fatal — the file cannot be imported):
 
 1.  All required sections / top-level keys must be present and, for
-    \`.txt\`, in the correct order (Section 1 \< 2 \< 3).
+    `.txt`, in the correct order (Section 1 \< 2 \< 3).
 
 2.  Every vegetation type must have a non-empty code with no whitespace.
 
@@ -24,7 +24,7 @@ are:
 7.  Group keys in Section 2 / `"groups"` must start with a recognised
     prefix (`###`, `##D`, `##Q`, `##C`, `$$C`, `$$N`).
 
-\*\*Warnings\*\* (errors when `strict = TRUE`):
+**Warnings** (errors when `strict = TRUE`):
 
 1.  Duplicate vegetation type codes.
 
@@ -35,10 +35,10 @@ are:
 
 4.  Legacy relational operator `UP` (deprecated in JUICE 7.0).
 
-5.  For \`.txt\`: relational operators found outside `<...>` angle
+5.  For `.txt`: relational operators found outside `<...>` angle
     brackets.
 
-6.  For \`.json\`: missing or empty `metadata.scheme` /
+6.  For `.json`: missing or empty `metadata.scheme` /
     `metadata.version`.
 
 7.  Empty description for a vegetation type.
@@ -53,41 +53,41 @@ resy_validate_esy(path, strict = FALSE, verbose = TRUE)
 
 - path:
 
-  Path to a \`.txt\` or \`.json\` expert file.
+  Path to a `.txt` or `.json` expert file.
 
 - strict:
 
-  Logical; if \`TRUE\`, treat warnings as errors.
+  Logical; if `TRUE`, treat warnings as errors.
 
 - verbose:
 
-  Logical; if \`TRUE\` (default), print a one-line summary.
+  Logical; if `TRUE` (default), print a one-line summary.
 
 ## Value
 
 A list with:
 
-- \`ok\`:
+- `ok`:
 
-  \`TRUE\` when no errors were found.
+  `TRUE` when no errors were found.
 
-- \`errors\`:
+- `errors`:
 
   Character vector of error messages.
 
-- \`warnings\`:
+- `warnings`:
 
   Character vector of warning messages.
 
-- \`meta\`:
+- `meta`:
 
-  Named list: \`path\`, and counts of groups and vegetation types
-  defined.
+  Named list: `path`, and counts of groups and vegetation types defined.
 
 ## See also
 
-\[resy_read_expert()\], \[resy_load_expert()\],
-\[resy_add_classification()\]
+[`resy_read_expert()`](https://florian-jansen.github.io/resy/reference/resy_read_expert.md),
+[`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md),
+[`resy_add_classification()`](https://florian-jansen.github.io/resy/reference/resy_add_classification.md)
 
 ## Examples
 

@@ -1,8 +1,8 @@
 # Read an expert-system file losslessly
 
-Parses an expert-system definition file (the EUNIS-ESy `.txt` format and
-compatible expert systems) into a structured tree that preserves the
-source byte-for-byte.
+**\[experimental\]** Parses an expert-system definition file (the
+EUNIS-ESy `.txt` format and compatible expert systems) into a structured
+tree that preserves the source byte-for-byte.
 
 This is the lossless counterpart to
 [`resy_load_expert`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md).

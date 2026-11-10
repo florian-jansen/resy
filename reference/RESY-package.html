@@ -4,12 +4,12 @@ expert systems: rule sets that combine indicator species groups, species
 covers and plot header data (for example ecoregion, country or coast) into
 membership formulas. The EUNIS-ESy expert system for European EUNIS habitat
 types (Chytrý et al. 2020) ships with the package, and any other system in
-the ESy `.txt` or `.json` format can be added."><meta property="og:description" content="RESY assigns vegetation plots to vegetation or habitat types with formalised
+the ESy .txt or .json format can be added."><meta property="og:description" content="RESY assigns vegetation plots to vegetation or habitat types with formalised
 expert systems: rule sets that combine indicator species groups, species
 covers and plot header data (for example ecoregion, country or coast) into
 membership formulas. The EUNIS-ESy expert system for European EUNIS habitat
 types (Chytrý et al. 2020) ships with the package, and any other system in
-the ESy `.txt` or `.json` format can be added."><meta property="og:image" content="https://florian-jansen.github.io/resy/logo.png"></head><body>
+the ESy .txt or .json format can be added."><meta property="og:image" content="https://florian-jansen.github.io/resy/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -57,7 +57,7 @@ expert systems: rule sets that combine indicator species groups, species
 covers and plot header data (for example ecoregion, country or coast) into
 membership formulas. The EUNIS-ESy expert system for European EUNIS habitat
 types (Chytrý et al. 2020) ships with the package, and any other system in
-the ESy `.txt` or `.json` format can be added.</p>
+the ESy <code>.txt</code> or <code>.json</code> format can be added.</p>
     </div>
 
 
@@ -65,22 +65,22 @@ the ESy `.txt` or `.json` format can be added.</p>
     <h2 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a></h2>
 
 
-<ol><li><p>Pick an expert system: [resy_available_classifications()] lists the
-    shipped ones, [resy_add_classification()] stores your own, and
-    [resy_load_expert()] loads one.</p></li>
-<li><p>Prepare the plot data: [resy_check_taxonomy()] checks species names
-    against the expert system, [resy_resolve_taxa()] harmonises names from
-    other taxonomic backbones, and [resy_harmonize_eunis()] adds the header
-    columns EUNIS-ESy needs.</p></li>
-<li><p>Classify with [resy_classify()].</p></li>
-<li><p>Inspect the result: [resy_candidates()] lists the candidate types per
-    plot, [resy_eval_plot()] shows why a plot matched, and [resy_expert_tree()] shows the type hierarchy.</p></li>
+<ol><li><p>Pick an expert system: <code><a href="resy_available_classifications.html">resy_available_classifications()</a></code> lists the
+shipped ones, <code><a href="resy_add_classification.html">resy_add_classification()</a></code> stores your own, and
+<code><a href="resy_load_expert.html">resy_load_expert()</a></code> loads one.</p></li>
+<li><p>Prepare the plot data: <code><a href="resy_check_taxonomy.html">resy_check_taxonomy()</a></code> checks species names
+against the expert system, <code><a href="resy_resolve_taxa.html">resy_resolve_taxa()</a></code> harmonises names from
+other taxonomic backbones, and <code><a href="resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> adds the header
+columns EUNIS-ESy needs.</p></li>
+<li><p>Classify with <code><a href="resy_classify.html">resy_classify()</a></code>.</p></li>
+<li><p>Inspect the result: <code><a href="resy_candidates.html">resy_candidates()</a></code> lists the candidate types per
+plot, <code><a href="resy_eval_plot.html">resy_eval_plot()</a></code> shows why a plot matched, and <code><a href="resy_expert_tree.html">resy_expert_tree()</a></code> shows the type hierarchy.</p></li>
 </ol></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Chytrý M, Tichý L, Hennekens SM et al. (2020) EUNIS Habitat
 Classification: expert system, characteristic species combinations and
-distribution maps of European habitats. *Applied Vegetation Science* 23,
+distribution maps of European habitats. <em>Applied Vegetation Science</em> 23,
 648-675. <a href="https://doi.org/10.1111/avsc.12519" class="external-link">doi:10.1111/avsc.12519</a></p>
     </div>
     <div class="section level2">
@@ -92,8 +92,8 @@ distribution maps of European habitats. *Applied Vegetation Science* 23,
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
-    <p><strong>Maintainer</strong>: Florian Jansen <a href="mailto:florian.jansen@uni-rostock.de">florian.jansen@uni-rostock.de</a> (<a href="https://orcid.org/0000-0002-0331-5185" class="external-link">ORCID</a>)</p>
-<p>Authors:</p><ul><li><p>Florian Jansen <a href="mailto:florian.jansen@uni-rostock.de">florian.jansen@uni-rostock.de</a> (<a href="https://orcid.org/0000-0002-0331-5185" class="external-link">ORCID</a>)</p></li>
+    <p><strong>Maintainer</strong>: Florian Jansen <a href="mailto:florian.jansen@uni-rostock.de">florian.jansen@uni-rostock.de</a> (<a href="https://orcid.org/0000-0002-0331-5185" class="external-link">ORCID</a>) [copyright holder]</p>
+<p>Authors:</p><ul><li><p>Florian Jansen <a href="mailto:florian.jansen@uni-rostock.de">florian.jansen@uni-rostock.de</a> (<a href="https://orcid.org/0000-0002-0331-5185" class="external-link">ORCID</a>) [copyright holder]</p></li>
 <li><p>Markus Bauer <a href="mailto:markus1.bauer@tum.de">markus1.bauer@tum.de</a> (<a href="https://orcid.org/0000-0001-5372-4174" class="external-link">ORCID</a>)</p></li>
 <li><p>Mariasole Calbi <a href="mailto:mariasolecalby@gmail.com">mariasolecalby@gmail.com</a> (<a href="https://orcid.org/0000-0001-6018-4022" class="external-link">ORCID</a>)</p></li>
 <li><p>Gilles Colling <a href="mailto:gilles.colling051@gmail.com">gilles.colling051@gmail.com</a> (<a href="https://orcid.org/0000-0003-3070-6066" class="external-link">ORCID</a>)</p></li>

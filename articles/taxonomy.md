@@ -46,7 +46,7 @@ names and their synonyms that taxonomic databases publish
 ([Euro+Med](https://europlusmed.org/),
 [WFO](https://www.worldfloraonline.org/), [GBIF](https://www.gbif.org/),
 [Catalogue of Life](https://www.catalogueoflife.org/),
-[ITIS](https://www.itis.gov/ncb),
+[ITIS](https://www.itis.gov/),
 [NCBI](https://www.ncbi.nlm.nih.gov/datasets/taxonomy/)), so a name
 coming from any of them can resolve without you having to say which
 backbone it came from. With another expert system, the table resolves
@@ -237,9 +237,9 @@ also accepts your own crosswalk, with three columns: `synonym`,
 `esy_canonical`, and `source`. It can come from a national checklist, a
 Turboveg species list, or a name-matching package such as
 [taxify](https://github.com/gcol33/taxify) or
-[taxize](https://CRAN.R-project.org/package=taxize) (Chamberlain & Szocs
-[2013](https://f1000research.com/articles/2-191/v2)). A small example
-ships with the package.
+[taxize](https://doi.org/10.32614/CRAN.package.taxize) (Chamberlain &
+Szocs [2013](https://f1000research.com/articles/2-191/v2)). A small
+example ships with the package.
 
 ``` r
 

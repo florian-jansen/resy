@@ -1,8 +1,8 @@
 # Ecoregions of Europe (EPSG:25832)
 
 The terrestrial ecoregions of Europe from the RESOLVE Ecoregions 2017
-map, in EPSG:25832. Used to set \`Ecoreg\` (column \`ECO_ID\`) in
-\[resy_harmonize_eunis()\].
+map, in EPSG:25832. Used to set `Ecoreg` (column `ECO_ID`) in
+[`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md).
 
 ## Usage
 
@@ -12,7 +12,7 @@ data(ecoregions2017_epsg25832)
 
 ## Format
 
-An \`sf\` object with 159 polygons.
+An `sf` object with 159 polygons.
 
 ## Source
 

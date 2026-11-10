@@ -1,7 +1,7 @@
 # List available classifications
 
-Lists the classification schemes and versions bundled with the package
-(under \`inst/extdata/classifications/\`).
+**\[experimental\]** Lists the classification schemes and versions
+bundled with the package (under `inst/extdata/classifications/`).
 
 ## Usage
 
@@ -11,9 +11,9 @@ resy_available_classifications()
 
 ## Value
 
-A data frame with columns \`scheme\`, \`version\`, \`expert_json\`,
-\`expert_txt\`. The \`expert\_\*\` columns contain the full file path
-when the file exists, otherwise \`NA\`.
+A data frame with columns `scheme`, `version`, `expert_json`,
+`expert_txt`. The `expert_*` columns contain the full file path when the
+file exists, otherwise `NA`.
 
 ## Details
 
@@ -25,13 +25,14 @@ structure:
 
 - Second-level directories represent versions within each scheme.
 
-- Within each version directory, the function looks for \`expert.json\`
-  and \`expert.txt\` files.
+- Within each version directory, the function looks for `expert.json`
+  and `expert.txt` files.
 
 ## See also
 
-\[resy_load_expert()\], \[resy_add_classification()\],
-\[resy_classify()\]
+[`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md),
+[`resy_add_classification()`](https://florian-jansen.github.io/resy/reference/resy_add_classification.md),
+[`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
 
 ## Examples
 

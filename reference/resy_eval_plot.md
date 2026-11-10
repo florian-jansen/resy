@@ -1,18 +1,18 @@
 # Evaluate and print details for a single plot
 
-Prints, in plain words, why one plot is classified as it is: the
-vegetation types whose rules hold for it with their priorities, the type
-it is classified as, and its species. Below that it lists the
-lower-level types of the classified type that the plot did not reach.
-Each is shown with its rule and with every condition the rule uses:
-whether the condition is met, the value the plot has, the value the
-condition requires, and the plot's species that count towards it. This
-shows, for example, why a plot is \`R2\` and not \`R22\`. A plot that
+**\[experimental\]** Prints, in plain words, why one plot is classified
+as it is: the vegetation types whose rules hold for it with their
+priorities, the type it is classified as, and its species. Below that it
+lists the lower-level types of the classified type that the plot did not
+reach. Each is shown with its rule and with every condition the rule
+uses: whether the condition is met, the value the plot has, the value
+the condition requires, and the plot's species that count towards it.
+This shows, for example, why a plot is `R2` and not `R22`. A plot that
 matches no type is shown against the top-level types.
 
-In a rule, \`\[1\]\`, \`\[2\]\`, ... stand for the numbered conditions
-listed under it, combined with \`and\`, \`or\` and \`not\` as the expert
-system combines them.
+In a rule, `[1]`, `[2]`, ... stand for the numbered conditions listed
+under it, combined with `and`, `or` and `not` as the expert system
+combines them.
 
 ## Usage
 
@@ -24,12 +24,13 @@ resy_eval_plot(res, p, type = character(), lower = TRUE)
 
 - res:
 
-  A \`resy_result\` returned by \[resy_classify()\].
+  A `resy_result` returned by
+  [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
 
 - p:
 
-  Plot identifier (\`PlotObservationID\`) as character; if numeric,
-  treated as row index in \`header\`.
+  Plot identifier (`PlotObservationID`) as character; if numeric,
+  treated as row index in `header`.
 
 - type:
 
@@ -38,9 +39,9 @@ resy_eval_plot(res, p, type = character(), lower = TRUE)
 
 - lower:
 
-  Logical; if \`TRUE\` (default), list the lower-level types the plot
-  did not reach, with their conditions.
+  Logical; if `TRUE` (default), list the lower-level types the plot did
+  not reach, with their conditions.
 
 ## Value
 
-\`NULL\`, invisibly. Called for the printed output.
+`NULL`, invisibly. Called for the printed output.

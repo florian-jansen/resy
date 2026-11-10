@@ -1,13 +1,16 @@
 # Add a new classification to the RESY store
 
-Validates and copies an ESy expert file (\`.txt\` or \`.json\`) into the
+Validates and copies an ESy expert file (`.txt` or `.json`) into the
 RESY classification store so that it becomes available to
-\[resy_load_expert()\] and \[resy_classify()\].
+[`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md)
+and
+[`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
 
-The file is validated with \[resy_validate_esy()\] before anything is
-written. If validation fails the function stops with a message that
-lists every error found, so you can fix the file and try again. Pass
-\`validate = FALSE\` to skip validation (not recommended).
+The file is validated with
+[`resy_validate_esy()`](https://florian-jansen.github.io/resy/reference/resy_validate_esy.md)
+before anything is written. If validation fails the function stops with
+a message that lists every error found, so you can fix the file and try
+again. Pass `validate = FALSE` to skip validation (not recommended).
 
 ## Usage
 
@@ -26,57 +29,61 @@ resy_add_classification(
 
 - file:
 
-  Path to an ESy expert file (\`.txt\` or \`.json\`).
+  Path to an ESy expert file (`.txt` or `.json`).
 
 - scheme:
 
-  Scheme name to store under (e.g. \`"MyClassification"\`).
+  Scheme name to store under (e.g. `"MyClassification"`).
 
 - version:
 
-  Version string to store under (e.g. \`"2026-07-05"\`).
+  Version string to store under (e.g. `"2026-07-05"`).
 
 - location:
 
-  Where to store: \`"user"\` (default, recommended) or \`"package"\`
+  Where to store: `"user"` (default, recommended) or `"package"`
   (requires a writable library).
 
 - overwrite:
 
-  Logical; overwrite an existing classification. Defaults to \`FALSE\`.
+  Logical; overwrite an existing classification. Defaults to `FALSE`.
 
 - validate:
 
-  Logical; run \[resy_validate_esy()\] before storing. Defaults to
-  \`TRUE\`. Set to \`FALSE\` only if you are certain the file is valid.
+  Logical; run
+  [`resy_validate_esy()`](https://florian-jansen.github.io/resy/reference/resy_validate_esy.md)
+  before storing. Defaults to `TRUE`. Set to `FALSE` only if you are
+  certain the file is valid.
 
 ## Value
 
 Invisibly, a named list with the paths of the files written:
 
-- \`txt\`:
+- `txt`:
 
-  Path to the stored \`.txt\` file, or \`NULL\` for JSON input.
+  Path to the stored `.txt` file, or `NULL` for JSON input.
 
-- \`json\`:
+- `json`:
 
-  Path to the stored \`.json\` file, or \`NULL\` for \`.txt\` input.
+  Path to the stored `.json` file, or `NULL` for `.txt` input.
 
 ## Details
 
-The file is stored as \`\<root\>/\<scheme\>/\<version\>/expert.txt\` or
-\`expert.json\`, where \`\<root\>\` is \`tools::R_user_dir("RESY",
-"data")\` for \`location = "user"\`. A \`.txt\` file is stored
-unchanged, together with a \`metadata.json\` sidecar recording the
-scheme, version, source path and time of storage. Replacing a
-classification with \`overwrite = TRUE\` removes the files of the
-previous one, so a \`.txt\` never sits beside a stale \`.json\` that
-\[resy_load_expert()\] would read first.
+The file is stored as `<root>/<scheme>/<version>/expert.txt` or
+`expert.json`, where `<root>` is `tools::R_user_dir("RESY", "data")` for
+`location = "user"`. A `.txt` file is stored unchanged, together with a
+`metadata.json` sidecar recording the scheme, version, source path and
+time of storage. Replacing a classification with `overwrite = TRUE`
+removes the files of the previous one, so a `.txt` never sits beside a
+stale `.json` that
+[`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md)
+would read first.
 
 ## See also
 
-\[resy_validate_esy()\], \[resy_load_expert()\],
-\[resy_available_classifications()\]
+[`resy_validate_esy()`](https://florian-jansen.github.io/resy/reference/resy_validate_esy.md),
+[`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md),
+[`resy_available_classifications()`](https://florian-jansen.github.io/resy/reference/resy_available_classifications.md)
 
 ## Examples
 

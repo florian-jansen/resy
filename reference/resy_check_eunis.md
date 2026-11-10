@@ -2,21 +2,22 @@
 
 Validates that the input data frame or sf object meets the structural
 requirements for EUNIS habitat classification. This is a pure check: it
-reports issues without modifying data. Use \[resy_harmonize_eunis()\] to
-actually enrich and prepare the data.
+reports issues without modifying data. Use
+[`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md)
+to actually enrich and prepare the data.
 
 Checks performed:
 
-- \`PlotObservationID\` column is present.
+- `PlotObservationID` column is present.
 
 - Coordinates are present and can be transformed to EPSG:25832.
 
-- \`Altitude (m)\` column is present and free of \`NA\`.
+- `Altitude (m)` column is present and free of `NA`.
 
-- \`Ecoreg\` and \`Country\` columns are present (or will need to be
+- `Ecoreg` and `Country` columns are present (or will need to be
   assigned).
 
-- \`Coast_EEA\` and \`Dunes_Bohn\` columns are present when coastal/dune
+- `Coast_EEA` and `Dunes_Bohn` columns are present when coastal/dune
   classification is relevant.
 
 ## Usage
@@ -29,37 +30,38 @@ resy_check_eunis(data, source_crs = NULL, verbose = TRUE)
 
 - data:
 
-  A data frame, tibble, or point \`sf\` object.
+  A data frame, tibble, or point `sf` object.
 
 - source_crs:
 
   Integer EPSG code of the coordinates in a plain data frame. When
-  \`NULL\` (default), coordinates that are all valid longitudes and
+  `NULL` (default), coordinates that are all valid longitudes and
   latitudes are read as degrees (EPSG:4326); other coordinates need the
-  code. Ignored when \`data\` is an \`sf\` object, which carries its own
+  code. Ignored when `data` is an `sf` object, which carries its own
   CRS.
 
 - verbose:
 
-  Logical; if \`TRUE\` (default), print a summary of issues.
+  Logical; if `TRUE` (default), print a summary of issues.
 
 ## Value
 
 A list with:
 
-- \`ok\`:
+- `ok`:
 
-  \`TRUE\` when no blocking issues were found.
+  `TRUE` when no blocking issues were found.
 
-- \`errors\`:
+- `errors`:
 
   Character vector of errors that will prevent classification.
 
-- \`warnings\`:
+- `warnings`:
 
   Character vector of warnings about missing or incomplete columns that
-  \[resy_harmonize_eunis()\] can fill automatically.
+  [`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md)
+  can fill automatically.
 
 ## See also
 
-\[resy_harmonize_eunis()\]
+[`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md)

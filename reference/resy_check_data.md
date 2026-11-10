@@ -1,11 +1,13 @@
 # Check the format of plot data for ESy classification
 
 Validates that the input data frame or sf object has the structure and
-columns expected by \[resy_classify()\]. Performs coordinate
-transformation to EPSG:25832 and checks for \`PlotObservationID\`,
-altitude, ecoregion, country, coast, and dune columns. Missing
-\`Ecoreg\` and \`Country\` columns are assigned from the bundled base
-maps; missing altitude, coast and dune columns are reported as warnings.
+columns expected by
+[`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
+Performs coordinate transformation to EPSG:25832 and checks for
+`PlotObservationID`, altitude, ecoregion, country, coast, and dune
+columns. Missing `Ecoreg` and `Country` columns are assigned from the
+bundled base maps; missing altitude, coast and dune columns are reported
+as warnings.
 
 ## Usage
 
@@ -17,32 +19,33 @@ resy_check_data(data, source_crs = NULL, verbose = interactive())
 
 - data:
 
-  A data frame, tibble, or point \`sf\` object.
+  A data frame, tibble, or point `sf` object.
 
 - source_crs:
 
   Integer EPSG code of the coordinates in a plain data frame. When
-  \`NULL\` (default), coordinates that are all valid longitudes and
+  `NULL` (default), coordinates that are all valid longitudes and
   latitudes are read as degrees (EPSG:4326); other coordinates need the
-  code. Ignored when \`data\` is an \`sf\` object, which carries its own
+  code. Ignored when `data` is an `sf` object, which carries its own
   CRS.
 
 - verbose:
 
-  Logical; if \`TRUE\`, informational messages about coordinate
+  Logical; if `TRUE`, informational messages about coordinate
   interpretation and transformation are shown. Defaults to
-  \[interactive()\].
+  [`interactive()`](https://rdrr.io/r/base/interactive.html).
 
 ## Value
 
-An \`sf\` object in EPSG:25832 with all available ESy columns ordered to
-the front: \`PlotObservationID\`, \`Altitude (m)\`, \`Coast_EEA\`,
-\`Dunes_Bohn\`, \`Ecoreg\`, \`Ecoreg_name\`, \`Country\`,
-\`Country_ID\`, \`geometry\`.
+An `sf` object in EPSG:25832 with all available ESy columns ordered to
+the front: `PlotObservationID`, `Altitude (m)`, `Coast_EEA`,
+`Dunes_Bohn`, `Ecoreg`, `Ecoreg_name`, `Country`, `Country_ID`,
+`geometry`.
 
 ## See also
 
-\[resy_harmonize_eunis()\] for the EUNIS-specific enrichment workflow.
+[`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md)
+for the EUNIS-specific enrichment workflow.
 
 ## Examples
 

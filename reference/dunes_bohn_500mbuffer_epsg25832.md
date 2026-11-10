@@ -2,9 +2,9 @@
 
 Polygons of the coastal vegetation (formation P) of the Map of the
 Natural Vegetation of Europe (Bohn et al.), buffered by 500 m, in
-EPSG:25832. The dataset holds the \`sf\` object \`bohn\`; its column
-\`DUNE\` marks dune polygons. Used to set \`Dunes_Bohn\` in
-\[resy_harmonize_eunis()\].
+EPSG:25832. The dataset holds the `sf` object `bohn`; its column `DUNE`
+marks dune polygons. Used to set `Dunes_Bohn` in
+[`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md).
 
 ## Usage
 
@@ -14,7 +14,7 @@ data(dunes_bohn_500mbuffer_epsg25832)
 
 ## Format
 
-An \`sf\` object with 367 polygons.
+An `sf` object with 367 polygons.
 
 ## Source
 
