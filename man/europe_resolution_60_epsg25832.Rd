@@ -17,4 +17,4 @@ data(europe_resolution_60_epsg25832)
 Country boundaries (NUTS level 0, columns `NUTS_ID` and `NUTS_NAME`) at the
 1:60 million scale, in EPSG:25832, for maps.
 }
-\keyword{datasets}
+\keyword{internal}

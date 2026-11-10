@@ -22,3 +22,32 @@ articles:
   navbar: ~
   contents:
   - articles/app
+  
+reference:
+  - title: Main functions
+    contents:
+      - resy_available_classifications
+      - resy_classify
+      - resy_harmonize_eunis
+      - resy_eval_plot
+      - resy_load_expert
+      - resy_read_expert
+  - title: Other functions
+    contents:
+      - RESY-package
+      - resy_add_classification
+      - resy_candidates
+      - resy_canonical_species
+      - resy_check_data
+      - resy_check_eunis
+      - resy_check_taxonomy
+      - resy_clean_names
+      - resy_eunis_names
+      - resy_expert_path
+      - resy_expert_tree
+      - resy_read_synonyms
+      - resy_resolve_taxa
+      - resy_validate_esy
+      - resy_view_expert
+      - resy_write_expert
+      - resy_write_expert_html

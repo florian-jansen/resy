@@ -18,4 +18,4 @@ Country boundaries (NUTS level 0, columns `NUTS_ID` and `NUTS_NAME`) at the
 1:1 million scale, in EPSG:25832. Used to set `Country` in
 [resy_harmonize_eunis()].
 }
-\keyword{datasets}
+\keyword{internal}

@@ -11,7 +11,7 @@
 #' @name dunes_bohn_500mbuffer_epsg25832
 #' @aliases bohn
 #' @docType data
-#' @keywords datasets
+#' @keywords internal
 NULL
 
 #' Regional seas around Europe (EPSG:25832)
@@ -27,7 +27,7 @@ NULL
 #' @name coastline_regions_epsg25832
 #' @aliases co
 #' @docType data
-#' @keywords datasets
+#' @keywords internal
 NULL
 
 #' Ecoregions of Europe (EPSG:25832)
@@ -42,7 +42,7 @@ NULL
 #' @usage data(ecoregions2017_epsg25832)
 #' @name ecoregions2017_epsg25832
 #' @docType data
-#' @keywords datasets
+#' @keywords internal
 NULL
 
 #' European countries at high resolution (EPSG:25832)
@@ -56,7 +56,7 @@ NULL
 #' @usage data(europe_resolution_1_epsg25832)
 #' @name europe_resolution_1_epsg25832
 #' @docType data
-#' @keywords datasets
+#' @keywords internal
 NULL
 
 #' European countries at low resolution (EPSG:25832)
@@ -69,5 +69,5 @@ NULL
 #' @usage data(europe_resolution_60_epsg25832)
 #' @name europe_resolution_60_epsg25832
 #' @docType data
-#' @keywords datasets
+#' @keywords internal
 NULL

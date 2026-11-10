@@ -20,4 +20,4 @@ Vegetation of Europe (Bohn et al.), buffered by 500 m, in EPSG:25832. The
 dataset holds the `sf` object `bohn`; its column `DUNE` marks dune polygons.
 Used to set `Dunes_Bohn` in [resy_harmonize_eunis()].
 }
-\keyword{datasets}
+\keyword{internal}

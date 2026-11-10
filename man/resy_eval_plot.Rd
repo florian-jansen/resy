@@ -4,7 +4,7 @@
 \alias{resy_eval_plot}
 \title{Evaluate and print details for a single plot}
 \usage{
-resy_eval_plot(res, p, type, lower = TRUE)
+resy_eval_plot(res, p, type = character(), lower = TRUE)
 }
 \arguments{
 \item{res}{A `resy_result` returned by [resy_classify()].}

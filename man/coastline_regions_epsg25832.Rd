@@ -20,4 +20,4 @@ in EPSG:25832. The dataset holds the `sf` object `co`; its column `COAST_EEA`
 gives the coast code of each sea (for example `MED_COAST`). Used to set
 `Coast_EEA` in [resy_harmonize_eunis()].
 }
-\keyword{datasets}
+\keyword{internal}

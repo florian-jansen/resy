@@ -35,10 +35,10 @@ first.}
 }
 \value{
 A `tibble` with columns `plot_id`, `type`, `priority`, `priority_rank`.
-With `wide = TRUE`, a `data.table` with one row per plot and columns
-`plot_id`, `classification`, then `type_1`, `priority_1`, `type_2`,
-`priority_2`, ...; a plot with fewer candidates has `NA` in the remaining
-columns.
+  With `wide = TRUE`, a `data.table` with one row per plot and columns
+  `plot_id`, `classification`, then `type_1`, `priority_1`, `type_2`,
+  `priority_2`, ...; a plot with fewer candidates has `NA` in the remaining
+  columns.
 }
 \description{
 The result object returned by [resy_classify()] contains a long table of all
