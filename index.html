@@ -112,14 +112,15 @@
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/resy_classify.html">resy_classify</a></span><span class="op">(</span><span class="va">species</span>, <span class="va">header</span>, scheme <span class="op">=</span> <span class="st">"Apennine-test"</span><span class="op">)</span></span>
 <span><span class="va">cand</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res</span>, top_n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">cand</span><span class="op">$</span><span class="va">classification</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Unknown or uninitialised column: `classification`.</span></span>
 <span><span class="co">#&gt; &lt; table of extent 0 &gt;</span></span></code></pre></div>
 <p><code>F</code>, <code>FB</code>, <code>N</code>, <code>NG</code> and <code>NS</code> are the five vegetation types of <code>Apennine-test</code>. A plot marked <code>?</code> meets no type’s rule and is not classified. Here, 92 of the 200 plots remain unclassified. In these plots, all four indicator groups have at most 4% cover, below the lowest threshold in the rules (5%).</p>
 <p>Each type has a priority in the expert system. When a plot meets the rules of several types, it is assigned to the one with the highest priority. Each row of <code>cand</code> is one plot: the type it is assigned to, then the types whose rules it meets, highest priority first. Plot <code>CX45</code> meets the rules of <code>FB</code> (beech-fir montane forest, priority 5) and of its parent type <code>F</code> (forest, priority 2), and is assigned to <code>FB</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cand</span><span class="op">[</span><span class="va">cand</span><span class="op">$</span><span class="va">plot_id</span> <span class="op">==</span> <span class="st">"CX45"</span>, <span class="op">]</span></span>
-<span><span class="co">#&gt; # A tibble: 0 × 4</span></span>
-<span><span class="co">#&gt; # ℹ 4 variables: plot_id &lt;chr&gt;, type &lt;chr&gt;, priority &lt;chr&gt;, priority_rank &lt;int&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;    plot_id   type priority priority_rank</span></span>
+<span><span class="co">#&gt;     &lt;char&gt; &lt;char&gt;    &lt;ord&gt;         &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:    CX45     FB        5             3</span></span>
+<span><span class="co">#&gt; 2:    CX45      F        2             1</span></span></code></pre></div>
 <p><code>resy_eval_plot(res, p = "CX45")</code> shows the species and conditions behind this assignment. For EUNIS, the header table also needs site data such as the ecoregion and the country, which <code><a href="reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> adds from the plot coordinates.</p>
 <p>RESY accepts these column names, or names standardized to <a href="https://dwc.tdwg.org/" class="external-link">Darwin Core</a>, a standard set of field names for biodiversity data. The example data stores species names in <code>scientificName</code>.</p>
 <table class="table">
@@ -216,17 +217,50 @@
 <h2 id="memo-how-to-cite">
 <span class="emoji" data-emoji="memo">📝</span> How to cite<a class="anchor" aria-label="anchor" href="#memo-how-to-cite"></a>
 </h2>
+<p>To cite RESY in publications, please cite the package together with Bruelheide et al. (2021), which describes the expert-system language RESY implements, and, when you use the EUNIS expert system, Chytrý et al. (2020).</p>
 <pre class="text"><code>Jansen F, Bauer M, Calbi M, Colling G (2026). _RESY: Vegetation Type
 Expert Classification System_. R package version 0.3,
-&lt;https://florian-jansen.github.io/resy/&gt;.</code></pre>
+&lt;https://florian-jansen.github.io/resy/&gt;.
+
+Bruelheide H, Tichý L, Chytrý M, Jansen F (2021). "Implementing the
+formal language of the vegetation classification expert systems (ESy)
+in the statistical computing environment R." _Applied Vegetation
+Science_, *24*, e12562. doi:10.1111/avsc.12562
+&lt;https://doi.org/10.1111/avsc.12562&gt;.
+
+Chytrý M, Tichý L, Hennekens S, Knollová I, others (2020). "EUNIS
+Habitat Classification: expert system, characteristic species
+combinations and distribution maps of European habitats." _Applied
+Vegetation Science_, *23*, 648-675. doi:10.1111/avsc.12519
+&lt;https://doi.org/10.1111/avsc.12519&gt;.</code></pre>
 <p>BibTeX:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="va">@Manual</span>{,</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="dt">title</span> = {RESY: Vegetation Type Expert Classification System},</span>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="va">@Manual</span>{<span class="ot">jansen2026resy</span>,</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="dt">title</span> = {{RESY}: Vegetation Type Expert Classification System},</span>
 <span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="dt">author</span> = {Florian Jansen and Markus Bauer and Mariasole Calbi and Gilles Colling},</span>
 <span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="dt">year</span> = {2026},</span>
 <span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="dt">note</span> = {R package version 0.3},</span>
 <span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="dt">url</span> = {https://florian-jansen.github.io/resy/},</span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>}</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="va">@Article</span>{<span class="ot">bruelheide2021esy</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>  <span class="dt">title</span> = {Implementing the formal language of the vegetation classification expert systems ({ESy}) in the statistical computing environment {R}},</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>  <span class="dt">author</span> = {Helge Bruelheide and Lubomír Tichý and Milan Chytrý and Florian Jansen},</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>  <span class="dt">journal</span> = {Applied Vegetation Science},</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>  <span class="dt">year</span> = {2021},</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>  <span class="dt">volume</span> = {24},</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  <span class="dt">pages</span> = {e12562},</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>  <span class="dt">doi</span> = {10.1111/avsc.12562},</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>}</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="va">@Article</span>{<span class="ot">chytry2020eunis</span>,</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>  <span class="dt">title</span> = {{EUNIS} Habitat Classification: expert system, characteristic species combinations and distribution maps of {European} habitats},</span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>  <span class="dt">author</span> = {Milan Chytrý and Lubomír Tichý and Stephan M. Hennekens and Ilona Knollová and others},</span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>  <span class="dt">journal</span> = {Applied Vegetation Science},</span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>  <span class="dt">year</span> = {2020},</span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>  <span class="dt">volume</span> = {23},</span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>  <span class="dt">pages</span> = {648--675},</span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>  <span class="dt">doi</span> = {10.1111/avsc.12519},</span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="bug-find-a-bug">

@@ -104,7 +104,6 @@ header <- unique(species["PlotObservationID"])
 res <- resy_classify(species, header, scheme = "Apennine-test")
 cand <- resy_candidates(res, top_n = 3)
 table(cand$classification)
-#> Warning: Unknown or uninitialised column: `classification`.
 #> < table of extent 0 >
 ```
 
@@ -124,8 +123,10 @@ its parent type `F` (forest, priority 2), and is assigned to `FB`:
 ``` r
 
 cand[cand$plot_id == "CX45", ]
-#> # A tibble: 0 × 4
-#> # ℹ 4 variables: plot_id <chr>, type <chr>, priority <chr>, priority_rank <int>
+#>    plot_id   type priority priority_rank
+#>     <char> <char>    <ord>         <int>
+#> 1:    CX45     FB        5             3
+#> 2:    CX45      F        2             1
 ```
 
 `resy_eval_plot(res, p = "CX45")` shows the species and conditions
@@ -200,21 +201,58 @@ An overview of all functions and data is given in the tab
 
 ## 📝 How to cite
 
+To cite RESY in publications, please cite the package together with
+Bruelheide et al. (2021), which describes the expert-system language
+RESY implements, and, when you use the EUNIS expert system, Chytrý et
+al. (2020).
+
 ``` text
 Jansen F, Bauer M, Calbi M, Colling G (2026). _RESY: Vegetation Type
 Expert Classification System_. R package version 0.3,
 <https://florian-jansen.github.io/resy/>.
+
+Bruelheide H, Tichý L, Chytrý M, Jansen F (2021). "Implementing the
+formal language of the vegetation classification expert systems (ESy)
+in the statistical computing environment R." _Applied Vegetation
+Science_, *24*, e12562. doi:10.1111/avsc.12562
+<https://doi.org/10.1111/avsc.12562>.
+
+Chytrý M, Tichý L, Hennekens S, Knollová I, others (2020). "EUNIS
+Habitat Classification: expert system, characteristic species
+combinations and distribution maps of European habitats." _Applied
+Vegetation Science_, *23*, 648-675. doi:10.1111/avsc.12519
+<https://doi.org/10.1111/avsc.12519>.
 ```
 
 BibTeX:
 
 ``` bibtex
-@Manual{,
-  title = {RESY: Vegetation Type Expert Classification System},
+@Manual{jansen2026resy,
+  title = {{RESY}: Vegetation Type Expert Classification System},
   author = {Florian Jansen and Markus Bauer and Mariasole Calbi and Gilles Colling},
   year = {2026},
   note = {R package version 0.3},
   url = {https://florian-jansen.github.io/resy/},
+}
+
+@Article{bruelheide2021esy,
+  title = {Implementing the formal language of the vegetation classification expert systems ({ESy}) in the statistical computing environment {R}},
+  author = {Helge Bruelheide and Lubomír Tichý and Milan Chytrý and Florian Jansen},
+  journal = {Applied Vegetation Science},
+  year = {2021},
+  volume = {24},
+  pages = {e12562},
+  doi = {10.1111/avsc.12562},
+}
+
+@Article{chytry2020eunis,
+  title = {{EUNIS} Habitat Classification: expert system, characteristic species combinations and distribution maps of {European} habitats},
+  author = {Milan Chytrý and Lubomír Tichý and Stephan M. Hennekens and Ilona Knollová and others},
+  journal = {Applied Vegetation Science},
+  year = {2020},
+  volume = {23},
+  pages = {648--675},
+  doi = {10.1111/avsc.12519},
 }
 ```
 
