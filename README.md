@@ -7,12 +7,9 @@
 
 [![License:
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/RESY)](https://CRAN.R-project.org/package=RESY)
-[![CRAN
-checks](https://badges.cranchecks.info/worst/RESY.svg)](https://cran.r-project.org/web/checks/check_results_RESY.html)
 [![Downloads](https://cranlogs.r-pkg.org/badges/RESY?color=brightgreen)](https://www.r-pkg.org/pkg/RESY)
-[![Dependencies](https://tinyverse.netlify.app/badge/RESY)](https://CRAN.R-project.org/package=RESY)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 **RESY assigns vegetation plots to vegetation or habitat types based on
