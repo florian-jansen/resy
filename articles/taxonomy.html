@@ -81,12 +81,13 @@ vegetation plots with <code><a href="../reference/resy_classify.html">resy_class
 uses a particular set of species names, and the names in your plot data
 need to match.</p>
 <p>The EUNIS expert system (Chytrý et al. <a href="https://doi.org/10.1111/avsc.12519" class="external-link">2020</a>), for example, uses
-the same species names as the European Vegetation Archive, so data from
+the same species names as the European Vegetation Archive (Chytrý et
+al. <a href="https://doi.org/10.1111/avsc.12191" class="external-link">2016</a>), so data from
 there can be used directly. Data following other taxonomic sources, such
-as GBIF, World Flora Online, POWO or a national checklist, may use
-synonyms, different author citations or spelling variants. RESY matches
-these names in a separate step so you can review the matches before
-classification.</p>
+as <a href="https://www.gbif.org/" class="external-link">GBIF</a>, <a href="https://www.worldfloraonline.org/" class="external-link">World Flora Online</a>, <a href="https://powo.science.kew.org/" class="external-link">POWO</a> or a national checklist,
+may use synonyms, different author citations or spelling variants. RESY
+matches these names in a separate step so you can review the matches
+before classification.</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Resolve</strong> the species names with
@@ -94,8 +95,8 @@ classification.</p>
 <li>
 <strong>Inspect</strong> the matches with <a href="https://rdrr.io/r/base/summary.html" class="external-link"><code>summary()</code></a>.</li>
 <li>
-<strong>Classify</strong> the resolved data with
-<code><a href="../reference/resy_classify.html">resy_classify()</a></code>.</li>
+<strong>Classify</strong> the vegetation surveys with the resolved
+data with <code><a href="../reference/resy_classify.html">resy_classify()</a></code>.</li>
 </ol>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
@@ -112,13 +113,11 @@ vignette:</p>
 <p>RESY ships a synonym table built for the EUNIS expert system: it maps
 alternate species names to the names that EUNIS uses. It pools the
 synonyms of six taxonomic backbones, the reference lists of accepted
-names and their synonyms that taxonomic databases publish (Euro+Med,
-WFO, GBIF, Catalogue of Life, ITIS, NCBI), so a name coming from any of
-them can resolve without you having to say which backbone it came from.
-With another expert system, the table resolves only names that point to
-a species name the two systems share; for the other names, use your own
-synonym table (see <a href="#bring-your-own-crosswalk">Bring your own
-crosswalk</a>).</p>
+names and their synonyms that taxonomic databases publish (<a href="https://europlusmed.org/" class="external-link">Euro+Med</a>, <a href="https://www.worldfloraonline.org/" class="external-link">WFO</a>, <a href="https://www.gbif.org/" class="external-link">GBIF</a>, <a href="https://www.catalogueoflife.org/" class="external-link">Catalogue of Life</a>, <a href="https://www.itis.gov/ncb" class="external-link">ITIS</a>, <a href="https://www.ncbi.nlm.nih.gov/datasets/taxonomy/" class="external-link">NCBI</a>), so a
+name coming from any of them can resolve without you having to say which
+backbone it came from. With another expert system, the table resolves
+only names that point to a species name the two systems share; for the
+other names, use your own synonym table (see <a href="#bring-your-own-crosswalk">Bring your own crosswalk</a>).</p>
 <p>The table was built on 2026-10-28 against the EUNIS expert system
 2025-10-03, from the backbone releases below.
 <code>data-raw/build_synonyms.R</code> in the source repository rebuilds

@@ -8,18 +8,21 @@ in your plot data need to match.
 
 The EUNIS expert system (Chytrý et al.
 [2020](https://doi.org/10.1111/avsc.12519)), for example, uses the same
-species names as the European Vegetation Archive, so data from there can
-be used directly. Data following other taxonomic sources, such as GBIF,
-World Flora Online, POWO or a national checklist, may use synonyms,
-different author citations or spelling variants. RESY matches these
-names in a separate step so you can review the matches before
+species names as the European Vegetation Archive (Chytrý et
+al. [2016](https://doi.org/10.1111/avsc.12191)), so data from there can
+be used directly. Data following other taxonomic sources, such as
+[GBIF](https://www.gbif.org/), [World Flora
+Online](https://www.worldfloraonline.org/),
+[POWO](https://powo.science.kew.org/) or a national checklist, may use
+synonyms, different author citations or spelling variants. RESY matches
+these names in a separate step so you can review the matches before
 classification.
 
 1.  **Resolve** the species names with
     [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md).
 2.  **Inspect** the matches with
     [`summary()`](https://rdrr.io/r/base/summary.html).
-3.  **Classify** the resolved data with
+3.  **Classify** the vegetation surveys with the resolved data with
     [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
 
 ## Example
@@ -39,12 +42,16 @@ library(readr)
 RESY ships a synonym table built for the EUNIS expert system: it maps
 alternate species names to the names that EUNIS uses. It pools the
 synonyms of six taxonomic backbones, the reference lists of accepted
-names and their synonyms that taxonomic databases publish (Euro+Med,
-WFO, GBIF, Catalogue of Life, ITIS, NCBI), so a name coming from any of
-them can resolve without you having to say which backbone it came from.
-With another expert system, the table resolves only names that point to
-a species name the two systems share; for the other names, use your own
-synonym table (see [Bring your own
+names and their synonyms that taxonomic databases publish
+([Euro+Med](https://europlusmed.org/),
+[WFO](https://www.worldfloraonline.org/), [GBIF](https://www.gbif.org/),
+[Catalogue of Life](https://www.catalogueoflife.org/),
+[ITIS](https://www.itis.gov/ncb),
+[NCBI](https://www.ncbi.nlm.nih.gov/datasets/taxonomy/)), so a name
+coming from any of them can resolve without you having to say which
+backbone it came from. With another expert system, the table resolves
+only names that point to a species name the two systems share; for the
+other names, use your own synonym table (see [Bring your own
 crosswalk](#bring-your-own-crosswalk)).
 
 The table was built on 2026-10-28 against the EUNIS expert system

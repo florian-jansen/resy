@@ -2,7 +2,7 @@
 
 ## Authors
 
-- **Florian Jansen**. Author, maintainer.
+- **Florian Jansen**. Author, maintainer, copyright holder.
   [](https://orcid.org/0000-0002-0331-5185)
 
 - **Markus Bauer**. Author. [](https://orcid.org/0000-0001-5372-4174)
