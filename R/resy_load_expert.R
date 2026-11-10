@@ -27,6 +27,9 @@
 #'   one with the same scheme and version.
 #' @return A list of class `resy_parsed_expert`.
 #' @seealso [resy_available_classifications()], [resy_add_classification()]
+#' @examples
+#' expert <- resy_load_expert(scheme = "Apennine-test")
+#' expert$vegtype.formula.names
 #' @export
 resy_load_expert <- function(expertfile = NULL,
                              scheme     = "EUNIS",

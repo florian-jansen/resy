@@ -44,6 +44,10 @@ When no \code{expertfile} is supplied, the function looks for
 given by \code{location}: classifications stored with \code{\link[=resy_add_classification]{resy_add_classification()}}
 (\code{"user"}) and the classifications shipped with the package (\code{"package"}).
 }
+\examples{
+expert <- resy_load_expert(scheme = "Apennine-test")
+expert$vegtype.formula.names
+}
 \seealso{
 \code{\link[=resy_available_classifications]{resy_available_classifications()}}, \code{\link[=resy_add_classification]{resy_add_classification()}}
 }

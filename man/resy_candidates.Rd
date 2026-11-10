@@ -48,3 +48,17 @@ corresponding vegtype formula evaluated to \code{TRUE}).
 
 This helper lets you access, sort, and filter those candidates.
 }
+\examples{
+species <- read.csv(
+  system.file("extdata", "data_example_species.csv", package = "RESY")
+)
+header <- unique(species["PlotObservationID"])
+
+res <- resy_classify(
+  species,
+  header,
+  scheme = "Apennine-test"
+)
+
+resy_candidates(res, top_n = 3)
+}

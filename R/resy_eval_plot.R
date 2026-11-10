@@ -22,6 +22,19 @@
 #' @param lower Logical; if `TRUE` (default), list the lower-level types the
 #'   plot did not reach, with their conditions.
 #' @return `NULL`, invisibly. Called for the printed output.
+#' @examples
+#' species <- read.csv(
+#'   system.file("extdata", "data_example_species.csv", package = "RESY")
+#' )
+#' header <- unique(species["PlotObservationID"])
+#'
+#' res <- resy_classify(
+#'   species,
+#'   header,
+#'   scheme = "Apennine-test"
+#' )
+#'
+#' resy_eval_plot(res, p = as.character(header$PlotObservationID[1]))
 #' @export
 resy_eval_plot <- function(res, p, type = character(), lower = TRUE) {
   .resy_print_plot_evidence(.resy_plot_evidence(res, p, type, lower))

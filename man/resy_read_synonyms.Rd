@@ -34,6 +34,10 @@ version of each backbone are recorded in
 Pass \code{path = NULL} for the shipped table, a file path for a user CSV, or a
 data frame to validate one already in memory.
 }
+\examples{
+synonyms <- resy_read_synonyms()
+head(synonyms)
+}
 \seealso{
 \code{\link{resy_resolve_taxa}}, \code{\link{resy_canonical_species}}
 }

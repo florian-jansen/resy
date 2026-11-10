@@ -48,7 +48,7 @@ obs <- data.frame(
 )
 checked <- resy_check_taxonomy(obs, parsed)
 checked
-RESY::summary(checked)
+summary(checked)
 
 # Names held in a differently named column
 names(obs)[2] <- "species"

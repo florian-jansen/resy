@@ -35,3 +35,17 @@ A plot that matches no type is shown against the top-level types.
 In a rule, \verb{[1]}, \verb{[2]}, ... stand for the numbered conditions listed under
 it, combined with \code{and}, \code{or} and \code{not} as the expert system combines them.
 }
+\examples{
+species <- read.csv(
+  system.file("extdata", "data_example_species.csv", package = "RESY")
+)
+header <- unique(species["PlotObservationID"])
+
+res <- resy_classify(
+  species,
+  header,
+  scheme = "Apennine-test"
+)
+
+resy_eval_plot(res, p = as.character(header$PlotObservationID[1]))
+}

@@ -24,6 +24,7 @@ NULL
 #' Character vector containing the valid prefixes that open Section 2 groups,
 #' including species groups, differential groups, and header variables.
 #'
+#' @return A character vector of recognized Section 2 group prefixes.
 #' @keywords internal
 .resy_group_prefixes <- c("###", "##D", "##Q", "##C", "$$C", "$$N")
 #'

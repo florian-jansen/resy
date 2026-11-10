@@ -66,6 +66,21 @@ and optionally checks and harmonizes species taxonomy.
 Use \code{\link[=resy_check_eunis]{resy_check_eunis()}} first to verify that the input data meets all
 requirements before running this function.
 }
+\examples{
+plots <- data.frame(
+  PlotObservationID = c("site_1", "site_2"),
+  Longitude = c(8.15, 8.35),
+  Latitude = c(53.55, 53.65)
+)
+
+harmonized <- resy_harmonize_eunis(
+  data = plots,
+  source_crs = 4326,
+  verbose = FALSE
+)
+
+harmonized$sites
+}
 \seealso{
 \code{\link[=resy_check_eunis]{resy_check_eunis()}}, \code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}}, \code{\link[=resy_classify]{resy_classify()}}
 }

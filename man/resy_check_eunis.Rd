@@ -41,6 +41,17 @@ Checks performed:
 classification is relevant.
 }
 }
+\examples{
+plots <- data.frame(
+  PlotObservationID = "plot_1",
+  Longitude = 8.15,
+  Latitude = 53.55
+)
+
+check <- resy_check_eunis(plots, source_crs = 4326, verbose = FALSE)
+check$ok
+check$warnings
+}
 \seealso{
 \code{\link[=resy_harmonize_eunis]{resy_harmonize_eunis()}}
 }

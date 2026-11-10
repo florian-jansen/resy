@@ -30,6 +30,16 @@
 #'       columns that [resy_harmonize_eunis()] can fill automatically.}
 #'   }
 #' @seealso [resy_harmonize_eunis()]
+#' @examples
+#' plots <- data.frame(
+#'   PlotObservationID = "plot_1",
+#'   Longitude = 8.15,
+#'   Latitude = 53.55
+#' )
+#'
+#' check <- resy_check_eunis(plots, source_crs = 4326, verbose = FALSE)
+#' check$ok
+#' check$warnings
 #' @export
 resy_check_eunis <- function(data, source_crs = NULL, verbose = TRUE) {
 

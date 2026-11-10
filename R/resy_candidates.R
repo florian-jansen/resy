@@ -26,6 +26,19 @@
 #'   `plot_id`, `classification`, then `type_1`, `priority_1`, `type_2`,
 #'   `priority_2`, ...; a plot with fewer candidates has `NA` in the remaining
 #'   columns.
+#' @examples
+#' species <- read.csv(
+#'   system.file("extdata", "data_example_species.csv", package = "RESY")
+#' )
+#' header <- unique(species["PlotObservationID"])
+#'
+#' res <- resy_classify(
+#'   species,
+#'   header,
+#'   scheme = "Apennine-test"
+#' )
+#'
+#' resy_candidates(res, top_n = 3)
 #' @export
 resy_candidates <- function(
     res, plot_id = NULL, priority = NULL, min_priority = NULL, top_n = NULL,

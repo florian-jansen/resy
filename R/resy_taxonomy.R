@@ -41,6 +41,9 @@
 #' @return A data frame with columns \code{synonym}, \code{esy_canonical}, and
 #'   \code{source}, and \code{accepted_in} when the table has it.
 #' @seealso \code{\link{resy_resolve_taxa}}, \code{\link{resy_canonical_species}}
+#' @examples
+#' synonyms <- resy_read_synonyms()
+#' head(synonyms)
 #' @export
 resy_read_synonyms <- function(path = NULL) {
   if (is.data.frame(path)) return(.resy_validate_synonyms(path))
@@ -123,6 +126,9 @@ resy_read_synonyms <- function(path = NULL) {
 #'   override instead.
 #' @return A sorted character vector of unique canonical ESy species names.
 #' @seealso \code{\link{resy_read_synonyms}}, \code{\link{resy_resolve_taxa}}
+#' @examples
+#' canonical <- resy_canonical_species()
+#' head(canonical)
 #' @export
 resy_canonical_species <- function(path = NULL) {
   if (is.data.frame(path)) {
@@ -192,6 +198,14 @@ resy_canonical_species <- function(path = NULL) {
 #'   and \code{matched} (\code{TRUE} unless unresolved).
 #' @seealso \code{\link{resy_read_synonyms}}, \code{\link{resy_check_taxonomy}},
 #'   \code{\link{resy_classify}}
+#' @examples
+#' obs <- data.frame(
+#'   PlotObservationID = c("p1", "p2"),
+#'   TaxonName = c("Quercus robur", "Poa annua")
+#' )
+#'
+#' resolved <- resy_resolve_taxa(obs, species_col = "TaxonName")
+#' resolved[, c("PlotObservationID", "TaxonName", "canonical", "taxon_confidence", "matched")]
 #' @export
 resy_resolve_taxa <- function(
     obs, species_col = NULL, synonyms = NULL, canonical = NULL

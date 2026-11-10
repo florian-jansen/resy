@@ -20,6 +20,10 @@ Returns the canonical ESy species names -- the set the expert system aggregates
 over, and the target column a user builds a translation table against. Also the
 authority used by \code{\link{resy_resolve_taxa}} for the exact-match step.
 }
+\examples{
+canonical <- resy_canonical_species()
+head(canonical)
+}
 \seealso{
 \code{\link{resy_read_synonyms}}, \code{\link{resy_resolve_taxa}}
 }

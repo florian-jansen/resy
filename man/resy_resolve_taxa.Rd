@@ -51,6 +51,15 @@ holds and how many distinct names resolved; \code{summary()} returns the
 counts per name and per record, the records by match type, and the names that
 stayed unresolved.
 }
+\examples{
+obs <- data.frame(
+  PlotObservationID = c("p1", "p2"),
+  TaxonName = c("Quercus robur", "Poa annua")
+)
+
+resolved <- resy_resolve_taxa(obs, species_col = "TaxonName")
+resolved[, c("PlotObservationID", "TaxonName", "canonical", "taxon_confidence", "matched")]
+}
 \seealso{
 \code{\link{resy_read_synonyms}}, \code{\link{resy_check_taxonomy}},
 \code{\link{resy_classify}}

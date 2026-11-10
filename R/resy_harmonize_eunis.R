@@ -41,6 +41,20 @@
 #'       `run_taxonomy = TRUE`, otherwise `NULL`.}
 #'   }
 #' @seealso [resy_check_eunis()], [resy_check_taxonomy()], [resy_classify()]
+#' @examples
+#' plots <- data.frame(
+#'   PlotObservationID = c("site_1", "site_2"),
+#'   Longitude = c(8.15, 8.35),
+#'   Latitude = c(53.55, 53.65)
+#' )
+#'
+#' harmonized <- resy_harmonize_eunis(
+#'   data = plots,
+#'   source_crs = 4326,
+#'   verbose = FALSE
+#' )
+#'
+#' harmonized$sites
 #' @export
 resy_harmonize_eunis <- function(
     data,
