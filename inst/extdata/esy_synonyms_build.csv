@@ -1,2 +1,2 @@
-"built","taxify_version","taxify_commit","expert_system","expert_version","expert_md5","n_pairs","n_canonicals","n_accepted_in","r_version"
-"2026-10-28","0.7.0",,"EUNIS","2025-10-03","fc042ff60d3f143c54b0f71dab5420ff",64808,10543,6951,"4.6.1"
+"built","taxify_version","taxify_commit","expert_system","expert_version","expert_md5","n_pairs","n_canonicals","n_accepted_in","n_esy_canonical","n_esy_canonical_euromed","r_version"
+"2026-11-13","0.7.0",,"EUNIS","2025-10-03","fc042ff60d3f143c54b0f71dab5420ff",64808,10543,6951,20158,18829,"4.6.1"
