@@ -16,7 +16,8 @@
 # Outputs
 #   inst/extdata/esy_synonyms.csv.xz         synonym, esy_canonical, source,
 #                                            accepted_in
-#   inst/extdata/esy_synonyms_backbones.csv  backbone versions and content ids
+#   inst/extdata/esy_synonyms_backbones.csv  backbone versions, content ids, and
+#                                            synonym counts per backbone
 #   inst/extdata/esy_synonyms_build.csv      build date, tool versions, counts
 #   data-raw/esy_synonyms_taxify_lock.json   taxify lockfile
 #   data-raw/esy_synonyms_build_log.csv      pair count after each filter
@@ -79,6 +80,7 @@ harvest <- function(bb) {
 }
 
 pairs <- do.call(rbind, lapply(BACKBONES, harvest))
+synonym_rows <- table(factor(pairs$backbone, levels = BACKBONES))
 log_n <- data.frame(step = "harvested synonym rows", n = nrow(pairs))
 note  <- function(step, x) {
   log_n <<- rbind(log_n, data.frame(step = step, n = nrow(x)))
@@ -97,6 +99,12 @@ pairs <- pairs[pairs$esy_canonical %in% esy_canonical & is_binomial &
 syn_author <- unique(pairs)
 pairs <- note("accepted name is an ESy canonical; binomial synonyms; no self-maps",
               unique(pairs[c("synonym", "esy_canonical", "backbone")]))
+
+# Per backbone: synonym pairs pointing to an ESy canonical, and how many of them
+# the expert system already lists in its own vocabulary.
+in_expert <- pairs$synonym %in% union(esy_canonical, expert_vocab)
+synonyms_to_esy <- table(factor(pairs$backbone, levels = BACKBONES))
+synonyms_in_expert <- table(factor(pairs$backbone[in_expert], levels = BACKBONES))
 
 # A synonym pointing at more than one canonical across backbones is resolved by
 # Euro+Med, the authority the expert system follows: its single answer is kept,
@@ -126,6 +134,7 @@ em_all <- vectra::tbl(backbone_table("euromed")) |>
   vectra::collect()
 em_all$name    <- norm(em_all$canonical_name)
 em_all$concept <- ifelse(em_all$is_synonym, em_all$accepted_taxon_id, em_all$taxon_id)
+n_canonical_euromed <- sum(esy_canonical %in% em_all$name[!em_all$is_synonym])
 
 accepted_species <- em_all[!em_all$is_synonym & em_all$taxon_rank == "SPECIES", ]
 concepts_by_name <- split(em_all$concept, em_all$name)
@@ -225,6 +234,9 @@ backbones_out <- data.frame(
   stringsAsFactors = FALSE
 )
 backbones_out <- backbones_out[match(BACKBONES, backbones_out$backbone), ]
+backbones_out$synonym_rows       <- as.integer(synonym_rows[backbones_out$backbone])
+backbones_out$synonyms_to_esy    <- as.integer(synonyms_to_esy[backbones_out$backbone])
+backbones_out$synonyms_in_expert <- as.integer(synonyms_in_expert[backbones_out$backbone])
 write_lf(backbones_out, "inst/extdata/esy_synonyms_backbones.csv")
 
 build_out <- data.frame(
@@ -237,6 +249,8 @@ build_out <- data.frame(
   n_pairs         = nrow(table_out),
   n_canonicals    = length(unique(table_out$esy_canonical)),
   n_accepted_in   = sum(nzchar(table_out$accepted_in)),
+  n_esy_canonical = length(esy_canonical),
+  n_esy_canonical_euromed = n_canonical_euromed,
   r_version       = as.character(getRversion()),
   stringsAsFactors = FALSE
 )
