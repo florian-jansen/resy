@@ -37,142 +37,31 @@ library(ggplot2)
 library(readr)
 ```
 
-### The shipped synonym table
-
-RESY ships a synonym table built for the EUNIS expert system: it maps
-alternate species names to the names that EUNIS uses. It pools the
-synonyms of six taxonomic backbones, the reference lists of accepted
-names and their synonyms that taxonomic databases publish (Euro+Med
-(europlusmed.org), [WFO](https://www.worldfloraonline.org/),
-[GBIF](https://www.gbif.org/), [Catalogue of
-Life](https://www.catalogueoflife.org/), [ITIS](https://www.itis.gov/),
-[NCBI](https://www.ncbi.nlm.nih.gov/datasets/taxonomy/)), so a name
-coming from any of them can resolve without you having to say which
-backbone it came from. With another expert system, the table resolves
-only names that point to a species name the two systems share; for the
-other names, use your own synonym table (see [Bring your own
-crosswalk](#bring-your-own-crosswalk)).
-
-The table was built on 2026-10-28 against the EUNIS expert system
-2025-10-03, from the backbone releases below.
-`data-raw/build_synonyms.R` in the source repository rebuilds it with
-taxify 0.7.0 (Colling
-[2026](https://doi.org/10.32614/CRAN.package.taxify)).
-
-| Backbone | Upstream data |
-|:---------|:--------------|
-| euromed  | 2026-07-11    |
-| wfo      | 2026-06-21    |
-| gbif     | 2023-08-28    |
-| col      | 2026-09-11    |
-| itis     | 2026-08-27    |
-| ncbi     | 2026-09       |
-
-The synonyms are binomials (genus and species epithet). Infraspecific
-names, hybrid formulas, and bare genera are not in the table, so a name
-of that kind is not resolved through it.
-
-[`resy_read_synonyms()`](https://florian-jansen.github.io/resy/reference/resy_read_synonyms.md)
-without arguments reads the shipped table:
-
-``` r
-
-syn <- resy_read_synonyms()
-nrow(syn)
-#> [1] 64808
-head(syn)
-#>                    synonym          esy_canonical       source accepted_in
-#> 1       Abelmoschus bammia Abelmoschus esculentus col;gbif;wfo        <NA>
-#> 2  Abelmoschus longifolius Abelmoschus esculentus col;gbif;wfo        <NA>
-#> 3      Abelmoschus praecox Abelmoschus esculentus col;gbif;wfo        <NA>
-#> 4 Abelmoschus tuberculatus Abelmoschus esculentus col;gbif;wfo        <NA>
-#> 5          Hibiscus bammia Abelmoschus esculentus col;gbif;wfo        <NA>
-#> 6      Hibiscus ficifolius Abelmoschus esculentus col;gbif;wfo        <NA>
-```
-
-Each row of the shipped table is a synonym pair: an alternate spelling
-(`synonym`) and the EUNIS name it resolves to (`esy_canonical`), with
-the backbone(s) that support the synonym pair (`source`). The column
-`accepted_in` names the backbones that list the synonym as an accepted
-name under the same author as the synonym rows supporting the synonym
-pair. A backbone appears in both `source` and `accepted_in` when it
-holds an accepted row and a synonym row for the name. The column is
-empty for 89% of the synonym pairs.
-
-``` r
-
-head(syn[!is.na(syn$accepted_in), ], 4)
-#>                 synonym     esy_canonical       source accepted_in
-#> 32       Abies hudsonia    Abies balsamea      col;wfo         wfo
-#> 40     Abies panachaica Abies cephalonica col;gbif;wfo        gbif
-#> 41 Abies peloponnesiaca Abies cephalonica col;gbif;wfo        gbif
-#> 45    Picea cephalonica Abies cephalonica col;gbif;wfo         wfo
-```
-
-A synonym pair with several backbones in `source` is counted once for
-each of them, so the counts per backbone add up to more than the number
-of rows.
-
-``` r
-
-per_backbone <- table(unlist(strsplit(syn$source, ";", fixed = TRUE)))
-support <- data.frame(
-  backbone = names(per_backbone),
-  pairs    = as.integer(per_backbone),
-  share    = round(100 * as.integer(per_backbone) / nrow(syn), 1)
-)
-support <- support[order(-support$pairs), ]
-
-knitr::kable(
-  support,
-  row.names   = FALSE,
-  col.names   = c("Backbone", "Synonym pairs", "% of table"),
-  format.args = list(big.mark = ",")
-)
-```
-
-| Backbone | Synonym pairs | % of table |
-|:---------|--------------:|-----------:|
-| gbif     |        53,530 |       82.6 |
-| wfo      |        46,970 |       72.5 |
-| col      |        46,180 |       71.3 |
-| itis     |         4,050 |        6.2 |
-| ncbi     |           864 |        1.3 |
-| euromed  |           588 |        0.9 |
-
-Most synonym pairs are supported by more than one backbone:
-
-``` r
-
-per_pair <- table(lengths(strsplit(syn$source, ";", fixed = TRUE)))
-support_n <- data.frame(
-  n_backbones = names(per_pair),
-  pairs       = as.integer(per_pair)
-)
-
-ggplot(support_n, aes(x = n_backbones, y = pairs)) +
-  geom_col() +
-  scale_y_continuous(labels = function(x) format(x, big.mark = ",")) +
-  labs(x = "Number of backbones supporting a synonym pair", y = "Synonym pairs") +
-  theme_classic()
-```
-
-![](taxonomy_files/figure-html/support-plot-1.png)
-
 ### Resolve names
 
 [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
 maps a column of names to the species names of an expert system, called
-the canonical names. By default, these are the EUNIS names and the
-shipped synonym table; `canonical` and `synonyms` set others (see [Bring
-your own crosswalk](#bring-your-own-crosswalk)). A name that is already
-a canonical name resolves to itself (`"exact"`); otherwise it is looked
-up in the synonym table (`"synonym"`). A name that matches neither is
-matched again with its author citation removed by
-[`resy_clean_names()`](https://florian-jansen.github.io/resy/reference/resy_clean_names.md)
-(`"cleaned_exact"`, `"cleaned_synonym"`); the name in your data is left
-as it is. A name that still matches nothing stays `NA` and is flagged
-`"unresolved"`. Nothing is ever replaced with a best guess.
+the canonical names. By default, these are the species names of the
+EUNIS expert system, which ship with RESY. They come from the expert
+system itself, not from a taxonomic database, but 93% of them (18,829 of
+20,158) are accepted names in Euro+Med PlantBase (release 2026.08).
+
+Each name is looked up in up to four steps, and the first step that
+finds it sets the match type:
+
+1.  The name is a canonical name (`"exact"`).
+2.  The name is in the synonym table (`"synonym"`), described in [The
+    shipped synonym table](#the-shipped-synonym-table).
+3.  With its author citation removed by
+    [`resy_clean_names()`](https://florian-jansen.github.io/resy/reference/resy_clean_names.md),
+    the name is a canonical name (`"cleaned_exact"`).
+4.  With its author citation removed, the name is in the synonym table
+    (`"cleaned_synonym"`).
+
+The name without author citation is used only for the lookup; the name
+column in your data keeps the name as submitted. A name that none of the
+four steps finds stays `NA` and is flagged `"unresolved"`. Nothing is
+ever replaced with a best guess.
 
 ``` r
 
@@ -227,14 +116,154 @@ summary(resolved)
 ```
 
 Unresolved names can be fixed by correcting a spelling, adding a row to
-your own crosswalk, or leaving them out.
+your own crosswalk (see [Bring your own
+crosswalk](#bring-your-own-crosswalk)), or leaving them out.
+
+### The shipped synonym table
+
+RESY ships a synonym table built for the EUNIS expert system: it maps
+alternate species names to the names that EUNIS uses. It pools the
+synonyms of six taxonomic backbones, the reference lists of accepted
+names and their synonyms that taxonomic databases publish (Euro+Med
+(europlusmed.org), [WFO](https://www.worldfloraonline.org/),
+[GBIF](https://www.gbif.org/), [Catalogue of
+Life](https://www.catalogueoflife.org/), [ITIS](https://www.itis.gov/),
+[NCBI](https://www.ncbi.nlm.nih.gov/datasets/taxonomy/)), so a name
+coming from any of them can resolve without you having to say which
+backbone it came from. With another expert system, the table resolves
+only names that point to a species name the two systems share; for the
+other names, use your own synonym table (see [Bring your own
+crosswalk](#bring-your-own-crosswalk)).
+
+The table was built on 2026-11-13 against the EUNIS expert system
+2025-10-03, from the backbone releases below.
+`data-raw/build_synonyms.R` in the source repository rebuilds it with
+taxify 0.7.0 (Colling
+[2026](https://doi.org/10.32614/CRAN.package.taxify)).
+
+| Backbone | Upstream data |
+|:---------|:--------------|
+| euromed  | 2026-07-11    |
+| wfo      | 2026-06-21    |
+| gbif     | 2023-08-28    |
+| col      | 2026-09-11    |
+| itis     | 2026-08-27    |
+| ncbi     | 2026-09       |
+
+The synonyms are binomials (genus and species epithet). Infraspecific
+names, hybrid formulas, and bare genera are not in the table, so a name
+of that kind is not resolved through it.
+
+[`resy_read_synonyms()`](https://florian-jansen.github.io/resy/reference/resy_read_synonyms.md)
+without arguments reads the shipped table:
+
+``` r
+
+syn <- resy_read_synonyms()
+nrow(syn)
+#> [1] 64808
+head(syn)
+#>                    synonym          esy_canonical       source accepted_in
+#> 1       Abelmoschus bammia Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 2  Abelmoschus longifolius Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 3      Abelmoschus praecox Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 4 Abelmoschus tuberculatus Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 5          Hibiscus bammia Abelmoschus esculentus col;gbif;wfo        <NA>
+#> 6      Hibiscus ficifolius Abelmoschus esculentus col;gbif;wfo        <NA>
+```
+
+Each row of the shipped table is a synonym pair: an alternate spelling
+(`synonym`) and the EUNIS name it resolves to (`esy_canonical`), with
+the backbone(s) that list the synonym under that name (`source`). The
+column `accepted_in` names the backbones that list the same synonym as
+an accepted name of its own, by the same author as in the backbones of
+`source` (an accepted name by another author is a different taxon with
+the same name and is not counted). A backbone appears in both `source`
+and `accepted_in` when it holds an accepted row and a synonym row for
+the name.
+
+The column is empty for 89% of the synonym pairs: no backbone accepts
+these synonyms as species of their own, so every backbone that lists the
+name agrees that it is a synonym. A filled `accepted_in` marks a name
+that one backbone treats as a synonym and another as a separate species:
+
+``` r
+
+head(syn[!is.na(syn$accepted_in), ], 4)
+#>                 synonym     esy_canonical       source accepted_in
+#> 32       Abies hudsonia    Abies balsamea      col;wfo         wfo
+#> 40     Abies panachaica Abies cephalonica col;gbif;wfo        gbif
+#> 41 Abies peloponnesiaca Abies cephalonica col;gbif;wfo        gbif
+#> 45    Picea cephalonica Abies cephalonica col;gbif;wfo         wfo
+```
+
+A synonym pair with several backbones in `source` is counted once for
+each of them, so the counts per backbone add up to more than the number
+of rows.
+
+``` r
+
+per_backbone <- table(unlist(strsplit(syn$source, ";", fixed = TRUE)))
+support <- data.frame(
+  backbone = names(per_backbone),
+  pairs    = as.integer(per_backbone),
+  share    = round(100 * as.integer(per_backbone) / nrow(syn), 1)
+)
+support <- support[order(-support$pairs), ]
+
+knitr::kable(
+  support,
+  row.names   = FALSE,
+  col.names   = c("Backbone", "Synonym pairs", "% of table"),
+  format.args = list(big.mark = ",")
+)
+```
+
+| Backbone | Synonym pairs | % of table |
+|:---------|--------------:|-----------:|
+| gbif     |        53,530 |       82.6 |
+| wfo      |        46,970 |       72.5 |
+| col      |        46,180 |       71.3 |
+| itis     |         4,050 |        6.2 |
+| ncbi     |           864 |        1.3 |
+| euromed  |           588 |        0.9 |
+
+GBIF supports the most synonym pairs and Euro+Med the fewest, for two
+reasons measured on the backbone releases above. The GBIF backbone holds
+3,034,449 synonym rows, the Euro+Med backbone 85,335. And most Euro+Med
+synonymy is already part of the expert system: of the Euro+Med synonyms
+that point to a EUNIS name, 96% are names the expert system lists in its
+own species aggregation, so the classifier already counts them and the
+table leaves them out. For GBIF, this share is 34%.
+
+Most synonym pairs are supported by more than one backbone:
+
+``` r
+
+per_pair <- table(lengths(strsplit(syn$source, ";", fixed = TRUE)))
+support_n <- data.frame(
+  n_backbones = names(per_pair),
+  pairs       = as.integer(per_pair)
+)
+
+ggplot(support_n, aes(x = n_backbones, y = pairs)) +
+  geom_col() +
+  scale_y_continuous(labels = function(x) format(x, big.mark = ",")) +
+  labs(x = "Number of backbones supporting a synonym pair", y = "Synonym pairs") +
+  theme_classic()
+```
+
+![](taxonomy_files/figure-html/support-plot-1.png)
 
 ### Bring your own crosswalk
 
+A crosswalk is a table that maps each name of one name list to the
+matching name in another, here from the names in your data to the
+canonical names of the expert system. The shipped synonym table is one;
 [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
-also accepts your own crosswalk, with three columns: `synonym`,
-`esy_canonical`, and `source`. It can come from a national checklist, a
-Turboveg species list, or a name-matching package such as
+also accepts your own, with three columns: `synonym`, `esy_canonical`,
+and `source`. It can come from a national checklist, a Turboveg species
+list, or a name-matching package such as
 [taxify](https://github.com/gcol33/taxify) or
 [taxize](https://doi.org/10.32614/CRAN.package.taxize) (Chamberlain &
 Szocs [2013](https://f1000research.com/articles/2-191/v2)). A small
@@ -299,10 +328,12 @@ ambiguous table cannot produce a silent substitution.
 ### Classify the resolved data
 
 Once the names match the species list of the expert system, classify as
-usual. Resolve them against the species list of the expert system you
-classify with (here `Apennine-test`), write the resolved name back to
-the name column, keeping the original where a name did not resolve, and
-pass the result to
+in [Get
+started](https://florian-jansen.github.io/resy/articles/RESY.md).
+Resolve them against the species list of the expert system you classify
+with (here `Apennine-test`), write the resolved name back to the name
+column, keeping the original where a name did not resolve, and pass the
+result to
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
 The species list is taken from `expert$aggs`, which holds the taxa of
 the expert system: each name is a taxon the rules use, and its elements
