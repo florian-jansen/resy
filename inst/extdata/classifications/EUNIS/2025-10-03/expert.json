@@ -2688,7 +2688,6 @@
     "Alchemilla crassicaulis": ["Alchemilla gortschakowskii"],
     "Alchemilla crinita": ["Alchemilla palmata subsp. crinita"],
     "Alchemilla decumbens": ["Alchemilla (Group) decumbens"],
-    "Alchemilla decumbens aggr.": ["Alchemilla decumbens aggr. sensu"],
     "Alchemilla devestiens": ["Alchemilla calvipes"],
     "Alchemilla diversipes": ["Alchemilla alexandri"],
     "Alchemilla exigua": ["Alchemilla pseudoexigua"],
@@ -23982,10 +23981,6 @@
       "Cladonia crispata var. cetrariaeformis",
       "Cladonia crispata var. cetrariiformis",
       "Cladonia crispata var. crispata"
-    ],
-    "Cladonia deformis aggr.": [
-      "Cladonia deformis",
-      "CLADONIA DEFORMIS COLL."
     ],
     "Cladonia ecmocyna": ["Cladonia ecmocyna aggr."],
     "Cladonia elongata": ["Cladonia elongata (Jacq.) Hoffm."],
