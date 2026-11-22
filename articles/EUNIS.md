@@ -227,7 +227,7 @@ and whether it matched (`matched`):
 ``` r
 
 outcome$species_checked
-#> <resy_taxa> 1006 name(s) from column `scientificName` checked against 20159 Section 1 species
+#> <resy_taxa> 1006 name(s) from column `scientificName` checked against 20157 Section 1 species
 #>   scientificName  Name as submitted
 #>   TaxonName       Canonical name used by resy_classify(); NA when unmatched
 #>   matched         TRUE if found as a canonical name or Section 1 synonym
@@ -339,8 +339,8 @@ res <- resy_classify(
 #> Step 5.9  Number of T$ NON conditions: 140
 #> Step 5.10  Header conditions with numeric values: 4
 #>   Header conditions with character values: 4
-#> adapt conditions 2026-11-13 11:53:58.152785
-#> classification from here on 2026-11-13 11:53:58.279382
+#> adapt conditions 2026-11-22 21:04:21.853399
+#> classification from here on 2026-11-22 21:04:21.961728
 ```
 
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
