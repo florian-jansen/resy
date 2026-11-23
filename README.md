@@ -104,9 +104,11 @@ species <- read.csv(file)
 header <- unique(species["PlotObservationID"])
 
 res <- resy_classify(species, header, scheme = "Apennine-test")
-cand <- resy_candidates(res, top_n = 3)
+cand <- resy_candidates(res, top_n = 3, wide = TRUE)
 table(cand$classification)
-#> < table of extent 0 >
+#> 
+#>  ?  F FB  N NG NS 
+#> 92 33  8  6 20 41
 ```
 
 `F`, `FB`, `N`, `NG` and `NS` are the five vegetation types of
@@ -124,10 +126,9 @@ its parent type `F` (forest, priority 2), and is assigned to `FB`:
 
 ``` r
 cand[cand$plot_id == "CX45", ]
-#>    plot_id   type priority priority_rank
-#>     <char> <char>    <ord>         <int>
-#> 1:    CX45     FB        5             3
-#> 2:    CX45      F        2             1
+#>    plot_id classification type_1 priority_1 type_2 priority_2
+#>     <char>         <char> <char>      <ord> <char>      <ord>
+#> 1:    CX45             FB     FB          5      F          2
 ```
 
 `resy_eval_plot(res, p = "CX45")` shows the species and conditions

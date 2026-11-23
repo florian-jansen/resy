@@ -10,7 +10,7 @@
 #' called.
 #'
 #' The result is a `resy_taxa` data frame. Printing it shows what each column
-#' holds and how many names matched; [summary()] returns the match counts and
+#' holds and how many names matched; [base::summary()] returns the match counts and
 #' the unmatched names.
 #'
 #' @param obs A data frame or `data.table` with a column holding taxon names.

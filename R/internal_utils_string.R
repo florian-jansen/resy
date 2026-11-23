@@ -27,12 +27,12 @@ NULL
 #'
 #' @param x A character vector.
 #' @return A character vector with trailing patterns removed.
-#' #' @details
+#' @details
 #' This function targets common trailing artifacts in RESY data, such as
 #' spaces followed by digits or hyphen-digit combinations (e.g., " - 1").
 #' It does not handle all possible trailing patterns; for more complex cases,
 #' use regular expressions directly
-#' @seealso [.resy_trim()], [.resy_trim_leading()]
+#' @seealso `.resy_trim()`, `.resy_trim_leading()`
 #' @keywords internal
 #' @noRd
 .resy_trim_trailing <- function(x) sub("\\s+$|\\s+\\d$|\\s+\\-\\s+\\d$", "", x)
@@ -43,7 +43,7 @@ NULL
 #'
 #' @param x A character vector.
 #' @return A character vector with leading whitespace removed.
-#' @seealso [.resy_trim()], [.resy_trim_trailing()]
+#' @seealso `.resy_trim()`, `.resy_trim_trailing()`
 #' @keywords internal
 #' @noRd
 .resy_trim_leading <- function(x) sub("^\\s+", "", x)

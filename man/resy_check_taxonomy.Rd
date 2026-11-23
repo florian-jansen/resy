@@ -34,7 +34,7 @@ This is a purely offline check; no external name-resolution service is
 called.
 
 The result is a \code{resy_taxa} data frame. Printing it shows what each column
-holds and how many names matched; \code{\link[=summary]{summary()}} returns the match counts and
+holds and how many names matched; \code{\link[base:summary]{base::summary()}} returns the match counts and
 the unmatched names.
 }
 \examples{

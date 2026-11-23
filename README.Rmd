@@ -100,7 +100,7 @@ species <- read.csv(file)
 header <- unique(species["PlotObservationID"])
 
 res <- resy_classify(species, header, scheme = "Apennine-test")
-cand <- resy_candidates(res, top_n = 3)
+cand <- resy_candidates(res, top_n = 3, wide = TRUE)
 table(cand$classification)
 ```
 

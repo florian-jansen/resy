@@ -30,6 +30,7 @@ export(resy_write_expert)
 export(resy_write_expert_html)
 import(data.table)
 importFrom(fastmatch,fmatch)
+importFrom(lifecycle,deprecated)
 importFrom(stringi,stri_replace_all_fixed)
 importFrom(utils,
   head,

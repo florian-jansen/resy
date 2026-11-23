@@ -26,6 +26,7 @@ NULL
 #'
 #' @return A character vector of recognized Section 2 group prefixes.
 #' @keywords internal
+#' @noRd
 .resy_group_prefixes <- c("###", "##D", "##Q", "##C", "$$C", "$$N")
 #'
 #' Extract the Group Name from a Section 2 Key
