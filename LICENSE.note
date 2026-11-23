@@ -77,6 +77,11 @@ inst/extdata/esy_canonical.csv.xz
   backbones below (versions in inst/extdata/esy_synonyms_backbones.csv).
 
   Euro+Med PlantBase (https://europlusmed.org).
+    Licence: CC BY-SA 3.0 Unported (notice on the Euro+Med taxon pages,
+    https://ww2.bgbm.org/EuroPlusMed/).
+    Cite: Euro+Med 2006+ [continuously updated]: Euro+Med PlantBase - the
+    information resource for Euro-Mediterranean plant diversity. Published at
+    http://www.europlusmed.org
   World Flora Online (WFO) taxonomic backbone.
     Licence: CC0 1.0 (https://www.worldfloraonline.org/downloadData).
     Cite: WFO (2026): World Flora Online. Version 2026.06. Published on the
