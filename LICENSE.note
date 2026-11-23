@@ -1,0 +1,96 @@
+RESY is released under the MIT licence (see LICENSE), except for the
+third-party data listed below, which keep their own licences and copyright
+notices. Each entry names the files, their source, the licence and the
+attribution the provider asks for.
+
+
+Expert system
+-------------
+
+inst/extdata/classifications/EUNIS/2025-10-03/expert.json.xz
+  EUNIS-ESy expert system, version 2025-10-03 (Zenodo,
+  https://zenodo.org/records/16895007), in RESY's JSON format.
+  Licence: Creative Commons Attribution 4.0 International (CC BY 4.0).
+  Cite: Chytrý, M. et al. (2020) EUNIS Habitat Classification: expert system,
+  characteristic species combinations and distribution maps of European
+  habitats. Applied Vegetation Science. https://doi.org/10.1111/avsc.12519,
+  version 2025-10-03.
+
+
+Geographic data (data/)
+-----------------------
+
+data/ecoregions2017_epsg25832.rda
+  RESOLVE Ecoregions 2017, European subset, reprojected to EPSG:25832.
+  Licence: CC BY 4.0 (https://ecoregions.appspot.com).
+  Cite: Dinerstein, E. et al. (2017) An ecoregion-based approach to protecting
+  half the terrestrial realm. BioScience 67.
+  https://doi.org/10.1093/biosci/bix014
+
+data/coastline_regions_epsg25832.rda
+  Regional seas around Europe (Marine Strategy Framework Directive regions),
+  European Environment Agency, reprojected to EPSG:25832.
+  Licence: CC BY 4.0, EEA reuse policy (https://www.eea.europa.eu/en/legal-notice).
+  Source: European Environment Agency (EEA).
+
+data/europe_resolution_1_epsg25832.rda
+data/europe_resolution_60_epsg25832.rda
+  NUTS level 0 boundaries, 1:1 million and 1:60 million, Eurostat GISCO,
+  reprojected to EPSG:25832.
+  Terms: Eurostat GISCO copyright notice for administrative units
+  (https://ec.europa.eu/eurostat/web/gisco/geodata/statistical-units).
+  © EuroGeographics for the administrative boundaries.
+
+data/dunes_bohn_500mbuffer_epsg25832.rda
+  Coastal vegetation (formation P) of the Map of the Natural Vegetation of
+  Europe, buffered by 500 m, reprojected to EPSG:25832.
+  Cite: Bohn, U. et al. Map of the Natural Vegetation of Europe. Federal
+  Agency for Nature Conservation (BfN).
+
+
+Example data (inst/extdata/)
+----------------------------
+
+inst/extdata/data_example_altitude.tif
+  Cropped from EuroDEM (https://www.mapsforeurope.org/datasets/euro-dem).
+  Licence: EuroGeographics Open Data Licence
+  (https://www.mapsforeurope.org/licence).
+  This dataset includes Intellectual Property from European National Mapping
+  and Cadastral Authorities and is licensed on behalf of these by
+  EuroGeographics. Original dataset is available for free at
+  https://www.mapsforeurope.org. Terms of the licence available at
+  https://www.mapsforeurope.org/licence.
+
+inst/extdata/data_example_species.csv
+inst/extdata/data_example_sites.csv
+inst/extdata/eunis_2021_names.csv
+  Source: <not found>
+  Licence: <not found>
+
+
+Species-name synonym table (inst/extdata/)
+------------------------------------------
+
+inst/extdata/esy_synonyms.csv.xz
+inst/extdata/esy_canonical.csv.xz
+  Built by data-raw/build_synonyms.R from the synonym lists of the taxonomic
+  backbones below (versions in inst/extdata/esy_synonyms_backbones.csv).
+
+  Euro+Med PlantBase (https://europlusmed.org).
+  World Flora Online (WFO) taxonomic backbone.
+    Licence: CC0 1.0 (https://www.worldfloraonline.org/downloadData).
+    Cite: WFO (2026): World Flora Online. Version 2026.06. Published on the
+    Internet; http://www.worldfloraonline.org.
+  GBIF Backbone Taxonomy.
+    Licence: CC BY 4.0.
+    Cite: GBIF Secretariat (2023). GBIF Backbone Taxonomy. Checklist dataset
+    https://doi.org/10.15468/39omei
+  Catalogue of Life (COL).
+    Licence: CC BY (https://api.checklistbank.org/dataset/3LR).
+    Cite: Catalogue of Life checklist, version 2026.09.
+  Integrated Taxonomic Information System (ITIS).
+    Licence: CC0 (https://www.itis.gov/citation.html).
+    Retrieved from the Integrated Taxonomic Information System (ITIS) on-line
+    database, www.itis.gov, CC0. https://doi.org/10.5066/F7KH0KBK
+  NCBI Taxonomy.
+    National Library of Medicine (NLM) is acknowledged as the source.
