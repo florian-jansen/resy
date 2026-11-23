@@ -4,7 +4,6 @@
 .*\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
-^RESY\.png$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$

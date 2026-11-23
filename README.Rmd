@@ -185,7 +185,8 @@ fence <- function(lang, x) {
   cat("```", lang, "\n", paste(x, collapse = "\n\n"), "\n```\n\n", sep = "")
 }
 cat(attr(cit, "mheader"), "\n\n", sep = "")
-fence("text", format(cit, style = "text"))
+refs <- sub("others (", "et al. (", format(cit, style = "md"), fixed = TRUE)
+cat(paste0("- ", gsub("\n", " ", refs), collapse = "\n"), "\n\n", sep = "")
 cat("BibTeX:\n\n")
 fence("bibtex", format(cit, style = "bibtex"))
 ```

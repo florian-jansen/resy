@@ -203,23 +203,19 @@ Bruelheide et al. (2021), which describes the expert-system language
 RESY implements, and, when you use the EUNIS expert system, Chytrý et
 al. (2020).
 
-``` text
-Jansen F, Bauer M, Calbi M, Colling G (2026). _RESY: Vegetation Type
-Expert Classification System_. R package version 0.3,
-<https://florian-jansen.github.io/resy/>.
-
-Bruelheide H, Tichý L, Chytrý M, Jansen F (2021). "Implementing the
-formal language of the vegetation classification expert systems (ESy)
-in the statistical computing environment R." _Applied Vegetation
-Science_, *24*, e12562. doi:10.1111/avsc.12562
-<https://doi.org/10.1111/avsc.12562>.
-
-Chytrý M, Tichý L, Hennekens S, Knollová I, others (2020). "EUNIS
-Habitat Classification: expert system, characteristic species
-combinations and distribution maps of European habitats." _Applied
-Vegetation Science_, *23*, 648-675. doi:10.1111/avsc.12519
-<https://doi.org/10.1111/avsc.12519>.
-```
+- Jansen F, Bauer M, Calbi M, Colling G (2026). *RESY: Vegetation Type
+  Expert Classification System*. R package version 0.3,
+  <https://florian-jansen.github.io/resy/>.
+- Bruelheide H, Tichý L, Chytrý M, Jansen F (2021). “Implementing the
+  formal language of the vegetation classification expert systems (ESy)
+  in the statistical computing environment R.” *Applied Vegetation
+  Science*, **24**, e12562.
+  [doi:10.1111/avsc.12562](https://doi.org/10.1111/avsc.12562).
+- Chytrý M, Tichý L, Hennekens S, Knollová I, et al. (2020). “EUNIS
+  Habitat Classification: expert system, characteristic species
+  combinations and distribution maps of European habitats.” *Applied
+  Vegetation Science*, **23**, 648-675.
+  [doi:10.1111/avsc.12519](https://doi.org/10.1111/avsc.12519).
 
 BibTeX:
 
