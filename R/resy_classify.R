@@ -57,7 +57,8 @@
 #'   names are resolved to the expert's vocabulary via [resy_resolve_taxa] before
 #'   classification (see Description).
 #' @param synonyms Synonym-table override passed to [resy_resolve_taxa] when
-#'   `resolve_taxa = TRUE`; `NULL` uses the shipped table.
+#'   `resolve_taxa = TRUE`; `NULL` uses the shipped synonym layer anchored on
+#'   the expert system used for the classification.
 #' @param mc Number of CPU cores to use.
 #' @param expert An expert system already read with [resy_load_expert()]. When
 #'   given, `expertfile`, `scheme`, `version` and `location` are not used, so
@@ -104,16 +105,15 @@ resy_classify <- function(obs,
   # Optional convenience: resolve species names to the expert's vocabulary. The
   # expert system carries its own synonymy (aggregation targets + members), so a
   # name it already knows passes through untouched; only names it lacks are looked
-  # up in the synonym table. Unresolved taxa keep their original value (no row
-  # dropped, so obs stays aligned with header) and classify as an unknown species.
-  # Off by default: the classifier is taxonomy-agnostic and resolution is an
-  # explicit user step (see resy_resolve_taxa and the taxonomy vignette).
+  # up in the synonym table anchored on this expert. Unresolved taxa keep their
+  # original value (no row dropped, so obs stays aligned with header) and classify
+  # as an unknown species. Off by default: the classifier is taxonomy-agnostic and
+  # resolution is an explicit user step (see resy_resolve_taxa and the taxonomy
+  # vignette).
   taxon_resolution <- NULL
   if (isTRUE(resolve_taxa)) {
-    expert_vocab <- unique(c(names(parsed$aggs),
-                             unlist(parsed$aggs, use.names = FALSE)))
     resolved <- resy_resolve_taxa(obs, species_col = species_col,
-                                  synonyms = synonyms, canonical = expert_vocab)
+                                  synonyms = synonyms, expert = parsed)
     taxon_resolution <- summary(resolved)
     obs <- data.table::as.data.table(resolved)
     unresolved <- is.na(obs$canonical)

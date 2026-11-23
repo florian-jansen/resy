@@ -71,10 +71,9 @@ inst/extdata/eunis_2021_names.csv
 Species-name synonym table (inst/extdata/)
 ------------------------------------------
 
-inst/extdata/esy_synonyms.csv.xz
-inst/extdata/esy_canonical.csv.xz
+inst/extdata/esy_synonym_layer.csv.xz
   Built by data-raw/build_synonyms.R from the synonym lists of the taxonomic
-  backbones below (versions in inst/extdata/esy_synonyms_backbones.csv).
+  backbones below (versions in inst/extdata/esy_synonym_layer_backbones.csv).
 
   Euro+Med PlantBase (https://europlusmed.org).
     Licence: CC BY-SA 3.0 Unported (notice on the Euro+Med taxon pages,

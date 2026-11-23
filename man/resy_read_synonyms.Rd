@@ -4,35 +4,58 @@
 \alias{resy_read_synonyms}
 \title{Read the taxonomy synonym table}
 \usage{
-resy_read_synonyms(path = NULL)
+resy_read_synonyms(path = NULL, expert = NULL)
 }
 \arguments{
-\item{path}{\code{NULL} (default) loads the shipped
-\code{inst/extdata/esy_synonyms.csv.xz}. A character path loads a user CSV
-(optionally \code{.gz}/\code{.xz}) with the same schema. A data frame is
-validated and returned unchanged.}
+\item{path}{\code{NULL} (default) anchors the shipped synonym layer on
+\code{expert}. A character path loads a user CSV (optionally
+\code{.gz}/\code{.xz}) with the same schema. A data frame is validated and
+returned unchanged.}
+
+\item{expert}{An expert system read with \code{\link{resy_load_expert}}, used
+when \code{path = NULL}. \code{NULL} (default) uses the newest EUNIS release,
+the expert system \code{resy_load_expert()} reads by default.}
 }
 \value{
 A data frame with columns \code{synonym}, \code{esy_canonical}, and
 \code{source}, and \code{accepted_in} when the table has it.
 }
 \description{
-Loads the shipped table of alternate species names mapped to their canonical
-ESy name. Each row is a synonym pair: an alternate string a plot dataset might carry, keyed
-to the canonical ESy species it resolves to; \code{source} records the taxonomic
-backbone(s) that support the synonym pair (\code{;}-separated when more than one).
-The shipped table also has an \code{accepted_in} column: the backbones that list
-the synonym as an accepted name under the same author as the synonym rows
+Returns the table of alternate species names mapped to the species names of an
+expert system. Each row is a synonym pair: an alternate string a plot dataset
+might carry, keyed to the name of the expert system it resolves to;
+\code{source} records the taxonomic backbone(s) that support the synonym pair
+(\code{;}-separated when more than one).
+}
+\details{
+RESY ships one synonym layer for all expert systems and all their releases:
+the synonym pairs of six taxonomic backbones (Euro+Med, WFO, GBIF, COL, ITIS,
+NCBI). With \code{path = NULL}, the layer is anchored on the expert system
+given in \code{expert}, so each release gets a table that fits its own species
+names:
+\itemize{
+\item A pair is kept when its target is a name the expert system evaluates:
+an aggregate name of Section 1, or a species that a species group or a
+membership condition names and that no aggregate absorbs.
+\item A synonym with more than one such target is resolved by Euro+Med, the
+taxonomy of the EUNIS expert system. Its single answer is kept; otherwise
+the synonym is dropped.
+\item A name the expert system already uses is never remapped.
+\item A synonym that Euro+Med accepts as a species is kept only when it is
+the same Euro+Med concept as its target (an orthographic or gender
+variant).
+}
+The anchored table is kept for the rest of the session.
+
+The table also has an \code{accepted_in} column: the backbones that list the
+synonym as an accepted name under the same author as the synonym rows
 supporting the synonym pair. A backbone appears in both \code{source} and
 \code{accepted_in} when it holds an accepted row and a synonym row for the
-name. The column is empty when no backbone accepts the name. The shipped
-synonyms are binomials (genus and species epithet); infraspecific
-names, hybrid formulas, and bare genera are not in it. Its build date and the
-version of each backbone are recorded in
-\code{inst/extdata/esy_synonyms_build.csv} and
-\code{inst/extdata/esy_synonyms_backbones.csv}.
-Pass \code{path = NULL} for the shipped table, a file path for a user CSV, or a
-data frame to validate one already in memory.
+name. The column is empty when no backbone accepts the name. The synonyms are
+binomials (genus and species epithet); infraspecific names, hybrid formulas,
+and bare genera are not in it. The build date of the layer and the version of
+each backbone are recorded in \code{inst/extdata/esy_synonym_layer_build.csv} and
+\code{inst/extdata/esy_synonym_layer_backbones.csv}.
 }
 \examples{
 synonyms <- resy_read_synonyms()

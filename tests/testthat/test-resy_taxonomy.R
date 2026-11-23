@@ -13,38 +13,117 @@ mini_syn <- function() {
 }
 mini_canon <- function() data.frame(esy_canonical = c("Genus species", "Other taxon"))
 
-test_that("read_synonyms loads the shipped table and validates the schema", {
+test_that("read_synonyms anchors the shipped layer and validates the schema", {
   syn <- resy_read_synonyms()
   expect_true(all(RESY:::.RESY_SYNONYM_COLUMNS %in% names(syn)))
-  expect_gt(nrow(syn), 40000L)
-  
+  expect_gt(nrow(syn), 60000L)
+
   expect_error(resy_read_synonyms(data.frame(x = 1)), "missing required column")
   expect_error(resy_read_synonyms(123), "must be NULL")
   expect_error(resy_read_synonyms("no_such_file.csv.xz"), "file not found")
 })
 
-test_that("the shipped table matches its recorded build", {
+test_that("the shipped layer matches its recorded build", {
   build <- utils::read.csv(
-    system.file("extdata", "esy_synonyms_build.csv", package = "RESY"),
+    system.file("extdata", "esy_synonym_layer_build.csv", package = "RESY"),
     stringsAsFactors = FALSE
   )
   backbones <- utils::read.csv(
-    system.file("extdata", "esy_synonyms_backbones.csv", package = "RESY"),
+    system.file("extdata", "esy_synonym_layer_backbones.csv", package = "RESY"),
     stringsAsFactors = FALSE
   )
-  syn <- resy_read_synonyms()
-  
-  expect_equal(build$n_pairs, nrow(syn))
-  expect_equal(build$n_canonicals, length(unique(syn$esy_canonical)))
-  expect_true(all(unlist(strsplit(syn$source, ";", fixed = TRUE)) %in%
+  layer <- RESY:::.resy_synonym_layer()
+
+  expect_equal(build$n_pairs, nrow(layer))
+  expect_equal(build$n_synonyms, length(unique(layer$synonym)))
+  expect_equal(build$n_targets, length(unique(layer$target)))
+  expect_equal(build$n_sc_drop, sum(layer$sc_drop))
+  expect_equal(build$n_accepted_in, sum(!is.na(layer$accepted_in)))
+  expect_false(anyDuplicated(layer[c("synonym", "target")]) > 0L)
+  expect_true(all(unlist(strsplit(layer$source, ";", fixed = TRUE)) %in%
                     backbones$backbone))
+  expect_true(all(unlist(strsplit(layer$accepted_in[!is.na(layer$accepted_in)], ";",
+                                  fixed = TRUE)) %in% backbones$backbone))
   expect_true(all(nzchar(backbones$version) & nzchar(backbones$content_id)))
   expect_true(!is.na(as.Date(build$built)))
-  
-  expect_true("accepted_in" %in% names(syn))
-  expect_equal(build$n_accepted_in, sum(!is.na(syn$accepted_in)))
-  expect_true(all(unlist(strsplit(syn$accepted_in[!is.na(syn$accepted_in)], ";",
-                                  fixed = TRUE)) %in% backbones$backbone))
+})
+
+test_that("the table anchored on EUNIS 2025-10-03 keeps its recorded content", {
+  expert <- resy_expert_path("EUNIS", "2025-10-03", "json", mustWork = FALSE)
+  skip_if(is.na(expert) || !file.exists(expert), "EUNIS expert not installed")
+  parsed <- resy_load_expert(expertfile = expert)
+  syn <- resy_read_synonyms(expert = parsed)
+  nm <- RESY:::.resy_expert_names(parsed)
+
+  expect_false(anyDuplicated(syn$synonym) > 0L)
+  expect_true(all(syn$esy_canonical %in% nm$targets))
+  expect_false(any(syn$synonym %in% nm$vocab))
+  expect_identical(resy_read_synonyms(expert = parsed), syn)
+
+  f <- tempfile(fileext = ".csv")
+  con <- file(f, "wb")
+  utils::write.csv(syn, con, row.names = FALSE, na = "", eol = "\n")
+  close(con)
+  expect_equal(nrow(syn), 67018L)
+  expect_equal(unname(tools::md5sum(f)), "b36fd67b891b40927914bea9c6145135")
+})
+
+mini_expert <- function() {
+  list(
+    aggs = list(`Genus alpha aggr.` = c("Genus alpha", "Genus alpha var. x"),
+                `Genus beta` = "Genus betoides"),
+    groups = list(`### Group-one` = c("Genus beta", "Genus gamma"),
+                  `$$C Country` = "Austria"),
+    groups.names = c("Group-one", "Country"),
+    conditions = c("### Group-one", "Genus delta", "#TC Group-one EXCEPT Genus epsilon",
+                   "$$C Country")
+  )
+}
+
+mini_layer <- function() {
+  data.frame(
+    synonym = c("Syn one", "Syn two", "Syn two", "Syn three", "Syn three",
+                "Genus betoides", "Syn four", "Syn five", "Syn six", "Syn six"),
+    target  = c("Genus gamma", "Genus beta", "Genus delta", "Genus beta", "Genus alpha",
+                "Genus gamma", "Genus epsilon", "Genus alpha", "Genus beta",
+                "Genus betoides"),
+    source  = c("wfo", "euromed;wfo", "gbif", "wfo", "gbif", "wfo", "wfo", "wfo",
+                "wfo", "gbif"),
+    accepted_in = NA_character_,
+    sc_drop = c(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE),
+    stringsAsFactors = FALSE
+  )
+}
+
+test_that("expert names hold the evaluated names and the whole vocabulary", {
+  nm <- RESY:::.resy_expert_names(mini_expert())
+  expect_setequal(nm$targets, c("Genus alpha aggr.", "Genus beta", "Genus gamma",
+                                "Genus delta", "Genus epsilon"))
+  expect_setequal(nm$vocab, c(nm$targets, "Genus alpha", "Genus alpha var. x",
+                              "Genus betoides"))
+  expect_false("Austria" %in% nm$vocab)
+  expect_equal(unname(nm$evaluated_as[c("Genus alpha", "Genus betoides", "Genus gamma")]),
+               c("Genus alpha aggr.", "Genus beta", "Genus gamma"))
+})
+
+test_that("anchoring keeps unambiguous pairs and never picks between targets", {
+  nm <- RESY:::.resy_expert_names(mini_expert())
+  out <- RESY:::.resy_anchor_synonyms(mini_layer(), nm)
+  got <- stats::setNames(out$esy_canonical, out$synonym)
+
+  expect_equal(got[["Syn one"]], "Genus gamma")
+  # Two evaluated targets: Euro+Med's single answer is kept.
+  expect_equal(got[["Syn two"]], "Genus beta")
+  # Two evaluated targets, one through an aggregate member, no Euro+Med answer.
+  expect_false("Syn three" %in% out$synonym)
+  # A name the expert system uses is never remapped.
+  expect_false("Genus betoides" %in% out$synonym)
+  # A Euro+Med species of another concept is dropped.
+  expect_false("Syn four" %in% out$synonym)
+  # A target that is only an aggregate member is not a canonical name.
+  expect_false("Syn five" %in% out$synonym)
+  # Targets evaluated as the same name are not ambiguous.
+  expect_equal(got[["Syn six"]], "Genus beta")
 })
 
 test_that("read_synonyms keeps the optional accepted_in column when present", {
@@ -130,6 +209,8 @@ test_that("canonical_species returns the sorted unique canonical names", {
   sp <- resy_canonical_species(mini_canon())
   expect_equal(sp, c("Genus species", "Other taxon"))
   expect_gt(length(resy_canonical_species()), 19000L)
+  expect_equal(resy_canonical_species(expert = mini_expert()),
+               sort(RESY:::.resy_expert_names(mini_expert())$targets))
 })
 
 test_that("resolve returns a resy_taxa table whose summary counts names and records", {

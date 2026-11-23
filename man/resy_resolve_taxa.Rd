@@ -4,7 +4,13 @@
 \alias{resy_resolve_taxa}
 \title{Resolve plot species names to canonical ESy names}
 \usage{
-resy_resolve_taxa(obs, species_col = NULL, synonyms = NULL, canonical = NULL)
+resy_resolve_taxa(
+  obs,
+  species_col = NULL,
+  synonyms = NULL,
+  canonical = NULL,
+  expert = NULL
+)
 }
 \arguments{
 \item{obs}{A data frame (or \code{data.table}) of plot observations.}
@@ -13,13 +19,19 @@ resy_resolve_taxa(obs, species_col = NULL, synonyms = NULL, canonical = NULL)
 If \code{NULL} (default), uses \code{TaxonName}, then Darwin Core
 \code{scientificName}.}
 
-\item{synonyms}{\code{NULL} (default) uses the shipped synonym table; pass a
-path or data frame to override it.}
+\item{synonyms}{\code{NULL} (default) uses the shipped synonym layer anchored
+on \code{expert} (see \code{\link{resy_read_synonyms}}); pass a path or data
+frame to override it.}
 
-\item{canonical}{\code{NULL} (default) uses the shipped canonical list for the
-exact-match step; pass a path, a data frame, or a character vector of names
-to override it (\code{\link{resy_classify}} passes the expert system's own
-vocabulary here, so any name the expert already knows is left untouched).}
+\item{canonical}{\code{NULL} (default) uses every species name \code{expert}
+knows for the exact-match step, so a name the expert system already uses is
+left untouched; pass a path, a data frame, or a character vector of names to
+override it.}
+
+\item{expert}{An expert system read with \code{\link{resy_load_expert}}, whose
+species names the plot names are resolved to. \code{NULL} (default) uses the
+newest EUNIS release. Not read when both \code{synonyms} and
+\code{canonical} are given.}
 }
 \value{
 A \code{resy_taxa} data frame: \code{obs} with three appended columns,

@@ -2,23 +2,27 @@
 % Please edit documentation in R/resy_taxonomy.R
 \name{resy_canonical_species}
 \alias{resy_canonical_species}
-\title{Export the canonical ESy species list}
+\title{Export the canonical species names of an expert system}
 \usage{
-resy_canonical_species(path = NULL)
+resy_canonical_species(path = NULL, expert = NULL)
 }
 \arguments{
-\item{path}{\code{NULL} (default) loads the shipped
-\code{inst/extdata/esy_canonical.csv.xz}. A character path or data frame
-(with an \code{esy_canonical} column) reads the canonical names from an
-override instead.}
+\item{path}{\code{NULL} (default) takes the canonical names from
+\code{expert}. A character path or data frame (with an \code{esy_canonical}
+column) reads the canonical names from an override instead.}
+
+\item{expert}{An expert system read with \code{\link{resy_load_expert}}, used
+when \code{path = NULL}. \code{NULL} (default) uses the newest EUNIS release.}
 }
 \value{
-A sorted character vector of unique canonical ESy species names.
+A sorted character vector of unique canonical species names.
 }
 \description{
-Returns the canonical ESy species names -- the set the expert system aggregates
-over, and the target column a user builds a translation table against. Also the
-authority used by \code{\link{resy_resolve_taxa}} for the exact-match step.
+Returns the canonical species names of an expert system: the names its
+classifier evaluates, which is the target column a user builds a translation
+table against. These are the aggregate names of Section 1, and the species
+that a species group or a membership condition names and that no aggregate
+absorbs.
 }
 \examples{
 canonical <- resy_canonical_species()

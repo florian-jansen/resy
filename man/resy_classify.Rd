@@ -53,7 +53,8 @@ names are resolved to the expert's vocabulary via \link{resy_resolve_taxa} befor
 classification (see Description).}
 
 \item{synonyms}{Synonym-table override passed to \link{resy_resolve_taxa} when
-\code{resolve_taxa = TRUE}; \code{NULL} uses the shipped table.}
+\code{resolve_taxa = TRUE}; \code{NULL} uses the shipped synonym layer anchored on
+the expert system used for the classification.}
 
 \item{mc}{Number of CPU cores to use.}
 

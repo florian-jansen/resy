@@ -47,11 +47,11 @@ library(readr)
 
 ```{r build-info, include=FALSE}
 build <- utils::read.csv(
-  system.file("extdata", "esy_synonyms_build.csv", package = "RESY"),
+  system.file("extdata", "esy_synonym_layer_build.csv", package = "RESY"),
   stringsAsFactors = FALSE
 )
 backbones <- utils::read.csv(
-  system.file("extdata", "esy_synonyms_backbones.csv", package = "RESY"),
+  system.file("extdata", "esy_synonym_layer_backbones.csv", package = "RESY"),
   stringsAsFactors = FALSE, na.strings = ""
 )
 bb <- function(name, col) backbones[[col]][backbones$backbone == name]
@@ -62,21 +62,23 @@ big <- function(x) format(x, big.mark = ",")
 ### Resolve names
 
 `resy_resolve_taxa()` maps a column of names to the species names of an expert
-system, called the canonical names. By default, these are the species names of
-the EUNIS expert system, which ship with RESY. They come from the expert system
-itself, not from a taxonomic database, but
-`r pct(build$n_esy_canonical_euromed, build$n_esy_canonical)`% of them
-(`r big(build$n_esy_canonical_euromed)` of `r big(build$n_esy_canonical)`) are
-accepted names in Euro+Med PlantBase (release `r bb("euromed", "version")`).
+system. By default, this is the newest release of the EUNIS expert system that
+ships with RESY; the argument `expert` takes any other expert system read with
+`resy_load_expert()`. The names come from the expert system itself, not from a
+taxonomic database. The canonical names are the names its classifier evaluates:
+the species aggregates of Section 1 of the expert system, and the species that
+a species group or a rule names and that no aggregate includes.
+`resy_canonical_species()` returns them.
 
 Each name is looked up in up to four steps, and the first step that finds it
 sets the match type:
 
-1. The name is a canonical name (`"exact"`).
+1. The name is a species name the expert system uses, a canonical name or a
+   name it lists in an aggregate (`"exact"`).
 2. The name is in the synonym table (`"synonym"`), described in
    [The shipped synonym table](#the-shipped-synonym-table).
 3. With its author citation removed by `resy_clean_names()`, the name is a
-   canonical name (`"cleaned_exact"`).
+   species name the expert system uses (`"cleaned_exact"`).
 4. With its author citation removed, the name is in the synonym table
    (`"cleaned_synonym"`).
 
@@ -115,24 +117,43 @@ leaving them out.
 
 ### The shipped synonym table
 
-RESY ships a synonym table built for the EUNIS expert system: it maps alternate
-species names to the names that EUNIS uses. It pools the synonyms of six taxonomic backbones, the reference lists of
-accepted names and their synonyms that taxonomic databases publish
+RESY ships one set of synonyms for all expert systems and all their releases. It
+pools the synonyms of six taxonomic backbones, the reference lists of accepted
+names and their synonyms that taxonomic databases publish
 (Euro+Med (europlusmed.org), [WFO](https://www.worldfloraonline.org/),
 [GBIF](https://www.gbif.org/),
 [Catalogue of Life](https://www.catalogueoflife.org/),
 [ITIS](https://www.itis.gov/),
 [NCBI](https://www.ncbi.nlm.nih.gov/datasets/taxonomy/)),
-so a name coming from any
-of them can resolve without you having to say which backbone it came from. With
-another expert system, the table resolves only names that point to a species
-name the two systems share; for the other names, use your own synonym table
-(see [Bring your own crosswalk](#bring-your-own-crosswalk)).
+so a name coming from any of them can resolve without you having to say which
+backbone it came from. These `r big(build$n_pairs)` synonym pairs point to
+Euro+Med names and to the canonical names of the expert systems that ship with
+RESY.
 
-The table was built on `r build$built` against the `r build$expert_system`
-expert system `r build$expert_version`, from the backbone releases below.
-`data-raw/build_synonyms.R` in the source repository rebuilds it with taxify
-`r build$taxify_version` (Colling [2026](https://doi.org/10.32614/CRAN.package.taxify)).
+When synonyms are needed, RESY turns this set into a synonym table for the
+expert system in use, so each release of an expert system gets a table that
+fits its own species names:
+
+- A synonym pair is kept when the name it points to is a canonical name of the
+  expert system.
+- A synonym that points to two names the expert system evaluates differently is
+  resolved by Euro+Med, the taxonomy that the EUNIS expert system follows. When
+  Euro+Med gives a single answer it is kept; otherwise the synonym stays
+  unresolved.
+- A name the expert system already uses is never remapped.
+- A synonym that Euro+Med accepts as a species of its own is kept only when
+  Euro+Med treats it as the same taxon as the name it points to, such as a
+  spelling variant.
+
+With an expert system whose species names follow another taxonomy, the table
+resolves only names that point to a name the expert system uses; for the other
+names, use your own synonym table (see
+[Bring your own crosswalk](#bring-your-own-crosswalk)).
+
+The synonym pairs were collected on `r build$built` from the backbone releases
+below. `data-raw/build_synonyms.R` in the source repository collects them again
+with taxify `r build$taxify_version`
+(Colling [2026](https://doi.org/10.32614/CRAN.package.taxify)).
 
 ```{r build-backbones, echo=FALSE}
 knitr::kable(
@@ -148,7 +169,8 @@ The synonyms are binomials (genus and species epithet). Infraspecific names,
 hybrid formulas, and bare genera are not in the table, so a name of that kind is
 not resolved through it.
 
-`resy_read_synonyms()` without arguments reads the shipped table:
+`resy_read_synonyms()` without arguments returns the synonym table of the
+newest EUNIS release; its argument `expert` takes any other expert system:
 
 ```{r shipped-table}
 syn <- resy_read_synonyms()
@@ -156,7 +178,7 @@ nrow(syn)
 head(syn)
 ```
 
-Each row of the shipped table is a synonym pair: an alternate spelling
+Each row of the table is a synonym pair: an alternate spelling
 (`synonym`) and the EUNIS name it resolves to (`esy_canonical`), with the
 backbone(s) that list the synonym under that name (`source`). The column
 `accepted_in` names the backbones that list the same synonym as an accepted
@@ -195,16 +217,11 @@ knitr::kable(
 )
 ```
 
-GBIF supports the most synonym pairs and Euro+Med the fewest, for two reasons
-measured on the backbone releases above. The GBIF backbone holds
-`r big(bb("gbif", "synonym_rows"))` synonym rows, the Euro+Med backbone
-`r big(bb("euromed", "synonym_rows"))`. And most Euro+Med synonymy is already
-part of the expert system: of the Euro+Med synonyms that point to a EUNIS name,
-`r pct(bb("euromed", "synonyms_in_expert"), bb("euromed", "synonyms_to_esy"))`%
-are names the expert system lists in its own species aggregation, so the
-classifier already counts them and the table leaves them out. For GBIF, this
-share is
-`r pct(bb("gbif", "synonyms_in_expert"), bb("gbif", "synonyms_to_esy"))`%.
+The backbones also differ in size: in the releases above, the GBIF backbone
+holds `r big(bb("gbif", "synonym_rows"))` synonym rows and the Euro+Med
+backbone `r big(bb("euromed", "synonym_rows"))`. Euro+Med synonyms are also
+often names that the EUNIS expert system lists in its own species aggregates;
+the classifier already counts those, so the table leaves them out.
 
 Most synonym pairs are supported by more than one backbone:
 
@@ -226,7 +243,7 @@ ggplot(support_n, aes(x = n_backbones, y = pairs)) +
 
 A crosswalk is a table that maps each name of one name list to the matching
 name in another, here from the names in your data to the canonical names of the
-expert system. The shipped synonym table is one; `resy_resolve_taxa()` also
+expert system. The synonym table of RESY is one; `resy_resolve_taxa()` also
 accepts your own, with three columns: `synonym`, `esy_canonical`, and `source`.
 It can come from a national checklist, a Turboveg species list, or a
 name-matching package such as [taxify](https://github.com/gcol33/taxify) or
