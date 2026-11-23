@@ -21,3 +21,6 @@ renv/staging/
 renv/sandbox/
 renv/local/
 ..Rcheck/
+.positai/
+discussion.md
+nonmatching.xlsx
