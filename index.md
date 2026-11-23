@@ -41,11 +41,13 @@ Online](https://www.worldfloraonline.org/), must first be matched to the
 names of the expert system.
 [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
 does this for any expert system: it removes author names and looks up
-synonyms. The synonym table that comes with RESY links about 65,000
-synonyms from six taxonomies (Euro+Med, World Flora Online, GBIF,
-Catalogue of Life, ITIS and NCBI) to the species names of the EUNIS
-expert system. For an expert system with other species names, you can
-supply your own synonym table, as shown in [Match species
+synonyms. RESY ships the synonyms of six taxonomies (Euro+Med, World
+Flora Online, GBIF, Catalogue of Life, ITIS and NCBI) and fits them to
+the species names of the expert system you use, so each release of the
+EUNIS expert system gets its own synonym table. For the newest release,
+it links about 67,000 synonyms to EUNIS species names. For an expert
+system with other species names, you can supply your own synonym table,
+as shown in [Match species
 names](https://florian-jansen.github.io/resy/articles/taxonomy.html).
 
 The [RESY App](https://florian-jansen.github.io/resy/articles/app.html)

@@ -28,7 +28,7 @@
 - [`resy_candidates()`](https://florian-jansen.github.io/resy/reference/resy_candidates.md)
   **\[experimental\]** : List possible assignments per plot
 - [`resy_canonical_species()`](https://florian-jansen.github.io/resy/reference/resy_canonical_species.md)
-  : Export the canonical ESy species list
+  : Export the canonical species names of an expert system
 - [`resy_check_data()`](https://florian-jansen.github.io/resy/reference/resy_check_data.md)
   : Check the format of plot data for ESy classification
 - [`resy_check_eunis()`](https://florian-jansen.github.io/resy/reference/resy_check_eunis.md)

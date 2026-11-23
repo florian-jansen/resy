@@ -111,20 +111,26 @@ vignette:</p>
 <h3 id="resolve-names">Resolve names<a class="anchor" aria-label="anchor" href="#resolve-names"></a>
 </h3>
 <p><code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> maps a column of names to the
-species names of an expert system, called the canonical names. By
-default, these are the species names of the EUNIS expert system, which
-ship with RESY. They come from the expert system itself, not from a
-taxonomic database, but 93% of them (18,829 of 20,158) are accepted
-names in Euro+Med PlantBase (release 2026.08).</p>
+species names of an expert system. By default, this is the newest
+release of the EUNIS expert system that ships with RESY; the argument
+<code>expert</code> takes any other expert system read with
+<code><a href="../reference/resy_load_expert.html">resy_load_expert()</a></code>. The names come from the expert system
+itself, not from a taxonomic database. The canonical names are the names
+its classifier evaluates: the species aggregates of Section 1 of the
+expert system, and the species that a species group or a rule names and
+that no aggregate includes. <code><a href="../reference/resy_canonical_species.html">resy_canonical_species()</a></code>
+returns them.</p>
 <p>Each name is looked up in up to four steps, and the first step that
 finds it sets the match type:</p>
 <ol style="list-style-type: decimal">
-<li>The name is a canonical name (<code>"exact"</code>).</li>
+<li>The name is a species name the expert system uses, a canonical name
+or a name it lists in an aggregate (<code>"exact"</code>).</li>
 <li>The name is in the synonym table (<code>"synonym"</code>), described
 in <a href="#the-shipped-synonym-table">The shipped synonym
 table</a>.</li>
 <li>With its author citation removed by <code><a href="../reference/resy_clean_names.html">resy_clean_names()</a></code>,
-the name is a canonical name (<code>"cleaned_exact"</code>).</li>
+the name is a species name the expert system uses
+(<code>"cleaned_exact"</code>).</li>
 <li>With its author citation removed, the name is in the synonym table
 (<code>"cleaned_synonym"</code>).</li>
 </ol>
@@ -147,7 +153,7 @@ guess.</p>
 <span></span>
 <span><span class="va">resolved</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa</a></span><span class="op">(</span><span class="va">plots</span>, species_col <span class="op">=</span> <span class="st">"TaxonName"</span><span class="op">)</span></span>
 <span><span class="va">resolved</span></span>
-<span><span class="co">#&gt; &lt;resy_taxa&gt; 5 name(s) from column `TaxonName` resolved against 20158 reference names</span></span>
+<span><span class="co">#&gt; &lt;resy_taxa&gt; 5 name(s) from column `TaxonName` resolved against 121877 reference names</span></span>
 <span><span class="co">#&gt;   TaxonName         name as submitted</span></span>
 <span><span class="co">#&gt;   canonical         resolved canonical name; NA when unresolved</span></span>
 <span><span class="co">#&gt;   taxon_confidence  exact, synonym, cleaned_exact, cleaned_synonym or unresolved</span></span>
@@ -183,20 +189,35 @@ your own crosswalk</a>), or leaving them out.</p>
 <div class="section level3">
 <h3 id="the-shipped-synonym-table">The shipped synonym table<a class="anchor" aria-label="anchor" href="#the-shipped-synonym-table"></a>
 </h3>
-<p>RESY ships a synonym table built for the EUNIS expert system: it maps
-alternate species names to the names that EUNIS uses. It pools the
-synonyms of six taxonomic backbones, the reference lists of accepted
-names and their synonyms that taxonomic databases publish (Euro+Med
-(europlusmed.org), <a href="https://www.worldfloraonline.org/" class="external-link">WFO</a>,
-<a href="https://www.gbif.org/" class="external-link">GBIF</a>, <a href="https://www.catalogueoflife.org/" class="external-link">Catalogue of Life</a>, <a href="https://www.itis.gov/" class="external-link">ITIS</a>, <a href="https://www.ncbi.nlm.nih.gov/datasets/taxonomy/" class="external-link">NCBI</a>), so a
+<p>RESY ships one set of synonyms for all expert systems and all their
+releases. It pools the synonyms of six taxonomic backbones, the
+reference lists of accepted names and their synonyms that taxonomic
+databases publish (Euro+Med (europlusmed.org), <a href="https://www.worldfloraonline.org/" class="external-link">WFO</a>, <a href="https://www.gbif.org/" class="external-link">GBIF</a>, <a href="https://www.catalogueoflife.org/" class="external-link">Catalogue of Life</a>, <a href="https://www.itis.gov/" class="external-link">ITIS</a>, <a href="https://www.ncbi.nlm.nih.gov/datasets/taxonomy/" class="external-link">NCBI</a>), so a
 name coming from any of them can resolve without you having to say which
-backbone it came from. With another expert system, the table resolves
-only names that point to a species name the two systems share; for the
-other names, use your own synonym table (see <a href="#bring-your-own-crosswalk">Bring your own crosswalk</a>).</p>
-<p>The table was built on 2026-11-13 against the EUNIS expert system
-2025-10-03, from the backbone releases below.
-<code>data-raw/build_synonyms.R</code> in the source repository rebuilds
-it with taxify 0.7.0 (Colling <a href="https://doi.org/10.32614/CRAN.package.taxify" class="external-link">2026</a>).</p>
+backbone it came from. These 194,420 synonym pairs point to Euro+Med
+names and to the canonical names of the expert systems that ship with
+RESY.</p>
+<p>When synonyms are needed, RESY turns this set into a synonym table
+for the expert system in use, so each release of an expert system gets a
+table that fits its own species names:</p>
+<ul>
+<li>A synonym pair is kept when the name it points to is a canonical
+name of the expert system.</li>
+<li>A synonym that points to two names the expert system evaluates
+differently is resolved by Euro+Med, the taxonomy that the EUNIS expert
+system follows. When Euro+Med gives a single answer it is kept;
+otherwise the synonym stays unresolved.</li>
+<li>A name the expert system already uses is never remapped.</li>
+<li>A synonym that Euro+Med accepts as a species of its own is kept only
+when Euro+Med treats it as the same taxon as the name it points to, such
+as a spelling variant.</li>
+</ul>
+<p>With an expert system whose species names follow another taxonomy,
+the table resolves only names that point to a name the expert system
+uses; for the other names, use your own synonym table (see <a href="#bring-your-own-crosswalk">Bring your own crosswalk</a>).</p>
+<p>The synonym pairs were collected on 2026-11-23 from the backbone
+releases below. <code>data-raw/build_synonyms.R</code> in the source
+repository collects them again with taxify 0.7.1 (Colling <a href="https://doi.org/10.32614/CRAN.package.taxify" class="external-link">2026</a>).</p>
 <table class="table">
 <thead><tr class="header">
 <th align="left">Backbone</th>
@@ -232,12 +253,13 @@ it with taxify 0.7.0 (Colling <a href="https://doi.org/10.32614/CRAN.package.tax
 <p>The synonyms are binomials (genus and species epithet). Infraspecific
 names, hybrid formulas, and bare genera are not in the table, so a name
 of that kind is not resolved through it.</p>
-<p><code><a href="../reference/resy_read_synonyms.html">resy_read_synonyms()</a></code> without arguments reads the shipped
-table:</p>
+<p><code><a href="../reference/resy_read_synonyms.html">resy_read_synonyms()</a></code> without arguments returns the
+synonym table of the newest EUNIS release; its argument
+<code>expert</code> takes any other expert system:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">syn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_read_synonyms.html">resy_read_synonyms</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">syn</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 64808</span></span>
+<span><span class="co">#&gt; [1] 67018</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">syn</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                    synonym          esy_canonical       source accepted_in</span></span>
 <span><span class="co">#&gt; 1       Abelmoschus bammia Abelmoschus esculentus col;gbif;wfo        &lt;NA&gt;</span></span>
@@ -246,8 +268,8 @@ table:</p>
 <span><span class="co">#&gt; 4 Abelmoschus tuberculatus Abelmoschus esculentus col;gbif;wfo        &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 5          Hibiscus bammia Abelmoschus esculentus col;gbif;wfo        &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 6      Hibiscus ficifolius Abelmoschus esculentus col;gbif;wfo        &lt;NA&gt;</span></span></code></pre></div>
-<p>Each row of the shipped table is a synonym pair: an alternate
-spelling (<code>synonym</code>) and the EUNIS name it resolves to
+<p>Each row of the table is a synonym pair: an alternate spelling
+(<code>synonym</code>) and the EUNIS name it resolves to
 (<code>esy_canonical</code>), with the backbone(s) that list the synonym
 under that name (<code>source</code>). The column
 <code>accepted_in</code> names the backbones that list the same synonym
@@ -264,10 +286,10 @@ separate species:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">syn</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">syn</span><span class="op">$</span><span class="va">accepted_in</span><span class="op">)</span>, <span class="op">]</span>, <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                 synonym     esy_canonical       source accepted_in</span></span>
-<span><span class="co">#&gt; 32       Abies hudsonia    Abies balsamea      col;wfo         wfo</span></span>
-<span><span class="co">#&gt; 40     Abies panachaica Abies cephalonica col;gbif;wfo        gbif</span></span>
-<span><span class="co">#&gt; 41 Abies peloponnesiaca Abies cephalonica col;gbif;wfo        gbif</span></span>
-<span><span class="co">#&gt; 45    Picea cephalonica Abies cephalonica col;gbif;wfo         wfo</span></span></code></pre></div>
+<span><span class="co">#&gt; 31       Abies hudsonia    Abies balsamea      col;wfo         wfo</span></span>
+<span><span class="co">#&gt; 39     Abies panachaica Abies cephalonica col;gbif;wfo        gbif</span></span>
+<span><span class="co">#&gt; 40 Abies peloponnesiaca Abies cephalonica col;gbif;wfo        gbif</span></span>
+<span><span class="co">#&gt; 44    Picea cephalonica Abies cephalonica col;gbif;wfo         wfo</span></span></code></pre></div>
 <p>A synonym pair with several backbones in <code>source</code> is
 counted once for each of them, so the counts per backbone add up to more
 than the number of rows.</p>
@@ -295,43 +317,41 @@ than the number of rows.</p>
 <tbody>
 <tr class="odd">
 <td align="left">gbif</td>
-<td align="right">53,530</td>
-<td align="right">82.6</td>
+<td align="right">55,750</td>
+<td align="right">83.2</td>
 </tr>
 <tr class="even">
 <td align="left">wfo</td>
-<td align="right">46,970</td>
-<td align="right">72.5</td>
+<td align="right">48,459</td>
+<td align="right">72.3</td>
 </tr>
 <tr class="odd">
 <td align="left">col</td>
-<td align="right">46,180</td>
-<td align="right">71.3</td>
+<td align="right">48,027</td>
+<td align="right">71.7</td>
 </tr>
 <tr class="even">
 <td align="left">itis</td>
-<td align="right">4,050</td>
+<td align="right">4,125</td>
 <td align="right">6.2</td>
 </tr>
 <tr class="odd">
 <td align="left">ncbi</td>
-<td align="right">864</td>
-<td align="right">1.3</td>
+<td align="right">949</td>
+<td align="right">1.4</td>
 </tr>
 <tr class="even">
 <td align="left">euromed</td>
-<td align="right">588</td>
-<td align="right">0.9</td>
+<td align="right">392</td>
+<td align="right">0.6</td>
 </tr>
 </tbody>
 </table>
-<p>GBIF supports the most synonym pairs and Euro+Med the fewest, for two
-reasons measured on the backbone releases above. The GBIF backbone holds
-3,034,449 synonym rows, the Euro+Med backbone 85,335. And most Euro+Med
-synonymy is already part of the expert system: of the Euro+Med synonyms
-that point to a EUNIS name, 96% are names the expert system lists in its
-own species aggregation, so the classifier already counts them and the
-table leaves them out. For GBIF, this share is 34%.</p>
+<p>The backbones also differ in size: in the releases above, the GBIF
+backbone holds 3,034,449 synonym rows and the Euro+Med backbone 85,335.
+Euro+Med synonyms are also often names that the EUNIS expert system
+lists in its own species aggregates; the classifier already counts
+those, so the table leaves them out.</p>
 <p>Most synonym pairs are supported by more than one backbone:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">per_pair</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html" class="external-link">lengths</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span><span class="va">syn</span><span class="op">$</span><span class="va">source</span>, <span class="st">";"</span>, fixed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -352,7 +372,7 @@ table leaves them out. For GBIF, this share is 34%.</p>
 </h3>
 <p>A crosswalk is a table that maps each name of one name list to the
 matching name in another, here from the names in your data to the
-canonical names of the expert system. The shipped synonym table is one;
+canonical names of the expert system. The synonym table of RESY is one;
 <code><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa()</a></code> also accepts your own, with three
 columns: <code>synonym</code>, <code>esy_canonical</code>, and
 <code>source</code>. It can come from a national checklist, a Turboveg
@@ -470,7 +490,7 @@ distribution maps of European habitats. – <em>Applied Vegetation
 Science</em> 23, 648–675. <a href="https://doi.org/10.1111/avsc.12519" class="external-link">https://doi.org/10.1111/avsc.12519</a></p>
 <p>Colling G (<a href="https://doi.org/10.32614/CRAN.package.taxify" class="external-link">2026</a>) taxify:
 Offline Taxonomic Name Matching Against Darwin Core Backbones. – R
-package version 0.7.0. <a href="https://doi.org/10.32614/CRAN.package.taxify" class="external-link">https://doi.org/10.32614/CRAN.package.taxify</a></p>
+package version 0.7.1. <a href="https://doi.org/10.32614/CRAN.package.taxify" class="external-link">https://doi.org/10.32614/CRAN.package.taxify</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

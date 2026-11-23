@@ -57,7 +57,8 @@
   with an overview of the workflow.
 - Taxonomy crosswalk for plot data named under a general backbone:
   [`resy_read_synonyms()`](https://florian-jansen.github.io/resy/reference/resy_read_synonyms.md)
-  reads the shipped synonym table or your own crosswalk,
+  returns the synonym table of an expert system or reads your own
+  crosswalk,
   [`resy_canonical_species()`](https://florian-jansen.github.io/resy/reference/resy_canonical_species.md)
   returns the canonical ESy names, and
   [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
@@ -90,13 +91,30 @@
 - [`resy_validate_esy()`](https://florian-jansen.github.io/resy/reference/resy_validate_esy.md)
   resolves group references the way the classifier does. The EUNIS-ESy
   release of 2025-10-03 now gives 3 warnings instead of 234.
-- The shipped synonym table is built by `data-raw/build_synonyms.R` from
-  six taxonomic backbones (Euro+Med, WFO, GBIF, COL, ITIS, NCBI). Its
-  build date and the release of each backbone are shipped in
-  `inst/extdata/esy_synonyms_build.csv` and
-  `esy_synonyms_backbones.csv`. The table has an `accepted_in` column
-  naming the backbones that list the synonym as an accepted name under
-  the same author as the supporting synonym rows.
+- The synonyms come from six taxonomic backbones (Euro+Med, WFO, GBIF,
+  COL, ITIS, NCBI), collected once by `data-raw/build_synonyms.R` into a
+  layer that serves every expert system and release.
+  [`resy_read_synonyms()`](https://florian-jansen.github.io/resy/reference/resy_read_synonyms.md),
+  [`resy_canonical_species()`](https://florian-jansen.github.io/resy/reference/resy_canonical_species.md)
+  and
+  [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
+  take an `expert` (by default the newest EUNIS release) and fit the
+  layer to its species names, so each release gets its own synonym
+  table; `resy_classify(resolve_taxa = TRUE)` uses the expert system it
+  classifies with. A synonym that points to two names the expert system
+  evaluates differently, counting the members of its aggregates, is
+  resolved by Euro+Med or stays unresolved. For EUNIS 2025-10-03 the
+  table has 67,018 synonym pairs. The build date and the release of each
+  backbone are in `inst/extdata/esy_synonym_layer_build.csv` and
+  `esy_synonym_layer_backbones.csv`. An `accepted_in` column names the
+  backbones that list the synonym as an accepted name under the same
+  author as the supporting synonym rows.
+- The canonical names of an expert system are the names its classifier
+  evaluates: the aggregates of Section 1, and the species that a species
+  group or a membership condition names and that no aggregate includes.
+  [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
+  leaves every species name the expert system uses untouched, including
+  the names of species groups and conditions.
 - [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
   matches a name a second time with its author citation removed
   ([`resy_clean_names()`](https://florian-jansen.github.io/resy/reference/resy_clean_names.md))

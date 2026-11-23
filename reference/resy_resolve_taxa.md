@@ -16,7 +16,13 @@ is never replaced with a best guess.
 ## Usage
 
 ``` r
-resy_resolve_taxa(obs, species_col = NULL, synonyms = NULL, canonical = NULL)
+resy_resolve_taxa(
+  obs,
+  species_col = NULL,
+  synonyms = NULL,
+  canonical = NULL,
+  expert = NULL
+)
 ```
 
 ## Arguments
@@ -32,17 +38,25 @@ resy_resolve_taxa(obs, species_col = NULL, synonyms = NULL, canonical = NULL)
 
 - synonyms:
 
-  `NULL` (default) uses the shipped synonym table; pass a path or data
-  frame to override it.
+  `NULL` (default) uses the shipped synonym layer anchored on `expert`
+  (see
+  [`resy_read_synonyms`](https://florian-jansen.github.io/resy/reference/resy_read_synonyms.md));
+  pass a path or data frame to override it.
 
 - canonical:
 
-  `NULL` (default) uses the shipped canonical list for the exact-match
-  step; pass a path, a data frame, or a character vector of names to
-  override it
-  ([`resy_classify`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
-  passes the expert system's own vocabulary here, so any name the expert
-  already knows is left untouched).
+  `NULL` (default) uses every species name `expert` knows for the
+  exact-match step, so a name the expert system already uses is left
+  untouched; pass a path, a data frame, or a character vector of names
+  to override it.
+
+- expert:
+
+  An expert system read with
+  [`resy_load_expert`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md),
+  whose species names the plot names are resolved to. `NULL` (default)
+  uses the newest EUNIS release. Not read when both `synonyms` and
+  `canonical` are given.
 
 ## Value
 
@@ -80,15 +94,15 @@ obs <- data.frame(
 
 resolved <- resy_resolve_taxa(obs, species_col = "TaxonName")
 resolved[, c("PlotObservationID", "TaxonName", "canonical", "taxon_confidence", "matched")]
-#> <resy_taxa> 2 name(s) from column `TaxonName` resolved against 20158 reference names
+#> <resy_taxa> 2 name(s) from column `TaxonName` resolved against 121877 reference names
 #>   TaxonName         name as submitted
 #>   canonical         resolved canonical name; NA when unresolved
 #>   taxon_confidence  exact, synonym, cleaned_exact, cleaned_synonym or unresolved
 #>   matched           TRUE if the name resolved
 #>   (1 other column(s) not shown: PlotObservationID)
-#> 1 matched (50.0%), 1 unmatched; summary() lists them
+#> 2 matched (100.0%), 0 unmatched
 #> 
 #>       TaxonName     canonical taxon_confidence matched
 #> 1 Quercus robur Quercus robur            exact    TRUE
-#> 2     Poa annua          <NA>       unresolved   FALSE
+#> 2     Poa annua     Poa annua            exact    TRUE
 ```
