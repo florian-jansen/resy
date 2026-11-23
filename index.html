@@ -110,17 +110,18 @@
 <span><span class="va">header</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">species</span><span class="op">[</span><span class="st">"PlotObservationID"</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/resy_classify.html">resy_classify</a></span><span class="op">(</span><span class="va">species</span>, <span class="va">header</span>, scheme <span class="op">=</span> <span class="st">"Apennine-test"</span><span class="op">)</span></span>
-<span><span class="va">cand</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res</span>, top_n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="va">cand</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/resy_candidates.html">resy_candidates</a></span><span class="op">(</span><span class="va">res</span>, top_n <span class="op">=</span> <span class="fl">3</span>, wide <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">cand</span><span class="op">$</span><span class="va">classification</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt; table of extent 0 &gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  ?  F FB  N NG NS </span></span>
+<span><span class="co">#&gt; 92 33  8  6 20 41</span></span></code></pre></div>
 <p><code>F</code>, <code>FB</code>, <code>N</code>, <code>NG</code> and <code>NS</code> are the five vegetation types of <code>Apennine-test</code>. A plot marked <code>?</code> meets no type’s rule and is not classified. Here, 92 of the 200 plots remain unclassified. In these plots, all four indicator groups have at most 4% cover, below the lowest threshold in the rules (5%).</p>
 <p>Each type has a priority in the expert system. When a plot meets the rules of several types, it is assigned to the one with the highest priority. Each row of <code>cand</code> is one plot: the type it is assigned to, then the types whose rules it meets, highest priority first. Plot <code>CX45</code> meets the rules of <code>FB</code> (beech-fir montane forest, priority 5) and of its parent type <code>F</code> (forest, priority 2), and is assigned to <code>FB</code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cand</span><span class="op">[</span><span class="va">cand</span><span class="op">$</span><span class="va">plot_id</span> <span class="op">==</span> <span class="st">"CX45"</span>, <span class="op">]</span></span>
-<span><span class="co">#&gt;    plot_id   type priority priority_rank</span></span>
-<span><span class="co">#&gt;     &lt;char&gt; &lt;char&gt;    &lt;ord&gt;         &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1:    CX45     FB        5             3</span></span>
-<span><span class="co">#&gt; 2:    CX45      F        2             1</span></span></code></pre></div>
+<span><span class="co">#&gt;    plot_id classification type_1 priority_1 type_2 priority_2</span></span>
+<span><span class="co">#&gt;     &lt;char&gt;         &lt;char&gt; &lt;char&gt;      &lt;ord&gt; &lt;char&gt;      &lt;ord&gt;</span></span>
+<span><span class="co">#&gt; 1:    CX45             FB     FB          5      F          2</span></span></code></pre></div>
 <p><code>resy_eval_plot(res, p = "CX45")</code> shows the species and conditions behind this assignment. For EUNIS, the header table also needs site data such as the ecoregion and the country, which <code><a href="reference/resy_harmonize_eunis.html">resy_harmonize_eunis()</a></code> adds from the plot coordinates.</p>
 <p>RESY accepts these column names, or names standardized to <a href="https://dwc.tdwg.org/" class="external-link">Darwin Core</a>, a standard set of field names for biodiversity data. The example data stores species names in <code>scientificName</code>.</p>
 <table class="table">

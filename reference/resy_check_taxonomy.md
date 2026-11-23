@@ -10,8 +10,8 @@ called.
 
 The result is a `resy_taxa` data frame. Printing it shows what each
 column holds and how many names matched;
-[`summary()`](https://rdrr.io/r/base/summary.html) returns the match
-counts and the unmatched names.
+[`base::summary()`](https://rdrr.io/r/base/summary.html) returns the
+match counts and the unmatched names.
 
 ## Usage
 
