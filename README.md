@@ -125,7 +125,7 @@ meets the rules of `FB` (beech-fir montane forest, priority 5) and of
 its parent type `F` (forest, priority 2), and is assigned to `FB`:
 
 ``` r
-cand[cand$plot_id == "CX45", ]
+subset(cand, plot_id == "CX45")
 #>    plot_id classification type_1 priority_1 type_2 priority_2
 #>     <char>         <char> <char>      <ord> <char>      <ord>
 #> 1:    CX45             FB     FB          5      F          2

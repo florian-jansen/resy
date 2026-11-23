@@ -117,7 +117,7 @@ montane forest, priority 5) and of its parent type `F` (forest, priority 2), and
 is assigned to `FB`:
 
 ```{r usage-candidates}
-cand[cand$plot_id == "CX45", ]
+subset(cand, plot_id == "CX45")
 ```
 
 `resy_eval_plot(res, p = "CX45")` shows the species and conditions behind this
