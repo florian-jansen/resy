@@ -21,7 +21,7 @@ NULL
 #' gives the coast code of each sea (for example `MED_COAST`). Used to set
 #' `Coast_EEA` in [resy_harmonize_eunis()].
 #'
-#' @format An `sf` object with 5 polygons.
+#' @format An `sf` object with 5 multilinestrings.
 #' @source European Environment Agency: Regional seas around Europe.
 #' @usage data(coastline_regions_epsg25832)
 #' @name coastline_regions_epsg25832

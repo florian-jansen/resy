@@ -6,7 +6,7 @@
 \alias{co}
 \title{Regional seas around Europe (EPSG:25832)}
 \format{
-An \code{sf} object with 5 polygons.
+An \code{sf} object with 5 multilinestrings.
 }
 \source{
 European Environment Agency: Regional seas around Europe.

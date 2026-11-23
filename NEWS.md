@@ -167,11 +167,15 @@
 ## Package size
 
 * GIS reference layers reduced (`data-raw/simplify_gis.R` rebuilds all of
-  them), cutting `data/` from 9.5 MB to 3.1 MB and the source tarball to
-  4.8 MB, below the CRAN 5 MB limit.
+  them), cutting `data/` from 9.5 MB to 1.9 MB and the source tarball to
+  4.2 MB, below the CRAN 5 MB limit.
   `coastline_regions`, `ecoregions2017` and `dunes_bohn_*` are simplified with
-  `rmapshaper`, each with the strongest simplification that leaves the coast,
-  ecoregion and dune assignments of the bundled 200-plot example unchanged.
+  `rmapshaper` and rounded to a 10 m grid. The coast, ecoregion and dune
+  assignments of the bundled 200-plot example are the same as with the
+  full-resolution layers. Of 16,521 random points 4 to 6 km from the
+  full-resolution coastline, 99 get a different coast; of 20,000 random points
+  within 2 km of an ecoregion or dune polygon border, 349 get a different
+  ecoregion and 69 a different dune assignment.
   `europe_resolution_1` (country lookup) keeps all vertices, rounded to a 1 m
   grid (3.0 MB to 1.1 MB); none of 858 test points within 2 km of a border or
   coast changes country. `europe_resolution_60` is unchanged.
