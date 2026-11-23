@@ -7,18 +7,19 @@ with
 If `expertfile` is given it takes precedence over `scheme`/`version`.
 The file format is detected from the extension:
 
-- `.json`:
+- `.json`, `.json.xz`:
 
-  Parsed directly via the internal JSON parser (preferred).
+  Parsed directly via the internal JSON parser (preferred); `.json.xz`
+  is xz-compressed JSON.
 
 - `.txt`:
 
   Parsed via the legacy text parser.
 
-When no `expertfile` is supplied, the function looks for `expert.json`,
-then `expert.txt` (in that order) under `<root>/<scheme>/<version>/`,
-where the roots are searched in the order given by `location`:
-classifications stored with
+When no `expertfile` is supplied, the function looks for `expert.json`
+(or `expert.json.xz`), then `expert.txt` (in that order) under
+`<root>/<scheme>/<version>/`, where the roots are searched in the order
+given by `location`: classifications stored with
 [`resy_add_classification()`](https://florian-jansen.github.io/resy/reference/resy_add_classification.md)
 (`"user"`) and the classifications shipped with the package
 (`"package"`).

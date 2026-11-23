@@ -3,8 +3,9 @@
 Loads a parsed expert-system object ready for use with resy_classify().
 If expertfile is given it takes precedence over scheme/version. The
 file format is detected from the extension:
-.json
-Parsed directly via the internal JSON parser (preferred).
+.json, .json.xz
+Parsed directly via the internal JSON parser
+(preferred); .json.xz is xz-compressed JSON.
 
 .txt
 Parsed via the legacy text parser.
@@ -13,15 +14,16 @@ Parsed via the legacy text parser.
 
 
 When no expertfile is supplied, the function looks for
-expert.json, then expert.txt (in that order) under
+expert.json (or expert.json.xz), then expert.txt (in that order) under
 &amp;lt;root&amp;gt;/&amp;lt;scheme&amp;gt;/&amp;lt;version&amp;gt;/, where the roots are searched in the order
 given by location: classifications stored with resy_add_classification()
 (&quot;user&quot;) and the classifications shipped with the package (&quot;package&quot;)."><meta property="og:description" content="
 Loads a parsed expert-system object ready for use with resy_classify().
 If expertfile is given it takes precedence over scheme/version. The
 file format is detected from the extension:
-.json
-Parsed directly via the internal JSON parser (preferred).
+.json, .json.xz
+Parsed directly via the internal JSON parser
+(preferred); .json.xz is xz-compressed JSON.
 
 .txt
 Parsed via the legacy text parser.
@@ -30,7 +32,7 @@ Parsed via the legacy text parser.
 
 
 When no expertfile is supplied, the function looks for
-expert.json, then expert.txt (in that order) under
+expert.json (or expert.json.xz), then expert.txt (in that order) under
 &amp;lt;root&amp;gt;/&amp;lt;scheme&amp;gt;/&amp;lt;version&amp;gt;/, where the roots are searched in the order
 given by location: classifications stored with resy_add_classification()
 (&quot;user&quot;) and the classifications shipped with the package (&quot;package&quot;)."><meta property="og:image" content="https://florian-jansen.github.io/resy/logo.png"></head><body>
@@ -79,15 +81,16 @@ given by location: classifications stored with resy_add_classification()
     <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a>
 Loads a parsed expert-system object ready for use with <code><a href="resy_classify.html">resy_classify()</a></code>.</p>
 <p>If <code>expertfile</code> is given it takes precedence over <code>scheme</code>/<code>version</code>. The
-file format is detected from the extension:</p><dl><dt><code>.json</code></dt>
-<dd><p>Parsed directly via the internal JSON parser (preferred).</p></dd>
+file format is detected from the extension:</p><dl><dt><code>.json</code>, <code>.json.xz</code></dt>
+<dd><p>Parsed directly via the internal JSON parser
+(preferred); <code>.json.xz</code> is xz-compressed JSON.</p></dd>
 
 <dt><code>.txt</code></dt>
 <dd><p>Parsed via the legacy text parser.</p></dd>
 
 
 </dl><p>When no <code>expertfile</code> is supplied, the function looks for
-<code>expert.json</code>, then <code>expert.txt</code> (in that order) under
+<code>expert.json</code> (or <code>expert.json.xz</code>), then <code>expert.txt</code> (in that order) under
 <code>&lt;root&gt;/&lt;scheme&gt;/&lt;version&gt;/</code>, where the roots are searched in the order
 given by <code>location</code>: classifications stored with <code><a href="resy_add_classification.html">resy_add_classification()</a></code>
 (<code>"user"</code>) and the classifications shipped with the package (<code>"package"</code>).</p>

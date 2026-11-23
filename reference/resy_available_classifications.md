@@ -26,7 +26,7 @@ structure:
 - Second-level directories represent versions within each scheme.
 
 - Within each version directory, the function looks for `expert.json`
-  and `expert.txt` files.
+  (or xz-compressed `expert.json.xz`) and `expert.txt` files.
 
 ## See also
 
@@ -44,7 +44,7 @@ resy_available_classifications()
 #> 2         EUNIS 2025-10-03
 #>                                                                                                                                                          expert_json
 #> 1 /home/runner/.cache/R/renv/library/resy-ae7cf081/linux-ubuntu-resolute/R-4.6/x86_64-pc-linux-gnu/RESY/extdata/classifications/Apennine-test/2026-06-27/expert.json
-#> 2         /home/runner/.cache/R/renv/library/resy-ae7cf081/linux-ubuntu-resolute/R-4.6/x86_64-pc-linux-gnu/RESY/extdata/classifications/EUNIS/2025-10-03/expert.json
+#> 2      /home/runner/.cache/R/renv/library/resy-ae7cf081/linux-ubuntu-resolute/R-4.6/x86_64-pc-linux-gnu/RESY/extdata/classifications/EUNIS/2025-10-03/expert.json.xz
 #>   expert_txt
 #> 1       <NA>
 #> 2       <NA>

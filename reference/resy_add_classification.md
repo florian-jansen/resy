@@ -1,7 +1,7 @@
 # Add a new classification to the RESY store
 
-Validates and copies an ESy expert file (`.txt` or `.json`) into the
-RESY classification store so that it becomes available to
+Validates and copies an ESy expert file (`.txt`, `.json` or `.json.xz`)
+into the RESY classification store so that it becomes available to
 [`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md)
 and
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
@@ -29,7 +29,8 @@ resy_add_classification(
 
 - file:
 
-  Path to an ESy expert file (`.txt` or `.json`).
+  Path to an ESy expert file (`.txt`, `.json` or xz-compressed
+  `.json.xz`).
 
 - scheme:
 
@@ -69,13 +70,13 @@ Invisibly, a named list with the paths of the files written:
 
 ## Details
 
-The file is stored as `<root>/<scheme>/<version>/expert.txt` or
-`expert.json`, where `<root>` is `tools::R_user_dir("RESY", "data")` for
-`location = "user"`. A `.txt` file is stored unchanged, together with a
-`metadata.json` sidecar recording the scheme, version, source path and
-time of storage. Replacing a classification with `overwrite = TRUE`
-removes the files of the previous one, so a `.txt` never sits beside a
-stale `.json` that
+The file is stored as `<root>/<scheme>/<version>/expert.txt`,
+`expert.json` or `expert.json.xz`, where `<root>` is
+`tools::R_user_dir("RESY", "data")` for `location = "user"`. A `.txt`
+file is stored unchanged, together with a `metadata.json` sidecar
+recording the scheme, version, source path and time of storage.
+Replacing a classification with `overwrite = TRUE` removes the files of
+the previous one, so a `.txt` never sits beside a stale `.json` that
 [`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md)
 would read first.
 
