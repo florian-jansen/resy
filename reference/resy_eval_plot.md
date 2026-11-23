@@ -73,8 +73,8 @@ res <- resy_classify(
 #> Step 5.9  Number of T$ NON conditions: 0
 #> Step 5.10  Header conditions with numeric values: 0
 #>   Header conditions with character values: 0
-#> adapt conditions 2026-11-23 18:32:00.102967
-#> classification from here on 2026-11-23 18:32:00.103749
+#> adapt conditions 2026-11-23 19:07:34.885001
+#> classification from here on 2026-11-23 19:07:34.885715
 
 resy_eval_plot(res, p = as.character(header$PlotObservationID[1]))
 #> Types whose rule holds: F (priority 2)

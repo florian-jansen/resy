@@ -14,7 +14,7 @@ data(coastline_regions_epsg25832)
 
 ## Format
 
-An `sf` object with 5 polygons.
+An `sf` object with 5 multilinestrings.
 
 ## Source
 
