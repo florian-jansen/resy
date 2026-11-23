@@ -14,7 +14,8 @@ resy_add_classification(
 )
 }
 \arguments{
-\item{file}{Path to an ESy expert file (\code{.txt} or \code{.json}).}
+\item{file}{Path to an ESy expert file (\code{.txt}, \code{.json} or xz-compressed
+\code{.json.xz}).}
 
 \item{scheme}{Scheme name to store under (e.g. \code{"MyClassification"}).}
 
@@ -38,7 +39,7 @@ input.}
 }
 }
 \description{
-Validates and copies an ESy expert file (\code{.txt} or \code{.json}) into the RESY
+Validates and copies an ESy expert file (\code{.txt}, \code{.json} or \code{.json.xz}) into the RESY
 classification store so that it becomes available to \code{\link[=resy_load_expert]{resy_load_expert()}} and
 \code{\link[=resy_classify]{resy_classify()}}.
 
@@ -48,8 +49,8 @@ found, so you can fix the file and try again. Pass \code{validate = FALSE} to sk
 validation (not recommended).
 }
 \details{
-The file is stored as \verb{<root>/<scheme>/<version>/expert.txt} or
-\code{expert.json}, where \verb{<root>} is \code{tools::R_user_dir("RESY", "data")} for
+The file is stored as \verb{<root>/<scheme>/<version>/expert.txt},
+\code{expert.json} or \code{expert.json.xz}, where \verb{<root>} is \code{tools::R_user_dir("RESY", "data")} for
 \code{location = "user"}. A \code{.txt} file is stored unchanged, together with a
 \code{metadata.json} sidecar recording the scheme, version, source path and
 time of storage. Replacing a classification with \code{overwrite = TRUE} removes

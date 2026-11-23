@@ -60,7 +60,7 @@ resy_validate_esy <- function(path, strict = FALSE, verbose = TRUE) {
   stopifnot(is.character(path), length(path) == 1L)
   if (!file.exists(path)) stop("File not found: ", path)
   
-  is_json <- grepl("\\.json$", path, ignore.case = TRUE)
+  is_json <- .resy_is_json(path)
   result  <- if (is_json) {
     
     .resy_validate_esy_json(path, strict = strict)

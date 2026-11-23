@@ -56,8 +56,8 @@ test_that("resy_available_classifications expert_json paths are valid or NA", {
     if (!is.na(path)) {
       expect_true(file.exists(path), 
                   info = paste("Path should exist:", path))
-      expect_true(grepl("\\.json$", path, ignore.case = TRUE),
-                  info = paste("Path should end with .json:", path))
+      expect_true(grepl("\\.json(\\.xz)?$", path, ignore.case = TRUE),
+                  info = paste("Path should end with .json or .json.xz:", path))
     }
   }
 })

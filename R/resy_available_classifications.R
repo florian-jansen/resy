@@ -15,7 +15,7 @@
 #'   \item Top-level directories represent classification schemes (e.g., "EUNIS").
 #'   \item Second-level directories represent versions within each scheme.
 #'   \item Within each version directory, the function looks for `expert.json`
-#'     and `expert.txt` files.
+#'     (or xz-compressed `expert.json.xz`) and `expert.txt` files.
 #' }
 #' 
 #' @examples
@@ -47,19 +47,12 @@ resy_available_classifications <- function() {
     lapply(versions, function(v) {
       
       base <- file.path(root, sc, v)
-      
-      .resy_file_or_na <- function(f) {
-        
-        p <- file.path(base, f)
-        if (file.exists(p)) p else NA_character_
-        
-      }
-      
+
       data.frame(
         scheme      = sc,
         version     = v,
-        expert_json = .resy_file_or_na("expert.json"),
-        expert_txt  = .resy_file_or_na("expert.txt"),
+        expert_json = .resy_find_expert_file(base, "json"),
+        expert_txt  = .resy_find_expert_file(base, "txt"),
         stringsAsFactors = FALSE
       )
       

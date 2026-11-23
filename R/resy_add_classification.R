@@ -1,7 +1,7 @@
 #' Add a new classification to the RESY store
 #'
 #' @description
-#' Validates and copies an ESy expert file (`.txt` or `.json`) into the RESY
+#' Validates and copies an ESy expert file (`.txt`, `.json` or `.json.xz`) into the RESY
 #' classification store so that it becomes available to [resy_load_expert()] and
 #' [resy_classify()].
 #'
@@ -10,7 +10,8 @@
 #' found, so you can fix the file and try again. Pass `validate = FALSE` to skip
 #' validation (not recommended).
 #'
-#' @param file Path to an ESy expert file (`.txt` or `.json`).
+#' @param file Path to an ESy expert file (`.txt`, `.json` or xz-compressed
+#'   `.json.xz`).
 #' @param scheme Scheme name to store under (e.g. `"MyClassification"`).
 #' @param version Version string to store under (e.g. `"2026-07-05"`).
 #' @param location Where to store: `"user"` (default, recommended) or
@@ -21,8 +22,8 @@
 #'   to `TRUE`. Set to `FALSE` only if you are certain the file is valid.
 #'
 #' @details
-#' The file is stored as `<root>/<scheme>/<version>/expert.txt` or
-#' `expert.json`, where `<root>` is `tools::R_user_dir("RESY", "data")` for
+#' The file is stored as `<root>/<scheme>/<version>/expert.txt`,
+#' `expert.json` or `expert.json.xz`, where `<root>` is `tools::R_user_dir("RESY", "data")` for
 #' `location = "user"`. A `.txt` file is stored unchanged, together with a
 #' `metadata.json` sidecar recording the scheme, version, source path and
 #' time of storage. Replacing a classification with `overwrite = TRUE` removes
@@ -69,9 +70,10 @@ resy_add_classification <- function(file,
     stop("File not found: ", file, call. = FALSE)
 
   ext <- tolower(tools::file_ext(file))
-  if (!ext %in% c("txt", "json"))
-    stop("File must be a .txt or .json expert file; got extension: .", ext,
-         call. = FALSE)
+  is_json <- .resy_is_json(file)
+  if (!is_json && ext != "txt")
+    stop("File must be a .txt, .json or .json.xz expert file; got extension: .",
+         ext, call. = FALSE)
 
   if (!is.character(scheme)  || !nzchar(scheme))
     stop("`scheme` must be a non-empty string.", call. = FALSE)
@@ -113,17 +115,18 @@ resy_add_classification <- function(file,
   if (!dir.exists(out_dir))
     dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
-  out_txt  <- file.path(out_dir, "expert.txt")
-  out_json <- file.path(out_dir, "expert.json")
-  out_meta <- file.path(out_dir, "metadata.json")
+  out_txt   <- file.path(out_dir, .resy_expert_files$txt)
+  json_all  <- file.path(out_dir, .resy_expert_files$json)
+  out_json  <- json_all[if (ext == "xz") 2L else 1L]
+  out_meta  <- file.path(out_dir, "metadata.json")
 
-  if (!overwrite && (file.exists(out_txt) || file.exists(out_json)))
+  if (!overwrite && any(file.exists(c(out_txt, json_all))))
     stop("Classification '", scheme, "/", version, "' already exists at:\n  ",
          out_dir, "\nSet overwrite = TRUE to replace it.", call. = FALSE)
 
-  unlink(c(out_txt, out_json, out_meta))
+  unlink(c(out_txt, json_all, out_meta))
 
-  if (ext == "txt") {
+  if (!is_json) {
     ok <- file.copy(file, out_txt, overwrite = TRUE)
     if (!isTRUE(ok)) stop("Failed to copy file to: ", out_txt, call. = FALSE)
 

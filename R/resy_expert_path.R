@@ -22,10 +22,9 @@ resy_expert_path <- function(scheme,
                              format   = c("json", "txt"),
                              mustWork = TRUE) {
   format <- match.arg(format)
-  fname  <- switch(format, json = "expert.json", txt = "expert.txt")
 
   base <- system.file("extdata", "classifications", scheme, version, package = "RESY")
-  p    <- if (nzchar(base)) file.path(base, fname) else NA_character_
+  p    <- if (nzchar(base)) .resy_find_expert_file(base, format) else NA_character_
 
   if (mustWork && (is.na(p) || !file.exists(p)))
     stop(sprintf(

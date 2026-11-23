@@ -124,7 +124,7 @@ json_to_txt_lines <- function(path) {
 }
 
 read_expert_lines <- function(path) {
-  if (grepl('\\.json$', path, ignore.case = TRUE)) {
+  if (RESY:::.resy_is_json(path)) {
     json_to_txt_lines(path)
   } else {
     readLines(path, warn = FALSE, encoding = 'UTF-8')

@@ -34,12 +34,13 @@ Loads a parsed expert-system object ready for use with \code{\link[=resy_classif
 If \code{expertfile} is given it takes precedence over \code{scheme}/\code{version}. The
 file format is detected from the extension:
 \describe{
-\item{\code{.json}}{Parsed directly via the internal JSON parser (preferred).}
+\item{\code{.json}, \code{.json.xz}}{Parsed directly via the internal JSON parser
+(preferred); \code{.json.xz} is xz-compressed JSON.}
 \item{\code{.txt}}{Parsed via the legacy text parser.}
 }
 
 When no \code{expertfile} is supplied, the function looks for
-\code{expert.json}, then \code{expert.txt} (in that order) under
+\code{expert.json} (or \code{expert.json.xz}), then \code{expert.txt} (in that order) under
 \verb{<root>/<scheme>/<version>/}, where the roots are searched in the order
 given by \code{location}: classifications stored with \code{\link[=resy_add_classification]{resy_add_classification()}}
 (\code{"user"}) and the classifications shipped with the package (\code{"package"}).

@@ -6,7 +6,7 @@
 test_that("resy_expert_path returns an existing json file for a bundled scheme", {
   p <- resy_expert_path("EUNIS", "2025-10-03", format = "json")
   expect_true(file.exists(p))
-  expect_match(p, "expert\\.json$")
+  expect_match(p, "expert\\.json(\\.xz)?$")
   expect_match(p, "EUNIS")
 })
 

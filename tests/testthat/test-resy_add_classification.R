@@ -218,7 +218,8 @@ test_that("arguments are checked before anything is written", {
 
   csv <- tempfile(fileext = ".csv")
   writeLines("x", csv)
-  expect_error(resy_add_classification(csv, "S", "1"), "\\.txt or \\.json")
+  expect_error(resy_add_classification(csv, "S", "1"),
+               "\\.txt, \\.json or \\.json\\.xz")
 
   expect_error(resy_add_classification(apennine_json(), "", "1"), "`scheme`")
   expect_error(resy_add_classification(apennine_json(), "S", ""), "`version`")
