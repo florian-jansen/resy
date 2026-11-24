@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "scheme": "shared-category-value",
+    "version": "2026-11-24",
+    "description": "Two site columns compared with the same value"
+  },
+  "synonyms": {},
+  "groups": {
+    "### Trees": ["Fagus sylvatica"]
+  },
+  "rules": [
+    {"priority": 1, "code": "REG", "description": "Wet region",
+     "expression": "<#TC Trees GR 10> AND <$$C Region EQ Wet>"},
+    {"priority": 2, "code": "ZON", "description": "Wet zone",
+     "expression": "<#TC Trees GR 10> AND <$$C Zone EQ Wet>"}
+  ]
+}

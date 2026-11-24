@@ -3,7 +3,7 @@
 // The data files are read here in parts and classified in batches of whole
 // plots, spread over several webR sessions, so files of any size can be used.
 import { $, escapeHtml, rString, cleanError, fmt, plural, createLoader, fetchAssets, bootSession, setFile, saveBlob, store, createShell, pinNavbar, prepareSites, ensureGeography } from './resy_core.js';
-import { lineChunks, splitFields, readHeader, pick, SPECIES_COLS, SPECIES_COL_LABEL, fillSpeciesColumns, tsvValue } from './resy_files.js';
+import { lineChunks, splitFields, splitRecords, fileText, readHeader, pick, SPECIES_COLS, SPECIES_COL_LABEL, fillSpeciesColumns, tsvValue, plotId, tsvPlotId, fieldNumber } from './resy_files.js';
 import { evidenceHtml, wireEvidence } from './resy_evidence.js';
 import { placeOf, createDotMap } from './resy_map.js';
 import { PALETTE, level, colourVar, cssValue } from './resy_palette.js';
@@ -88,15 +88,15 @@ function closeSession(s) {
 
 // Reads the selected expert system into a session. A session keeps what it read, so
 // a system already in the session is not read again.
-async function applySystem(s, first = false) {
-  if (s.key === system.key) return s.info;
-  if (system.file) {
+async function applySystem(s, first = false, target = system) {
+  if (s.key === target.key) return s.info;
+  if (target.file) {
     await s.webR.evalRVoid('dir.create("/tmp/upload", showWarnings = FALSE)');
-    await s.webR.FS.writeFile(system.file.path, system.file.bytes);
+    await s.webR.FS.writeFile(target.file.path, target.file.bytes);
   }
   if (first) { status('Reading the expert system…'); stage('parse'); }
-  const out = JSON.parse(await s.webR.evalRString(system.call));
-  s.key = system.key;
+  const out = JSON.parse(await s.webR.evalRString(target.call));
+  s.key = target.key;
   s.info = out;
   return out;
 }
@@ -109,12 +109,12 @@ function release(s) {
 }
 
 // A free session with the selected expert system.
-async function acquire() {
+async function acquire(target = system) {
   const free = pool.find((s) => !s.busy);
   const s = free ?? await new Promise((resolve) => waiting.push(resolve));
   s.busy = true;
   try {
-    await applySystem(s);
+    await applySystem(s, false, target);
   } catch (e) {
     release(s);
     throw e;
@@ -132,9 +132,10 @@ async function start() {
   if (info) $('footer').insertAdjacentHTML('afterbegin', `RESY ${escapeHtml(info.resy)} · `);
   fillVersions(info?.eunis_versions ?? []);
   await adoptHandoff();
-  await chooseSystem();
+  system = await chooseSystem();
   const first = await startSession(true, session);
-  await describeSystem(first);
+  system.info = first.info;
+  showSystem(first.info);
   await loadExamples(first);
   status(`R is ready (${((performance.now() - t0) / 1000).toFixed(0)} s).`, 'idle');
   await loader.hide();
@@ -147,22 +148,31 @@ async function start() {
 // ---- Expert system ---------------------------------------------------------
 // An expert system handed over by the RESY Maker (maker.js) is put into the
 // file input, as if it had been chosen there.
-function adopt(handed) {
-  setFile($('f-expert'), new File([handed.text], handed.name, { type: 'application/json' }));
+const handedFile = (handed) => new File([handed.text], handed.name, { type: 'application/json' });
+function adopt(file) {
+  setFile($('f-expert'), file);
   document.querySelector('input[name=system][value=file]').checked = true;
 }
 async function adoptHandoff() {
   if (location.hash !== '#from-maker') return;
   const handed = await store.get('to-app');
-  if (handed) adopt(handed);
+  if (handed) adopt(handedFile(handed));
 }
 // The RESY Maker shares the window with this page (see createShell()); an
 // expert system it hands over is chosen here as an uploaded file is.
-const shell = createShell('app', async (handed) => {
-  adopt(handed);
-  await onSystemChange();
-  $('sys-h').scrollIntoView({ block: 'nearest' });
+let pendingHandoff = null;
+const shell = createShell('app', (handed) => {
+  pendingHandoff = handedFile(handed);
+  return applyHandoff();
 });
+
+async function applyHandoff() {
+  if (!pendingHandoff || running || configuring) return;
+  const file = pendingHandoff;
+  pendingHandoff = null;
+  await onSystemChange(file);
+  $('sys-h').scrollIntoView({ block: 'nearest' });
+}
 
 // Opens the selected expert system in the RESY Maker.
 async function openInMaker(e) {
@@ -185,50 +195,32 @@ function fillVersions(versions) {
 
 const systemChoice = () => document.querySelector('input[name=system]:checked').value;
 
-async function chooseSystem() {
-  const v = systemChoice();
+let uploadKey = 0;
+async function chooseSystem(handed = null) {
+  const v = handed ? 'file' : systemChoice();
   if (v !== 'file') {
     const version = v === 'EUNIS' ? $('eunis-version').value : '';
-    system = {
+    return {
       key: `${v}:${version}`,
       call: `resy_page_set_expert(scheme = ${rString(v)}${version ? `, version = ${rString(version)}` : ''})`,
       file: null,
       info: null,
     };
-    return;
   }
-  const f = $('f-expert').files[0];
+  const f = handed ?? $('f-expert').files[0];
   if (!/\.(json|txt)$/i.test(f.name)) throw new Error('The expert system file must end in .json or .txt.');
   const path = `/tmp/upload/${f.name.replace(/[^A-Za-z0-9._-]/g, '_')}`;
-  system = {
-    key: `file:${f.name}:${f.size}:${f.lastModified}`,
+  return {
+    key: `file:${++uploadKey}`,
     call: `resy_page_set_expert(path = ${rString(path)})`,
     file: { path, bytes: new Uint8Array(await f.arrayBuffer()) },
     info: null,
   };
 }
 
-// Reads the expert system in one session and describes it under the choices.
-async function describeSystem(s) {
-  if (loader.done) status('Reading the expert system…');
-  let out;
-  try {
-    out = await applySystem(s, !loader.done);
-  } catch (e) {
-    $('sys-info').className = 'small mt-3 mb-0 error';
-    $('sys-info').textContent = cleanError(e);
-    system = null;
-    throw e;
-  }
-  system.info = out;
-  described.set(system.key, out);
-  showSystem(out);
-}
-// The description of each system read so far, by its key: choosing a system
-// again shows its description at once, while a session takes it up.
-const described = new Map();
 function showSystem(out) {
   $('eunis-opts').disabled = !out.eunis;
+  $('o-buffer').disabled = !$('o-coast').checked;
   const codes = (xs) => {
     const c = xs.map((x) => `<code>${escapeHtml(x)}</code>`);
     return c.length > 1 ? `${c.slice(0, -1).join(', ')} and ${c.at(-1)}` : c[0];
@@ -248,11 +240,11 @@ function showSystem(out) {
 const systemLabel = (info) => info.version ? `${info.release_scheme} ${info.version}` : info.scheme;
 
 let configuring = false;
-async function onSystemChange() {
+async function onSystemChange(handed = null) {
   if (!pool.length || running || configuring) return;
-  invalidateResults();
+  if (!handed) invalidateResults();
   $('run').disabled = true;
-  if (systemChoice() === 'file' && !$('f-expert').files[0]) {
+  if (!handed && systemChoice() === 'file' && !$('f-expert').files[0]) {
     system = null;
     $('eunis-opts').disabled = true;
     $('sys-info').className = 'small mt-3 mb-0';
@@ -263,23 +255,33 @@ async function onSystemChange() {
   configuring = true;
   $('system-panel').inert = true;
   $('sys-info').setAttribute('aria-busy', 'true');
+  status('Reading the expert system…');
   try {
-    await chooseSystem();
-    if (described.has(system.key)) showSystem(described.get(system.key));
-    const s = await acquire();
-    try { await describeSystem(s); } finally { release(s); }
+    const next = await chooseSystem(handed);
+    const s = await acquire(next);
+    next.info = s.info;
+    release(s);
+    if (handed) {
+      adopt(handed);
+      invalidateResults();
+    }
+    system = next;
+    showSystem(next.info);
     status('Expert system ready.', 'idle');
   } catch (e) {
-    system = null;
-    $('sys-info').className = 'small mt-3 mb-0 error';
-    $('sys-info').textContent = cleanError(e);
-    $('eunis-opts').disabled = true;
+    if (!handed) {
+      system = null;
+      $('sys-info').className = 'small mt-3 mb-0 error';
+      $('sys-info').textContent = cleanError(e);
+      $('eunis-opts').disabled = true;
+    }
     status(cleanError(e), 'error');
   } finally {
     configuring = false;
     $('system-panel').inert = false;
     $('sys-info').setAttribute('aria-busy', 'false');
     updateReadiness();
+    await applyHandoff();
   }
 }
 
@@ -299,7 +301,7 @@ async function describeSpecies() {
 function updateReadiness() {
   const files = DATA_INPUTS.every((id) => $(id).files.length);
   const columns = SPECIES_COLS.every(([, id]) => $(id).value);
-  $('run').disabled = !loader.done || configuring || !system?.info || !files || !columns;
+  if (!running) $('run').disabled = !loader.done || configuring || !system?.info || !files || !columns;
   $('data-note').textContent = !files ? 'Choose both files to begin, or try the example data.' :
     !columns ? 'Choose the plot, species and cover columns to continue.' :
     DATA_INPUTS.every((_, i) => isExample(i)) ? 'Example ready: 200 plots from Tuscany. Check the columns, then classify.' :
@@ -307,17 +309,25 @@ function updateReadiness() {
 }
 
 function invalidateResults() {
-  clearTimeout(renderTimer); renderTimer = null;
   R = null; selected = null; filterType = null;
+  dots.index = null;
+  table = null;
+  rowSizes.disconnect();
   detailRequest++;
-  $('results').hidden = true;
+  showResults(false, 'No classification yet.');
   $('q').value = '';
   clearDetail();
 }
 
+function showResults(available, message = '') {
+  $('results').classList.toggle('unavailable', !available);
+  $('results').inert = !available || running;
+  $('results-empty').textContent = message;
+}
+
 // Plot positions and the site columns the expert system reads, kept compactly
 // (repeated values such as country names are stored once).
-async function readSites(file, wanted, onProgress) {
+async function readSites(file, wanted) {
   const { delim, cols } = await readHeader(file);
   const iId = cols.indexOf(pick(cols, 'id'));
   if (iId < 0) throw new Error(`The sites file needs the column \`PlotObservationID\`. It has: ${cols.map((c) => `\`${c}\``).join(', ')}.`);
@@ -329,14 +339,16 @@ async function readSites(file, wanted, onProgress) {
     codes: extra.map(() => []), dicts: extra.map(() => ({ map: new Map(), values: [] })),
   };
   let first = true;
-  for await (const chunk of lineChunks(file)) {
+  for await (const chunk of lineChunks(file, delim)) {
     for (const line of chunk.lines) {
       if (first) { first = false; continue; }
       if (!line) continue;
       const f = splitFields(line, delim);
-      store.index.set(f[iId], store.lon.length);
-      store.lon.push(iLon >= 0 ? parseFloat(f[iLon]) : NaN);
-      store.lat.push(iLat >= 0 ? parseFloat(f[iLat]) : NaN);
+      const id = plotId(f[iId]);
+      if (!id) continue;
+      store.index.set(id, store.lon.length);
+      store.lon.push(iLon >= 0 ? fieldNumber(f[iLon]) : NaN);
+      store.lat.push(iLat >= 0 ? fieldNumber(f[iLat]) : NaN);
       extra.forEach(([, i], k) => {
         const d = store.dicts[k], v = f[i] ?? '';
         let code = d.map.get(v);
@@ -344,7 +356,6 @@ async function readSites(file, wanted, onProgress) {
         store.codes[k].push(code);
       });
     }
-    onProgress?.(chunk.end / file.size);
   }
   store.lon = Float64Array.from(store.lon);
   store.lat = Float64Array.from(store.lat);
@@ -359,7 +370,7 @@ function sitesTsv(store, ids) {
   for (const id of ids) {
     const r = store.index.get(id);
     if (r === undefined) continue;
-    rows.push([tsvValue(id), num(store.lon[r]), num(store.lat[r]), ...store.codes.map((c, k) => tsvValue(store.dicts[k].values[c[r]]))].join('\t'));
+    rows.push([tsvPlotId(id), num(store.lon[r]), num(store.lat[r]), ...store.codes.map((c, k) => tsvValue(store.dicts[k].values[c[r]]))].join('\t'));
   }
   return rows.join('\n') + '\n';
 }
@@ -369,9 +380,9 @@ function sitesTsv(store, ids) {
 const SORT_LIMIT = 64 * 1024 * 1024;
 async function groupedSpecies(file, delim, iId) {
   if (file.size > SORT_LIMIT) return file;
-  const lines = (await file.text()).replace(/^﻿/, '').split(/\r?\n/);
+  const lines = splitRecords(await fileText(file), delim);
   const head = lines.shift();
-  const rows = lines.filter(Boolean).map((l, i) => ({ l, id: splitFields(l, delim)[iId], i }));
+  const rows = lines.filter(Boolean).map((l, i) => ({ l, id: plotId(splitFields(l, delim)[iId]), i }));
   const first = new Map();
   rows.forEach((r) => { if (!first.has(r.id)) first.set(r.id, r.i); });
   rows.sort((a, b) => first.get(a.id) - first.get(b.id) || a.i - b.i);
@@ -389,29 +400,29 @@ function newResults(source, capacity) {
   const r = {
     source, n: 0, ids: [], codes: [], codeIndex: new Map(), counts: [], candLists: [], candIndex: new Map(),
     readSites: new Uint8Array(source.sites.lon.length), readUnplaced: new Set(),
-    nObs: 0, unmatched: 0, warnings: new Set(), missing: new Map(), done: 0, t0: performance.now(), seconds: 0,
+    nObs: 0, unmatched: 0, warnings: new Set(), done: 0, completedBytes: 0, t0: performance.now(),
+    sites: { matched: 0, absent: 0, present: new Set(), missing: new Map(), maps: new Map() },
   };
   for (const [k, T] of Object.entries(COLUMNS)) r[k] = new T(Math.max(1024, capacity));
   return r;
 }
-function growResults() {
+function growResults(result) {
   for (const [k, T] of Object.entries(COLUMNS)) {
-    const a = new T(2 * R[k].length);
-    a.set(R[k]);
-    R[k] = a;
+    const a = new T(2 * result[k].length);
+    a.set(result[k]);
+    result[k] = a;
   }
 }
-const intern = (index, list) => (v) => {
+const intern = (index, list, v) => {
   let k = index.get(v);
   if (k === undefined) { k = list.length; index.set(v, k); list.push(v); }
   return k;
 };
-const codeOf = (c) => {
-  const k = intern(R.codeIndex, R.codes)(c);
-  if (R.counts.length < R.codes.length) R.counts.push(0);
+const codeOf = (result, c) => {
+  const k = intern(result.codeIndex, result.codes, c);
+  if (result.counts.length < result.codes.length) result.counts.push(0);
   return k;
 };
-const candOf = (c) => intern(R.candIndex, R.candLists)(c);
 
 // ---- Running a classification -----------------------------------------------
 let running = false, stopRequested = false;
@@ -430,142 +441,161 @@ async function run() {
   $('data-inputs').inert = true;
   $('results').inert = true;
   $('results').setAttribute('aria-busy', 'true');
+  if ($('results').classList.contains('unavailable')) showResults(false, 'Waiting for classified plots…');
+  table = null;
+  rowSizes.disconnect();
   $('run').textContent = 'Stop';
   $('progress').hidden = false;
   setProgress(0);
   const inFlight = new Set();
+  const failures = [];
+  let result = null, readError;
   try {
     if (!system?.info) throw new Error('Choose an expert system first.');
     const sp = $('f-species').files[0], si = $('f-sites').files[0];
     if (!sp) throw new Error('Choose a species file.');
     if (!si) throw new Error('Choose a sites file.');
-    const coast = $('o-coast').checked ? 'TRUE' : 'FALSE';
-    if (!$('o-buffer').checkValidity()) throw new Error('Enter a coast buffer of zero or more metres, in steps of 500.');
-    const buffer = Number($('o-buffer').value) || 0;
-    const opts = `coast_dunes = ${coast}, coast_buffer = ${buffer}`;
+    const coast = system.info.eunis && $('o-coast').checked;
+    if (coast && !$('o-buffer').checkValidity()) throw new Error('Enter a coast buffer of at least 1 metre.');
+    const opts = `coast_dunes = ${coast ? 'TRUE' : 'FALSE'}, coast_buffer = ${coast ? $('o-buffer').valueAsNumber : 5000}`;
 
     const { delim, cols } = await readHeader(sp);
     const col = Object.fromEntries(SPECIES_COLS.map(([key, id]) => [key, cols.indexOf($(id).value)]));
     for (const [key] of SPECIES_COLS) if (col[key] < 0) throw new Error(`Choose the ${SPECIES_COL_LABEL[key]} column of the species file.`);
+    const dwc = cols[col.cover] === 'organismQuantity';
+    col.unit = dwc ? cols.indexOf('organismQuantityType') : -1;
+    if (dwc && col.unit < 0) throw new Error('Add an organismQuantityType column with percent cover units, or choose a percent cover column.');
 
     status('Reading the sites file…');
     const wanted = [...new Set([...system.info.header_cols.filter((c) => !system.info.derived_cols.includes(c)), ...(system.info.eunis ? ['Country', 'Altitude (m)'] : [])])];
-    const sites = await readSites(si, wanted, (f) => setProgress(0.02 * f));
+    const sites = await readSites(si, wanted);
     const source = await groupedSpecies(sp, delim, col.id);
-    R = newResults({ blob: source, delim, col, sites, opts }, sites.lon.length);
-    R.system = system.info;
-    R.typeNames = new Map(R.system.names.map((t) => [t.code, t.name]));
-    filterType = null; selected = null;
-    const firstRun = $('results').hidden;
-    $('results').hidden = false;
-    if (firstRun) render(true);
-    clearDetail();
-
+    result = newResults({ blob: source, delim, col, sites, opts, header: `PlotObservationID\tname\tcover${dwc ? '\torganismQuantityType' : ''}` }, sites.lon.length);
+    result.system = system.info;
+    result.typeNames = new Map(result.system.names.map((t) => [t.code, t.name]));
     let target = 1000;
-    const newBatch = () => ({ lines: ['PlotObservationID\tname\tcover'], ids: [], first: R.n });
-    let batch = newBatch();
+    const newBatch = (start) => ({ lines: [result.source.header], ids: [], first: result.n, start });
+    let batch = newBatch(0);
     let current = null, rowsOfCurrent = 0;
     const finishPlot = (end) => {
       if (current === null) return;
-      R.end[R.n - 1] = end;
-      R.nsp[R.n - 1] = rowsOfCurrent;
+      result.end[result.n - 1] = end;
+      result.nsp[result.n - 1] = rowsOfCurrent;
     };
-    const dispatch = (bytes) => {
+    const dispatch = (end) => {
       const b = batch;
-      batch = newBatch();
-      const job = classifyBatch(b, opts, bytes / source.size).then((seconds) => {
-        target = Math.max(250, Math.min(MAX_BATCH, Math.round(target * Math.min(2, BATCH_SECONDS / Math.max(seconds, 0.05)))));
+      batch = newBatch(end);
+      const job = classifyBatch(result, b, end - b.start).then((seconds) => {
+        const active = !stopRequested && !failures.length && !readError;
+        if (active) target = Math.max(250, Math.min(MAX_BATCH, Math.round(target * Math.min(2, BATCH_SECONDS / Math.max(seconds, 0.05)))));
+        showBatchProgress(result, active);
+      }).catch((error) => {
+        failures.push({ first: b.first, error });
       }).finally(() => inFlight.delete(job));
       inFlight.add(job);
-      return job;
     };
 
     let first = true;
     status('Classifying…');
-    for await (const chunk of lineChunks(source)) {
+    read: for await (const chunk of lineChunks(source, delim)) {
+      if (stopRequested || failures.length) break;
       for (let j = 0; j < chunk.lines.length; j++) {
         const line = chunk.lines[j];
         if (first) { first = false; continue; }
         if (!line) continue;
         const f = splitFields(line, delim);
-        const id = f[col.id];
+        const id = plotId(f[col.id]);
+        if (!id) throw new Error('A row of the species file has no plot ID.');
         if (id !== current) {
           finishPlot(chunk.starts[j]);
           const site = sites.index.get(id);
-          if (site === undefined ? R.readUnplaced.has(id) : R.readSites[site]) throw new Error(`The rows of plot ${id} are not together in the species file. Sort the file by plot.`);
-          if (batch.ids.length >= target || batch.lines.length > MAX_RECORDS) {
+          if (site === undefined ? result.readUnplaced.has(id) : result.readSites[site]) throw new Error(`The rows of plot ${id} are not together in the species file. Sort the file by plot.`);
+          if (batch.ids.length >= target || (batch.ids.length && batch.lines.length > MAX_RECORDS)) {
             while (inFlight.size >= pool.length) {
               resizePool(true);
               await Promise.race(inFlight);
             }
-            if (stopRequested) break;
+            if (stopRequested || failures.length) break read;
             dispatch(chunk.starts[j]);
           }
-          addPlot(id, chunk.starts[j], sites, site);
+          addPlot(result, id, chunk.starts[j], sites, site);
           batch.ids.push(id);
           current = id; rowsOfCurrent = 0;
         }
         rowsOfCurrent++;
-        batch.lines.push(`${tsvValue(id)}\t${tsvValue(f[col.name])}\t${tsvValue(f[col.cover])}`);
+        batch.lines.push(speciesTsvRow(f, col, id));
       }
-      if (stopRequested) break;
     }
-    if (!stopRequested) {
+    if (!stopRequested && !failures.length) {
       finishPlot(source.size);
       if (batch.ids.length) dispatch(source.size);
     }
-    await Promise.all(inFlight);
-    if (stopRequested) trimUnclassified();
-    R.seconds = (performance.now() - R.t0) / 1000;
-    dots.fitted = false;
-    render(true);
-    status(`${stopRequested ? 'Stopped after' : 'Classified'} ${fmt(R.done)} plots in ${formatTime(R.seconds)}.`, 'idle');
   } catch (e) {
-    await Promise.allSettled(inFlight);
-    console.error(e);
-    status(cleanError(e), 'error');
-    if (R) { trimUnclassified(); render(true); }
+    readError = e;
   } finally {
+    await Promise.all(inFlight);
+    const errors = [readError, ...failures.sort((a, b) => a.first - b.first).map(({ error }) => error)].filter(Boolean);
+    const messages = [...new Set(errors.map(cleanError))];
+    const stopped = stopRequested && (!result || result.completedBytes !== result.source.blob.size);
+    R = result;
     running = false;
     $('system-panel').inert = false;
     $('data-inputs').inert = false;
-    $('results').inert = false;
     $('results').setAttribute('aria-busy', 'false');
     $('run').textContent = 'Classify';
     updateReadiness();
     $('progress').hidden = true;
+    filterType = null; selected = null;
+    clearDetail();
+    if (R?.done) {
+      R.incomplete = stopped || errors.length > 0;
+      for (const message of messages) R.warnings.add(message);
+      showResults(true);
+      dots.fitted = false;
+      render();
+    } else {
+      dots.index = null;
+      showResults(false, errors.length ? 'Classification failed.' : 'No plots classified.');
+    }
+    if (errors.length) {
+      errors.forEach((error) => console.error(error));
+      const failed = failures.length > 1 ? `${plural(failures.length, 'batch')} failed. ` : '';
+      status(`${failed}${messages.join(' ')}`, 'error');
+    } else {
+      status(`${stopped ? 'Stopped after' : 'Classified'} ${plural(R?.done ?? 0, 'plot')} in ${formatTime(R ? (performance.now() - R.t0) / 1000 : 0)}.`, 'idle');
+    }
+    await applyHandoff();
   }
 }
 
-// `site` is the plot's row in the sites file, or undefined.
-function addPlot(id, start, sites, site) {
-  if (R.n === R.code.length) growResults();
-  const i = R.n++;
-  R.ids.push(id);
-  if (site === undefined) R.readUnplaced.add(id); else R.readSites[site] = 1;
-  R.code[i] = -1; R.start[i] = start; R.end[i] = start;
-  const lon = site === undefined ? NaN : sites.lon[site], lat = site === undefined ? NaN : sites.lat[site];
-  [R.mx[i], R.my[i]] = placeOf(lon, lat);
+function speciesTsvRow(fields, { name, cover, unit }, id) {
+  const row = [tsvPlotId(id), tsvValue(fields[name]), tsvValue(fields[cover])];
+  if (unit >= 0) row.push(tsvValue(fields[unit]));
+  return row.join('\t');
 }
 
-// Plots read but not classified when the run was stopped are dropped.
-function trimUnclassified() {
-  let n = R.n;
-  while (n > 0 && R.code[n - 1] < 0) n--;
-  R.ids.length = n;
-  R.n = n;
+// `site` is the plot's row in the sites file, or undefined.
+function addPlot(result, id, start, sites, site) {
+  if (result.n === result.code.length) growResults(result);
+  const i = result.n++;
+  result.ids.push(id);
+  if (site === undefined) result.readUnplaced.add(id); else result.readSites[site] = 1;
+  result.code[i] = -1; result.start[i] = start; result.end[i] = start;
+  const lon = site === undefined ? NaN : sites.lon[site], lat = site === undefined ? NaN : sites.lat[site];
+  [result.mx[i], result.my[i]] = placeOf(lon, lat);
 }
 
 // Classifies a batch in a free session. A session that runs out of memory is
 // closed and the batch is classified again in another one.
-async function classifyBatch(b, opts, progressAfter) {
+async function classifyBatch(result, b, bytes) {
+  const { opts, sites } = result.source;
   let s, out, t;
   for (;;) {
     s = await acquire();
     t = performance.now();
     try {
       await s.webR.FS.writeFile('/tmp/batch_species.tsv', new TextEncoder().encode(b.lines.join('\n') + '\n'));
-      await s.webR.FS.writeFile('/tmp/batch_sites.tsv', new TextEncoder().encode(sitesTsv(R.source.sites, b.ids)));
+      await s.webR.FS.writeFile('/tmp/batch_sites.tsv', new TextEncoder().encode(sitesTsv(sites, b.ids)));
       await prepareSites(s.webR, '/tmp/batch_sites.tsv', opts);
       out = JSON.parse(await s.webR.evalRString(`resy_page_batch("/tmp/batch_species.tsv", "/tmp/batch_sites.tsv", ${opts})`));
       break;
@@ -577,47 +607,81 @@ async function classifyBatch(b, opts, progressAfter) {
       resizePool();
     }
   }
-  release(s);
   s.heapGB = out.heap / 2 ** 30;
+  release(s);
   if (manualSessions === null) resizePool();
   const at = new Map(b.ids.map((id, k) => [id, b.first + k]));
+  if (['id', 'code', 'candidates'].some((key) => !Array.isArray(out[key]) || out[key].length !== at.size) ||
+      new Set(out.id).size !== at.size || out.id.some((id) => !at.has(id))) {
+    throw new Error(`RESY returned different plot IDs for the batch starting with ${b.ids[0]}.`);
+  }
   out.id.forEach((id, k) => {
     const i = at.get(id);
-    if (i === undefined) return;
-    const c = codeOf(out.code[k]);
-    R.code[i] = c; R.counts[c]++;
-    R.cands[i] = candOf(out.candidates[k]);
+    const c = codeOf(result, out.code[k]);
+    result.code[i] = c; result.counts[c]++;
+    result.cands[i] = intern(result.candIndex, result.candLists, out.candidates[k]);
   });
-  R.done += out.id.length;
-  R.nObs += out.n_obs; R.unmatched += out.unmatched;
-  for (const w of out.warnings) addWarning(w);
-  const seconds = (performance.now() - t) / 1000;
-  R.progress = Math.max(R.progress ?? 0, progressAfter);
-  setProgress(0.02 + 0.98 * R.progress);
-  R.seconds = (performance.now() - R.t0) / 1000;
-  const left = R.progress > 0.01 ? R.seconds * (1 - R.progress) / R.progress : null;
-  if (running) status(`Classified ${fmt(R.done)} plots · ${formatTime(R.seconds)}${left === null ? '' : ` · about ${formatTime(left)} left`}`);
-  render(false);
-  return seconds;
+  result.done += out.id.length;
+  result.nObs += out.n_obs; result.unmatched += out.unmatched;
+  for (const w of out.warnings) result.warnings.add(w);
+  mergeSiteCounts(result.sites, out.sites);
+  result.completedBytes += bytes;
+  return (performance.now() - t) / 1000;
 }
 
-// Each batch reports its own counts of plots with missing header values; they
-// are added up into one warning. Other warnings are listed once.
-const MISSING = /^Site columns read by rules have missing values: (.*)\. Conditions on them are evaluated as if the value were 0\.$/;
-function addWarning(w) {
-  const m = w.match(MISSING);
-  if (!m) { R.warnings.add(w); return; }
-  for (const part of m[1].split(/, (?=[^,]+ \(\d+ plots?\))/)) {
-    const p = part.match(/^(.*) \((\d+) plots?\)$/);
-    if (p) R.missing.set(p[1], (R.missing.get(p[1]) ?? 0) + Number(p[2]));
+function showBatchProgress(result, active) {
+  const share = result.completedBytes / result.source.blob.size;
+  const seconds = (performance.now() - result.t0) / 1000;
+  const left = share > 0.01 ? seconds * (1 - share) / share : null;
+  setProgress(share);
+  if (active && share < 1) status(`Classified ${plural(result.done, 'plot')} · ${formatTime(seconds)}${left === null ? '' : ` · about ${formatTime(left)} left`}`);
+}
+
+function mergeSiteCounts(total, batch) {
+  total.matched += batch.matched;
+  total.absent += batch.absent;
+  for (const column of batch.present) total.present.add(column);
+  for (const { column, n } of batch.missing) total.missing.set(column, (total.missing.get(column) ?? 0) + n);
+  for (const { column, located, matched } of batch.maps) {
+    const counts = total.maps.get(column) ?? { located: 0, matched: 0 };
+    counts.located += located;
+    counts.matched += matched;
+    total.maps.set(column, counts);
   }
 }
-const missingWarning = () => R.missing.size ? `Site columns read by rules have missing values: ${[...R.missing].map(([c, n]) => `${c} (${fmt(n)} plot${n === 1 ? '' : 's'})`).join(', ')}. Conditions on them are evaluated as if the value were 0.` : null;
+
+function siteNotes({ sites, system, warnings }) {
+  const notes = new Set(warnings);
+  const absent = system.header_cols.filter((c) => !sites.present.has(c));
+  if (absent.length) {
+    let text = `Rules read site columns that the sites file does not have: ${absent.join(', ')}. A condition on such a column is evaluated with the value 0.`;
+    const altitude = [...notes].find((w) => w.startsWith('"Altitude (m)" is missing.'));
+    if (altitude && absent.includes('Altitude (m)')) {
+      notes.delete(altitude);
+      text += ' The article "Get altitude data" shows how to add the altitude.';
+    }
+    notes.add(text);
+  }
+  if (sites.absent) notes.add(`${plural(sites.absent, 'plot')} had no matching row in the sites file (${fmt(sites.matched)} matched).`);
+  const missing = [...sites.missing].filter(([col, n]) => n > 0 && sites.present.has(col));
+  if (missing.length) notes.add(`Site columns read by rules have missing values: ${missing.map(([c, n]) => `${c} (${plural(n, 'plot')})`).join(', ')}. Conditions on them are evaluated as if the value were 0.`);
+  for (const [column, { located, matched }] of sites.maps) {
+    if (located === matched) continue;
+    const map = column === 'Ecoreg' ? 'ecoregion' : 'country';
+    if (matched === 0) notes.add(`No site with coordinates falls inside the ${map} base map. Check that longitude and latitude are WGS84 degrees.`);
+    else {
+      const outside = located - matched;
+      notes.add(`${plural(outside, 'plot')} with coordinates ${outside === 1 ? 'falls' : 'fall'} outside the ${map} base map. ${column} is missing for ${outside === 1 ? 'that plot' : 'those plots'}.`);
+    }
+  }
+  return [...notes];
+}
 
 const formatTime = (s) => s < 90 ? `${s.toFixed(s < 10 ? 1 : 0)} s` : s < 5400 ? `${Math.round(s / 60)} min` : `${(s / 3600).toFixed(1)} h`;
 function setProgress(f) {
-  $('progress-bar').style.width = `${(100 * Math.min(1, f)).toFixed(1)}%`;
-  $('progress').setAttribute('aria-valuenow', (100 * f).toFixed(0));
+  const percent = Math.min(100, Math.floor(10000 * f) / 100);
+  $('progress-bar').style.width = `${percent}%`;
+  $('progress').setAttribute('aria-valuenow', String(percent));
 }
 
 // ---- Rendering ---------------------------------------------------------------
@@ -628,24 +692,15 @@ const nameOf = (code) => code === '?' ? 'Not classified' : code === '+' ? 'Tie b
 let typeOrder = null, filterType = null, selected = null;
 const colourOf = (code) => cssVar(colourVar(code, typeOrder));
 
-let lastRender = 0, renderTimer = null;
-function render(now) {
-  if (!R) return;
-  const wait = 1500 - (performance.now() - lastRender);
-  if (!now && wait > 0) {
-    if (!renderTimer) renderTimer = setTimeout(() => { renderTimer = null; render(true); }, wait);
-    return;
-  }
-  clearTimeout(renderTimer); renderTimer = null;
-  lastRender = performance.now();
+function render() {
   const count = (c) => R.counts[R.codeIndex.get(c)] ?? 0;
   $('s-plots').textContent = fmt(R.done);
   $('s-class').textContent = fmt(R.done - count('?') - count('+'));
   $('s-none').textContent = fmt(count('?'));
   $('s-tie').textContent = fmt(count('+'));
-  $('s-system').innerHTML = `Classified with the ${escapeHtml(systemLabel(R.system))} expert system${R.system.doi ? ` (<a href="https://doi.org/${escapeHtml(R.system.doi)}">doi:${escapeHtml(R.system.doi)}</a>)` : ''}.`;
+  $('s-system').innerHTML = `${R.incomplete ? '<strong>Incomplete classification.</strong> ' : ''}Classified with the ${escapeHtml(systemLabel(R.system))} expert system${R.system.doi ? ` (<a href="https://doi.org/${escapeHtml(R.system.doi)}">doi:${escapeHtml(R.system.doi)}</a>)` : ''}.`;
 
-  const notes = [...R.warnings, missingWarning()].filter(Boolean);
+  const notes = siteNotes(R);
   if (R.unmatched) notes.unshift(`Species names in ${fmt(R.unmatched)} of ${fmt(R.nObs)} records are not recognised by the expert system. These records do not contribute to the classification.`);
   $('warnings').innerHTML = notes.map((w) => `<li>${escapeHtml(w)}</li>`).join('');
   $('notes-n').textContent = `${plural(notes.length, 'note')} on the data and the run`;
@@ -654,7 +709,9 @@ function render(now) {
   renderLegend();
   renderTypes();
   dots.redraw();
-  renderTable();
+  const searchableTypes = R.codes.map((code) => `${code} ${nameOf(code)}`.toLowerCase());
+  R.search = R.ids.map((id, i) => R.code[i] < 0 ? '' : `${id.toLowerCase()} ${searchableTypes[R.code[i]]}`);
+  filterTable();
   $('download').disabled = !R.done;
   $('download-map').disabled = !R.done;
 }
@@ -693,41 +750,175 @@ function renderTypes() {
     <li><button type="button" data-code="${escapeHtml(t.code)}" aria-pressed="${t.code === filterType}" class="${t.code === filterType ? 'active' : ''}" title="${escapeHtml(nameOf(t.code))}">
       <span class="sw" style="background:${colourOf(t.code)}"></span>
       <b>${escapeHtml(t.code)}</b>
-      <span class="mid"><span class="nm">${escapeHtml(nameOf(t.code))}</span><div class="bar" style="width:${(100 * t.n / max).toFixed(1)}%"></div></span>
+      <span class="mid"><span class="nm">${escapeHtml(nameOf(t.code))}</span><span class="bar" style="width:${(100 * t.n / max).toFixed(1)}%"></span></span>
       <span>${fmt(t.n)}</span>
     </button></li>`).join('');
   $('clear-filter').disabled = filterType === null;
   if (focus) [...$('types').querySelectorAll('button')].find((b) => b.dataset.code === focus)?.focus({ preventScroll: true });
 }
 
-// Plots shown in the table: those of the selected type that match the filter
-// text, at most `limit` of them, and how many match in all.
-function visible(limit) {
+const tableWrap = $('rows').closest('.tablewrap');
+const MAX_SCROLL_HEIGHT = 8000000;
+let table = null;
+
+function filterTable() {
+  if (!R || running) return;
   const q = $('q').value.trim().toLowerCase();
   const want = filterType === null ? null : R.codeIndex.get(filterType);
   const rows = [];
-  let total = 0;
-  for (let i = 0; i < R.n; i++) {
+  const narrowed = table?.type === want && q.startsWith(table.query) ? table.rows : null;
+  const n = narrowed?.length ?? R.n;
+  for (let j = 0; j < n; j++) {
+    const i = narrowed ? narrowed[j] : j;
     const c = R.code[i];
     if (c < 0 || (want !== null && c !== want)) continue;
-    if (q && !`${R.ids[i]} ${R.codes[c]} ${nameOf(R.codes[c])}`.toLowerCase().includes(q)) continue;
-    total++;
-    if (rows.length < limit) rows.push(i);
+    if (q && !R.search[i].includes(q)) continue;
+    rows.push(i);
   }
-  return { rows, total };
+  table = { rows, query: q, type: want, focus: null, reveal: null, width: tableWrap.clientWidth };
+  resetRowHeights();
+  tableWrap.scrollTop = 0;
+  $('rows').parentElement.setAttribute('aria-rowcount', String(rows.length + 1));
+  $('shown').textContent = `${fmt(rows.length)} of ${plural(R.done, 'plot')}${filterType ? ` · type ${filterType}` : ''}`;
+  renderTable();
 }
 
-function renderTable() {
-  if (!R) return;
-  const { rows, total } = visible(500);
-  $('rows').innerHTML = rows.map((i) => {
-    const code = R.codes[R.code[i]];
-    return `<tr data-i="${i}" class="${i === selected ? 'table-active' : ''}">
-      <td><button type="button" class="plot-button" aria-label="Explain plot ${escapeHtml(R.ids[i])}" aria-pressed="${i === selected}">${escapeHtml(R.ids[i])}</button></td><td><b>${escapeHtml(code)}</b></td>
-      <td>${escapeHtml(nameOf(code))}</td><td class="num">${R.nsp[i] || ''}</td></tr>`;
-  }).join('') || '<tr><td colspan="4" class="empty-table">' + (running ? 'Waiting for classified plots…' : 'No plots match. Clear the search or choose Show all types.') + '</td></tr>';
-  $('shown').textContent = `${fmt(total)} of ${fmt(R.done)} plots${total > rows.length ? `, first ${rows.length} listed` : ''}` + (filterType ? ` · type ${filterType}` : '');
+// A Fenwick tree of measured differences from the estimated row height.
+// Unmounted rows keep their height, and wrapped text needs no fixed line count.
+function resetRowHeights() {
+  table.estimate = parseFloat(getComputedStyle(tableWrap).getPropertyValue('--row-height'));
+  table.corrections = new Float64Array(table.rows.length + 1);
+  table.heights = new Map();
+  table.range = null;
 }
+
+function rowOffset(count) {
+  let sum = count * table.estimate;
+  for (let i = count; i > 0; i -= i & -i) sum += table.corrections[i];
+  return sum;
+}
+
+function rowAt(pixel) {
+  let row = 0;
+  for (let bit = 2 ** Math.floor(Math.log2(table.rows.length || 1)); bit >= 1; bit /= 2) {
+    const next = row + bit;
+    if (next > table.rows.length) continue;
+    const height = bit * table.estimate + table.corrections[next];
+    if (height <= pixel) { row = next; pixel -= height; }
+  }
+  return row;
+}
+
+const tableViewport = () => tableWrap.clientHeight - $('rows').previousElementSibling.offsetHeight;
+
+function tableScroll() {
+  const height = rowOffset(table.rows.length), viewport = tableViewport();
+  const physical = Math.min(height, MAX_SCROLL_HEIGHT);
+  const factor = height > physical ? (height - viewport) / (physical - viewport) : 1;
+  return { height, physical, viewport, factor };
+}
+
+const rowSizes = new ResizeObserver((entries) => {
+  if (!table || running) return;
+  const { height, viewport, factor } = tableScroll();
+  const top = tableWrap.scrollTop * factor;
+  const anchor = rowAt(top), before = rowOffset(anchor);
+  const reveal = table.reveal;
+  table.reveal = null;
+  let changed = false;
+  for (const { target } of entries) {
+    if (!target.isConnected) continue;
+    const row = Number(target.dataset.row), height = target.getBoundingClientRect().height;
+    const diff = height - (table.heights.get(row) ?? table.estimate);
+    if (!height || Math.abs(diff) < 0.01) continue;
+    table.heights.set(row, height);
+    for (let i = row + 1; i < table.corrections.length; i += i & -i) table.corrections[i] += diff;
+    changed = true;
+  }
+  if (!changed) return;
+  let next = top + rowOffset(anchor) - before;
+  if (top > 0 && top + viewport >= height - factor) next = rowOffset(table.rows.length) - viewport;
+  if (reveal !== null) next = keepRowVisible(reveal, next, viewport);
+  renderTable(true, next);
+});
+
+function renderTable(force = false, top = null) {
+  if (!table || running) return;
+  const { rows } = table;
+  if (!rows.length) {
+    rowSizes.disconnect();
+    $('rows').innerHTML = '<tr><td colspan="4" class="empty-table">No plots match. Clear the search or choose Show all types.</td></tr>';
+    return;
+  }
+  const { height, physical, viewport, factor } = tableScroll();
+  top = Math.max(0, Math.min(top ?? tableWrap.scrollTop * factor, height - viewport));
+  const visible = Math.min(rows.length - 1, rowAt(top));
+  const first = Math.max(0, visible - 3);
+  const last = Math.min(rows.length, rowAt(top + viewport) + 4);
+  const focused = document.activeElement.closest('#rows tr[data-row]');
+  const pin = focused ? table.focus : null;
+  const tab = pin ?? (table.focus !== null && table.focus >= first && table.focus < last ? table.focus : visible);
+  const range = `${first}:${last}:${pin}:${tab}${factor === 1 ? '' : `:${top}`}`;
+  if (!force && range === table.range) return;
+  table.range = range;
+  rowSizes.disconnect();
+  const mount = rows.slice(first, last).map((_, i) => first + i);
+  if (pin !== null && pin < first) mount.unshift(pin);
+  if (pin !== null && pin >= last) mount.push(pin);
+  // The visible window stays in CSS pixels. Only the spacers compress when
+  // the logical row heights exceed the browser's scrollable range.
+  const begin = rowOffset(first), end = rowOffset(last);
+  const offset = Math.max(0, Math.min(top / factor + begin - top, physical - (end - begin)));
+  const after = offset + end - begin;
+  const gap = (size) => size > 0.01 ? `<tr class="row-gap" aria-hidden="true"><td colspan="4" style="height:${size}px"></td></tr>` : '';
+  let previous = 0;
+  const html = mount.map((row) => {
+    const i = rows[row], code = R.codes[R.code[i]], at = rowOffset(row);
+    const rowHeight = rowOffset(row + 1) - at;
+    let px = offset + at - begin;
+    if (row < first) px = Math.min(offset - rowHeight, at / begin * offset);
+    if (row >= last) px = Math.min(physical - rowHeight, after + (at - end) / (height - end) * (physical - after));
+    const spacer = gap(px - previous);
+    previous = Math.max(px, previous) + rowHeight;
+    return `${spacer}<tr data-i="${i}" data-row="${row}" aria-rowindex="${row + 2}" class="${i === selected ? 'table-active' : ''}">
+      <td><button type="button" class="plot-button" tabindex="${row === tab ? 0 : -1}" aria-label="Explain plot ${escapeHtml(R.ids[i])}" aria-pressed="${i === selected}">${escapeHtml(R.ids[i])}</button></td>
+      <td><b>${escapeHtml(code)}</b></td><td>${escapeHtml(nameOf(code))}</td><td class="num">${R.nsp[i] || ''}</td></tr>`;
+  });
+  $('rows').innerHTML = html.join('') + gap(physical - previous);
+  tableWrap.scrollTop = top / factor;
+  for (const row of $('rows').querySelectorAll('[data-row]')) rowSizes.observe(row);
+  if (pin !== null) $('rows').querySelector(`[data-row="${pin}"] button`)?.focus({ preventScroll: true });
+}
+
+tableWrap.addEventListener('scroll', () => renderTable(), { passive: true });
+new ResizeObserver(() => {
+  if (!table || running) return;
+  const width = tableWrap.clientWidth;
+  if (table.width === width) { renderTable(); return; }
+  const anchor = rowAt(tableWrap.scrollTop * tableScroll().factor);
+  table.width = width;
+  resetRowHeights();
+  renderTable(true, rowOffset(anchor));
+}).observe(tableWrap);
+
+$('rows').addEventListener('focusin', (e) => {
+  const row = e.target.closest('tr[data-row]');
+  if (table && row) table.focus = Number(row.dataset.row);
+});
+
+const keepRowVisible = (row, top, viewport) => Math.min(rowOffset(row), Math.max(top, rowOffset(row + 1) - viewport));
+
+$('rows').addEventListener('keydown', (e) => {
+  const row = e.target.closest('tr[data-row]');
+  if (!table || !row || !['ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return;
+  e.preventDefault();
+  const current = Number(row.dataset.row), last = table.rows.length - 1;
+  const next = e.key === 'Home' ? 0 : e.key === 'End' ? last : Math.max(0, Math.min(last, current + (e.key === 'ArrowUp' ? -1 : 1)));
+  const { viewport, factor } = tableScroll();
+  table.focus = next;
+  table.reveal = next;
+  renderTable(true, keepRowVisible(next, tableWrap.scrollTop * factor, viewport));
+});
 
 // ---- Map ---------------------------------------------------------------------
 // The classified plots as dots in the colour of their type (see resy_map.js).
@@ -738,6 +929,7 @@ const dots = createDotMap('map', () => {
   const colours = R ? R.codes.map(colourOf) : [], faded = cssVar('--lv-none');
   return {
     n: R?.n ?? 0,
+    positions: R?.mx ?? null,
     shown: R?.done ?? 0,
     x: (i) => R.mx[i],
     y: (i) => R.my[i],
@@ -753,6 +945,7 @@ const dots = createDotMap('map', () => {
 function clearDetail() {
   $('d-empty').hidden = false; $('d-body').hidden = true; $('d-title').textContent = 'Why this type?';
   $('d-body').innerHTML = '';
+  $('d-body').inert = false;
   $('d-body').setAttribute('aria-busy', 'false');
   $('d-status').textContent = '';
 }
@@ -771,6 +964,7 @@ async function explain(i) {
   const code = R.codes[R.code[i]];
   const title = `Plot ${R.ids[i]}: ${code} ${nameOf(code)}`;
   $('d-status').textContent = `Evaluating plot ${R.ids[i]}…`;
+  $('d-body').inert = true;
   $('d-body').setAttribute('aria-busy', 'true');
   if (getComputedStyle($('detail')).position !== 'sticky') $('detail').scrollIntoView({ block: 'nearest' });
   try {
@@ -785,7 +979,10 @@ async function explain(i) {
   } catch (e) {
     if (request === detailRequest) $('d-status').textContent = cleanError(e);
   } finally {
-    if (request === detailRequest) $('d-body').setAttribute('aria-busy', 'false');
+    if (request === detailRequest) {
+      $('d-body').inert = false;
+      $('d-body').setAttribute('aria-busy', 'false');
+    }
   }
 }
 
@@ -793,12 +990,12 @@ async function explain(i) {
 // resy_page_explain()'s account of it, with the rules of `type` in full.
 async function evaluatePlot(i, type = null) {
   const result = R, src = result.source;
-  const lines = ['PlotObservationID\tname\tcover'];
-  for await (const chunk of lineChunks(src.blob, result.start[i], result.end[i])) {
+  const lines = [src.header];
+  for await (const chunk of lineChunks(src.blob, src.delim, result.start[i], result.end[i])) {
     for (const line of chunk.lines) {
       if (!line) continue;
       const f = splitFields(line, src.delim);
-      lines.push(`${tsvValue(f[src.col.id])}\t${tsvValue(f[src.col.name])}\t${tsvValue(f[src.col.cover])}`);
+      lines.push(speciesTsvRow(f, src.col, plotId(f[src.col.id])));
     }
   }
   const s = await acquire();
@@ -831,7 +1028,7 @@ function download() {
 }
 
 function saveResult(blob, suffix, result = R) {
-  saveBlob(blob, `resy_${systemLabel(result?.system ?? system.info).replace(/\.(json|txt)$/i, '').replace(/[^A-Za-z0-9_-]/g, '_')}_${suffix}`);
+  saveBlob(blob, `resy_${systemLabel(result?.system ?? system.info).replace(/\.(json|txt)$/i, '').replace(/[^A-Za-z0-9_-]/g, '_')}_${result?.incomplete ? 'incomplete_' : ''}${suffix}`);
 }
 
 // The map as it is shown, as an SVG: the country outlines, the plots in their
@@ -929,17 +1126,17 @@ showSessions();
 $('run').addEventListener('click', run);
 $('download').addEventListener('click', download);
 $('download-map').addEventListener('click', downloadMap);
-$('q').addEventListener('input', renderTable);
+$('q').addEventListener('input', filterTable);
 $('rows').addEventListener('click', (e) => { const tr = e.target.closest('tr[data-i]'); if (tr) explain(Number(tr.dataset.i)); });
 wireEvidence($('d-body'), (type) => evaluatePlot(selected, type), () => detailRequest,
   { retain: true, report: (text) => { $('d-status').textContent = text; } });
 $('types').addEventListener('click', (e) => {
   const button = e.target.closest('button'); if (!button) return;
   filterType = filterType === button.dataset.code ? null : button.dataset.code;
-  renderTypes(); renderTable(); dots.draw();
+  renderTypes(); filterTable(); dots.draw();
 });
 $('clear-filter').addEventListener('click', () => {
-  filterType = null; renderTypes(); renderTable(); dots.draw();
+  filterType = null; renderTypes(); filterTable(); dots.draw();
   $('q').focus({ preventScroll: true });
 });
 for (const id of DATA_INPUTS) $(id).addEventListener('change', async () => {
@@ -951,12 +1148,13 @@ for (const id of DATA_INPUTS) $(id).addEventListener('change', async () => {
   } catch (e) { status(cleanError(e), 'error'); }
 });
 for (const id of [...SPECIES_COLS.map(([, id]) => id), 'o-coast', 'o-buffer']) $(id).addEventListener('change', () => { invalidateResults(); updateReadiness(); });
+$('o-coast').addEventListener('change', () => { $('o-buffer').disabled = !$('o-coast').checked; });
 $('reset-data').addEventListener('click', resetData);
 for (const [kind, header] of Object.entries({ species: 'PlotObservationID,scientificName,Cover_Perc', sites: 'PlotObservationID,Longitude,Latitude' })) {
   $(`template-${kind}`).addEventListener('click', () => saveBlob(new Blob([header + '\n'], { type: 'text/csv' }), `resy_${kind}_template.csv`));
 }
 $('f-expert').addEventListener('change', () => { document.querySelector('input[name=system][value=file]').checked = true; onSystemChange(); });
-for (const el of document.querySelectorAll('input[name=system]')) el.addEventListener('change', onSystemChange);
+for (const el of document.querySelectorAll('input[name=system]')) el.addEventListener('change', () => onSystemChange());
 $('eunis-version').addEventListener('change', () => { document.querySelector('input[name=system][value=EUNIS]').checked = true; onSystemChange(); });
 $('to-maker').addEventListener('click', (e) => openInMaker(e).catch((error) => status(cleanError(error), 'error')));
 

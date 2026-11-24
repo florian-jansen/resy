@@ -150,9 +150,9 @@
   membership.conditions2 <- unlist(strsplit(membership.conditions2, " EQ "))
   membership.conditions2 <- .resy_trim(membership.conditions2)
   membership.conditions2 <- sort(unique(membership.conditions2))
-  membership.conditions2 <- suppressWarnings(
-    membership.conditions2[-which(!is.na(as.numeric(membership.conditions2)))]
-  )
+  membership.conditions2 <- membership.conditions2[
+    is.na(suppressWarnings(as.numeric(membership.conditions2)))
+  ]
 
   # ---- Build priority factor
   prio <- substr(membership.formula.names, 1, 1)

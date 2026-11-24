@@ -59,3 +59,9 @@
   return("+")
   
 }
+
+# Keep the strongest matching rule for each code, in code encounter order.
+.resy_type_rule_indices <- function(hit, codes, priority) {
+  ranked <- hit[order(as.integer(priority[hit]), decreasing = TRUE)]
+  ranked[match(unique(codes[hit]), codes[ranked])]
+}

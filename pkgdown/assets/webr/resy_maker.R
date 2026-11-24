@@ -96,17 +96,17 @@ resy_maker_open <- function(out, scheme = NULL, version = NULL, path = NULL) {
 resy_maker_set_data <- function(species_tsv, sites_tsv) {
   sp <- .page_read(species_tsv)
   sp <- sp[!is.na(sp$name) & !is.na(sp$PlotObservationID), , drop = FALSE]
-  .maker$all <- list(sp = sp, si = .page_read(sites_tsv))
-  resy_maker_region()
-  .page$taxa <- character()
   raw <- unique(sp$name)
   clean <- resy_clean_names(raw)
   ok <- !is.na(clean) & nzchar(clean)
   raw <- raw[ok]
   clean <- clean[ok]
   variants <- split(raw, clean)
-  of_record <- clean[match(sp$name, raw)]
-  plots <- tapply(sp$PlotObservationID, of_record, function(p) length(unique(p)))
+  sp$clean <- clean[match(sp$name, raw)]
+  .maker$all <- list(sp = sp, si = .page_read(sites_tsv))
+  resy_maker_region()
+  .page$taxa <- character()
+  plots <- .maker_species_counts(sp$PlotObservationID, sp$clean)
   .page_json(list(
     n_plots = length(unique(sp$PlotObservationID)),
     n_records = nrow(sp),
@@ -114,6 +114,10 @@ resy_maker_set_data <- function(species_tsv, sites_tsv) {
                                                 variants = I(setdiff(v, name))),
                          names(variants), variants))
   ))
+}
+
+.maker_species_counts <- function(plots, names) {
+  tapply(plots, names, function(p) length(unique(p)))
 }
 
 # Limits the test to the plots of the test data whose IDs are in the JSON array
@@ -124,6 +128,8 @@ resy_maker_region <- function(path = NULL) {
   within <- function(d) if (is.null(keep)) d else d[d$PlotObservationID %in% keep, , drop = FALSE]
   .maker$sp <- within(all$sp)
   .maker$si <- within(all$si)
+  .maker$species_counts <- if (is.null(keep)) NULL else
+    as.list(.maker_species_counts(.maker$sp$PlotObservationID, .maker$sp$clean))
   .maker$sites <- NULL
   .maker$res <- NULL
   invisible(NULL)
@@ -169,7 +175,7 @@ resy_maker_synonyms <- function(path) {
 # (`cleaned`), the form the page and RESY look up. Reads
 # the names as the last test did (resy_maker_test()).
 resy_maker_suggest_synonyms <- function(rules_json, layer_path) {
-  sp <- .maker$all$sp
+  sp <- .maker$sp
   if (is.null(sp)) return(.page_json(list()))
   parsed <- .maker_system(rules_json)$parsed
   records <- table(sp$name)
@@ -217,8 +223,8 @@ resy_maker_needs_geography <- function(path, coast_dunes = TRUE, coast_buffer = 
 # Classifies the test plots with the system in `rules_json` (metadata, groups
 # and rules of the JSON format, its species list being the one last given to
 # resy_maker_synonyms()). Returns the warnings of the classification and, per
-# rule, the number of plots in which the rule and each of its conditions hold
-# and the number of plots assigned to its type; per group the number of plots
+# rule, the number of plots in which the rule and each of its conditions hold;
+# per type the number of plots assigned to its code; per group the number of plots
 # with one of its species; the type of each plot; the species names of the plots
 # that the system does not know. A file without rules gives the group and
 # species counts only. What RESY's validation says about the file is read with
@@ -269,15 +275,14 @@ resy_maker_test <- function(rules_json, coast_dunes = TRUE, coast_buffer = 5000)
 
   sp <- .maker$sp
   taxon <- .page_taxa(sp$name)
-  unknown <- sort(table(sp$name[is.na(taxon)]), decreasing = TRUE)
   out$n_records <- nrow(sp)
   out$n_unmatched <- sum(is.na(taxon))
-  out$unmatched <- unname(Map(function(name, n) list(name = name, records = n),
-                              names(utils::head(unknown, 50L)), as.integer(utils::head(unknown, 50L))))
-  out$n_unmatched_names <- length(unknown)
+  out$unmatched <- I(sort(unique(resy_clean_names(unique(sp$name[is.na(taxon)])))))
   plot_of <- sp$PlotObservationID
   .maker$group_plots <- lapply(groups, function(m) unique(plot_of[taxon %in% trimws(m)]))
   out$groups <- as.list(lengths(.maker$group_plots))
+  out$member_counts <- as.list(.maker_species_counts(plot_of, taxon))
+  out$species_counts <- .maker$species_counts
   out$n_plots <- length(unique(plot_of))
   if (!length(x$rules)) {
     .maker$res <- NULL
@@ -305,21 +310,15 @@ resy_maker_test <- function(rules_json, coast_dunes = TRUE, coast_buffer = 5000)
   n <- length(type)
   count <- function(v) sum(as.logical(v)[seq_len(n)], na.rm = TRUE)
   codes <- parsed$vegtype.formula.names.short
-  assigned <- table(factor(type, levels = unique(codes)))
+  out$assigned <- as.list(table(factor(type, levels = unique(codes))))
   expressions <- .maker_rule_expressions(parsed$vegtype.formulas)
   out$rules <- unname(Map(function(code, holds, e) list(
     code = code,
     holds = count(holds),
-    assigned = as.integer(assigned[[code]]),
+    assigned = count(holds[seq_len(n)] & type == code),
     conds = I(unname(vapply(res$logi1[match(e, parsed$membership.expressions)], count, integer(1))))
   ), codes, res$logi2, expressions))
-  cand <- res$candidates
-  out$plots <- list(
-    id = I(names(type)),
-    code = I(unname(type)),
-    candidates = I(unname(vapply(split(cand$type, factor(cand$plot_id, levels = names(type))),
-                                 paste, character(1), collapse = " ")))
-  )
+  out$plots <- .page_plot_types(res)
   out$ok <- TRUE
   done(out)
 }

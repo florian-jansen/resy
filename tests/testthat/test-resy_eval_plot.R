@@ -129,6 +129,45 @@ test_that("a type defined by several rules is listed once, by its closest rule",
   expect_length(.resy_plot_evidence(res, "AN57", type = "FB", lower = FALSE)$types[[1]]$rules, 2L)
 })
 
+test_that("each code competes at the priority of its highest matching rule", {
+  rules <- data.frame(code = c("X", "X", "Y", "X", "Z"),
+                      priority = c("9", "1", "5", "7", "5"),
+                      expression = c("<Fagus sylvatica GR 90>", "<Fagus sylvatica GR 0>",
+                                     "<Fagus sylvatica GR 10>", "<Fagus sylvatica GR 50>",
+                                     "<Fagus sylvatica EQ 30>"))
+  rules$description <- rules$code
+  path <- tempfile(fileext = ".json")
+  on.exit(unlink(path))
+  jsonlite::write_json(list(metadata = list(scheme = "test", version = "1"),
+                            groups = list(), synonyms = list(`Fagus sylvatica` = list()),
+                            rules = rules), path, auto_unbox = TRUE)
+  ids <- c("sole", "other", "overlap", "priority-tie")
+  obs <- data.frame(PlotObservationID = ids, TaxonName = "Fagus sylvatica",
+                    Cover_Perc = c(5, 20, 60, 30))
+  res <- suppressMessages(resy_classify(obs, obs["PlotObservationID"], expertfile = path, mc = 1L))
+
+  expect_equal(unname(res$result.classification[ids]), c("X", "Y", "X", "X"))
+  expect_equal(res$types[["overlap"]], c("X", "Y"))
+  expect_equal(as.character(res$candidates[plot_id == "other" & type == "X", priority]), "1")
+  ev <- .resy_plot_evidence(res, "overlap", lower = FALSE, type = "X")
+  expect_equal(ev$choice, res$result.classification[["overlap"]])
+  expect_equal(as.character(ev$holds$priority), c("7", "5"))
+  expect_equal(vapply(ev$types[[1]]$rules, `[[`, logical(1), "holds"), c(FALSE, TRUE, TRUE))
+  res$result.classification[["overlap"]] <- "+"
+  expect_equal(.resy_plot_evidence(res, "overlap", lower = FALSE)$choice, "+")
+})
+
+test_that("repeated conditions retain truth and negation per occurrence", {
+  res <- apennine_result()
+  t <- match("F", res$parsed$vegtype.formula.names.short)
+  col <- .resy_rule_words(res$parsed$vegtype.formulas.p[t])$cols[1L]
+  res$parsed$vegtype.formulas.p[t] <- sprintf("(col%d & !col%d & col%d)", col, col, col)
+  ev <- .resy_plot_evidence(res, "AN57", lower = FALSE, type = "F")$types[[1]]$rules[[1]]
+  expect_equal(ev$rule, "[1] and not [2] and [3]")
+  expect_equal(ev$conditions$status, c("met", "excludes", "met"))
+  expect_equal(ev$conditions$satisfied, c(TRUE, FALSE, TRUE))
+})
+
 test_that("lower = FALSE leaves the lower levels out", {
   out <- capture.output(resy_eval_plot(apennine_result(), "AN57", lower = FALSE))
   expect_false(any(grepl("lower level", out, fixed = TRUE)))
@@ -146,7 +185,7 @@ test_that("rules read with the solver's and/or/not structure", {
   r <- .resy_rule_words("(col4 | col5) &! col2")
   expect_equal(r$text, "([1] or [2]) and not [3]")
   expect_equal(r$cols, c(4L, 5L, 2L))
-  expect_equal(r$negated, 2L)
+  expect_equal(r$negated, 3L)
   expect_equal(.resy_rule_words("(col1 &! col4 | col5) & col9")$text,
                "([1] and not [2] or [3]) and [4]")
 })

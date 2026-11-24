@@ -63,15 +63,19 @@ resy_eval_plot <- function(res, p, type = character(), lower = TRUE) {
              lower = list(), types = list())
 
   if (!is.null(res$logi2)) {
-    held <- which(vapply(res$logi2, function(x) isTRUE(x[plot$n]), logical(1)))
-    typ <- unique(codes[held])
-    choice <- .resy_classify_choice(typ, parsed$vegtype.priority, codes)
+    held <- res$type_rules[[p]]
+    if (is.null(held)) {
+      hit <- which(vapply(res$logi2, function(x) isTRUE(x[plot$n]), logical(1)))
+      held <- .resy_type_rule_indices(hit, codes, parsed$vegtype.priority)
+    }
+    typ <- codes[held]
+    choice <- unname(res$result.classification[p])
     ev$holds <- data.frame(code = typ,
-                           priority = parsed$vegtype.priority[held[match(typ, codes[held])]],
+                           priority = parsed$vegtype.priority[held],
                            stringsAsFactors = FALSE)
     ev$choice <- choice
-    ev$sentence <- .resy_choice_sentence(choice, typ, parsed)
-    if (isTRUE(lower)) {
+    if (!is.na(choice)) ev$sentence <- .resy_choice_sentence(choice, held, parsed)
+    if (isTRUE(lower) && !is.na(choice)) {
       anchor <- if (choice == "+") typ else choice
       ev$lower <- lapply(anchor, function(a) .resy_lower_levels(res, plot, a))
     }
@@ -127,15 +131,18 @@ resy_eval_plot <- function(res, p, type = character(), lower = TRUE) {
   sub("^\\S+\\s*", "", parsed$vegtype.formula.names[t])
 }
 
-.resy_choice_sentence <- function(choice, typ, parsed) {
-  codes <- parsed$vegtype.formula.names.short
+.resy_choice_sentence <- function(choice, held, parsed) {
+  typ <- parsed$vegtype.formula.names.short[held]
+  priority <- as.integer(parsed$vegtype.priority[held])
+  top <- length(priority) > 0L & priority == max(c(0L, priority), na.rm = TRUE)
   if (identical(choice, "?")) return("No type's rule holds, so the plot is not classified.")
   if (identical(choice, "+")) {
     return(paste0("Not classified: several types share the highest priority (",
-                  paste(typ, collapse = ", "), ")."))
+                  paste(typ[which(top)], collapse = ", "), ")."))
   }
-  desc <- .resy_type_description(parsed, fastmatch::fmatch(choice, codes))
-  why <- if (length(typ) > 1L) ", the type with the highest priority" else ""
+  i <- match(choice, typ)
+  desc <- .resy_type_description(parsed, held[i])
+  why <- if (length(typ) > 1L && isTRUE(top[i])) ", the type with the highest priority" else ""
   paste0("Classified as ", choice, " (", desc, ")", why, ".")
 }
 
@@ -210,7 +217,7 @@ resy_eval_plot <- function(res, p, type = character(), lower = TRUE) {
 .resy_condition_status <- function(res, plot, t, rule = NULL) {
   if (is.null(rule)) rule <- .resy_rule_words(res$parsed$vegtype.formulas.p[t])
   met <- vapply(rule$cols, function(j) isTRUE(res$logi1[[j]][plot$n]), logical(1))
-  negated <- rule$cols %in% rule$negated
+  negated <- seq_along(rule$cols) %in% rule$negated
   data.frame(col = rule$cols, met = met, negated = negated,
              satisfied = met != negated)
 }
@@ -257,16 +264,17 @@ resy_eval_plot <- function(res, p, type = character(), lower = TRUE) {
 # The compiled rule of a type (an R expression over col1, col2, ...) in words.
 # The expression is parsed and walked, so `and`, `or`, `not` and brackets read
 # exactly as the solver evaluates them; each column becomes [k], numbered in the
-# order of first appearance. Returns the text and the column numbers in that order.
+# order of occurrence. Returns the text and the column numbers in that order.
 .resy_rule_words <- function(formula) {
   cols <- integer()
   negated <- integer()
   walk <- function(e, neg = FALSE) {
     if (is.name(e)) {
       j <- as.integer(sub("^col", "", as.character(e)))
-      if (!j %in% cols) cols <<- c(cols, j)
-      if (neg) negated <<- union(negated, j)
-      return(paste0("[", match(j, cols), "]"))
+      cols <<- c(cols, j)
+      k <- length(cols)
+      if (neg) negated <<- c(negated, k)
+      return(paste0("[", k, "]"))
     }
     if (!is.call(e)) return(as.character(e))
     op <- as.character(e[[1]])

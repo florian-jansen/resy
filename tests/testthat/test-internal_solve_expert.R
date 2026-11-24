@@ -123,6 +123,21 @@ test_that("header conditions use each plot's own header row, whatever the row or
                c(FALSE, TRUE, FALSE, TRUE))
 })
 
+test_that("a value compared with two site columns is read against each column", {
+  obs <- data.frame(PlotObservationID = c("p1", "p2", "p3"),
+                    TaxonName = "Fagus sylvatica", Cover_Perc = 50)
+  header <- data.frame(PlotObservationID = c("p1", "p2", "p3"),
+                       Region = c("A", "Wet", "Wet"),
+                       Zone = c("Wet", "Wet", "Z"))
+  res <- suppressMessages(resy_classify(
+    obs, header, expertfile = test_path("fixtures", "shared-category-value.json"), mc = 1L
+  ))
+  i <- match(c("p1", "p2", "p3"), names(res$types))
+  expect_equal(res$logi2$REG[i], c(FALSE, TRUE, TRUE))
+  expect_equal(res$logi2$ZON[i], c(TRUE, TRUE, FALSE))
+  expect_equal(unname(res$result.classification[c("p1", "p3")]), c("ZON", "REG"))
+})
+
 test_that(".resy_membership_parts removes the repeated condition code from every part", {
   expect_equal(.resy_membership_parts("Trees|### Shrubs"), c("Trees", "Shrubs"))
   expect_equal(.resy_membership_parts("#TC Trees|#TC Shrubs", prefix = "#TC"),

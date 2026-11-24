@@ -70,11 +70,13 @@ export function evidenceHtml(ev, nameOf) {
 // still shows the plot the entry was picked for.
 export function wireEvidence(body, evaluate, current, { retain = false, report = () => {} } = {}) {
   const requests = new WeakMap();
+  let reporting = null;
   const show = (li) => {
     const full = li.closest('.lower')?.querySelector('.full');
     if (!full) return;
     const token = current();
-    const request = Symbol();
+    if (token == null) return;
+    const request = reporting = Symbol();
     requests.set(full, request);
     const active = () => current() === token && requests.get(full) === request && full.isConnected;
     for (const x of body.querySelectorAll('.near li.active')) x.classList.remove('active');
@@ -85,11 +87,11 @@ export function wireEvidence(body, evaluate, current, { retain = false, report =
     evaluate(li.dataset.type).then((ev) => {
       if (!active()) return;
       full.innerHTML = typeRulesHtml(ev.types[0]);
-      report('');
+      if (reporting === request) report('');
     }).catch((e) => {
       if (!active()) return;
       if (!retain) full.textContent = String(e.message ?? e);
-      report(String(e.message ?? e));
+      if (reporting === request) report(String(e.message ?? e));
     }).finally(() => { if (active()) full.setAttribute('aria-busy', 'false'); });
   };
   body.addEventListener('click', (e) => { const li = e.target.closest('.near li'); if (li) show(li); });

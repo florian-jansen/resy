@@ -24,3 +24,8 @@ test_that("an #SC condition on a discriminating group with '+' is completed", {
                "#SC +12 Conifers GR #SC Pinus EXCEPT #SC +12 Conifers")
   expect_equal(unname(out$formulas), "<#SC +12 Conifers GR #SC Pinus EXCEPT #SC +12 Conifers>")
 })
+
+test_that("a system without numbers in its conditions keeps all its conditions", {
+  out <- transform_sc(c("<$$C Country EQ Italy>", "<$$C Country EQ France>"))
+  expect_setequal(out$group.defs, c("$$C Country", "France", "Italy"))
+})

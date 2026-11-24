@@ -180,7 +180,7 @@ resy_classify <- function(obs,
   n_types <- lengths(res$types)
   if (sum(n_types) > 0) {
     ty <- as.character(unlist(res$types, use.names = FALSE))
-    pr <- parsed$vegtype.priority[fastmatch::fmatch(ty, parsed$vegtype.formula.names.short)]
+    pr <- parsed$vegtype.priority[unlist(res$type_rules, use.names = FALSE)]
     cand <- data.table::data.table(
       plot_id       = rep(as.character(names(res$types)), n_types),
       type          = ty,

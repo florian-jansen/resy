@@ -5,11 +5,11 @@
 // plots after every change. The model and the formula syntax are in
 // maker_model.js; the R side is resy_maker.R.
 import { $, escapeHtml as h, rString, cleanError, fmt, plural, createLoader, fetchAssets, bootSession, saveBlob, store, createShell, pinNavbar, prepareMakerSites, ensureSynonymLayer } from './resy_core.js';
-import { splitFields, readHeader, pick, SPECIES_COLS, SPECIES_COL_LABEL, fillSpeciesColumns, tsvValue } from './resy_files.js';
+import { splitFields, splitRecords, fileText, readHeader, pick, SPECIES_COLS, SPECIES_COL_LABEL, fillSpeciesColumns, tsvValue, plotId, fieldNumber } from './resy_files.js';
 import { evidenceHtml, wireEvidence } from './resy_evidence.js';
 import * as M from './maker_model.js';
 import { placeOf, createDotMap } from './resy_map.js';
-import { colourVar, cssValue } from './resy_palette.js';
+import { colourVar, cssValue, PALETTE as COLOURS } from './resy_palette.js';
 
 const loader = createLoader({ init: 0, install: 0.55, resy: 0.65, data: 0.8, test: 0.9 });
 const app = $('resy-app');
@@ -25,14 +25,14 @@ let test = null;           // the result of the last test, with byRule: Map(rule
 let problems = [];
 // `rest` is '?' or '+' while the plots no type takes, or those tied between
 // types, are selected in place of the plots of the type shown.
-const sel = { tab: 'groups', show: 'all', kind: 'all', group: null, rule: null, species: null, plot: null, rest: null };
+const sel = { tab: 'groups', show: 'all', kind: 'all', gkind: 'all', group: null, rule: null, species: null, plot: null, rest: null };
 const REST = { none: '?', tie: '+' };
 // As in the RESY App (see resy_palette.js), a type of a system that reads the
 // EUNIS-ESy site columns has the colour of its habitat group, a type of any
 // other system the colour of its place in the list of types; the plots no
 // type takes are grey.
 const cssColour = (name, or) => cssValue(app, name) || or;
-const typeColour = (code, order = model.rules.map((r) => r.code)) => cssColour(colourVar(code, test?.eunis ? null : order), '#9a9d96');
+const typeColour = (code, order = indexTypes().colours) => cssColour(colourVar(code, order), '#9a9d96');
 
 // Restore the active control when an edited list or rule changes structure.
 function replaceContent(container, html) {
@@ -184,11 +184,11 @@ async function runTest() {
 }
 async function testOnce() {
   const { rules, json } = testJson();
-  const testedData = data;
+  const testedData = data, testedModel = model;
   touched.clear();
   // The system is as it was last tested: the result of that test stands.
-  const fresh = !test || synDirty || test.json !== json;
-  let newColumns = false, recolour = false;
+  const fresh = !test || synDirty || test.json !== json || test.data !== testedData;
+  let newColumns = false, recolour = false, newLevels = false;
   if (fresh) {
     playStatus('Testing…', 'busy');
     if (synDirty) {
@@ -201,7 +201,7 @@ async function testOnce() {
     performance.mark('resy:test-start');
     const out = await rJson(`resy_maker_test("${DIR}/rules.json")`);
     performance.mark('resy:test-end');
-    if (data !== testedData || synDirty || json !== testJson().json) { again = true; return; }
+    if (model !== testedModel || data !== testedData || synDirty || json !== testJson().json) { again = true; return; }
     if (!out.ok) {
       playStatus(out.errors?.[0] ?? 'The test did not run.', 'error');
       return;
@@ -209,11 +209,15 @@ async function testOnce() {
     const tested = new Map((out.plots?.id ?? []).map((id, i) => [id, i]));
     out.onMap = data.placed.map((p) => tested.get(p.id) ?? -1);
     out.groupPlots = new Map();
+    out.assigned = new Map(Object.entries(out.assigned ?? {}));
     out.tested = rules.length;
     out.json = json;
+    out.data = testedData;
     const before = test?.plots ? new Map(test.plots.id.map((id, i) => [id, test.plots.code[i]])) : null;
     moved = before && out.plots ? new Set(out.plots.id.flatMap((id, i) => (before.has(id) && before.get(id) !== out.plots.code[i] ? [i] : []))) : null;
     recolour = Boolean(test?.eunis) !== Boolean(out.eunis);
+    newLevels = JSON.stringify(test?.level_names ?? null) !== JSON.stringify(out.level_names ?? null);
+    if (!newLevels) out.level_names = test?.level_names;
     test = out;
     if (out.columns && JSON.stringify(out.columns) !== JSON.stringify(data.columns)) {
       data.columns = out.columns;
@@ -225,15 +229,20 @@ async function testOnce() {
   // The same rules can stand under other ids (a copy that took the place of its original).
   test.byRule = new Map(rules.map((r, i) => [r.id, test.rules?.[i]]));
   test.index = new Map(rules.map((r, i) => [r.id, i]));
+  test.typeRows = new Map();
+  for (const r of rules) {
+    const best = test.typeRows.get(r.code);
+    if (!best || test.byRule.get(r.id).holds > test.byRule.get(best).holds) test.typeRows.set(r.code, r.id);
+  }
   if (recolour) {
     // The levels of an EUNIS-ESy system start folded, except those above the type shown.
     if (test.eunis) {
       const rows = typeRows();
       for (const x of rows) if (M.isLevel(x.rule)) folded.add(x.rule.id);
-      for (const p of ancestors(sel.rule, rows)) folded.delete(p);
+      for (const p of ancestors(sel.rule)) folded.delete(p);
     }
-    renderTypes(false);
   }
+  if (recolour || newLevels) renderTypes(false);
   if (!again && testTimer === null) app.classList.remove('stale');
   problems = M.checkModel(model, data);
   if (newColumns) showColumns();
@@ -242,11 +251,13 @@ async function testOnce() {
   showCounts();
   loadRulePlots();
   if (sel.tab === 'plots') renderPlots();
-  if (sel.tab === 'species') renderSpeciesNotes();
+  if (sel.tab === 'species') refreshSpecies();
+  if (sel.tab === 'groups') refreshGroups();
+  if (sheet === 'match' && !currentMatch(matchRequest)) renderMatch();
   if (sheet === 'export') renderExport();
   if (sel.plot === null) return;
   if (!test.plots?.id.includes(sel.plot)) clearDetail();
-  else if (fresh) explain(sel.plot, true);
+  else if (fresh) explain(sel.plot);
   else markTrail();
 }
 // What RESY's validation says about the system last tested. In webR the
@@ -309,6 +320,7 @@ let sheet = null, sheetOpener = null;
 function showSheet(name) {
   if (name && !sheet) sheetOpener = document.activeElement;
   const closingFocus = !name && sheet && $(`sheet-${sheet}`).contains(document.activeElement);
+  if (sheet === 'match' && name !== 'match') matchRequest = null;
   sheet = name;
   for (const key of Object.keys(SHEETS)) $(`sheet-${key}`).hidden = key !== sheet;
   for (const b of app.querySelectorAll('[data-sheet][aria-expanded]')) b.setAttribute('aria-expanded', String(b.dataset.sheet === sheet));
@@ -343,9 +355,7 @@ function render() {
 }
 
 // ---- Saving and clearing ------------------------------------------------------------------------
-// Save downloads the system as it stands, unfinished types included (a type
-// whose blocks do not make a formula yet keeps the last formula they made), to
-// be opened again later. Export writes the finished system after checking it.
+// Save includes unfinished rules. Export checks the finished system.
 function saveFile() {
   saveBlob(new Blob([JSON.stringify(M.modelToJson(model, { rules: model.rules }), null, 1)], { type: 'application/json' }), `${slug()}.json`);
   $('draft-status').textContent = `Download started: ${slug()}.json`;
@@ -439,12 +449,20 @@ async function openSystem(source) {
   shownHits.clear();
   trail = null;
   removed = null;
+  matched = matchRequest = null;
+  $('match-go').disabled = true;
   ticked.clear();
+  lastTick = null;
+  speciesPage = 0;
+  folded.clear();
+  searchFolded.clear();
+  for (const id of ['t-q', 'g-q', 'sp-q', 'q']) $(id).value = '';
   // In a system of a few groups the first one is shown with its species when
   // they are few enough to read; a long list of groups starts at its top.
   const first = model.groups[0];
-  Object.assign(sel, { group: first && model.groups.length < 9 && first.members.length <= 30 ? first.id : null, rule: model.rules[0]?.id ?? null, species: null, plot: null, show: 'all', kind: 'all' });
-  $('detail').hidden = true;
+  Object.assign(sel, { group: first && model.groups.length < 9 && first.members.length <= 30 ? first.id : null, rule: model.rules[0]?.id ?? null, species: null, plot: null, rest: null, show: 'all', kind: 'all', gkind: 'all' });
+  clearDetail();
+  $('d-body').replaceChildren();
   $('welcome').hidden = true;
   resetHistory();
   changed();
@@ -469,7 +487,7 @@ async function showBusiestType() {
   if (!test?.ok) return;
   let best = null, most = 0;
   for (const r of model.rules) {
-    const n = test.byRule.get(r.id)?.assigned ?? 0;
+    const n = test.typeRows.get(r.code) === r.id ? test.assigned.get(r.code) : 0;
     if (n > most) { best = r; most = n; }
   }
   if (best) sel.rule = best.id;
@@ -478,7 +496,9 @@ async function showBusiestType() {
 // ---- Species ----------------------------------------------------------------------------------
 const byName = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
 const nSpecies = (n) => `${fmt(n)} species`;
-const plotsOf = (name) => data?.species.get(name)?.plots ?? 0;
+const plotsOf = (name) => test?.species_counts != null
+  ? (Object.hasOwn(test.species_counts, name) ? test.species_counts[name] : 0)
+  : data?.species.get(name)?.plots ?? 0;
 
 function addSpecies(names) {
   let added = 0;
@@ -507,26 +527,49 @@ const SPECIES_KINDS = {
 };
 const ticked = new Set();     // the species ticked in the list
 let removed = null;           // the species last removed, as [name, synonyms], to put back
-function speciesListed() {
-  const q = $('sp-q').value.trim().toLowerCase(), grouped = new Set(model.groups.flatMap((g) => g.members));
-  const names = [...model.synonyms.keys()].sort(byName), kinds = {};
-  for (const [key, [, test]] of Object.entries(SPECIES_KINDS)) kinds[key] = names.filter((n) => test(n, grouped));
-  const hits = q ? kinds[sel.kind].filter((n) => n.toLowerCase().includes(q) || model.synonyms.get(n).some((x) => x.toLowerCase().includes(q))) : kinds[sel.kind];
-  return { names, kinds, hits, q };
+let speciesPage = 0, speciesIndex = null, renderedSpecies = null;
+const SPECIES_PER_PAGE = 100;
+function indexSpecies() {
+  const scope = test?.species_counts ?? data?.species;
+  if (speciesIndex?.revision === revision && speciesIndex.scope === scope) return speciesIndex;
+  const grouped = new Set(model.groups.flatMap((g) => g.members));
+  const entries = [...model.synonyms.keys()].sort(byName).map((name) => ({
+    name, search: [name, ...model.synonyms.get(name)].map((s) => s.toLowerCase()),
+  }));
+  const kinds = Object.fromEntries(Object.entries(SPECIES_KINDS).map(([key, [, pick]]) =>
+    [key, entries.filter(({ name }) => pick(name, grouped))]));
+  speciesIndex = { revision, scope, entries, kinds };
+  return speciesIndex;
 }
-function renderSpecies() {
-  const { names, kinds, hits, q } = speciesListed();
-  for (const name of [...ticked]) if (!model.synonyms.has(name)) ticked.delete(name);
-  $('sp-filter').innerHTML = Object.entries(SPECIES_KINDS).map(([key, [label]]) => `<option value="${key}"${key === sel.kind ? ' selected' : ''}>${label} (${fmt(kinds[key].length)})</option>`).join('');
-  $('sp-count').textContent = q || sel.kind !== 'all' ? `${fmt(hits.length)} of ${nSpecies(names.length)} listed` : nSpecies(names.length);
+function speciesListed() {
+  const q = $('sp-q').value.trim().toLowerCase(), { entries, kinds } = indexSpecies();
+  const listed = kinds[sel.kind];
+  const hits = q ? listed.filter(({ search }) => search.some((s) => s.includes(q))) : listed;
+  return { total: entries.length, kinds, hits, q };
+}
+function renderSpecies(searchOnly = false) {
+  const { total, kinds, hits, q } = speciesListed();
+  renderedSpecies = speciesIndex;
+  if (!searchOnly) {
+    for (const name of ticked) if (!model.synonyms.has(name)) ticked.delete(name);
+    $('sp-filter').innerHTML = Object.entries(SPECIES_KINDS).map(([key, [label]]) => `<option value="${key}"${key === sel.kind ? ' selected' : ''}>${label} (${fmt(kinds[key].length)})</option>`).join('');
+    renderSpeciesNotes();
+  }
+  $('sp-count').textContent = q || sel.kind !== 'all' ? `${fmt(hits.length)} of ${nSpecies(total)}` : nSpecies(total);
   // Removes the ticked species; without a tick, all that a kind or a search has narrowed the list to.
   const narrowed = Boolean(q) || sel.kind !== 'all';
   $('sp-remove').textContent = ticked.size ? `Remove the ${fmt(ticked.size)} ticked` : `Remove the ${fmt(hits.length)} listed`;
   $('sp-remove').hidden = !ticked.size && (!narrowed || !hits.length);
   $('sp-removed').hidden = !removed;
   if (removed) $('sp-removed-text').textContent = `${nSpecies(removed.length)} removed from the list.`;
-  const SHOWN = 300;
-  replaceContent($('sp-list'), hits.slice(0, SHOWN).map((name) => {
+  const pages = Math.max(1, Math.ceil(hits.length / SPECIES_PER_PAGE));
+  speciesPage = Math.min(speciesPage, pages - 1);
+  const start = speciesPage * SPECIES_PER_PAGE;
+  $('sp-prev').disabled = speciesPage === 0;
+  $('sp-next').disabled = speciesPage + 1 === pages;
+  $('sp-pages').classList.toggle('invisible', pages === 1);
+  $('sp-page').textContent = `${fmt(speciesPage + 1)} / ${fmt(pages)}`;
+  replaceContent($('sp-list'), hits.slice(start, start + SPECIES_PER_PAGE).map(({ name }) => {
     const syn = model.synonyms.get(name), n = plotsOf(name), open = sel.species === name;
     return `<li data-name="${h(name)}"${open ? ' class="open"' : ''}>
       <div class="line">
@@ -538,9 +581,17 @@ function renderSpecies() {
       ${open ? `<label class="small d-block mt-1">Synonyms of ${h(name)}, one per line
         <textarea class="form-control form-control-sm mt-1" rows="${Math.min(8, Math.max(2, syn.length + 1))}" data-act="sp-syn">${h(syn.join('\n'))}</textarea></label>` : ''}
     </li>`;
-  }).join('') + (hits.length > SHOWN ? `<li class="more">The first ${SHOWN} are listed. Search to find the others.</li>` : '')
-    + (hits.length ? '' : `<li class="more">${names.length ? 'No species matches.' : 'The list is empty.'}</li>`));
+  }).join('') || `<li class="more">${total ? 'No species matches.' : 'The list is empty.'}</li>`);
+}
+function refreshSpecies() {
   renderSpeciesNotes();
+  if (renderedSpecies === indexSpecies()) return;
+  const active = document.activeElement;
+  if ($('sp-list').contains(active) && active.matches('textarea')) {
+    active.addEventListener('blur', () => setTimeout(() => { if (sel.tab === 'species') refreshSpecies(); }, 0), { once: true });
+    return;
+  }
+  renderSpecies();
 }
 // Takes `names` off the species list and keeps them to be put back.
 function removeSpecies(names) {
@@ -556,12 +607,11 @@ function restoreSpecies() {
   speciesChanged();
   renderSpecies();
 }
-// The species of the test plots (under their names without author) that the
-// list has neither as a species nor as a synonym.
+// The species names of the test plots (without author) that RESY does not
+// read with the system as the last test had it: in neither the list, its
+// synonyms nor a group or condition.
 function missingSpecies() {
-  if (!data) return [];
-  const known = new Set([...model.synonyms].flatMap(([name, syn]) => [name, ...syn]));
-  return [...data.species.keys()].filter((n) => !known.has(n));
+  return test?.unmatched ?? [];
 }
 function renderSpeciesNotes() {
   const notes = [];
@@ -570,13 +620,15 @@ function renderSpeciesNotes() {
       matched.added.length ? `${nSpecies(matched.added.length)} as new species` : ''].filter(Boolean);
     notes.push(`Added ${parts.join(' and ')}. <button type="button" class="btn btn-link btn-sm p-0 align-baseline" id="match-undo">Take them out again</button>`);
   }
-  if (test?.n_unmatched) {
-    notes.push(`${plural(test.n_unmatched_names, 'name')} of the test plots (${fmt(test.n_unmatched)} of ${fmt(test.n_records)} records) ${test.n_unmatched_names === 1 ? 'is' : 'are'} not in the list.`);
-  }
+  $('sp-notes').innerHTML = notes.map((n) => `<p class="small note">${n}</p>`).join('');
+  if (!test) return;
   const missing = missingSpecies().length;
   $('sp-match').disabled = !missing;
   $('sp-match').textContent = missing ? `Add the ${plural(missing, 'name')} of the test plots…` : 'All names of the test plots are in the list';
-  $('sp-notes').innerHTML = notes.map((n) => `<p class="small note">${n}</p>`).join('');
+  $('sp-info').hidden = !missing;
+  $('sp-info-text').textContent = missing
+    ? `${fmt(test.n_unmatched)} of the ${fmt(test.n_records)} species records of the test plots carry ${missing === 1 ? 'this name' : 'these names'}. RESY leaves them out of the classification until the list has them.`
+    : '';
 }
 
 // Adding the names of the test plots that the list does not have: RESY
@@ -589,23 +641,25 @@ const MATCH_KINDS = [
   ['synonym', 'Synonyms of listed species in the taxonomic backbones (Euro+Med, WFO, GBIF, COL, ITIS, NCBI)', true],
   ['infra', 'Other subspecies and varieties, as synonyms of their species', false],
 ];
-let proposals = null;         // the proposals of the last matching, from resy_maker_suggest_synonyms()
-let missing = [];             // the species of the test plots the list does not have, when the sheet opened
-let matched = null;           // what the last adding put in, to take out again
+let matchRequest = null;
+let matched = null;
 const matchList = (items) => `<details><summary class="small">Show them</summary><ul class="match-list small">${items}</ul></details>`;
 async function renderMatch() {
-  proposals = null;
-  missing = missingSpecies();
+  const request = { model, data, test, revision, missing: missingSpecies(), proposals: null };
+  matchRequest = request;
+  const { missing } = request;
   $('match-go').disabled = true;
   $('match-body').innerHTML = '<p class="small text-body-secondary mb-0">Loading the synonym table and matching the names…</p>';
   try {
     const layer = await inR(() => ensureSynonymLayer(webR));
-    proposals = await rJson(`resy_maker_suggest_synonyms("${DIR}/rules.json", ${rString(layer)})`);
+    if (!currentMatch(request)) return;
+    request.proposals = await rJson(`resy_maker_suggest_synonyms("${DIR}/rules.json", ${rString(layer)})`);
   } catch (e) {
-    $('match-body').innerHTML = `<p class="small error mb-0">${h(cleanError(e))}</p>`;
+    if (currentMatch(request)) $('match-body').innerHTML = `<p class="small error mb-0">${h(cleanError(e))}</p>`;
     return;
   }
-  const of = (kind) => proposals.filter((p) => p.kind === kind);
+  if (!currentMatch(request)) return;
+  const of = (kind) => request.proposals.filter((p) => p.kind === kind);
   $('match-body').innerHTML = `<p>${plural(missing.length, 'name')} of the test plots ${missing.length === 1 ? 'is' : 'are'} not in the list. Tick what to add:</p>
     ${MATCH_KINDS.filter(([kind]) => of(kind).length).map(([kind, label, on]) => `<div class="match-kind">
       <label class="form-check-label"><input class="form-check-input me-1" type="checkbox" data-match="${kind}"${on ? ' checked' : ''}> ${label} <span class="text-body-secondary">(${fmt(of(kind).length)})</span></label>
@@ -615,10 +669,12 @@ async function renderMatch() {
       <div id="match-new-list"></div></div>`;
   matchCount();
 }
+const currentMatch = (r) => r && r === matchRequest && sheet === 'match' && r.model === model && r.data === data && r.test === test && r.revision === revision;
 function matchPicked() {
+  if (!currentMatch(matchRequest) || !matchRequest.proposals) return { synonyms: [], fresh: [], added: [] };
   const on = new Set([...$('match-body').querySelectorAll('[data-match]:checked')].map((x) => x.dataset.match));
-  const synonyms = (proposals ?? []).filter((p) => on.has(p.kind)), taken = new Set(synonyms.map((p) => p.cleaned));
-  const fresh = missing.filter((n) => !taken.has(n));
+  const synonyms = matchRequest.proposals.filter((p) => on.has(p.kind)), taken = new Set(synonyms.map((p) => p.cleaned));
+  const fresh = matchRequest.missing.filter((n) => !taken.has(n));
   return { synonyms, fresh, added: $('match-new')?.checked ? fresh : [] };
 }
 function matchCount() {
@@ -634,6 +690,7 @@ function matchCount() {
 $('match-body').addEventListener('change', matchCount);
 $('match-go').addEventListener('click', () => {
   const { synonyms, added } = matchPicked();
+  if (!synonyms.length && !added.length) return;
   const pairs = [], created = [], species = new Set();
   let names = 0;
   // A name goes in as written and without its author, the form RESY looks up.
@@ -647,13 +704,13 @@ $('match-go').addEventListener('click', () => {
   }
   const fresh = added.filter((n) => !model.synonyms.has(n));
   for (const n of fresh) model.synonyms.set(n, [...(data?.species.get(n)?.variants ?? [])]);
-  if (pairs.length || fresh.length) matched = { pairs, created, names, species: species.size, added: fresh };
+  if (pairs.length || fresh.length) matched = { model, pairs, created, names, species: species.size, added: fresh };
   showSheet(null);
   speciesChanged();
   renderSpecies();
 });
 $('sp-notes').addEventListener('click', (e) => {
-  if (!e.target.closest('#match-undo') || !matched) return;
+  if (!e.target.closest('#match-undo') || matched?.model !== model) return;
   for (const [species, name] of matched.pairs) {
     if (model.synonyms.has(species)) model.synonyms.set(species, model.synonyms.get(species).filter((x) => x !== name));
   }
@@ -672,41 +729,115 @@ const groupNames = () => new Set(model.groups.map((g) => g.name));
 const speciesGroups = () => model.groups.filter((g) => !g.prefix.startsWith('$'));
 const PREFIX_LABEL = { '###': 'Species group', '##D': 'Group of a set', '##Q': 'Group (##Q)', '##C': 'Group (##C)', '$$C': 'Site category ($$C)', '$$N': 'Site value ($$N)' };
 
-function usedBy(name) {
-  const names = groupNames();
-  return model.rules.filter((r) => M.ruleRefs(r, names).groups.has(name));
+let groupIndex = null, groupKinds = null;
+function indexGroups() {
+  if (groupIndex?.revision === revision) return groupIndex;
+  const names = groupNames(), users = new Map();
+  for (const r of model.rules) for (const name of M.ruleRefs(r, names).groups) {
+    if (!users.has(name)) users.set(name, []);
+    users.get(name).push(r);
+  }
+  const entries = model.groups.map((g) => ({ group: g, search: [g.name, ...g.members].map((s) => s.toLowerCase()) }));
+  groupIndex = { revision, names, users, entries };
+  return groupIndex;
 }
-function renderGroups() {
-  const q = $('g-q').value.trim().toLowerCase();
-  $('g-q').hidden = model.groups.length < 9;
-  const list = model.groups.filter((g) => !q || g.name.toLowerCase().includes(q) || g.members.some((m) => m.toLowerCase().includes(q)));
-  replaceContent($('g-list'), list.map((g) => {
+// The groups listed: those of one kind (`sel.gkind`) that match the search.
+// "In the rule of" reads the full rule of the type shown, inherited conditions
+// included; the plot kinds read the last test.
+const groupPlotCount = (g) => (test?.ok ? test.groups?.[M.groupKey(g)] : undefined);
+const GROUP_KINDS = {
+  all: [() => 'All groups', () => true],
+  rule: [(r) => `In the rule of ${r.code || 'this type'}`, (g, u) => u.rule.has(g.name)],
+  used: [() => 'Used by a type', (g, u) => u.any.has(g.name)],
+  unused: [() => 'Used by no type', (g, u) => !u.any.has(g.name)],
+  plots: [() => 'In the test plots', (g) => groupPlotCount(g) > 0],
+  noplots: [() => 'Not in the test plots', (g) => groupPlotCount(g) === 0],
+};
+function indexGroupKinds() {
+  const index = indexGroups();
+  if (groupKinds?.index === index && groupKinds.test === test && groupKinds.r?.id === (sel.rule ?? undefined)) return groupKinds;
+  const { names, users, entries } = index, r = rule();
+  const full = r && fullOf(r).tree;
+  const used = { any: users, rule: r ? M.ruleRefs(full ? { tree: full } : r, names).groups : new Set() };
+  const keys = Object.keys(GROUP_KINDS).filter((k) => k !== 'rule' || r);
+  if (!keys.includes(sel.gkind)) sel.gkind = 'all';
+  const kinds = Object.fromEntries(keys.map((k) => [k, entries.filter(({ group }) => GROUP_KINDS[k][1](group, used))]));
+  groupKinds = { index, test, r, keys, kinds };
+  return groupKinds;
+}
+function groupsListed() {
+  const q = $('g-q').value.trim().toLowerCase(), { r, keys, kinds } = indexGroupKinds();
+  const hits = kinds[sel.gkind].filter(({ search }) => !q || search.some((s) => s.includes(q)));
+  return { r, keys, kinds, hits, q };
+}
+function renderGroupFilter(listed, searchOnly = false) {
+  const { r, keys, kinds, hits, q } = listed;
+  if (!searchOnly) $('g-filter').innerHTML = keys.map((k) => `<option value="${k}"${k === sel.gkind ? ' selected' : ''}>${h(GROUP_KINDS[k][0](r))} (${fmt(kinds[k].length)})</option>`).join('');
+  $('g-count').textContent = q || sel.gkind !== 'all' ? `${fmt(hits.length)} of ${plural(model.groups.length, 'group')}` : plural(model.groups.length, 'group');
+}
+function groupRowHtml(g) {
     const open = g.id === sel.group, part = !g.prefix.startsWith('$');
+    const n = groupPlotCount(g);
     return `<li data-id="${g.id}"${open ? ' class="open"' : ''}>
       <div class="head" tabindex="0" role="button" aria-expanded="${open}"${part ? ' draggable="true" title="Select the group to see its species. Drag it into the rule to add a condition on it."' : ''}>
         <span class="nm">${h(g.name || 'Unnamed group')}</span>
-        <span class="meta">${nSpecies(g.members.length)}<span data-group-hits="${g.id}"></span></span>
+        <span class="meta">${nSpecies(g.members.length)}<span data-group-hits="${g.id}">${n === undefined ? '' : ` · in ${plural(n, 'plot')}`}</span></span>
       </div>
       <button type="button" class="mini x del" data-act="row-del" title="Delete the group ${h(g.name)} (Undo brings it back)" aria-label="Delete the group ${h(g.name)}">✕</button>
       ${open ? `<div id="g-editor">${groupEditorHtml(g)}</div>` : ''}
     </li>`;
-  }).join('') || `<li class="more">${model.groups.length ? 'No group matches.' : 'No groups yet. A group holds the species that point to a vegetation type, for example the trees of beech forests.'}</li>`);
-  showCounts();
 }
+const noGroups = () => `<li class="more">${model.groups.length ? 'No group is listed.' : 'No groups yet. A group holds the species that point to a vegetation type, for example the trees of beech forests.'}</li>`;
+function renderGroups(searchOnly = false) {
+  const listed = groupsListed();
+  renderGroupFilter(listed, searchOnly);
+  replaceContent($('g-list'), listed.hits.map(({ group }) => groupRowHtml(group)).join('') || noGroups());
+}
+function refreshGroups() {
+  const list = $('g-list'), listed = groupsListed(), focused = document.activeElement.closest('#g-list > li');
+  const keep = new Set(listed.hits.map(({ group }) => group.id));
+  if (focused && inField(document.activeElement) && !keep.has(focused.dataset.id)) {
+    focused.addEventListener('focusout', () => setTimeout(() => {
+      if (sel.tab === 'groups') refreshGroups();
+    }, 0), { once: true });
+    return;
+  }
+  renderGroupFilter(listed);
+  const existing = new Map([...list.children].map((li) => [li.dataset.id, li]));
+  for (const [id, li] of existing) if (!keep.has(id)) li.remove();
+  let next = list.firstElementChild;
+  for (const { group } of listed.hits) {
+    const li = existing.get(group.id);
+    if (!li) {
+      if (next) next.insertAdjacentHTML('beforebegin', groupRowHtml(group));
+      else list.insertAdjacentHTML('beforeend', groupRowHtml(group));
+    } else {
+      const n = groupPlotCount(group);
+      li.querySelector('[data-group-hits]').textContent = n === undefined ? '' : ` · in ${plural(n, 'plot')}`;
+      next = li.nextElementSibling;
+    }
+  }
+  if (!listed.hits.length) list.innerHTML = noGroups();
+  for (const chip of list.querySelectorAll('[data-member-count]')) chip.textContent = memberCount(chip.dataset.memberCount) || '';
+}
+const memberCount = (name) => {
+  const counts = test?.member_counts;
+  const key = name.trim();
+  return counts && Object.hasOwn(counts, key) ? counts[key] : 0;
+};
 function groupEditorHtml(g) {
   const prefixes = ['###', '##D', ...(['###', '##D'].includes(g.prefix) ? [] : [g.prefix])];
-  const users = usedBy(g.name), r = rule();
+  const users = indexGroups().users.get(g.name) ?? [], r = rule();
   return `
     <div class="fields group">
-      <label class="form-label small">Name
+      <div class="g-name"><label class="form-label small">Name
         <input class="form-control form-control-sm mt-1" data-act="g-name" value="${h(g.name)}" placeholder="for example Beech-forest-trees" spellcheck="false"></label>
-      <label class="form-label small">Kind
-        <select class="form-select form-select-sm mt-1" data-act="g-prefix">${prefixes.map((p) => `<option value="${h(p)}"${p === g.prefix ? ' selected' : ''}>${PREFIX_LABEL[p] ?? p}</option>`).join('')}</select></label>
+        <p class="small error" id="g-problem" aria-live="polite"></p></div>
+      <div class="form-label small mb-0"><label for="g-prefix">Kind</label>${g.prefix === '##D' ? `<span class="info-tip start ms-2"><button type="button" class="mini" aria-label="About groups of a set" aria-describedby="g-prefix-info">ⓘ</button><span class="bubble" role="tooltip" id="g-prefix-info">The groups of a set have names that start with the same number, such as <code>+01 Dry-grassland</code> and <code>+01 Wet-meadow</code>. The condition “scores highest in its set” holds for the group whose species have the highest sum of square-root covers in the plot.</span></span>` : ''}
+        <select class="form-select form-select-sm mt-1" id="g-prefix" data-act="g-prefix">${prefixes.map((p) => `<option value="${h(p)}"${p === g.prefix ? ' selected' : ''}>${PREFIX_LABEL[p] ?? p}</option>`).join('')}</select></div>
     </div>
-    <p class="small error mb-2" id="g-problem" aria-live="polite"></p>
-    ${g.prefix === '##D' ? '<p class="small text-body-secondary">The groups of a set have names that start with the same number, such as <code>+01 Dry-grassland</code> and <code>+01 Wet-meadow</code>. The condition “scores highest in its set” holds for the group whose species have the highest sum of square-root covers in the plot.</p>' : ''}
-    <ul class="chips">${g.members.map((m) => `
-      <li>${h(m)}${plotsOf(m) ? `<span class="n" title="Test plots with this species">${plotsOf(m)}</span>` : ''}
+    <ul class="chips" style="--member-digits:${String(data?.n_plots ?? 0).length}">${g.members.map((m) => `
+      <li>${h(m)}<span class="n" data-member-count="${h(m)}" title="Test plots with this species">${memberCount(m) || ''}</span>
         <button type="button" class="mini x" data-act="g-del-member" data-name="${h(m)}" title="Remove ${h(m)}" aria-label="Remove ${h(m)}">✕</button></li>`).join('')}</ul>
     <input class="form-control form-control-sm" data-ta="member" placeholder="Add a species: type its name" aria-label="Add a species" autocomplete="off" spellcheck="false">
     <details class="mt-2"><summary class="small">Paste a list of species</summary>
@@ -765,74 +896,95 @@ const orderOf = (r) => fullOf(r).order ?? [];
 const nameOf = (code) => (code === '?' ? 'Not classified' : code === '+' ? 'Tie between types' : M.typeName(model.rules, code));
 
 // Whether the search text above the list of types leaves the type `r` in it.
-const typeListed = (r) => {
-  const q = $('t-q').value.trim().toLowerCase();
-  return !q || `${r.code} ${r.description}`.toLowerCase().includes(q);
-};
+const typeQuery = () => $('t-q').value.trim().toLowerCase();
 // The types whose subtypes are folded away in the list, by id.
 const folded = new Set();
+const searchFolded = new Set();
+const visibleFolds = () => typeQuery() ? searchFolded : folded;
 // The hierarchy of the types. That of an EUNIS-ESy system gets the levels its
 // codes imply, with their EUNIS names, as in resy_expert_tree(fill = TRUE).
-const typeRows = () => M.typeTree(model.rules, { fill: Boolean(test?.eunis), names: test?.level_names ?? {} });
+let typeIndex = null;
+function indexTypes() {
+  const eunis = Boolean(test?.eunis), names = test?.level_names;
+  if (typeIndex?.revision === revision && typeIndex.eunis === eunis && typeIndex.names === names) return typeIndex;
+  const rows = M.typeTree(model.rules, { fill: eunis, names: names ?? {} });
+  const byId = new Map(rows.map((row, i) => [row.rule.id, { ...row, i, search: `${row.rule.code} ${row.rule.description}`.toLowerCase() }]));
+  typeIndex = { revision, eunis, names, rows, byId, branches: new Map(), colours: eunis ? null : model.rules.slice(0, COLOURS.length).map((r) => r.code),
+    depth: rows.reduce((max, row) => Math.max(max, row.depth), 1), nested: rows.some((x) => x.kids.length) };
+  return typeIndex;
+}
+const typeRows = () => indexTypes().rows;
 // The ids of the types above the type `id` in the hierarchy, nearest first.
-function ancestors(id, rows = typeRows()) {
-  const parent = new Map(rows.map((x) => [x.rule.id, x.parent])), out = [];
-  for (let p = parent.get(id); p; p = parent.get(p)) out.push(p);
+function ancestors(id, byId = indexTypes().byId) {
+  const out = [];
+  for (let p = byId.get(id)?.parent; p; p = byId.get(p)?.parent) out.push(p);
   return out;
 }
 // The ids of the type `id` and of all types below it.
-function branchIds(id, rows = typeRows()) {
-  const at = rows.findIndex((x) => x.rule.id === id);
-  if (at < 0) return [];
-  const out = [id];
-  for (let k = at + 1; k < rows.length && rows[k].depth > rows[at].depth; k++) out.push(rows[k].rule.id);
+function branchCodes(id) {
+  const { rows, byId, branches } = indexTypes(), at = byId.get(id);
+  if (branches.has(id)) return branches.get(id);
+  if (!at) return new Set();
+  const out = new Set();
+  for (let k = at.i + 1; k < rows.length && rows[k].depth > at.depth; k++) out.add(rows[k].rule.code);
+  branches.set(id, out);
   return out;
 }
 // The types as a tree: a subtype stands indented under its parent, whose
 // subtypes fold away with the arrow in front of it. A search shows the types it
 // finds with the types above them.
-function renderTypes(editor = true) {
-  $('t-q').hidden = model.rules.length < 9;
-  const rows = typeRows(), parent = new Map(rows.map((x) => [x.rule.id, x.parent]));
-  const q = $('t-q').value.trim(), keep = new Set();
-  if (q) for (const x of rows) if (typeListed(x.rule)) for (let id = x.rule.id; id && !keep.has(id); id = parent.get(id)) keep.add(id);
-  const foldedAway = (x) => ancestors(x.rule.id, rows).some((p) => folded.has(p));
-  const shown = rows.filter((x) => (q ? keep.has(x.rule.id) : !foldedAway(x)));
-  $('t-list').classList.toggle('tree', rows.some((x) => x.kids.length));
+function renderTypes(editor = true, searchOnly = false) {
+  const q = typeQuery(), keep = new Set();
+  $('t-q').hidden = model.rules.length < 9 && !q;
+  const { rows, byId, colours, depth: deepest, nested } = indexTypes();
+  const folds = visibleFolds();
+  const matches = (r) => byId.get(r.id)?.search.includes(q);
+  if (q) for (const x of rows) if (matches(x.rule)) for (let id = x.rule.id; id && !keep.has(id); id = byId.get(id)?.parent) keep.add(id);
+  const foldedAway = (x) => ancestors(x.rule.id, byId).some((p) => folds.has(p));
+  const shown = rows.filter((x) => (!q || keep.has(x.rule.id)) && !foldedAway(x));
+  $('t-list').classList.toggle('tree', nested);
   // Expert systems nest up to about seven levels. The indent of the lowest level
   // stays within 42px, so its names and counts keep their room in the list.
-  const deepest = Math.max(1, ...rows.map((x) => x.depth));
   $('t-list').style.setProperty('--step', `${Math.min(14, 42 / deepest)}px`);
   // A folded type that holds the type shown is marked, as the type shown is hidden.
-  const above = sel.rule && !sel.rest ? ancestors(sel.rule, rows) : [];
+  const above = sel.rule && !sel.rest ? ancestors(sel.rule, byId) : [];
+  const focused = document.activeElement.closest('#t-list > li[data-id]')?.dataset.id;
   $('t-list').innerHTML = shown.map(({ rule: r, depth, kids }) => {
-    const open = !folded.has(r.id) || q;
+    const open = !folds.has(r.id), context = q && !matches(r) ? ' context' : '';
+    const label = h(`${r.code} ${r.description}`.trim() || 'Unnamed'), shade = `var(${colourVar(r.code, colours)}, #9a9d96)`;
+    const expandable = kids.some((k) => !q || keep.has(k.id));
     if (M.isLevel(r)) return `
-    <li data-id="${r.id}" class="level${q && !typeListed(r) ? ' context' : ''}" style="--depth:${depth}" tabindex="0" aria-expanded="${Boolean(open)}">
-      ${q ? '' : `<button type="button" class="fold" data-act="fold" tabindex="-1" aria-label="${open ? 'Fold away' : 'Show'} the types under ${h(r.code)}"><span aria-hidden="true">${open ? '▾' : '▸'}</span></button>`}
-      <span class="nm" title="${h(`${r.code} ${r.description}`)}"><i class="sw" style="background:${typeColour(r.code)}"></i><b>${h(r.code)}</b> ${h(r.description)}</span>
+    <li data-id="${r.id}" class="level${context}" style="--depth:${depth}" tabindex="0" aria-label="${label}" ${expandable ? `aria-expanded="${open}"` : ''} title="${expandable ? `${open ? 'Fold' : 'Expand'} ${label}` : label}">
+      ${expandable ? `<span class="fold" aria-hidden="true">${open ? '▾' : '▸'}</span>` : ''}
+      <span class="nm"><i class="sw" style="background:${shade}"></i><b>${h(r.code)}</b> ${h(r.description)}</span>
       <span class="meta"><span data-branch-hits="${r.id}"></span></span>
     </li>`;
     return `
-    <li data-id="${r.id}" class="${[r.id === sel.rule && !sel.rest ? 'active' : '', !open && above.includes(r.id) ? 'holds' : '', q && !typeListed(r) ? 'context' : ''].join(' ')}" style="--depth:${depth}" tabindex="0"${kids.length ? ` aria-expanded="${Boolean(open)}"` : ''}>
-      ${kids.length && !q ? `<button type="button" class="fold" data-act="fold" tabindex="-1" title="${open ? 'Fold away' : 'Show'} the ${plural(kids.length, 'subtype')} of ${h(r.code)}" aria-label="${open ? 'Fold away' : 'Show'} the subtypes of ${h(r.code)}"><span aria-hidden="true">${open ? '▾' : '▸'}</span></button>` : ''}
+    <li data-id="${r.id}" class="${r.id === sel.rule && !sel.rest ? 'active' : ''}${!open && above.includes(r.id) ? ' holds' : ''}${context}" style="--depth:${depth}" tabindex="0" aria-label="${label}" title="${label}"${expandable ? ` aria-expanded="${open}"` : ''}>
+      ${expandable ? `<button type="button" class="fold" data-act="fold" tabindex="-1" title="${open ? 'Fold away' : 'Show'} the subtypes of ${h(r.code)}" aria-label="${open ? 'Fold away' : 'Show'} the subtypes of ${h(r.code)}"><span aria-hidden="true">${open ? '▾' : '▸'}</span></button>` : ''}
       <button type="button" class="mini x del" data-act="row-del" title="Delete the type ${h(r.code)} (Undo brings it back)" aria-label="Delete the type ${h(r.code)}">✕</button>
-      <span class="nm" title="${h(`${r.code} ${r.description}`)}"><i class="sw" style="background:${typeColour(r.code)}"></i><b>${h(r.code || 'Unnamed')}</b> ${h(r.description)}</span>
+      <span class="nm"><i class="sw" style="background:${shade}"></i><b>${h(r.code || 'Unnamed')}</b> ${h(r.description)}</span>
       <span class="meta">priority ${h(r.priority)}<span data-rule-hits="${r.id}"></span>${kids.length ? `<span data-branch-hits="${r.id}"></span>` : ''}</span>
-      <span class="dots" data-dots="${h(r.code)}"></span>
+      <span class="dots" data-dot-rule="${r.id}"></span>
     </li>`;
   }).join('') || `<li class="more">${model.rules.length ? 'No type matches.' : 'No types yet.'}</li>`;
+  if (focused) focusType(focused);
   if (editor) renderTypeEditor();
-  showCounts();
+  if (searchOnly) {
+    showTypeCounts();
+    drawDots($('t-list'));
+  } else showCounts();
 }
+const focusType = (id) => $('t-list').querySelector(`li[data-id="${CSS.escape(id)}"]`)?.focus({ preventScroll: true });
 // Folds the subtypes of the type `id` away, or shows them again.
-function foldType(id, fold = !folded.has(id)) {
-  if (fold === folded.has(id)) return;
-  if (fold) folded.add(id); else folded.delete(id);
-  renderTypes(false);
-  $('t-list').querySelector(`li[data-id="${id}"]`)?.focus({ preventScroll: true });
+function foldType(id, fold = !visibleFolds().has(id)) {
+  const folds = visibleFolds();
+  if (fold === folds.has(id)) return;
+  if (fold) folds.add(id); else folds.delete(id);
+  renderTypes(false, true);
+  focusType(id);
 }
-function renderTypeEditor() {
+function renderTypeEditor(ruleOnly = false) {
   const r = rule();
   if (!r) {
     $('t-editor').innerHTML = model.rules.length ? '<p class="text-body-secondary mb-0">Select a type in the list.</p>'
@@ -842,7 +994,8 @@ function renderTypeEditor() {
     return;
   }
   const tree = M.ruleTree(r), up = M.parentOf(r, model.rules), from = r.inherit ? fullOf(r).from?.tree : null;
-  $('t-editor').innerHTML = `
+  const formulaOpen = $('t-rule-body')?.dataset.rule === r.id && $('t-text')?.open;
+  if (!ruleOnly) $('t-editor').innerHTML = `
     <div class="fields type">
       <label class="form-label small">Code
         <input class="form-control form-control-sm mt-1" data-rule-field="code" value="${h(r.code)}" placeholder="FB" spellcheck="false"></label>
@@ -852,6 +1005,8 @@ function renderTypeEditor() {
         <select class="form-select form-select-sm mt-1" data-rule-field="priority">${M.PRIORITIES.slice(0, Math.max(10, M.PRIORITIES.indexOf(r.priority) + 1)).map((p) => `<option${p === r.priority ? ' selected' : ''}>${p}</option>`).join('')}</select></label>
     </div>
     <p class="small error mt-2 mb-0" id="t-priority" role="status"></p>
+    <div id="t-rule-body" data-rule="${r.id}"></div>`;
+  replaceContent($('t-rule-body'), `
     ${up ? `<div class="form-check small inherit"><input class="form-check-input" type="checkbox" id="t-inherit" data-act="t-inherit"${r.inherit ? ' checked' : ''}>
       <label class="form-check-label" for="t-inherit">Inherit the rule of <b>${h(up.code)}</b> ${h(up.description)}</label></div>` : ''}
     ${from ? `<div class="from"><p class="form-label small mb-1">From ${h(up.code)}</p>
@@ -863,7 +1018,7 @@ function renderTypeEditor() {
     : `<p class="small error">The formula cannot be shown as blocks${r.problem ? `: ${h(r.problem)}` : ''}. Edit it as text below.</p>`}
     <p class="small mt-2 mb-0" id="t-verdict"></p>
     <p class="small mt-1 mb-0 trail" id="t-trail" hidden></p>
-    <details class="mt-2" id="t-text"${tree ? '' : ' open'}><summary class="small">Formula as text <button type="button" class="btn btn-link btn-sm p-0 ms-2 align-baseline copy" data-act="t-copy" title="Copy the whole rule as RESY reads it">Copy</button></summary>
+    <details class="mt-2" id="t-text"${tree && !formulaOpen ? '' : ' open'}><summary class="small">Formula as text <button type="button" class="btn btn-link btn-sm p-0 ms-2 align-baseline copy" data-act="t-copy" title="Copy the whole rule as RESY reads it">Copy</button></summary>
       ${r.inherit ? `<p class="small mb-1 mt-1">The whole rule, as RESY reads it:</p><code class="small d-block full" id="t-full">${h(fullOf(r).text)}</code>
       <p class="small mb-0 mt-2">Own conditions of ${h(r.code)}:</p>` : ''}
       <textarea class="form-control form-control-sm mt-1 formula" rows="4" data-act="rule-text" aria-label="${r.inherit ? 'Own conditions as a formula' : 'Rule formula'}" spellcheck="false">${h(r.expression)}</textarea>
@@ -871,7 +1026,7 @@ function renderTypeEditor() {
     <div class="actions">
       <button type="button" class="btn btn-outline-secondary btn-sm" data-act="t-dup">Duplicate</button>
       <button type="button" class="btn btn-outline-danger btn-sm" data-act="t-del">Delete type</button>
-    </div>`;
+    </div>`);
   showPriorityNote();
   showVerdict();
   paintTrail();
@@ -1230,7 +1385,7 @@ function treeTouched() {
   M.syncRule(r);
   touched.add(r.id);
   const text = $('t-editor').querySelector('[data-act="rule-text"]');
-  if (text && !r.problem) text.value = r.expression;
+  if (text) text.value = r.expression;
   if ($('t-full')) $('t-full').textContent = fullOf(r).text;
   showVerdict();
   paintTrail();
@@ -1260,30 +1415,41 @@ function writeHits(el, id, hits) {
   el.title = hits === undefined ? '' : `This condition holds in ${fmt(hits)} of ${fmt(test.n_plots)} test plots`;
   el.classList.toggle('zero', hits === 0);
 }
-// The counts of the last test next to groups, types and conditions.
-function showCounts() {
+function showTypeCounts() {
   const ok = test?.ok;
-  for (const el of app.querySelectorAll('[data-group-hits]')) {
-    const g = model.groups.find((x) => x.id === el.dataset.groupHits), n = ok && g ? test.groups?.[M.groupKey(g)] : undefined;
-    el.textContent = n === undefined ? '' : ` · in ${plural(n, 'plot')}`;
-  }
-  for (const el of app.querySelectorAll('[data-rule-hits]')) {
-    const id = el.dataset.ruleHits, r = model.rules.find((x) => x.id === id), res = ok ? test.byRule.get(id) : null;
-    el.textContent = r && M.ruleProblem(r, model.rules) ? ' · unfinished' : res ? ` · ${plural(res.assigned, 'plot')}` : '';
-    el.classList.toggle('error', Boolean(r && M.ruleProblem(r, model.rules)));
+  const { byId } = indexTypes(), unfinished = new Set(problems.flatMap((p) => p.kind === 'rule' && p.level === 'error' ? [p.id] : []));
+  for (const el of $('t-list').querySelectorAll('[data-rule-hits]')) {
+    const id = el.dataset.ruleHits, code = ok ? test.byRule.get(id)?.code : undefined;
+    const n = test?.typeRows?.get(code) === id ? test.assigned.get(code) : undefined;
+    const pending = unfinished.has(id) && M.ruleProblem(byId.get(id).rule, model.rules);
+    el.textContent = pending ? ' · unfinished' : n === undefined ? '' : ` · ${plural(n, 'plot')}`;
+    el.classList.toggle('error', Boolean(pending));
+    el.title = n === undefined ? '' : `Plots classified as ${code}`;
   }
   // A type with subtypes also counts the plots of its whole branch.
-  const rows = typeRows();
-  for (const el of app.querySelectorAll('[data-branch-hits]')) {
-    const ids = branchIds(el.dataset.branchHits, rows), level = el.dataset.branchHits.startsWith('level:');
-    const n = ok ? ids.reduce((s, id) => s + (test.byRule.get(id)?.assigned ?? 0), 0) : null;
-    el.textContent = n === null ? '' : level ? plural(n, 'plot') : n ? `${fmt(n)} with subtypes` : '';
-    el.title = !n ? '' : `${plural(n, 'plot')} ${n === 1 ? 'is' : 'are'} classified as this type or one of its subtypes`;
+  for (const el of $('t-list').querySelectorAll('[data-branch-hits]')) {
+    const level = el.dataset.branchHits.startsWith('level:');
+    const n = ok ? [...branchCodes(el.dataset.branchHits)].reduce((s, code) => s + (test.assigned.get(code) ?? 0), 0) : null;
+    el.textContent = n === null ? '' : level ? plural(n, 'plot') : n ? `${fmt(n)} in subtypes` : '';
+    el.title = !n ? '' : `${plural(n, 'plot')} ${n === 1 ? 'is' : 'are'} classified as a subtype`;
   }
+}
+// The counts of the last test beside the types and conditions.
+function showCounts() {
+  const ok = test?.ok;
+  showTypeCounts();
   // Below the types: the plots no type takes.
-  const t = tally();
-  $('t-rest').innerHTML = !ok || !t.n ? '' : [['none', 'Not classified', t.none], ['tie', 'Tied between types', t.tie]]
-    .map(([show, label, n]) => `<li data-act="show-plots" data-show="${show}" class="${sel.rest === REST[show] ? 'active' : ''}" tabindex="0"><span class="nm">${label}</span><span class="meta">${plural(n, 'plot')}</span><span class="dots" data-dots="${show === 'none' ? '?' : '+'}"></span></li>`).join('');
+  const t = tally(), rest = $('t-rest');
+  if (!ok || !t.n) rest.replaceChildren();
+  else {
+    if (!rest.childElementCount) rest.innerHTML = [['none', 'Not classified'], ['tie', 'Tied between types']]
+      .map(([show, label]) => `<li data-act="show-plots" data-show="${show}" tabindex="0"><span class="nm">${label}</span><span class="meta"></span><span class="dots" data-dots="${REST[show]}"></span></li>`).join('');
+    for (const li of rest.children) {
+      const show = li.dataset.show;
+      li.classList.toggle('active', sel.rest === REST[show]);
+      li.querySelector('.meta').textContent = plural(t[show], 'plot');
+    }
+  }
   drawDots();
   const r = rule();
   if (r?.tree) {
@@ -1495,32 +1661,43 @@ function litPlots() {
   for (let i = 0; i < p.id.length; i++) if (holdsIn(i, code)) out.add(i);
   return out;
 }
-function drawDots() {
+const drawnDots = new WeakMap();
+function drawDots(scope = app) {
   const p = test?.ok ? test.plots : null, fresh = moved;
   moved = null;
-  const boxes = app.querySelectorAll('[data-dots]');
-  if (!p) { for (const el of boxes) el.innerHTML = ''; $('t-lit').hidden = true; return; }
-  const per = Math.ceil(p.id.length / DOT_CELLS), by = new Map();
-  p.code.forEach((c, i) => { if (!by.has(c)) by.set(c, []); by.get(c).push(i); });
-  const order = model.rules.map((r) => r.code);
+  const boxes = scope.querySelectorAll('[data-dots], [data-dot-rule]');
+  if (!p) { for (const el of boxes) el.replaceChildren(); if (scope === app) $('t-lit').hidden = true; return; }
+  const per = Math.ceil(p.id.length / DOT_CELLS), order = indexTypes().colours;
+  if (!test.dotPlots) {
+    test.dotPlots = new Map();
+    p.code.forEach((c, i) => {
+      if (!test.dotPlots.has(c)) test.dotPlots.set(c, []);
+      test.dotPlots.get(c).push(i);
+    });
+  }
   for (const el of boxes) {
-    const at = by.get(el.dataset.dots) ?? [];
+    const id = el.dataset.dotRule;
+    const code = id ? test.byRule.get(id)?.code : el.dataset.dots;
+    const owner = !id || test.typeRows.get(code) === id;
+    if (!owner) { delete el.dataset.dots; el.replaceChildren(); drawnDots.delete(el); continue; }
+    const previous = drawnDots.get(el);
+    if (previous?.test === test && previous.code === code) continue;
+    drawnDots.set(el, { test, code });
+    el.dataset.dots = code;
+    const at = test.dotPlots.get(code) ?? [];
     el.dataset.per = per;
-    el.style.setProperty('--c', typeColour(el.dataset.dots, order));
+    el.style.setProperty('--c', `var(${colourVar(code, order)}, #9a9d96)`);
     el.innerHTML = per === 1
       ? at.map((i) => `<i data-plot="${i}"${fresh?.has(i) ? ' class="moved"' : ''} title="Plot ${h(p.id[i])}"></i>`).join('')
       : '<i></i>'.repeat(Math.ceil(at.length / per));
     el.title = per === 1 ? '' : `One dot for ${fmt(per)} plots`;
   }
-  lightDots();
+  if (scope === app) lightDots();
+  else paintDotHighlights(scope, p, lit);
 }
-function lightDots() {
-  const p = test?.ok ? test.plots : null;
-  if (!p) return;
-  // While the plots of a changed condition are not known yet, those lit before stay.
-  const now = litPlots(), on = now ?? lit, by = new Map();
-  lit = on;
-  for (const el of app.querySelectorAll('[data-dots]')) {
+function paintDotHighlights(scope, p, on) {
+  const by = new Map();
+  for (const el of scope.querySelectorAll('[data-dots]')) {
     if (el.dataset.per === '1') {
       for (const d of el.children) {
         const i = Number(d.dataset.plot);
@@ -1534,6 +1711,14 @@ function lightDots() {
     const n = Math.round((by.get(el.dataset.dots) ?? 0) / Number(el.dataset.per));
     [...el.children].forEach((d, k) => d.classList.toggle('on', k < n));
   }
+}
+function lightDots() {
+  const p = test?.ok ? test.plots : null;
+  if (!p) return;
+  // While the plots of a changed condition are not known yet, those lit before stay.
+  const now = litPlots(), on = now ?? lit;
+  lit = on;
+  paintDotHighlights(app, p, on);
   if (!now) return;
   drawMap();
   const code = rule()?.code, note = glow ? glow.note(on.size)
@@ -1551,7 +1736,7 @@ function lightDots() {
 // tested plot.
 const plotMap = createDotMap('t-map', () => {
   const p = test?.ok ? test.plots : null, on = lit, placed = data?.placed ?? [], of = p ? test.onMap : null;
-  const order = model.rules.map((r) => r.code), colours = new Map();
+  const order = indexTypes().colours, colours = new Map();
   const faded = cssColour('--lv-none', '#9a9d96'), outside = cssColour('--bs-gray-500', '#adb5bd');
   const colourOfPlot = (i) => {
     const c = p.code[i];
@@ -1576,14 +1761,15 @@ function drawMap() {
 // A rectangle drawn on the map limits the test to the plots in it; `box` is
 // that rectangle (see drawBox() in resy_map.js), or null for all plots.
 async function setRegion(box) {
+  const source = data;
   const ids = box ? data.placed.filter((p) => p.x >= box.x0 && p.x <= box.x1 && p.y >= box.y0 && p.y <= box.y1).map((p) => p.id) : null;
   if (ids && !ids.length) { $('map-note').textContent = 'No plot lies in this rectangle.'; return; }
   if (ids) {
     await rWrite(`${DIR}/region.json`, JSON.stringify(ids));
     await rVoid(`resy_maker_region("${DIR}/region.json")`);
   } else await rVoid('resy_maker_region()');
-  data.region = box;
-  if (test) test.json = null;
+  if (data !== source) return;
+  data = { ...source, region: box };
   plotMap.showBox(box);
   $('map-all').hidden = !box;
   $('map-note').textContent = '';
@@ -1756,6 +1942,7 @@ function showPlots(show) {
 // conditions it meets and misses.
 function clearDetail() {
   sel.plot = null;
+  evidenceRequest = null;
   trail = null;
   $('detail').hidden = true;
   for (const tr of $('rows').querySelectorAll('.table-active')) tr.classList.remove('table-active');
@@ -1775,36 +1962,43 @@ function pickPlot(id, showType = true) {
   explain(id);
 }
 const evaluatePlot = (id, type = null) => rJson(`resy_maker_explain(${rString(id)}${type ? `, type = ${rString(type)}` : ''})`);
-async function explain(id, again = false) {
+let evidenceRequest = null;
+const evidenceStatus = (text) => { $('d-status').textContent = text; };
+async function explain(id) {
+  const request = evidenceRequest = { id, test };
   sel.plot = id;
   renderRows();
   lightDots();
   const code = test.plots.code[test.plots.id.indexOf(id)];
-  $('d-title').textContent = `Plot ${id}: ${code} ${nameOf(code)}`;
+  const title = `Plot ${id}: ${code} ${nameOf(code)}`;
+  if (!$('d-body').hasChildNodes()) $('d-title').textContent = title;
   $('detail').hidden = false;
   $('detail').setAttribute('aria-busy', 'true');
-  if (!$('d-body').hasChildNodes()) $('d-body').innerHTML = '<p class="text-body-secondary mb-0">Evaluating…</p>';
+  evidenceStatus('Evaluating…');
   markTrail();
   try {
     const ev = await evaluatePlot(id);
-    if (sel.plot === id) $('d-body').innerHTML = evidenceHtml(ev, nameOf);
+    if (evidenceRequest !== request) return;
+    $('d-title').textContent = title;
+    $('d-body').innerHTML = evidenceHtml(ev, nameOf);
+    evidenceStatus('');
   } catch (e) {
-    if (sel.plot === id) $('d-body').textContent = cleanError(e);
+    if (evidenceRequest === request) evidenceStatus(cleanError(e));
   } finally {
-    if (sel.plot === id) $('detail').setAttribute('aria-busy', 'false');
+    if (evidenceRequest === request) $('detail').setAttribute('aria-busy', 'false');
   }
 }
 // The conditions of the rule shown that the selected plot meets, from the last test.
 let trail = null;       // { plot, rule: its id, holds, conds: [true | false | null] }
 async function markTrail() {
-  const r = rule(), id = sel.plot;
+  const r = rule(), id = sel.plot, tested = test;
   if (trail?.plot !== id || trail.rule !== r?.id || id === null) { trail = null; paintTrail(); }
   if (!r?.tree || id === null || !test?.ok || touched.has(r.id) || !test.byRule.get(r.id)) return;
   // A code can carry several rules; RESY returns them in the order of the system.
   const k = model.rules.filter((x) => x.code === r.code && test.byRule.has(x.id)).indexOf(r);
   let found;
   try { found = (await evaluatePlot(id, r.code)).types?.[0]?.rules?.[k]; } catch (e) { console.warn('[maker] plot not evaluated', e); return; }
-  if (sel.plot !== id || sel.rule !== r.id || touched.has(r.id) || found?.conditions?.length !== orderOf(r).length) return;
+  if (test !== tested || sel.plot !== id || sel.rule !== r.id || touched.has(r.id) || found?.conditions?.length !== orderOf(r).length) return;
   trail = { plot: id, rule: r.id, holds: found.holds, conds: found.conditions.map((c) => c.satisfied) };
   paintTrail();
 }
@@ -1841,7 +2035,7 @@ function renderPlotsSheet() {
 const TEST_LIMIT_MB = 30;
 const rowsOf = async (file) => {
   const { delim, cols } = await readHeader(file);
-  const lines = (await file.text()).replace(/^﻿/, '').split(/\r?\n/);
+  const lines = splitRecords(await fileText(file), delim);
   lines.shift();
   return { cols, rows: lines.filter(Boolean).map((l) => splitFields(l, delim)) };
 };
@@ -1857,7 +2051,7 @@ async function setData(speciesFile, sitesFile, label, example, columns = null) {
   const rename = new Map([[id, 'PlotObservationID'], [pick(si.cols, 'lon'), 'Longitude'], [pick(si.cols, 'lat'), 'Latitude']]);
   const sites = [si.cols.map((c) => tsvValue(rename.get(c) ?? c)).join('\t'), ...si.rows.map((f) => si.cols.map((_, k) => tsvValue(f[k])).join('\t'))].join('\n') + '\n';
   const at = { id: si.cols.indexOf(id), lon: si.cols.indexOf(pick(si.cols, 'lon')), lat: si.cols.indexOf(pick(si.cols, 'lat')) };
-  const place = new Map(at.lon < 0 || at.lat < 0 ? [] : si.rows.map((f) => [f[at.id], placeOf(parseFloat(f[at.lon]), parseFloat(f[at.lat]))]).filter(([, p]) => !Number.isNaN(p[0])));
+  const place = new Map(at.lon < 0 || at.lat < 0 ? [] : si.rows.map((f) => [plotId(f[at.id]), placeOf(fieldNumber(f[at.lon]), fieldNumber(f[at.lat]))]).filter(([, p]) => !Number.isNaN(p[0])));
   await rWrite(`${DIR}/species.tsv`, species);
   await rWrite(`${DIR}/sites.tsv`, sites);
   const out = await rJson(`resy_maker_set_data("${DIR}/species.tsv", "${DIR}/sites.tsv")`);
@@ -1898,8 +2092,12 @@ async function useOwnData() {
 // ---- Export ---------------------------------------------------------------------------------------
 const slug = () => `${model.metadata.scheme}-${model.metadata.version}`.replace(/[^A-Za-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '') || 'expert-system';
 const errorCount = () => problems.filter((p) => p.level === 'error').length;
-const jsonText = () => JSON.stringify(M.modelToJson(model), null, 1);
-let checked = { revision: -1, result: null };
+let exportDocument = null;
+function exportSnapshot() {
+  if (exportDocument?.revision === revision) return exportDocument;
+  exportDocument = { revision, name: slug(), text: JSON.stringify(M.modelToJson(model), null, 1) };
+  return exportDocument;
+}
 
 function renderExport() {
   const errors = errorCount();
@@ -1916,45 +2114,57 @@ function renderExport() {
   for (const id of ['x-json', 'x-txt', 'x-app']) $(id).disabled = errors > 0 || !model.rules.length;
   $('x-snippet').textContent = `library(RESY)\nexpert <- resy_load_expert(expertfile = "${slug()}.json")\nresult <- resy_classify(obs = obs, header = header, expert = expert)`;
   if (errors || !model.rules.length) {
+    $('x-check').setAttribute('aria-busy', 'false');
     $('x-check').className = 'small mb-0 text-body-secondary';
     $('x-check').textContent = errors ? `Fix ${errors === 1 ? 'the error' : `the ${fmt(errors)} errors`} above to export the system.` : 'Add a type to export the system.';
     return;
   }
-  checkExport().catch((e) => { $('x-check').className = 'small mb-0 error'; $('x-check').textContent = cleanError(e); });
+  previewExport(exportSnapshot());
 }
-// Writes the complete JSON file into the R session and has RESY read it.
-async function checkExport() {
-  if (checked.revision !== revision) {
-    const at = revision;
-    $('x-check').className = 'small mb-0 text-body-secondary';
-    $('x-check').innerHTML = '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>RESY is reading the system…';
-    await rWrite(`${DIR}/export.json`, jsonText());
-    checked = { revision: at, result: await rJson(`resy_maker_check("${DIR}/export.json")`) };
+// The input and any text output stay together within one R operation.
+const readExport = (snapshot, text = false) => inR(async () => {
+  const jsonPath = `${DIR}/export.json`, textPath = `${DIR}/export.txt`;
+  await webR.FS.writeFile(jsonPath, new TextEncoder().encode(snapshot.text));
+  const result = JSON.parse(await webR.evalRString(`resy_maker_check(${rString(jsonPath)})`));
+  if (!text || !result.ok) return result;
+  await webR.evalRVoid(`resy_maker_write_txt(${rString(jsonPath)}, ${rString(textPath)})`);
+  return { ...result, bytes: await webR.FS.readFile(textPath) };
+});
+function checkExport(snapshot) {
+  snapshot.check ??= readExport(snapshot).catch((error) => { snapshot.check = null; throw error; });
+  return snapshot.check;
+}
+async function previewExport(snapshot) {
+  const status = $('x-check'), current = () => snapshot.revision === revision && sheet === 'export';
+  status.setAttribute('aria-busy', 'true');
+  if (!status.textContent) status.textContent = 'RESY is reading the system…';
+  try {
+    const r = await checkExport(snapshot);
+    if (!current()) return;
+    status.className = `small mb-0${r.ok ? '' : ' error'}`;
+    status.textContent = (r.ok
+      ? `RESY reads the system: ${plural(model.rules.length, 'rule')} for ${plural(new Set(model.rules.map((x) => x.code)).size, 'type')}, ${plural(model.groups.length, 'group')}, ${nSpecies(model.synonyms.size)}.`
+      : `RESY does not read the system: ${r.errors.join(' ')}`)
+      + (r.warnings.length ? ` Notes of its validation: ${r.warnings.map((w) => (/[.!?]$/.test(w) ? w : `${w}.`)).join(' ')}` : '');
+  } catch (e) {
+    if (!current()) return;
+    status.className = 'small mb-0 error';
+    status.textContent = cleanError(e);
+  } finally {
+    if (current()) status.setAttribute('aria-busy', 'false');
   }
-  const r = checked.result;
-  if (checked.revision !== revision || sheet !== 'export') return r;
-  $('x-check').className = `small mb-0${r.ok ? '' : ' error'}`;
-  $('x-check').textContent = (r.ok
-    ? `RESY reads the system: ${plural(model.rules.length, 'rule')} for ${plural(new Set(model.rules.map((x) => x.code)).size, 'type')}, ${plural(model.groups.length, 'group')}, ${nSpecies(model.synonyms.size)}.`
-    : `RESY does not read the system: ${r.errors.join(' ')}`)
-    + (r.warnings.length ? ` Notes of its validation: ${r.warnings.map((w) => (/[.!?]$/.test(w) ? w : `${w}.`)).join(' ')}` : '');
-  return r;
 }
 async function exportAs(kind) {
-  const status = $('x-status');
+  const status = $('x-status'), snapshot = exportSnapshot();
   status.classList.remove('error');
   try {
     status.textContent = 'Checking…';
-    const r = await checkExport();
-    if (!r.ok) throw new Error('RESY does not read the system; see above.');
-    if (kind === 'json') saveBlob(new Blob([jsonText()], { type: 'application/json' }), `${slug()}.json`);
-    if (kind === 'txt') {
-      status.textContent = 'Writing the .txt file and reading it back…';
-      await rVoid(`resy_maker_write_txt("${DIR}/export.json", "${DIR}/export.txt")`);
-      saveBlob(new Blob([await rRead(`${DIR}/export.txt`)], { type: 'text/plain' }), `${slug()}.txt`);
-    }
+    const r = await (kind === 'txt' ? readExport(snapshot, true) : checkExport(snapshot));
+    if (!r.ok) throw new Error(`RESY does not read the system: ${r.errors.join(' ')}`);
+    if (kind === 'json') saveBlob(new Blob([snapshot.text], { type: 'application/json' }), `${snapshot.name}.json`);
+    if (kind === 'txt') saveBlob(new Blob([r.bytes], { type: 'text/plain' }), `${snapshot.name}.txt`);
     if (kind === 'app') {
-      const handed = { name: `${slug()}.json`, text: jsonText() };
+      const handed = { name: `${snapshot.name}.json`, text: snapshot.text };
       showSheet(null);
       await shell.open(handed);
     }
@@ -2037,7 +2247,7 @@ $('start-file').addEventListener('change', () => { document.querySelector('input
 $('start-eunis-version').addEventListener('change', () => { document.querySelector('input[name=start][value=EUNIS]').checked = true; disarm(); });
 
 // Species
-$('sp-q').addEventListener('input', renderSpecies);
+$('sp-q').addEventListener('input', () => { speciesPage = 0; renderSpecies(true); $('sp-list').scrollTop = 0; });
 $('sp-paste-toggle').addEventListener('click', () => { $('sp-paste').hidden = !$('sp-paste').hidden; if (!$('sp-paste').hidden) $('sp-text').focus(); });
 $('sp-paste-add').addEventListener('click', () => { addSpecies($('sp-text').value.split(/\r?\n/)); $('sp-text').value = ''; $('sp-paste').hidden = true; renderSpecies(); });
 $('tab-species').addEventListener('click', (e) => {
@@ -2055,8 +2265,14 @@ $('tab-species').addEventListener('click', (e) => {
   }
 });
 let lastTick = null;
-$('sp-filter').addEventListener('change', () => { sel.kind = $('sp-filter').value; renderSpecies(); });
-$('sp-remove').addEventListener('click', () => removeSpecies(ticked.size ? [...ticked] : speciesListed().hits));
+$('sp-filter').addEventListener('change', () => { sel.kind = $('sp-filter').value; speciesPage = 0; renderSpecies(true); $('sp-list').scrollTop = 0; });
+for (const [id, step] of [['sp-prev', -1], ['sp-next', 1]]) $(id).addEventListener('click', () => {
+  speciesPage += step;
+  renderSpecies(true);
+  if ($(id).disabled) $(step < 0 ? 'sp-next' : 'sp-prev').focus({ preventScroll: true });
+  $('sp-list').scrollTop = 0;
+});
+$('sp-remove').addEventListener('click', () => removeSpecies(ticked.size ? [...ticked] : speciesListed().hits.map(({ name }) => name)));
 $('sp-restore').addEventListener('click', restoreSpecies);
 $('tab-species').addEventListener('change', (e) => {
   if (e.target.dataset.act !== 'sp-syn') return;
@@ -2076,7 +2292,8 @@ const pickGroup = (e) => {
   renderGroups();
   return true;
 };
-$('g-q').addEventListener('input', renderGroups);
+$('g-q').addEventListener('input', () => renderGroups(true));
+$('g-filter').addEventListener('change', () => { sel.gkind = $('g-filter').value; renderGroups(); });
 $('g-new').addEventListener('click', () => {
   const g = addGroup();
   commit();
@@ -2160,9 +2377,12 @@ groupsTab.addEventListener('dragstart', (e) => {
 function pickType(e) {
   const li = e.target.closest('li[data-id]');
   if (!li || e.target.closest('[data-plot]')) return;
-  if (e.target.closest('[data-act="fold"]') || li.classList.contains('level')) return e.key === 'Delete' ? undefined : foldType(li.dataset.id);
+  if (e.target.closest('[data-act="fold"]') || li.classList.contains('level')) {
+    if (e.key !== 'Delete' && li.hasAttribute('aria-expanded')) foldType(li.dataset.id);
+    return;
+  }
   if (e.target.closest('[data-act="row-del"]') || e.key === 'Delete') deleteRule(model.rules.find((r) => r.id === li.dataset.id));
-  else openRule(li.dataset.id);
+  else { openRule(li.dataset.id); focusType(li.dataset.id); }
 }
 // Deletes a type; the type shown stays, or the next one takes its place.
 function deleteRule(r) {
@@ -2179,8 +2399,8 @@ function openRule(id) {
   activeGroup = null;
   setRest(null);
   const r = rule();
-  if (r && !typeListed(r)) $('t-q').value = '';
-  if (r) for (const p of ancestors(r.id)) folded.delete(p);
+  if (r && !indexTypes().byId.get(r.id)?.search.includes(typeQuery())) $('t-q').value = '';
+  if (r) for (const p of ancestors(r.id)) { folded.delete(p); searchFolded.delete(p); }
   renderTypes();
   revealType();
   loadRulePlots();
@@ -2202,7 +2422,7 @@ $('t-list').addEventListener('keydown', (e) => {
   // The arrow keys of a tree: left folds the subtypes away, right shows them.
   if (e.target.hasAttribute('aria-expanded') && ['ArrowLeft', 'ArrowRight'].includes(e.key)) { e.preventDefault(); foldType(e.target.dataset.id, e.key === 'ArrowLeft'); }
 });
-$('t-q').addEventListener('input', () => renderTypes(false));
+$('t-q').addEventListener('input', () => { searchFolded.clear(); renderTypes(false, true); });
 $('t-new').addEventListener('click', newType);
 $('t-editor').addEventListener('keydown', (e) => {
   if (e.target.matches('.summary') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); return openCondition(e.target.closest('.cond').dataset.node); }
@@ -2298,14 +2518,7 @@ $('t-editor').addEventListener('click', (e) => {
 $('t-editor').addEventListener('input', (e) => {
   const el = e.target, r = rule();
   if (!r || el.tagName === 'SELECT') return;
-  if (el.dataset.ruleField) {
-    r[el.dataset.ruleField] = el.value.trim();
-    // A new code can move the type to another place in the hierarchy.
-    renderTypes(false);
-    showPriorityNote();
-    showVerdict();
-    return;
-  }
+  if (el.dataset.ruleField) return;
   if (el.dataset.ta === 'cond-species') { findNode(el.closest('[data-node]').dataset.node).node.c.lhs.text = el.value.replace(/\s+/g, ' ').trim(); treeTouched(); scheduleTest(); return; }
   if (!el.dataset.act || el.dataset.act === 'rule-text') return;
   applyControl(el);
@@ -2316,8 +2529,22 @@ $('t-editor').addEventListener('input', (e) => {
 $('t-editor').addEventListener('change', (e) => {
   const el = e.target, r = rule();
   if (!r) return;
-  if (el.dataset.ruleField) { r[el.dataset.ruleField] = el.value.trim(); touched.add(r.id); showPriorityNote(); commit(); return; }
-  if (el.dataset.act === 'rule-text') { M.setRuleText(r, el.value); touched.add(r.id); commit(); return renderTypeEditor(); }
+  if (el.dataset.ruleField) {
+    const field = el.dataset.ruleField, value = el.value.trim();
+    el.value = value;
+    if (r[field] === value) return;
+    r[field] = value;
+    touched.add(r.id);
+    commit();
+    if (field === 'code') {
+      for (const p of ancestors(r.id)) { folded.delete(p); searchFolded.delete(p); }
+      renderTypeEditor(true);
+    } else showPriorityNote();
+    renderTypes(false);
+    if (sel.tab === 'groups') renderGroups();
+    return;
+  }
+  if (el.dataset.act === 'rule-text') { M.setRuleText(r, el.value); touched.add(r.id); commit(); return renderTypeEditor(true); }
   if (el.dataset.ta === 'cond-species') return commit();
   if (!el.dataset.act) return;
   let redraw = applyControl(el);
@@ -2407,7 +2634,9 @@ $('show').addEventListener('change', () => { sel.show = $('show').value; renderR
 $('q').addEventListener('input', renderRows);
 $('rows').addEventListener('click', (e) => { const tr = e.target.closest('tr'); if (tr) pickPlot(tr.dataset.id, sel.show !== 'type'); });
 $('d-close').addEventListener('click', clearDetail);
-wireEvidence($('d-body'), (type) => evaluatePlot(sel.plot, type), () => sel.plot);
+wireEvidence($('d-body'), (type) => evaluatePlot(evidenceRequest.id, type),
+  () => $('detail').getAttribute('aria-busy') === 'true' ? null : evidenceRequest,
+  { retain: true, report: evidenceStatus });
 $('f-species').addEventListener('change', () => {
   const f = $('f-species').files[0];
   if (f) fillSpeciesColumns(f, h).catch((e) => { $('data-status').textContent = cleanError(e); });

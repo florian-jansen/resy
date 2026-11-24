@@ -449,30 +449,22 @@
   is_cat <- startsWith(conditions, '$$C')
   w <- conditions[is_cat]
   message('  Header conditions with character values: ', length(w))
+  # One code per value across all categorical columns, so that a value on the
+  # right-hand side (a condition column of its own, shared by every comparison
+  # with that value) has the same code whichever column it is compared with.
+  # An empty field is -1, which no value has.
   categorical.header <- intersect(names(header), body(w))
-  for(i in categorical.header) {
-    own <- which(is_cat & body(conditions) == i)
-    b <- as.factor(as.character(header[,i]))
-    if(length(levels(b)) > 0) {
-      # left hand
-      # mark NAs as -1, otherwise they will be set 0 and result in wrong
-      # comparisons
-      c <- as.numeric(b)
-      c[is.na(c)] <- -1
-      plot.cond[, own] <- c
-      # filling the right-hand side
-      index5 <- which(conditions %in% levels(b))
-      if(length(index5)>0){
-        index7 <- match(header[,i], levels(b))
-        # there are NAs in index7 because some header fields are empty, e.g. "Coast_EEA"
-        index7[is.na(index7)] <- 0
-        # However, we have to translate the levels into numbers, done with c
-        for (j in 1:length(index5)){
-          c <- which(levels(b)==conditions[index5[j]])
-          plot.cond[index7 == c, index5[j]] <- c
-        }
-      }
-    } else plot.cond[, own] <- -1
+  values <- lapply(stats::setNames(nm = categorical.header), function(i) as.character(header[[i]]))
+  dictionary <- sort(unique(unlist(values, use.names = FALSE)))
+  for (i in categorical.header) {
+    code <- match(values[[i]], dictionary)
+    code[is.na(code)] <- -1
+    plot.cond[, which(is_cat & body(conditions) == i)] <- code
+  }
+  sides <- .resy_expression_sides(membership.expressions[startsWith(membership.expressions, "$$C ")])
+  cat_values <- sides$token[sides$is_side]
+  for (j in which(!is_cat & conditions %in% intersect(cat_values, dictionary))) {
+    plot.cond[, j] <- match(conditions[j], dictionary)
   }
 
 
@@ -527,23 +519,26 @@
 
   message(paste('classification from here on', Sys.time()))
 
-  # Types whose formula holds for each plot, in the order of the formulas. A
+  # Rules whose formula holds for each plot, in the order of the formulas. A
   # formula that evaluates to a single value holds for the first plot only.
   n_plots <- length(plots)
   holds <- vapply(logi2, function(v) v[seq_len(n_plots)], logical(n_plots))
   dim(holds) <- c(n_plots, length(logi2))
   hit <- which(holds, arr.ind = TRUE)
-  types <- split(names(logi2)[hit[, 2]], factor(hit[, 1], levels = seq_len(n_plots)))
-  types <- lapply(types, unname)
-  names(types) <- plots
+  rule_hits <- split(hit[, 2], factor(hit[, 1], levels = seq_len(n_plots)))
 
-  # Plots with the same set of types get the same choice, so each set is
+  # Plots with the same set of matching rules get the same choice, so each set is
   # resolved once.
-  key <- vapply(types, paste, character(1), collapse = "\r")
+  key <- vapply(rule_hits, paste, character(1), collapse = ",")
   first <- !duplicated(key)
-  choice <- unlist(.resy_mclapply(types[first], FUN = function(x)
-    .resy_classify_choice(x, vegtype.priority, vegtype.formula.names.short), mc = mc))
-  result.classification <- choice[match(key, key[first])]
+  codes <- vegtype.formula.names.short
+  matched <- lapply(rule_hits[first], .resy_type_rule_indices, codes, vegtype.priority)
+  choice <- unlist(.resy_mclapply(matched, FUN = function(i)
+    .resy_classify_choice(codes[i], vegtype.priority[i], codes[i]), mc = mc))
+  at <- match(key, key[first])
+  type_rules <- stats::setNames(unname(matched[at]), plots)
+  types <- lapply(type_rules, function(i) codes[i])
+  result.classification <- choice[at]
   names(result.classification) <- plots
 
   list(
@@ -551,6 +546,7 @@
     logi1 = logi1,
     logi2 = logi2,
     types = types,
+    type_rules = type_rules,
     result.classification = result.classification
   )
 }
