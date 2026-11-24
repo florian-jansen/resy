@@ -89,8 +89,8 @@ res <- resy_classify(
 #> Step 5.9  Number of T$ NON conditions: 0
 #> Step 5.10  Header conditions with numeric values: 0
 #>   Header conditions with character values: 0
-#> adapt conditions 2026-11-24 14:48:55.258087
-#> classification from here on 2026-11-24 14:48:55.258801
+#> adapt conditions 2026-11-24 16:05:30.540866
+#> classification from here on 2026-11-24 16:05:30.542018
 
 resy_candidates(res, top_n = 3)
 #>      plot_id   type priority priority_rank
