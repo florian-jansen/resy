@@ -7,6 +7,7 @@
 <url><loc>https://florian-jansen.github.io/resy/articles/altitude-vignette.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/articles/app.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/articles/index.html</loc></url>
+<url><loc>https://florian-jansen.github.io/resy/articles/maker.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/articles/taxonomy.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/authors.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/index.html</loc></url>
@@ -28,12 +29,14 @@
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_classify.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_clean_names.html</loc></url>
+<url><loc>https://florian-jansen.github.io/resy/reference/resy_diff_expert.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_eunis_names.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_eval_plot.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_expert_path.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_expert_tree.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_load_expert.html</loc></url>
+<url><loc>https://florian-jansen.github.io/resy/reference/resy_provenance.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_read_expert.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_read_synonyms.html</loc></url>
 <url><loc>https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.html</loc></url>

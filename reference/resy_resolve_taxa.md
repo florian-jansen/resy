@@ -45,7 +45,7 @@ resy_resolve_taxa(
 
 - canonical:
 
-  `NULL` (default) uses every species name `expert` knows for the
+  `NULL` (default) uses every species name in `expert` for the
   exact-match step, so a name the expert system already uses is left
   untouched; pass a path, a data frame, or a character vector of names
   to override it.
@@ -94,7 +94,7 @@ obs <- data.frame(
 
 resolved <- resy_resolve_taxa(obs, species_col = "TaxonName")
 resolved[, c("PlotObservationID", "TaxonName", "canonical", "taxon_confidence", "matched")]
-#> <resy_taxa> 2 name(s) from column `TaxonName` resolved against 121877 reference names
+#> <resy_taxa> 2 name(s) from column `TaxonName` resolved against 122535 reference names
 #>   TaxonName         name as submitted
 #>   canonical         resolved canonical name; NA when unresolved
 #>   taxon_confidence  exact, synonym, cleaned_exact, cleaned_synonym or unresolved

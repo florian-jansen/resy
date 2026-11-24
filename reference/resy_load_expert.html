@@ -14,10 +14,17 @@ Parsed via the legacy text parser.
 
 
 When no expertfile is supplied, the function looks for
-expert.json (or expert.json.xz), then expert.txt (in that order) under
+expert.json (or expert.json.xz), then expert.txt (or expert.txt.xz), in that order, under
 &amp;lt;root&amp;gt;/&amp;lt;scheme&amp;gt;/&amp;lt;version&amp;gt;/, where the roots are searched in the order
 given by location: classifications stored with resy_add_classification()
-(&quot;user&quot;) and the classifications shipped with the package (&quot;package&quot;)."><meta property="og:description" content="
+(&quot;user&quot;) and the classifications shipped with the package (&quot;package&quot;).
+A loaded system is kept in RESY's cache directory
+(tools::R_user_dir(&quot;RESY&quot;, &quot;cache&quot;)), so that loading the same file again
+restores it instead of parsing it. The cached copy is used only while the
+file keeps its size and modification time and the same installed version of
+RESY loads it; storing a new copy removes the older ones of that file. Set
+options(RESY.cache = FALSE) to parse every time, or
+options(RESY.cache_dir = &amp;lt;path&amp;gt;) to keep the cache elsewhere."><meta property="og:description" content="
 Loads a parsed expert-system object ready for use with resy_classify().
 If expertfile is given it takes precedence over scheme/version. The
 file format is detected from the extension:
@@ -32,10 +39,17 @@ Parsed via the legacy text parser.
 
 
 When no expertfile is supplied, the function looks for
-expert.json (or expert.json.xz), then expert.txt (in that order) under
+expert.json (or expert.json.xz), then expert.txt (or expert.txt.xz), in that order, under
 &amp;lt;root&amp;gt;/&amp;lt;scheme&amp;gt;/&amp;lt;version&amp;gt;/, where the roots are searched in the order
 given by location: classifications stored with resy_add_classification()
-(&quot;user&quot;) and the classifications shipped with the package (&quot;package&quot;)."><meta property="og:image" content="https://florian-jansen.github.io/resy/logo.png"></head><body>
+(&quot;user&quot;) and the classifications shipped with the package (&quot;package&quot;).
+A loaded system is kept in RESY's cache directory
+(tools::R_user_dir(&quot;RESY&quot;, &quot;cache&quot;)), so that loading the same file again
+restores it instead of parsing it. The cached copy is used only while the
+file keeps its size and modification time and the same installed version of
+RESY loads it; storing a new copy removes the older ones of that file. Set
+options(RESY.cache = FALSE) to parse every time, or
+options(RESY.cache_dir = &amp;lt;path&amp;gt;) to keep the cache elsewhere."><meta property="og:image" content="https://florian-jansen.github.io/resy/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -59,6 +73,7 @@ given by location: classifications stored with resy_add_classification()
     <li><a class="dropdown-item" href="../articles/altitude-vignette.html">Get altitude data</a></li>
     <li><a class="dropdown-item" href="../articles/taxonomy.html">Match species names</a></li>
     <li><a class="dropdown-item" href="../articles/app.html">RESY App</a></li>
+    <li><a class="dropdown-item" href="../articles/maker.html">RESY Maker</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -90,10 +105,17 @@ file format is detected from the extension:</p><dl><dt><code>.json</code>, <code
 
 
 </dl><p>When no <code>expertfile</code> is supplied, the function looks for
-<code>expert.json</code> (or <code>expert.json.xz</code>), then <code>expert.txt</code> (in that order) under
+<code>expert.json</code> (or <code>expert.json.xz</code>), then <code>expert.txt</code> (or <code>expert.txt.xz</code>), in that order, under
 <code>&lt;root&gt;/&lt;scheme&gt;/&lt;version&gt;/</code>, where the roots are searched in the order
 given by <code>location</code>: classifications stored with <code><a href="resy_add_classification.html">resy_add_classification()</a></code>
 (<code>"user"</code>) and the classifications shipped with the package (<code>"package"</code>).</p>
+<p>A loaded system is kept in RESY's cache directory
+(<code>tools::R_user_dir("RESY", "cache")</code>), so that loading the same file again
+restores it instead of parsing it. The cached copy is used only while the
+file keeps its size and modification time and the same installed version of
+RESY loads it; storing a new copy removes the older ones of that file. Set
+<code>options(RESY.cache = FALSE)</code> to parse every time, or
+<code>options(RESY.cache_dir = &lt;path&gt;)</code> to keep the cache elsewhere.</p>
     </div>
 
     <div class="section level2">
@@ -132,11 +154,14 @@ one with the same scheme and version.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list of class <code>resy_parsed_expert</code>.</p>
+    <p>A list of class <code>resy_parsed_expert</code>. Its scheme, version and file,
+and whether the file is byte-identical to the published release, are
+reported by <code><a href="resy_provenance.html">resy_provenance()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="resy_available_classifications.html">resy_available_classifications()</a></code>, <code><a href="resy_add_classification.html">resy_add_classification()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="resy_available_classifications.html">resy_available_classifications()</a></code>, <code><a href="resy_add_classification.html">resy_add_classification()</a></code>,
+<code><a href="resy_provenance.html">resy_provenance()</a></code></p></div>
     </div>
 
     <div class="section level2">

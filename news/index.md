@@ -69,6 +69,131 @@
   [`vignette("taxonomy")`](https://florian-jansen.github.io/resy/articles/taxonomy.md).
 - [`resy_clean_names()`](https://florian-jansen.github.io/resy/reference/resy_clean_names.md)
   removes author citations from taxon names.
+- All three published EUNIS-ESy releases ship with the package as their
+  original `.txt` files, xz-compressed (`expert.txt.xz`: 160, 168 and
+  640 KB for 2020-06-08, 2021-06-01 and 2025-10-03; the content has the
+  MD5 of the Zenodo file). The 2025-10-03 release replaces the
+  `expert.json.xz` shipped before, which kept only the last declaration
+  of an aggregate declared twice in the release (*Mentha longifolia*,
+  *Dactylorhiza majalis*) and left out two aggregates. The synonym table
+  anchored on 2025-10-03 has 67,005 pairs instead of 67,018: the
+  restored members make 13 synonyms either names of the expert system or
+  ambiguous. `resy_load_expert(scheme = "EUNIS", version = )` and
+  `resy_classify(version = )` choose the release; the default remains
+  the newest. Expert files of either format may be xz-compressed in a
+  classification store.
+- `resy_add_classification(scheme = "EUNIS", version = )` without `file`
+  downloads a published release from Zenodo, checks it against its
+  SHA-256 checksum and stores it in the user store. The releases are
+  declared in `inst/extdata/classifications/releases.csv`, from which
+  `data-raw/build_registry.R` builds the
+  [getaca](https://CRAN.R-project.org/package=getaca) registry
+  `inst/getaca/registry.rds`. The registry is also read from the
+  repository on GitHub, so a release published later becomes available
+  without a new version of RESY. Downloading requires getaca (Suggests).
+- [`resy_provenance()`](https://florian-jansen.github.io/resy/reference/resy_provenance.md)
+  reports which release a parsed expert system or a classification
+  result rests on: scheme, version, file, MD5 checksum, DOI of the
+  release, whether the file is byte-identical to the published `.txt`,
+  and, for `resy_classify(resolve_taxa = TRUE)`, the build of the
+  synonym layer. A file passed as `expertfile` is recognised as a
+  release by its content. The `version` element of a
+  [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
+  result now holds the version used rather than the argument given.
+- [`resy_diff_expert()`](https://florian-jansen.github.io/resy/reference/resy_diff_expert.md)
+  lists the aggregates, species groups and types that were added,
+  removed or changed between two expert systems, for example two
+  EUNIS-ESy releases given by version. A `.txt` and a `.json` file can
+  be compared with each other.
+- NON conditions on `##C` and `##D` groups are evaluated. The right-hand
+  side is the highest total cover among the other groups of the same
+  set, the statistic the left-hand side takes for these groups; `##Q` is
+  unchanged. The EUNIS-ESy release of 2021-06-01 uses one such condition
+  (type N), which stopped classification with that release before.
+- The RESY App offers the EUNIS-ESy releases in a menu, names the
+  release and its DOI in the description and under the results, and adds
+  `expert_system` and `expert_version` columns to the downloaded table.
+- The RESY Maker (`articles/maker.html`, linked from the RESY App)
+  builds an expert system in the browser on one screen: the types, the
+  rule of the type shown put together from conditions as blocks, and
+  beside it the species groups, the species list and the test plots. A
+  group is made, named and filled from the condition that needs it, or
+  dragged into a rule. After every change RESY classifies a set of test
+  plots (the example plots or your own files) and the page shows the
+  number of plots in which each condition and each rule holds; selecting
+  a plot marks the conditions it meets and misses. The page opens on the
+  draft kept in the browser or on the Apennine example; an empty system,
+  a shipped system or a `.json` or `.txt` file is opened from the top
+  bar. A system is exported as `.json` or `.txt` or handed to the RESY
+  App. The `.txt` file is read back and compared with the `.json` file
+  before it is offered. Types and groups are deleted from their lists,
+  species are ticked (Shift for a range) and removed together and can be
+  put back, **Save** downloads the system as a file and **Clear**
+  empties it after a confirmation.
+- The RESY App and the RESY Maker are both in the navigation bar and
+  share one window: the page that was opened loads the other tool in the
+  background, so going from one to the other, with or without an expert
+  system, does not start R again.
+- The RESY App keeps each expert system it has read, so choosing a
+  system again shows its description at once instead of reading the file
+  again (EUNIS-ESy 2025-10-03: 1.6 s to under 0.1 s).
+- The explanation of a plot in the RESY App and the RESY Maker lists a
+  species that is not in the expert system under the name written in the
+  plot data.
+- [`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md)
+  reads a `.txt` file whose types have a letter as priority (`0`-`9`,
+  `A`-`Z`, `a`-`z`, as in a `.json` file). Such a file passed
+  [`resy_validate_esy()`](https://florian-jansen.github.io/resy/reference/resy_validate_esy.md)
+  but could not be loaded.
+- [`resy_read_expert()`](https://florian-jansen.github.io/resy/reference/resy_read_expert.md)
+  reads the species aggregation section of a large `.txt` file about 2.5
+  times faster (EUNIS-ESy 2025-10-03: 2.5 s to 1.0 s), with the same
+  result.
+- A type code that fills the five-character code field of a `.txt`
+  header is read without the description that follows it directly:
+  `N15!!`, not `N15!!Atlantic`. Trailing `!` marks number further rules
+  of a type; the three EUNIS-ESy releases each have five such headers
+  (N15!!, N16!!, N17!!, T1C!!, T1D!!).
+- Reading a `.txt` expert system is about 19 times faster (9.7 s to 0.5
+  s for the three EUNIS-ESy releases), with an identical result. Loading
+  EUNIS-ESy 2025-10-03 takes 0.3 s from the `.txt` and 0.14 s from the
+  former `.json`. The file is read once for both the parser and the
+  checksum that
+  [`resy_provenance()`](https://florian-jansen.github.io/resy/reference/resy_provenance.md)
+  reports.
+- [`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md)
+  keeps each loaded system in RESY’s cache directory
+  (`tools::R_user_dir("RESY", "cache")`) and restores it on later loads
+  of the same file: EUNIS-ESy 2025-10-03 then loads in 0.08 s, the three
+  EUNIS-ESy releases in 0.14 s. A cached copy is used only while the
+  file keeps its size and modification time and the same installed RESY
+  loads it; a new copy replaces the older ones of that file.
+  `options(RESY.cache = FALSE)` turns the cache off and
+  `options(RESY.cache_dir =)` moves it.
+- An `#SC` comparison receives its `EXCEPT` clause by the literal text
+  of its condition. A condition holding `+` (a discriminating group such
+  as `#SC +12 Conifers`) was left without the clause, and one holding
+  `|` also added it to other expressions that share part of its text. No
+  shipped expert system has such a condition, so their results are
+  unchanged.
+- Formulas and membership expressions are turned into R code by matching
+  each bracketed condition and each side of a comparison as a whole,
+  instead of replacing every condition text in turn. The result is
+  identical for all shipped expert systems, and RESY no longer depends
+  on stringi.
+- [`resy_expert_path()`](https://florian-jansen.github.io/resy/reference/resy_expert_path.md)
+  returns by default the file a classification is stored in, whichever
+  its format; `format = "json"` or `"txt"` still asks for one.
+- [`resy_check_taxonomy()`](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md)
+  also counts as known the species that a species group or a membership
+  condition names without Section 1 listing them. The 2020 and 2021
+  EUNIS-ESy releases list only aggregates in Section 1, so a species
+  such as *Fagus sylvatica* was reported unmatched and the RESY App,
+  which drops unmatched names, left 1,609 of the 3,580 example records
+  out (1,573 for 2021). The App now classifies 196 of the 200 example
+  plots with either release, as
+  [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
+  does.
 - [`resy_load_expert()`](https://florian-jansen.github.io/resy/reference/resy_load_expert.md)
   and
   [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
@@ -173,10 +298,40 @@
   is now an empty character vector. Classifications from the EUNIS-ESy
   releases of 2020, 2021 and 2025 are unchanged.
 - Header conditions (`$$C`, `$$N`) are evaluated on each plot’s own
-  header row. Before, the header rows were used in the order of
-  `header`, so a plot read another plot’s header values unless `header`
-  and `obs` listed the plots in the same order. On the 200-plot EUNIS
-  example 13 plots change type.
+  header row.
+- Classifying a single plot with an expert system that has exactly one
+  numeric header condition (`$$N`) no longer overwrites the value of the
+  system’s first membership condition with the header value.
+  [`resy_eval_plot()`](https://florian-jansen.github.io/resy/reference/resy_eval_plot.md)
+  output in the RESY App, which classifies the selected plot alone,
+  showed that value, for example a total cover of 10.7% (the plot’s
+  longitude) in place of 87.9%.
+- [`resy_validate_esy()`](https://florian-jansen.github.io/resy/reference/resy_validate_esy.md)
+  reads a `.txt` and a `.json` file into the same parts (group keys and
+  type definitions) and checks them with one set of rules, so a system
+  gets the same report in either format. Three files that defined the
+  validator a second time, and whose older definitions were the ones in
+  use, are removed. With them go the false warnings they gave: header
+  columns (`$$C`, `$$N`), set tags (`+01`), groups joined by `|` and
+  group names with spaces were reported as undefined groups, 277 times
+  for the EUNIS-ESy release of 2025-10-03, which now gets three warnings
+  (tab characters, the condition `#TC Cliff-ferns GR05` of type P2N, the
+  duplicate code T3M).
+- [`resy_validate_esy()`](https://florian-jansen.github.io/resy/reference/resy_validate_esy.md)
+  reports a type without a formula as an error in a `.txt` file too
+  (RESY cannot read such a file; it was a warning), a Section 3 header
+  without a code, a file without any type, and an empty type description
+  in a `.txt` file.
+- `inst/extdata/example_mini_expert_file.txt` holds two type definitions
+  in Section 3; it held two lines that are no definitions, and RESY
+  could not load it.
+- A membership condition is replaced in a formula together with its
+  angle brackets, so text outside a condition that equals a condition is
+  left as it is. The compiled formulas of the shipped systems are
+  unchanged. Before, the header rows were used in the order of `header`,
+  so a plot read another plot’s header values unless `header` and `obs`
+  listed the plots in the same order. On the 200-plot EUNIS example 13
+  plots change type.
 - Total cover (`#T$`) and highest cover (`#$$`) conditions are filled by
   plot id. Before, their values landed on the wrong plots when `obs` was
   not sorted by plot id.

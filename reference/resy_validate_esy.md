@@ -1,47 +1,62 @@
 # Validate an expert classification file
 
 Checks an ESy expert file (`.txt` or `.json`) for structural and
-syntactic problems. Does not assess ecological correctness. The rules
-are:
+syntactic problems. Does not assess ecological correctness. Both formats
+are read into the same parts (species groups and type definitions) and
+checked by the same rules; only the checks of the file layout differ
+between them.
 
-**Errors** (always fatal — the file cannot be imported):
+**Errors** (always fatal: the file cannot be imported):
 
 1.  All required sections / top-level keys must be present and, for
     `.txt`, in the correct order (Section 1 \< 2 \< 3).
 
-2.  Every vegetation type must have a non-empty code with no whitespace.
+2.  At least one vegetation type must be defined.
 
-3.  Every vegetation type must have a formula / expression.
+3.  Every vegetation type must have a non-empty code with no whitespace.
 
-4.  Every formula must contain at least one membership condition
+4.  Every vegetation type must have a formula / expression.
+
+5.  Every formula must contain at least one membership condition
     `<...>`.
 
-5.  Brackets inside formulas must be balanced (`()`, `[]`,
+6.  Brackets inside formulas must be balanced (`()`, `[]`,
     [`{}`](https://rdrr.io/r/base/Paren.html)).
 
-6.  Priority must be a single character in `0-9`, `A-Z` or `a-z`.
+7.  A formula must not start or end with a logical operator
+    (`AND`/`OR`/`NOT`).
 
-7.  Group keys in Section 2 / `"groups"` must start with a recognised
-    prefix (`###`, `##D`, `##Q`, `##C`, `$$C`, `$$N`).
+8.  Priority must be a single character in `0-9`, `A-Z` or `a-z`.
+
+9.  Group keys in Section 2 / `"groups"` must start with a recognised
+    prefix (`###`, `##D`, `##Q`, `##C`, `$$C`, `$$N`) followed by a
+    name.
+
+10. For `.txt`: no relational operator outside `<...>` angle brackets.
+
+11. For `.json`: every rule has the keys `priority`, `code`,
+    `description` and `expression`.
 
 **Warnings** (errors when `strict = TRUE`):
 
 1.  Duplicate vegetation type codes.
 
-2.  Group names referenced in formulas that are not defined.
+2.  Species groups referenced in formulas that are not defined. Groups
+    are resolved the way the classifier resolves them; header columns
+    (`$$C`, `$$N`) and the names after `EXCEPT`, which may be single
+    species, are not checked.
 
-3.  Dangling logical operators (`AND`/`OR`/`NOT` at the start or end of
-    a formula).
+3.  Legacy relational operator `UP` (deprecated in JUICE 7.0).
 
-4.  Legacy relational operator `UP` (deprecated in JUICE 7.0).
+4.  Empty description for a vegetation type.
 
-5.  For `.txt`: relational operators found outside `<...>` angle
-    brackets.
+**Notes** (warnings also when `strict = TRUE`):
 
-6.  For `.json`: missing or empty `metadata.scheme` /
+1.  For `.txt`: tab characters (only the text before the first tab of a
+    line is used).
+
+2.  For `.json`: missing or empty `metadata.scheme` /
     `metadata.version`.
-
-7.  Empty description for a vegetation type.
 
 ## Usage
 

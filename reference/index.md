@@ -17,6 +17,11 @@
   **\[experimental\]** : Load a classification
 - [`resy_read_expert()`](https://florian-jansen.github.io/resy/reference/resy_read_expert.md)
   **\[experimental\]** : Read an expert-system file losslessly
+- [`resy_provenance()`](https://florian-jansen.github.io/resy/reference/resy_provenance.md)
+  **\[experimental\]** : Which expert system and synonym layer produced
+  a result
+- [`resy_diff_expert()`](https://florian-jansen.github.io/resy/reference/resy_diff_expert.md)
+  **\[experimental\]** : What changed between two expert systems
 
 ## Other functions
 

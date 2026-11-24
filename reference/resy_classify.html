@@ -9,7 +9,7 @@ Euro+Med, a national checklist), harmonise them first as an explicit step with
 resy_resolve_taxa and inspect the result with its summary() before
 classifying, so the taxonomic choices stay visible (see the taxonomy
 vignette). Setting resolve_taxa = TRUE runs that resolution inside
-resy_classify() as a convenience: names the expert already knows pass through
+resy_classify() as a convenience: names already in the expert system pass through
 untouched, unknown names are looked up in the synonym table, and names that
 resolve to nothing keep their original value (never a best guess). What was
 resolved is then reported in the result's taxon_resolution."><meta property="og:description" content="
@@ -22,7 +22,7 @@ Euro+Med, a national checklist), harmonise them first as an explicit step with
 resy_resolve_taxa and inspect the result with its summary() before
 classifying, so the taxonomic choices stay visible (see the taxonomy
 vignette). Setting resolve_taxa = TRUE runs that resolution inside
-resy_classify() as a convenience: names the expert already knows pass through
+resy_classify() as a convenience: names already in the expert system pass through
 untouched, unknown names are looked up in the synonym table, and names that
 resolve to nothing keep their original value (never a best guess). What was
 resolved is then reported in the result's taxon_resolution."><meta property="og:image" content="https://florian-jansen.github.io/resy/logo.png"></head><body>
@@ -49,6 +49,7 @@ resolved is then reported in the result's taxon_resolution."><meta property="og:
     <li><a class="dropdown-item" href="../articles/altitude-vignette.html">Get altitude data</a></li>
     <li><a class="dropdown-item" href="../articles/taxonomy.html">Match species names</a></li>
     <li><a class="dropdown-item" href="../articles/app.html">RESY App</a></li>
+    <li><a class="dropdown-item" href="../articles/maker.html">RESY Maker</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -78,7 +79,7 @@ Euro+Med, a national checklist), harmonise them first as an explicit step with
 <a href="resy_resolve_taxa.html">resy_resolve_taxa</a> and inspect the result with its <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> before
 classifying, so the taxonomic choices stay visible (see the taxonomy
 vignette). Setting <code>resolve_taxa = TRUE</code> runs that resolution inside
-<code>resy_classify()</code> as a convenience: names the expert already knows pass through
+<code>resy_classify()</code> as a convenience: names already in the expert system pass through
 untouched, unknown names are looked up in the synonym table, and names that
 resolve to nothing keep their original value (never a best guess). What was
 resolved is then reported in the result's <code>taxon_resolution</code>.</p>
@@ -176,11 +177,13 @@ data classified in several parts reads the expert system only once.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An object of class <code>resy_result</code>. When <code>resolve_taxa = TRUE</code> it also
 carries the <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> of the <a href="resy_resolve_taxa.html">resy_resolve_taxa</a> result as
-<code>taxon_resolution</code>; otherwise <code>taxon_resolution</code> is <code>NULL</code>.</p>
+<code>taxon_resolution</code>; otherwise <code>taxon_resolution</code> is <code>NULL</code>. The
+expert-system release and, when the bundled synonym layer was used, its
+build are reported by <code><a href="resy_provenance.html">resy_provenance()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><a href="resy_resolve_taxa.html">resy_resolve_taxa</a>, <a href="resy_check_taxonomy.html">resy_check_taxonomy</a></p></div>
+    <div class="dont-index"><p><a href="resy_resolve_taxa.html">resy_resolve_taxa</a>, <a href="resy_check_taxonomy.html">resy_check_taxonomy</a>, <code><a href="resy_provenance.html">resy_provenance()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -210,8 +213,8 @@ carries the <code><a href="https://rdrr.io/r/base/summary.html" class="external-
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.9  Number of T$ NON conditions: 0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Step 5.10  Header conditions with numeric values: 0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Header conditions with character values: 0</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> adapt conditions 2026-11-23 19:07:34.419812</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> classification from here on 2026-11-23 19:07:34.420358</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> adapt conditions 2026-11-24 12:55:47.623236</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> classification from here on 2026-11-24 12:55:47.623901</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">result.classification</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> HU32 KW76 YB18 NX70 OL48 YL40 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  "F"  "F"  "F"  "F"  "F"  "F" </span>

@@ -90,7 +90,9 @@ lists the schemes and versions bundled with the package.
 resy_available_classifications() |> select(scheme, version)
 #>          scheme    version
 #> 1 Apennine-test 2026-06-27
-#> 2         EUNIS 2025-10-03
+#> 2         EUNIS 2020-06-08
+#> 3         EUNIS 2021-06-01
+#> 4         EUNIS 2025-10-03
 ```
 
 To add your own expert system, use
@@ -145,10 +147,10 @@ each column holds and how many names matched.
 
 tax_apennine <- resy_check_taxonomy(obs = data_species, parsed = parsed_apennine)
 tax_apennine
-#> <resy_taxa> 1009 name(s) from column `scientificName` checked against 950 Section 1 species
+#> <resy_taxa> 1009 name(s) from column `scientificName` checked against 950 species names of the expert system
 #>   scientificName  Name as submitted
 #>   TaxonName       Canonical name used by resy_classify(); NA when unmatched
-#>   matched         TRUE if found as a canonical name or Section 1 synonym
+#>   matched         TRUE if found among the species names of the expert system
 #> 1009 matched (100.0%), 0 unmatched
 #> 
 #>                                          scientificName

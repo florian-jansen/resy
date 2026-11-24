@@ -43,7 +43,9 @@ resy_harmonize_eunis(
   coordinate reference system; they are converted as needed. When `NULL`
   (default), coordinates that are all valid longitudes and latitudes are
   read as degrees (EPSG:4326); other coordinates need the code. Ignored
-  when `data` is an `sf` object, which carries its own CRS.
+  when `data` is an `sf` object, which carries its own CRS. The optional
+  package `sf` is required for `sf` input and CRS codes other than 4326,
+  4258 and 25832.
 
 - run_taxonomy:
 
@@ -122,6 +124,6 @@ harmonized$sites
 #>   PlotObservationID Ecoreg Ecoreg_name Country Country_ID Longitude Latitude
 #>   <chr>              <dbl> <chr>       <chr>   <chr>          <dbl>    <dbl>
 #> 1 site_1                NA NA          Germany DE              8.15     53.6
-#> 2 site_2                NA NA          NA      NA              8.35     53.6
+#> 2 site_2                NA NA          NA      NA              8.35     53.7
 #> # ℹ 2 more variables: DEG_LON <dbl>, DEG_LAT <dbl>
 ```

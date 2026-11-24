@@ -43,6 +43,7 @@
     <li><a class="dropdown-item" href="../articles/altitude-vignette.html">Get altitude data</a></li>
     <li><a class="dropdown-item" href="../articles/taxonomy.html">Match species names</a></li>
     <li><a class="dropdown-item" href="../articles/app.html">RESY App</a></li>
+    <li><a class="dropdown-item" href="../articles/maker.html">RESY Maker</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -270,11 +271,11 @@ system uses (<code>TaxonName</code>) and whether it matched
 (<code>matched</code>):</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">outcome</span><span class="op">$</span><span class="va">species_checked</span></span>
-<span><span class="co">#&gt; &lt;resy_taxa&gt; 1006 name(s) from column `scientificName` checked against 20157 Section 1 species</span></span>
+<span><span class="co">#&gt; &lt;resy_taxa&gt; 1006 name(s) from column `scientificName` checked against 21844 species names of the expert system</span></span>
 <span><span class="co">#&gt;   scientificName  Name as submitted</span></span>
 <span><span class="co">#&gt;   TaxonName       Canonical name used by resy_classify(); NA when unmatched</span></span>
-<span><span class="co">#&gt;   matched         TRUE if found as a canonical name or Section 1 synonym</span></span>
-<span><span class="co">#&gt; 935 matched (92.9%), 71 unmatched; summary() lists them</span></span>
+<span><span class="co">#&gt;   matched         TRUE if found among the species names of the expert system</span></span>
+<span><span class="co">#&gt; 959 matched (95.3%), 47 unmatched; summary() lists them</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;                              scientificName                   TaxonName matched</span></span>
 <span><span class="co">#&gt; 1                      Dryopteris filix-mas  Dryopteris filix-mas aggr.    TRUE</span></span>
@@ -290,29 +291,23 @@ system uses (<code>TaxonName</code>) and whether it matched
 <span><span class="co">#&gt; # ... 996 more row(s)</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">outcome</span><span class="op">$</span><span class="va">species_checked</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 1006 names checked: 935 matched (92.9%), 71 not matched (7.1%).</span></span>
+<span><span class="co">#&gt; 1006 names checked: 959 matched (95.3%), 47 not matched (4.7%).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Not matched:</span></span>
 <span><span class="co">#&gt;   genus only (25): Allium, Anthoxanthum, Asparagus, Carex, Cirsium, Crocus,</span></span>
 <span><span class="co">#&gt;     Cuscuta, Dianthus, Festuca, Galium, Hieracium, Linaria, Medicago, Odontites,</span></span>
 <span><span class="co">#&gt;     Orchis, Potentilla, Ranunculus, Rosa, Rubus, Taraxacum, Tragopogon,</span></span>
 <span><span class="co">#&gt;     Trifolium, Usnea, Vicia, Viola</span></span>
-<span><span class="co">#&gt;   below species level (7): Artemisia caerulescens var. palmata,</span></span>
+<span><span class="co">#&gt;   below species level (6): Artemisia caerulescens var. palmata,</span></span>
 <span><span class="co">#&gt;     Cerastium arvense var. etruscum, Festuca arundinacea subsp. arundinacea,</span></span>
 <span><span class="co">#&gt;     Juniperus communis subsp. saxatilis, Melica minuta var. arrecta,</span></span>
-<span><span class="co">#&gt;     Plantago maritima subsp. serpentina, Tanacetum corymbosum var. tenuifolium</span></span>
-<span><span class="co">#&gt;   species (39): Aegopodium podagraria, Anthyllis barba-jovis,</span></span>
-<span><span class="co">#&gt;     Borago officinalis, Cardamine chelidonia, Cardamine monteluccii,</span></span>
-<span><span class="co">#&gt;     Carex macrolepis, Carex mucronata, Centaurea triumfetti, Crithmum maritimum,</span></span>
-<span><span class="co">#&gt;     Crocus neglectus, Echinophora spinosa, Eryngium maritimum,</span></span>
-<span><span class="co">#&gt;     Erysimum pseudorhaeticum, Festuca riccerii, Flavoparmelia caperata,</span></span>
-<span><span class="co">#&gt;     Humulus lupulus, Juglans regia, Laurus nobilis, Leopoldia comosa,</span></span>
-<span><span class="co">#&gt;     Marrubium incanum, Melica uniflora, Narcissus poëticus, Odontites rubra,</span></span>
-<span><span class="co">#&gt;     Ononis variegata, Oreojuncus trifidus, Paris quadrifolia, Phyteuma italicum,</span></span>
-<span><span class="co">#&gt;     Ranunculus velutinus, Scleropodium tourretti, Sherardia arvensis,</span></span>
-<span><span class="co">#&gt;     Silene paradoxa, Silene pichiana, Spartium junceum, Staphylea pinnata,</span></span>
-<span><span class="co">#&gt;     Stipellula capensis, Taraxacum erythrosperma, Thesium sommieri,</span></span>
-<span><span class="co">#&gt;     Tordylium apulum, Viola ferrarinii</span></span></code></pre></div>
+<span><span class="co">#&gt;     Tanacetum corymbosum var. tenuifolium</span></span>
+<span><span class="co">#&gt;   species (16): Cardamine chelidonia, Cardamine monteluccii,</span></span>
+<span><span class="co">#&gt;     Centaurea triumfetti, Crocus neglectus, Festuca riccerii,</span></span>
+<span><span class="co">#&gt;     Flavoparmelia caperata, Narcissus poëticus, Odontites rubra,</span></span>
+<span><span class="co">#&gt;     Ononis variegata, Oreojuncus trifidus, Phyteuma italicum,</span></span>
+<span><span class="co">#&gt;     Scleropodium tourretti, Silene pichiana, Stipellula capensis,</span></span>
+<span><span class="co">#&gt;     Taraxacum erythrosperma, Viola ferrarinii</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="finalize-species-data">Finalize species data<a class="anchor" aria-label="anchor" href="#finalize-species-data"></a>
@@ -376,8 +371,8 @@ names:</p>
 <span><span class="co">#&gt; Step 5.9  Number of T$ NON conditions: 140</span></span>
 <span><span class="co">#&gt; Step 5.10  Header conditions with numeric values: 4</span></span>
 <span><span class="co">#&gt;   Header conditions with character values: 4</span></span>
-<span><span class="co">#&gt; adapt conditions 2026-11-23 19:07:57.480733</span></span>
-<span><span class="co">#&gt; classification from here on 2026-11-23 19:07:57.55319</span></span></code></pre></div>
+<span><span class="co">#&gt; adapt conditions 2026-11-24 12:56:11.456608</span></span>
+<span><span class="co">#&gt; classification from here on 2026-11-24 12:56:11.498881</span></span></code></pre></div>
 <p><code><a href="../reference/resy_classify.html">resy_classify()</a></code> warns about the site data that is
 missing: the header has no <code>Altitude (m)</code> and no
 <code>Dataset</code> column (one EUNIS rule excludes the Swedish
@@ -402,11 +397,11 @@ parent T. It is assigned to T17, which has the higher priority.</p>
 <span><span class="co">#&gt;   4:    AN57      T        3             3</span></span>
 <span><span class="co">#&gt;   5:    BE71      T        3             3</span></span>
 <span><span class="co">#&gt;  ---                                      </span></span>
-<span><span class="co">#&gt; 301:    ZS46      R        1             1</span></span>
-<span><span class="co">#&gt; 302:    ZX20    T32        4             4</span></span>
-<span><span class="co">#&gt; 303:    ZX20      T        3             3</span></span>
-<span><span class="co">#&gt; 304:    ZX92    T17        4             4</span></span>
-<span><span class="co">#&gt; 305:    ZX92      T        3             3</span></span></code></pre></div>
+<span><span class="co">#&gt; 297:    ZS46      R        1             1</span></span>
+<span><span class="co">#&gt; 298:    ZX20    T32        4             4</span></span>
+<span><span class="co">#&gt; 299:    ZX20      T        3             3</span></span>
+<span><span class="co">#&gt; 300:    ZX92    T17        4             4</span></span>
+<span><span class="co">#&gt; 301:    ZX92      T        3             3</span></span></code></pre></div>
 <p><code>wide = TRUE</code> gives one row per plot: the type it is
 classified as, then its candidate types with their priorities, highest
 priority first:</p>

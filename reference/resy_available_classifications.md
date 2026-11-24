@@ -26,7 +26,7 @@ structure:
 - Second-level directories represent versions within each scheme.
 
 - Within each version directory, the function looks for `expert.json`
-  (or xz-compressed `expert.json.xz`) and `expert.txt` files.
+  and `expert.txt` files, each possibly xz-compressed (`.xz`).
 
 ## See also
 
@@ -41,11 +41,17 @@ structure:
 resy_available_classifications()
 #>          scheme    version
 #> 1 Apennine-test 2026-06-27
-#> 2         EUNIS 2025-10-03
+#> 2         EUNIS 2020-06-08
+#> 3         EUNIS 2021-06-01
+#> 4         EUNIS 2025-10-03
 #>                                                                                                                                                          expert_json
 #> 1 /home/runner/.cache/R/renv/library/resy-ae7cf081/linux-ubuntu-resolute/R-4.6/x86_64-pc-linux-gnu/RESY/extdata/classifications/Apennine-test/2026-06-27/expert.json
-#> 2      /home/runner/.cache/R/renv/library/resy-ae7cf081/linux-ubuntu-resolute/R-4.6/x86_64-pc-linux-gnu/RESY/extdata/classifications/EUNIS/2025-10-03/expert.json.xz
-#>   expert_txt
-#> 1       <NA>
-#> 2       <NA>
+#> 2                                                                                                                                                               <NA>
+#> 3                                                                                                                                                               <NA>
+#> 4                                                                                                                                                               <NA>
+#>                                                                                                                                                     expert_txt
+#> 1                                                                                                                                                         <NA>
+#> 2 /home/runner/.cache/R/renv/library/resy-ae7cf081/linux-ubuntu-resolute/R-4.6/x86_64-pc-linux-gnu/RESY/extdata/classifications/EUNIS/2020-06-08/expert.txt.xz
+#> 3 /home/runner/.cache/R/renv/library/resy-ae7cf081/linux-ubuntu-resolute/R-4.6/x86_64-pc-linux-gnu/RESY/extdata/classifications/EUNIS/2021-06-01/expert.txt.xz
+#> 4 /home/runner/.cache/R/renv/library/resy-ae7cf081/linux-ubuntu-resolute/R-4.6/x86_64-pc-linux-gnu/RESY/extdata/classifications/EUNIS/2025-10-03/expert.txt.xz
 ```

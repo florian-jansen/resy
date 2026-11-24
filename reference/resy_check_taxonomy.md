@@ -1,9 +1,10 @@
 # Check species names against an expert system's species list
 
 **\[experimental\]** Validates taxon names in a plot observation table
-against the canonical names and synonyms declared in Section 1 of the
-loaded expert system. Returns a per-taxon table of matches and canonical
-name mappings.
+against the species names of the loaded expert system: the aggregates of
+Section 1 with the names they include, and the species that a species
+group or a membership condition names. Returns a per-taxon table of
+matches and canonical name mappings.
 
 This is a purely offline check; no external name-resolution service is
 called.
@@ -51,8 +52,8 @@ A `resy_taxa` data frame with one row per unique taxon name in `obs`:
 
 - `matched`:
 
-  `TRUE` if the name was found as a canonical name or synonym in Section
-  1 of the expert system.
+  `TRUE` if the name was found among the species names of the expert
+  system.
 
 ## See also
 
@@ -72,10 +73,10 @@ obs <- data.frame(
 )
 checked <- resy_check_taxonomy(obs, parsed)
 checked
-#> <resy_taxa> 3 name(s) from column `TaxonName` checked against 950 Section 1 species
+#> <resy_taxa> 3 name(s) from column `TaxonName` checked against 950 species names of the expert system
 #>   scientificName  Name as submitted
 #>   TaxonName       Canonical name used by resy_classify(); NA when unmatched
-#>   matched         TRUE if found as a canonical name or Section 1 synonym
+#>   matched         TRUE if found among the species names of the expert system
 #> 2 matched (66.7%), 1 unmatched; summary() lists them
 #> 
 #>     scientificName       TaxonName matched
@@ -91,10 +92,10 @@ summary(checked)
 # Names held in a differently named column
 names(obs)[2] <- "species"
 resy_check_taxonomy(obs, parsed, col = "species")
-#> <resy_taxa> 3 name(s) from column `species` checked against 950 Section 1 species
+#> <resy_taxa> 3 name(s) from column `species` checked against 950 species names of the expert system
 #>   scientificName  Name as submitted
 #>   TaxonName       Canonical name used by resy_classify(); NA when unmatched
-#>   matched         TRUE if found as a canonical name or Section 1 synonym
+#>   matched         TRUE if found among the species names of the expert system
 #> 2 matched (66.7%), 1 unmatched; summary() lists them
 #> 
 #>     scientificName       TaxonName matched

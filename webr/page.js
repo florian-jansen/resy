@@ -2,49 +2,20 @@
 // helpers sit next to this script; pkgdown/build_webr_bundle.R builds the bundle.
 // The data files are read here in parts and classified in batches of whole
 // plots, spread over several webR sessions, so files of any size can be used.
-import { WebR } from 'https://webr.r-wasm.org/v0.6.0/webr.mjs';
+import { $, escapeHtml, rString, cleanError, fmt, plural, createLoader, fetchAssets, bootSession, setFile, saveBlob, store, createShell, pinNavbar, prepareSites, ensureGeography } from './resy_core.js';
+import { lineChunks, splitFields, readHeader, pick, SPECIES_COLS, SPECIES_COL_LABEL, fillSpeciesColumns, tsvValue } from './resy_files.js';
+import { evidenceHtml, wireEvidence } from './resy_evidence.js';
+import { placeOf, createDotMap } from './resy_map.js';
+import { PALETTE, level, colourVar, cssValue } from './resy_palette.js';
 
-const base = new URL('.', import.meta.url);
-const $ = (id) => document.getElementById(id);
-const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const rString = (s) => JSON.stringify(String(s));
-const cleanError = (e) => String(e.message ?? e).replace(/^Error( in [^:]*)?:\s*/, '');
-const fmt = (n) => Math.round(n).toLocaleString();
+const loader = createLoader({ init: 0, install: 0.55, resy: 0.65, parse: 0.85 });
+const stage = (name) => loader.stage(name);
 
 const status = (text, kind = 'busy') => {
   $('status').classList.toggle('error', kind === 'error');
+  $('status').classList.toggle('text-body-secondary', kind !== 'error');
   $('status').innerHTML = (kind === 'busy' ? '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>' : '') + escapeHtml(text);
-  if (!loaderDone) {
-    $('loader-step').textContent = text;
-    $('loader').classList.toggle('error', kind === 'error');
-  }
-};
-
-// Startup steps as [start, end] of the hex fill and the seconds each takes on
-// a desktop computer; the fill eases towards the end of the running step and
-// waits there. The seconds are scaled by how much longer than these times the
-// steps so far have taken, so that the fill keeps moving on a slower device.
-const STAGES = { init: [0, 0.08, 0.6], install: [0.08, 0.28, 1.6], resy: [0.28, 0.51, 1.9], parse: [0.51, 0.63, 0.9], sf: [0.63, 1, 2.9] };
-let loaderDone = false;
-let stageStart = null, stageSeconds = 0, previousStage = null;
-const fill = (f, seconds) => {
-  $('hex-fill').style.setProperty('--dur', `${seconds}s`);
-  $('hex-fill').style.setProperty('--p', `${(100 * f).toFixed(1)}%`);
-};
-const stage = (name) => {
-  if (loaderDone) return;
-  const now = performance.now() / 1000;
-  if (previousStage) stageSeconds += STAGES[previousStage][2]; else stageStart = now;
-  previousStage = name;
-  const slower = stageSeconds ? Math.max(1, (now - stageStart) / stageSeconds) : 1;
-  const [a, b, seconds] = STAGES[name];
-  fill(a + 0.9 * (b - a), seconds * slower);
-};
-const hideLoader = () => {
-  if (loaderDone) return;
-  fill(1, 0.3);
-  setTimeout(() => { loaderDone = true; $('loader').classList.add('done'); }, 350);
-  setTimeout(() => { $('loader').hidden = true; $('tool').hidden = false; }, 750);
+  loader.text(text, kind);
 };
 
 // ---- R sessions ------------------------------------------------------------
@@ -63,7 +34,7 @@ const hideLoader = () => {
 const CORES = Math.max(1, Math.min(8, (navigator.hardwareConcurrency || 2) - 1));
 const DEVICE_GB = navigator.deviceMemory ?? null;
 const PAGE_GB = 1;               // the page with the results of a large run
-const SESSION_CODE_GB = 0.3;     // compiled R and sf code of a session, beside its memory
+const SESSION_CODE_GB = 0.3;     // compiled R code of a session, beside its memory
 const SESSION_START_GB = 0.4;    // memory of a session before its first batch is measured
 let manualSessions = null;
 let memoryCap = Infinity;
@@ -74,23 +45,12 @@ const OUT_OF_MEMORY = /cannot allocate|out of memory|memory access out of bounds
 const pool = [];
 let starting = 0;
 const waiting = [];
-let bundle = null, script = null, info = null;
+let assets = null, info = null;
 let system = null;           // the selected expert system: { key, call, file, info }
 
-async function startSession(first) {
-  const webR = new WebR();
-  if (first) stage('init');
-  await webR.init();
-  if (first) { status('Installing R packages…'); stage('install'); }
-  await webR.evalRVoid(`webr::install(c("data.table", "jsonlite", "stringi", "dplyr", "rlang", "tidyselect"), quiet = TRUE)`);
-  if (first) { status('Loading RESY…'); stage('resy'); }
-  await webR.FS.writeFile('/tmp/resylib.tar.gz', bundle);
-  await webR.FS.writeFile('/tmp/resy_page.R', script);
-  await webR.evalRVoid(`dir.create("/resylib", showWarnings = FALSE)
-    utils::untar("/tmp/resylib.tar.gz", exdir = "/resylib", tar = "internal")
-    .libPaths(c("/resylib", .libPaths()))
-    source("/tmp/resy_page.R")`);
-  const s = { webR, busy: false, key: null, info: null, sf: false };
+async function startSession(first, ready = bootSession(assets)) {
+  const webR = await ready;
+  const s = { webR, busy: false, key: null, info: null };
   if (system) await applySystem(s, first);
   pool.push(s);
   release(s);
@@ -98,9 +58,11 @@ async function startSession(first) {
   return s;
 }
 
+// The field gives the most sessions a run may use; the footer, how many are
+// running now.
 const showSessions = () => {
-  $('workers').textContent = `${pool.length} R session${pool.length > 1 ? 's' : ''}${pool.length + starting > pool.length ? `, ${starting} starting` : ''}`;
-  $('o-sessions').placeholder = `auto: ${Math.max(1, Math.min(autoSessions(), memoryCap))}`;
+  $('workers').textContent = `${pool.length} R session${pool.length === 1 ? '' : 's'} running${starting ? `, ${starting} starting` : ''}`;
+  $('o-sessions').placeholder = `auto: up to ${Math.max(1, Math.min(autoSessions(), memoryCap))}`;
 };
 
 // Closes sessions until there are no more than `poolSize()`, and with `grow`
@@ -124,8 +86,7 @@ function closeSession(s) {
   showSessions();
 }
 
-// Reads the selected expert system into a session, and installs sf there when
-// the system needs the EUNIS-ESy site step. A session keeps what it read, so
+// Reads the selected expert system into a session. A session keeps what it read, so
 // a system already in the session is not read again.
 async function applySystem(s, first = false) {
   if (s.key === system.key) return s.info;
@@ -135,21 +96,9 @@ async function applySystem(s, first = false) {
   }
   if (first) { status('Reading the expert system…'); stage('parse'); }
   const out = JSON.parse(await s.webR.evalRString(system.call));
-  if (out.eunis && !s.sf) {
-    if (first) { status('Installing sf for the EUNIS-ESy site step…'); stage('sf'); }
-    await ensureSf(s);
-  }
   s.key = system.key;
   s.info = out;
   return out;
-}
-
-// sf is installed in a session when it first needs it: for the EUNIS-ESy site
-// step or for the country outlines of the map download.
-async function ensureSf(s) {
-  if (s.sf) return;
-  await s.webR.evalRVoid('webr::install("sf", quiet = TRUE); library(sf)');
-  s.sf = true;
 }
 
 function release(s) {
@@ -174,33 +123,78 @@ async function acquire() {
 }
 
 async function start() {
+  pinNavbar($('resy-app'));
   const t0 = performance.now();
-  // `no-cache` revalidates with the server, so a new RESY build is picked up
-  // as soon as the site is updated.
-  const get = (file) => fetch(new URL(file, base), { cache: 'no-cache' });
-  [bundle, script, info] = await Promise.all([
-    get('resylib.tar.gz').then((r) => r.arrayBuffer()).then((b) => new Uint8Array(b)),
-    get('resy_page.R').then((r) => r.text()).then((t) => new TextEncoder().encode(t)),
-    get('bundle.json').then((r) => r.json()).catch(() => null),
-  ]);
-  if (info) $('footer').insertAdjacentHTML('afterbegin', `RESY ${escapeHtml(info.resy)} (${escapeHtml(info.commit)}) · `);
+  const assetsPromise = fetchAssets(['resy_page.R']);
+  const session = bootSession(assetsPromise, (step, text) => { status(text); stage(step); });
+  assets = await assetsPromise;
+  info = assets.info;
+  if (info) $('footer').insertAdjacentHTML('afterbegin', `RESY ${escapeHtml(info.resy)} · `);
+  fillVersions(info?.eunis_versions ?? []);
+  await adoptHandoff();
   await chooseSystem();
-  const first = await startSession(true);
+  const first = await startSession(true, session);
   await describeSystem(first);
   await loadExamples(first);
   status(`R is ready (${((performance.now() - t0) / 1000).toFixed(0)} s).`, 'idle');
-  hideLoader();
-  $('run').disabled = false;
+  await loader.hide();
+  $('tool').inert = false;
+  updateReadiness();
   resizePool();
+  shell.ready();
 }
 
 // ---- Expert system ---------------------------------------------------------
+// An expert system handed over by the RESY Maker (maker.js) is put into the
+// file input, as if it had been chosen there.
+function adopt(handed) {
+  setFile($('f-expert'), new File([handed.text], handed.name, { type: 'application/json' }));
+  document.querySelector('input[name=system][value=file]').checked = true;
+}
+async function adoptHandoff() {
+  if (location.hash !== '#from-maker') return;
+  const handed = await store.get('to-app');
+  if (handed) adopt(handed);
+}
+// The RESY Maker shares the window with this page (see createShell()); an
+// expert system it hands over is chosen here as an uploaded file is.
+const shell = createShell('app', async (handed) => {
+  adopt(handed);
+  await onSystemChange();
+  $('sys-h').scrollIntoView({ block: 'nearest' });
+});
+
+// Opens the selected expert system in the RESY Maker.
+async function openInMaker(e) {
+  e.preventDefault();
+  const v = systemChoice(), f = $('f-expert').files[0];
+  if (v === 'file' && !f) { await shell.open(null); return; }
+  const handed = v === 'file'
+    ? { file: { name: f.name, bytes: new Uint8Array(await f.arrayBuffer()) } }
+    : { scheme: v, version: v === 'EUNIS' ? $('eunis-version').value : null };
+  await shell.open(handed);
+}
+
+// The EUNIS-ESy releases shipped with RESY, newest first, as listed in
+// bundle.json. Without the list the newest shipped release is used.
+function fillVersions(versions) {
+  const sel = $('eunis-version');
+  sel.innerHTML = versions.map((v, i) => `<option value="${escapeHtml(v)}">${escapeHtml(v)}${i === 0 ? ' (newest)' : ''}</option>`).join('');
+  sel.hidden = versions.length < 2;
+}
+
 const systemChoice = () => document.querySelector('input[name=system]:checked').value;
 
 async function chooseSystem() {
   const v = systemChoice();
   if (v !== 'file') {
-    system = { key: v, call: `resy_page_set_expert(scheme = ${rString(v)})`, file: null, info: null };
+    const version = v === 'EUNIS' ? $('eunis-version').value : '';
+    system = {
+      key: `${v}:${version}`,
+      call: `resy_page_set_expert(scheme = ${rString(v)}${version ? `, version = ${rString(version)}` : ''})`,
+      file: null,
+      info: null,
+    };
     return;
   }
   const f = $('f-expert').files[0];
@@ -216,10 +210,10 @@ async function chooseSystem() {
 
 // Reads the expert system in one session and describes it under the choices.
 async function describeSystem(s) {
-  if (loaderDone) status('Reading the expert system…');
+  if (loader.done) status('Reading the expert system…');
   let out;
   try {
-    out = await applySystem(s, !loaderDone);
+    out = await applySystem(s, !loader.done);
   } catch (e) {
     $('sys-info').className = 'small mt-3 mb-0 error';
     $('sys-info').textContent = cleanError(e);
@@ -227,141 +221,98 @@ async function describeSystem(s) {
     throw e;
   }
   system.info = out;
+  described.set(system.key, out);
+  showSystem(out);
+}
+// The description of each system read so far, by its key: choosing a system
+// again shows its description at once, while a session takes it up.
+const described = new Map();
+function showSystem(out) {
   $('eunis-opts').disabled = !out.eunis;
   const codes = (xs) => {
     const c = xs.map((x) => `<code>${escapeHtml(x)}</code>`);
     return c.length > 1 ? `${c.slice(0, -1).join(', ')} and ${c.at(-1)}` : c[0];
   };
   const own = out.header_cols.filter((c) => !out.derived_cols.includes(c));
-  let text = `The ${escapeHtml(out.scheme)} expert system includes ${out.n_types.toLocaleString()} ${out.eunis ? 'habitat ' : ''}types and ${out.n_species.toLocaleString()} species.`;
+  let text = `The ${escapeHtml(systemLabel(out))} expert system includes ${out.n_types.toLocaleString()} ${out.eunis ? 'habitat ' : ''}types and ${out.n_species.toLocaleString()} species.`;
   if (out.derived_cols.length) text += ` RESY derives ${codes(out.derived_cols)} from <code>Longitude</code> and <code>Latitude</code>.`;
   if (own.length) text += ` It ${out.derived_cols.length ? 'also ' : ''}reads ${codes(own)} from the sites file if ${own.length > 1 ? 'those columns are' : 'that column is'} present.`;
   if (!out.header_cols.length) text += ' It reads no columns from the sites file.';
+  if (out.doi) text += ` Release: <a href="https://doi.org/${escapeHtml(out.doi)}">doi:${escapeHtml(out.doi)}</a>.`;
   $('sys-info').className = 'small mt-3 mb-0';
-  setKeepingHeight($('sys-info'), text);
+  $('sys-info').innerHTML = text;
 }
 
-// The description of the expert system changes length with the system; it
-// keeps the largest height it has had, so the page below it does not move up
-// and down as systems are switched.
-function setKeepingHeight(el, html) {
-  const before = el.offsetHeight;
-  el.style.minHeight = '';
-  el.innerHTML = html;
-  el.style.minHeight = `${Math.max(before, el.offsetHeight)}px`;
-}
+// The scheme and release of a system, e.g. "EUNIS 2021-06-01"; an uploaded
+// file that is a published release is named as that release.
+const systemLabel = (info) => info.version ? `${info.release_scheme} ${info.version}` : info.scheme;
 
+let configuring = false;
 async function onSystemChange() {
-  if (!pool.length || running) return;
+  if (!pool.length || running || configuring) return;
+  invalidateResults();
   $('run').disabled = true;
   if (systemChoice() === 'file' && !$('f-expert').files[0]) {
     system = null;
+    $('eunis-opts').disabled = true;
     $('sys-info').className = 'small mt-3 mb-0';
-    setKeepingHeight($('sys-info'), 'Choose an expert system file, <code>.json</code> or <code>.txt</code>, to classify with it.');
+    $('sys-info').innerHTML = 'Choose an expert system file, <code>.json</code> or <code>.txt</code>, to classify with it.';
     status('', 'idle');
     return;
   }
+  configuring = true;
+  $('system-panel').inert = true;
+  $('sys-info').setAttribute('aria-busy', 'true');
   try {
     await chooseSystem();
+    if (described.has(system.key)) showSystem(described.get(system.key));
     const s = await acquire();
     try { await describeSystem(s); } finally { release(s); }
     status('Expert system ready.', 'idle');
   } catch (e) {
+    system = null;
+    $('sys-info').className = 'small mt-3 mb-0 error';
+    $('sys-info').textContent = cleanError(e);
+    $('eunis-opts').disabled = true;
     status(cleanError(e), 'error');
   } finally {
-    $('run').disabled = false;
+    configuring = false;
+    $('system-panel').inert = false;
+    $('sys-info').setAttribute('aria-busy', 'false');
+    updateReadiness();
   }
 }
 
 // ---- Reading the data files -----------------------------------------------
-// Lines of a file as text with their byte positions, read in parts so that a
-// file of several gigabytes never has to fit in memory at once.
-const CHUNK = 8 * 1024 * 1024;
-const decoder = new TextDecoder('utf-8');
-
-async function* lineChunks(blob, from = 0, to = blob.size) {
-  let pos = from, carry = new Uint8Array(0), carryStart = from;
-  while (pos < to) {
-    const part = new Uint8Array(await blob.slice(pos, Math.min(pos + CHUNK, to)).arrayBuffer());
-    const buf = carry.length ? concat(carry, part) : part;
-    const bufStart = carryStart;
-    pos += part.length;
-    const lines = [], starts = [];
-    let a = 0;
-    for (let i = 0; i < buf.length; i++) {
-      if (buf[i] !== 10) continue;
-      lines.push(decodeLine(buf, a, i));
-      starts.push(bufStart + a);
-      a = i + 1;
-    }
-    if (pos >= to && a < buf.length) {
-      lines.push(decodeLine(buf, a, buf.length));
-      starts.push(bufStart + a);
-      a = buf.length;
-    }
-    carry = buf.subarray(a);
-    carryStart = bufStart + a;
-    yield { lines, starts, end: carryStart };
-  }
-}
-const concat = (a, b) => { const c = new Uint8Array(a.length + b.length); c.set(a); c.set(b, a.length); return c; };
-const decodeLine = (buf, a, b) => {
-  if (b > a && buf[b - 1] === 13) b--;
-  if (a === 0 && buf[0] === 0xef && buf[1] === 0xbb && buf[2] === 0xbf) a = 3;
-  return decoder.decode(buf.subarray(a, b));
-};
-
-// Fields of one line; quoted fields may hold the delimiter and doubled quotes.
-function splitFields(line, delim) {
-  if (!line.includes('"')) return line.split(delim);
-  const out = [];
-  let field = '', quoted = false;
-  for (let i = 0; i < line.length; i++) {
-    const c = line[i];
-    if (quoted) {
-      if (c === '"' && line[i + 1] === '"') { field += '"'; i++; }
-      else if (c === '"') quoted = false;
-      else field += c;
-    } else if (c === '"') quoted = true;
-    else if (c === delim) { out.push(field); field = ''; }
-    else field += c;
-  }
-  out.push(field);
-  return out;
-}
-
-// Column names and delimiter (tab, semicolon or comma) of a delimited file.
-async function readHeader(file) {
-  const text = await file.slice(0, 1 << 16).text();
-  const line = text.replace(/^﻿/, '').split(/\r?\n/)[0];
-  const count = (d) => line.split(d).length;
-  const delim = ['\t', ';', ','].sort((a, b) => count(b) - count(a))[0];
-  return { delim, cols: splitFields(line, delim).map((c) => c.trim()) };
-}
-
-// Accepted names for each column, in order of preference.
-const ALIASES = {
-  id: ['PlotObservationID', 'PlotID', 'eventID', 'RELEVE_NR', 'releve_nr'],
-  name: ['TaxonName', 'scientificName', 'Matched concept', 'Turboveg2 concept', 'Species', 'species', 'Taxon'],
-  cover: ['Cover_Perc', 'Cover %', 'Cover', 'cover', 'organismQuantity'],
-  lon: ['Longitude', 'decimalLongitude', 'lon', 'longitude'],
-  lat: ['Latitude', 'decimalLatitude', 'lat', 'latitude'],
-  Country: ['Country', 'country'],
-  'Altitude (m)': ['Altitude (m)', 'Altitude'],
-};
-const pick = (cols, key) => (ALIASES[key] ?? [key]).find((c) => cols.includes(c)) ?? null;
-
 // Fills the column choices for the species file.
-const SPECIES_COLS = [['id', 'c-id'], ['name', 'c-name'], ['cover', 'c-cover']];
 async function describeSpecies() {
   const f = $('f-species').files[0];
-  if (!f) return;
-  const { cols } = await readHeader(f);
-  for (const [key, id] of SPECIES_COLS) {
-    const chosen = pick(cols, key);
-    $(id).innerHTML = cols.map((c) => `<option${c === chosen ? ' selected' : ''}>${escapeHtml(c)}</option>`).join('');
-  }
-  $('size-note').textContent = f.size > 50e6 ? `${(f.size / 1e9).toFixed(f.size > 1e9 ? 1 : 2)} GB: RESY reads it in parts.` : '';
+  const current = await fillSpeciesColumns(f, escapeHtml, {
+    placeholder: f ? 'Choose a column' : 'Choose a file first',
+    isCurrent: () => $('f-species').files[0] === f,
+  });
+  if (!current) return;
+  $('size-note').textContent = f?.size > 50e6 ? `${(f.size / 1e9).toFixed(f.size > 1e9 ? 1 : 2)} GB: RESY reads it in parts.` : '';
+  updateReadiness();
+}
+
+function updateReadiness() {
+  const files = DATA_INPUTS.every((id) => $(id).files.length);
+  const columns = SPECIES_COLS.every(([, id]) => $(id).value);
+  $('run').disabled = !loader.done || configuring || !system?.info || !files || !columns;
+  $('data-note').textContent = !files ? 'Choose both files to begin, or try the example data.' :
+    !columns ? 'Choose the plot, species and cover columns to continue.' :
+    DATA_INPUTS.every((_, i) => isExample(i)) ? 'Example ready: 200 plots from Tuscany. Check the columns, then classify.' :
+    'Files selected. Check the column choices, then classify.';
+}
+
+function invalidateResults() {
+  clearTimeout(renderTimer); renderTimer = null;
+  R = null; selected = null; filterType = null;
+  detailRequest++;
+  $('results').hidden = true;
+  $('q').value = '';
+  clearDetail();
 }
 
 // Plot positions and the site columns the expert system reads, kept compactly
@@ -402,7 +353,6 @@ async function readSites(file, wanted, onProgress) {
 }
 
 const num = (v) => (Number.isFinite(v) ? String(v) : '');
-const tsvValue = (v) => String(v ?? '').replace(/[\t\r\n]/g, ' ');
 function sitesTsv(store, ids) {
   const head = ['PlotObservationID', 'Longitude', 'Latitude', ...store.names].join('\t');
   const rows = [head];
@@ -462,10 +412,6 @@ const codeOf = (c) => {
   return k;
 };
 const candOf = (c) => intern(R.candIndex, R.candLists)(c);
-const mercator = (lon, lat) => {
-  const s = Math.sin(lat * Math.PI / 180);
-  return [(lon + 180) / 360, 0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)];
-};
 
 // ---- Running a classification -----------------------------------------------
 let running = false, stopRequested = false;
@@ -477,35 +423,45 @@ const MAX_BATCH = 2000;
 const MAX_RECORDS = 40000;
 
 async function run() {
-  if (running) { stopRequested = true; $('run').disabled = true; return; }
+  if (running) { stopRequested = true; $('run').disabled = true; status('Stopping after the active batches finish…'); return; }
+  detailRequest++;
   running = true; stopRequested = false;
+  $('system-panel').inert = true;
+  $('data-inputs').inert = true;
+  $('results').inert = true;
+  $('results').setAttribute('aria-busy', 'true');
   $('run').textContent = 'Stop';
   $('progress').hidden = false;
   setProgress(0);
+  const inFlight = new Set();
   try {
     if (!system?.info) throw new Error('Choose an expert system first.');
     const sp = $('f-species').files[0], si = $('f-sites').files[0];
     if (!sp) throw new Error('Choose a species file.');
     if (!si) throw new Error('Choose a sites file.');
     const coast = $('o-coast').checked ? 'TRUE' : 'FALSE';
+    if (!$('o-buffer').checkValidity()) throw new Error('Enter a coast buffer of zero or more metres, in steps of 500.');
     const buffer = Number($('o-buffer').value) || 0;
     const opts = `coast_dunes = ${coast}, coast_buffer = ${buffer}`;
 
     const { delim, cols } = await readHeader(sp);
     const col = Object.fromEntries(SPECIES_COLS.map(([key, id]) => [key, cols.indexOf($(id).value)]));
-    for (const [key] of SPECIES_COLS) if (col[key] < 0) throw new Error(`Choose the ${key === 'id' ? 'plot' : key === 'name' ? 'species' : 'cover'} column of the species file.`);
+    for (const [key] of SPECIES_COLS) if (col[key] < 0) throw new Error(`Choose the ${SPECIES_COL_LABEL[key]} column of the species file.`);
 
     status('Reading the sites file…');
     const wanted = [...new Set([...system.info.header_cols.filter((c) => !system.info.derived_cols.includes(c)), ...(system.info.eunis ? ['Country', 'Altitude (m)'] : [])])];
     const sites = await readSites(si, wanted, (f) => setProgress(0.02 * f));
     const source = await groupedSpecies(sp, delim, col.id);
     R = newResults({ blob: source, delim, col, sites, opts }, sites.lon.length);
+    R.system = system.info;
+    R.typeNames = new Map(R.system.names.map((t) => [t.code, t.name]));
     filterType = null; selected = null;
+    const firstRun = $('results').hidden;
     $('results').hidden = false;
+    if (firstRun) render(true);
     clearDetail();
 
     let target = 1000;
-    const inFlight = new Set();
     const newBatch = () => ({ lines: ['PlotObservationID\tname\tcover'], ids: [], first: R.n });
     let batch = newBatch();
     let current = null, rowsOfCurrent = 0;
@@ -565,13 +521,18 @@ async function run() {
     render(true);
     status(`${stopRequested ? 'Stopped after' : 'Classified'} ${fmt(R.done)} plots in ${formatTime(R.seconds)}.`, 'idle');
   } catch (e) {
+    await Promise.allSettled(inFlight);
     console.error(e);
     status(cleanError(e), 'error');
-    if (R) render(true);
+    if (R) { trimUnclassified(); render(true); }
   } finally {
     running = false;
+    $('system-panel').inert = false;
+    $('data-inputs').inert = false;
+    $('results').inert = false;
+    $('results').setAttribute('aria-busy', 'false');
     $('run').textContent = 'Classify';
-    $('run').disabled = false;
+    updateReadiness();
     $('progress').hidden = true;
   }
 }
@@ -584,9 +545,7 @@ function addPlot(id, start, sites, site) {
   if (site === undefined) R.readUnplaced.add(id); else R.readSites[site] = 1;
   R.code[i] = -1; R.start[i] = start; R.end[i] = start;
   const lon = site === undefined ? NaN : sites.lon[site], lat = site === undefined ? NaN : sites.lat[site];
-  if (Number.isFinite(lon) && Number.isFinite(lat) && Math.abs(lat) < 85) {
-    [R.mx[i], R.my[i]] = mercator(lon, lat);
-  } else { R.mx[i] = NaN; R.my[i] = NaN; }
+  [R.mx[i], R.my[i]] = placeOf(lon, lat);
 }
 
 // Plots read but not classified when the run was stopped are dropped.
@@ -607,6 +566,7 @@ async function classifyBatch(b, opts, progressAfter) {
     try {
       await s.webR.FS.writeFile('/tmp/batch_species.tsv', new TextEncoder().encode(b.lines.join('\n') + '\n'));
       await s.webR.FS.writeFile('/tmp/batch_sites.tsv', new TextEncoder().encode(sitesTsv(R.source.sites, b.ids)));
+      await prepareSites(s.webR, '/tmp/batch_sites.tsv', opts);
       out = JSON.parse(await s.webR.evalRString(`resy_page_batch("/tmp/batch_species.tsv", "/tmp/batch_sites.tsv", ${opts})`));
       break;
     } catch (e) {
@@ -643,7 +603,7 @@ async function classifyBatch(b, opts, progressAfter) {
 
 // Each batch reports its own counts of plots with missing header values; they
 // are added up into one warning. Other warnings are listed once.
-const MISSING = /^Header columns used by the expert system have missing values: (.*)\. Conditions on them are evaluated as if the value were 0\.$/;
+const MISSING = /^Site columns read by rules have missing values: (.*)\. Conditions on them are evaluated as if the value were 0\.$/;
 function addWarning(w) {
   const m = w.match(MISSING);
   if (!m) { R.warnings.add(w); return; }
@@ -652,7 +612,7 @@ function addWarning(w) {
     if (p) R.missing.set(p[1], (R.missing.get(p[1]) ?? 0) + Number(p[2]));
   }
 }
-const missingWarning = () => R.missing.size ? `Header columns used by the expert system have missing values: ${[...R.missing].map(([c, n]) => `${c} (${fmt(n)} plot${n === 1 ? '' : 's'})`).join(', ')}. Conditions on them are evaluated as if the value were 0.` : null;
+const missingWarning = () => R.missing.size ? `Site columns read by rules have missing values: ${[...R.missing].map(([c, n]) => `${c} (${fmt(n)} plot${n === 1 ? '' : 's'})`).join(', ')}. Conditions on them are evaluated as if the value were 0.` : null;
 
 const formatTime = (s) => s < 90 ? `${s.toFixed(s < 10 ? 1 : 0)} s` : s < 5400 ? `${Math.round(s / 60)} min` : `${(s / 3600).toFixed(1)} h`;
 function setProgress(f) {
@@ -661,16 +621,12 @@ function setProgress(f) {
 }
 
 // ---- Rendering ---------------------------------------------------------------
-const cssVar = (name) => getComputedStyle($('resy-app')).getPropertyValue(name).trim();
-const PALETTE = ['T', 'N', 'M', 'R', 'S', 'P', 'Q', 'U', 'V'];
-const level = (code) => (code && /^[A-Z]/.test(code) ? code[0] : 'none');
-const nameOf = (code) => code === '?' ? 'Not classified' : code === '+' ? 'Tie between types' : (system?.info?.names?.find((x) => x.code === code)?.name ?? '');
-let typeColour = null, filterType = null, selected = null;
-const colourOf = (code) => {
-  if (code === undefined || code === '?' || code === '+') return cssVar('--lv-none');
-  if (typeColour) return cssVar(typeColour.has(code) ? `--lv-${typeColour.get(code)}` : '--lv-other');
-  return cssVar(`--lv-${level(code)}`) || cssVar('--lv-other');
-};
+const cssVar = (name) => cssValue($('resy-app'), name);
+const nameOf = (code) => code === '?' ? 'Not classified' : code === '+' ? 'Tie between types' : (R?.typeNames.get(code) ?? '');
+// typeOrder: the types of a system other than EUNIS-ESy, most frequent first,
+// which get the colours (see colourVar()); null colours by habitat group.
+let typeOrder = null, filterType = null, selected = null;
+const colourOf = (code) => cssVar(colourVar(code, typeOrder));
 
 let lastRender = 0, renderTimer = null;
 function render(now) {
@@ -688,33 +644,38 @@ function render(now) {
   $('s-none').textContent = fmt(count('?'));
   $('s-tie').textContent = fmt(count('+'));
   $('s-time').textContent = formatTime(R.seconds);
+  $('s-system').innerHTML = `Classified with the ${escapeHtml(systemLabel(R.system))} expert system${R.system.doi ? ` (<a href="https://doi.org/${escapeHtml(R.system.doi)}">doi:${escapeHtml(R.system.doi)}</a>)` : ''}.`;
 
   const notes = [...R.warnings, missingWarning()].filter(Boolean);
   if (R.unmatched) notes.unshift(`Species names in ${fmt(R.unmatched)} of ${fmt(R.nObs)} records are not recognised by the expert system. These records do not contribute to the classification.`);
   $('warnings').innerHTML = notes.map((w) => `<li>${escapeHtml(w)}</li>`).join('');
+  $('notes-n').textContent = `${plural(notes.length, 'note')} on the data and the run`;
+  $('notes').style.visibility = notes.length ? '' : 'hidden';
 
   renderLegend();
   renderTypes();
   dots.redraw();
   renderTable();
+  $('download').disabled = !R.done;
+  $('download-map').disabled = !R.done;
 }
 
 // The colours on the map and their labels, for the legend under the map and
 // the one in the downloaded SVG. EUNIS-ESy types are coloured by habitat
 // group; other systems colour their most frequent types.
 function legendItems() {
-  const levels = new Map(system.info.levels.map((l) => [l.code, l.name]));
+  const levels = new Map(R.system.levels.map((l) => [l.code, l.name]));
   const used = R.codes.map((c, k) => [c, R.counts[k]]).filter(([, n]) => n > 0);
   const unclassified = { colour: colourOf('?'), label: 'not classified or tie' };
-  if (system.info.eunis) {
-    typeColour = null;
+  if (R.system.eunis) {
+    typeOrder = null;
     const present = [...new Set(used.map(([c]) => (c === '?' || c === '+') ? 'none' : level(c)))].sort();
     return present.map((l) => l === 'none' ? unclassified : { colour: colourOf(l), label: [l, levels.get(l)].filter(Boolean).join(' ') });
   }
   const ranked = used.filter(([c]) => c !== '?' && c !== '+').sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([c]) => c);
-  typeColour = new Map(ranked.slice(0, PALETTE.length).map((c, i) => [c, PALETTE[i]]));
+  typeOrder = ranked;
   return [
-    ...[...typeColour.keys()].map((c) => ({ colour: colourOf(c), label: [c, levels.get(c)].filter(Boolean).join(' ') })),
+    ...ranked.slice(0, PALETTE.length).map((c) => ({ colour: colourOf(c), label: [c, levels.get(c)].filter(Boolean).join(' ') })),
     ...(ranked.length > PALETTE.length ? [{ colour: cssVar('--lv-other'), label: 'other types' }] : []),
     ...(used.some(([c]) => c === '?' || c === '+') ? [unclassified] : []),
   ];
@@ -725,16 +686,19 @@ function renderLegend() {
 }
 
 function renderTypes() {
+  const focus = document.activeElement.closest('#types button')?.dataset.code;
   const list = R.codes.map((c, k) => ({ code: c, n: R.counts[k] })).filter((t) => t.n > 0)
     .sort((a, b) => b.n - a.n || a.code.localeCompare(b.code));
   const max = list[0]?.n ?? 1;
   $('types').innerHTML = list.map((t) => `
-    <li data-code="${escapeHtml(t.code)}" class="${t.code === filterType ? 'active' : ''}" title="${escapeHtml(nameOf(t.code))}">
+    <li><button type="button" data-code="${escapeHtml(t.code)}" aria-pressed="${t.code === filterType}" class="${t.code === filterType ? 'active' : ''}" title="${escapeHtml(nameOf(t.code))}">
       <span class="sw" style="background:${colourOf(t.code)}"></span>
       <b>${escapeHtml(t.code)}</b>
       <span class="mid"><span class="nm">${escapeHtml(nameOf(t.code))}</span><div class="bar" style="width:${(100 * t.n / max).toFixed(1)}%"></div></span>
       <span>${fmt(t.n)}</span>
-    </li>`).join('');
+    </button></li>`).join('');
+  $('clear-filter').disabled = filterType === null;
+  if (focus) [...$('types').querySelectorAll('button')].find((b) => b.dataset.code === focus)?.focus({ preventScroll: true });
 }
 
 // Plots shown in the table: those of the selected type that match the filter
@@ -755,233 +719,83 @@ function visible(limit) {
 }
 
 function renderTable() {
+  if (!R) return;
   const { rows, total } = visible(500);
   $('rows').innerHTML = rows.map((i) => {
     const code = R.codes[R.code[i]];
     return `<tr data-i="${i}" class="${i === selected ? 'table-active' : ''}">
-      <td>${escapeHtml(R.ids[i])}</td><td><b style="color:${colourOf(code)}">${escapeHtml(code)}</b></td>
+      <td><button type="button" class="plot-button" aria-label="Explain plot ${escapeHtml(R.ids[i])}" aria-pressed="${i === selected}">${escapeHtml(R.ids[i])}</button></td><td><b>${escapeHtml(code)}</b></td>
       <td>${escapeHtml(nameOf(code))}</td><td class="num">${R.nsp[i] || ''}</td></tr>`;
-  }).join('');
-  $('shown').textContent = total === R.done && total <= rows.length ? '' :
-    `${fmt(total)} of ${fmt(R.done)} plots${total > rows.length ? `, first ${rows.length} listed` : ''}` + (filterType ? ` · type ${filterType}` : '');
+  }).join('') || '<tr><td colspan="4" class="empty-table">' + (running ? 'Waiting for classified plots…' : 'No plots match. Clear the search or choose Show all types.') + '</td></tr>';
+  $('shown').textContent = `${fmt(total)} of ${fmt(R.done)} plots${total > rows.length ? `, first ${rows.length} listed` : ''}` + (filterType ? ` · type ${filterType}` : '');
 }
 
 // ---- Map ---------------------------------------------------------------------
-// All plots are drawn as dots on one canvas, so the map stays fast with
-// millions of plots.
-const dots = {
-  map: null, canvas: null,
-  init() {
-    this.map = L.map('map', { scrollWheelZoom: false, worldCopyJump: false }).setView([50, 10], 4);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(this.map);
-    this.canvas = L.DomUtil.create('canvas', 'resy-dots leaflet-zoom-hide');
-    this.map.getPanes().overlayPane.appendChild(this.canvas);
-    this.map.on('moveend zoomend resize', () => this.draw());
-    this.map.on('click', (e) => this.click(e));
-    this.fitted = false;
-  },
-  redraw() {
-    if (!this.map) this.init();
-    this.map.invalidateSize();
-    if (!this.fitted) this.fit();
-    this.draw();
-  },
-  fit() {
-    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity, any = false;
-    for (let i = 0; i < R.n; i++) {
-      const x = R.mx[i];
-      if (Number.isNaN(x) || R.code[i] < 0) continue;
-      any = true;
-      x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, R.my[i]); y1 = Math.max(y1, R.my[i]);
-    }
-    if (!any) return;
-    const toLatLng = (x, y) => L.latLng(Math.atan(Math.sinh(Math.PI * (1 - 2 * y))) * 180 / Math.PI, x * 360 - 180);
-    this.map.fitBounds(L.latLngBounds(toLatLng(x0, y1), toLatLng(x1, y0)).pad(0.15));
-    this.fitted = true;
-  },
-  // Pixel position of plot i in the map container, or null.
-  pixel(i, scale, ox, oy) {
-    const x = R.mx[i];
-    if (Number.isNaN(x)) return null;
-    return [x * scale - ox, R.my[i] * scale - oy];
-  },
-  view() {
-    const size = this.map.getSize(), scale = 256 * 2 ** this.map.getZoom();
-    const o = this.map.getPixelBounds().min;
-    return { size, scale, ox: o.x, oy: o.y };
-  },
-  // Dot radius in CSS pixels: smaller as more plots are shown.
-  radius() {
-    const n = R.done;
-    return n > 200000 ? 1 : n > 20000 ? 1.5 : n > 2000 ? 2.5 : 4.5;
-  },
-  // Calls fn(x, y, k) for each classified plot in the view, x and y in CSS
-  // pixels of the map and k the index of its type, or -1 for a plot greyed out
-  // by the type filter. Greyed plots come first, so the others are drawn on top.
-  eachDot({ size, scale, ox, oy }, fn) {
-    const want = filterType === null ? null : R.codeIndex.get(filterType);
-    const pad = this.radius() + 1;
-    const visit = (i, k) => {
-      const p = this.pixel(i, scale, ox, oy);
-      if (p && p[0] > -pad && p[1] > -pad && p[0] < size.x + pad && p[1] < size.y + pad) fn(p[0], p[1], k);
-    };
-    if (want !== null) for (let i = 0; i < R.n; i++) if (R.code[i] >= 0 && R.code[i] !== want) visit(i, -1);
-    for (let i = 0; i < R.n; i++) {
-      const k = R.code[i];
-      if (k >= 0 && (want === null || k === want)) visit(i, k);
-    }
-  },
-  draw() {
-    if (!this.map || !R) return;
-    const { size, scale, ox, oy } = this.view();
-    if (!size.x || !size.y) return;
-    const c = this.canvas, ratio = window.devicePixelRatio || 1;
-    c.width = size.x * ratio; c.height = size.y * ratio;
-    c.style.width = `${size.x}px`; c.style.height = `${size.y}px`;
-    L.DomUtil.setPosition(c, this.map.containerPointToLayerPoint([0, 0]));
-    const ctx = c.getContext('2d');
-    const img = ctx.createImageData(c.width, c.height), px = new Uint32Array(img.data.buffer);
-    const r = Math.max(1, Math.round(this.radius() * ratio));
-    const disc = [];
-    for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) if (dx * dx + dy * dy <= r * r + r) disc.push([dx, dy]);
-    const rgba = (hex, a) => {
-      const v = parseInt(hex.replace('#', ''), 16);
-      return ((a << 24) | ((v & 255) << 16) | (((v >> 8) & 255) << 8) | (v >> 16)) >>> 0;
-    };
-    const colours = R.codes.map((code) => rgba(colourOf(code), 235));
-    const faded = rgba(cssVar("--lv-none"), 110);
-    const W = c.width, H = c.height;
-    this.eachDot({ size, scale, ox, oy }, (cx, cy, k) => {
-      const x = Math.round(cx * ratio), y = Math.round(cy * ratio), colour = k < 0 ? faded : colours[k];
-      for (const [dx, dy] of disc) {
-        const xx = x + dx, yy = y + dy;
-        if (xx >= 0 && yy >= 0 && xx < W && yy < H) px[yy * W + xx] = colour;
-      }
-    });
-    ctx.putImageData(img, 0, 0);
-    if (selected !== null) {
-      const p = this.pixel(selected, scale, ox, oy);
-      if (p) {
-        ctx.beginPath(); ctx.arc(p[0] * ratio, p[1] * ratio, r + 5 * ratio, 0, 2 * Math.PI);
-        ctx.lineWidth = 2 * ratio; ctx.strokeStyle = cssVar('--bs-emphasis-color') || '#000'; ctx.stroke();
-      }
-    }
-  },
-  click(e) {
-    if (!R) return;
-    const { scale, ox, oy } = this.view();
-    const want = filterType === null ? null : R.codeIndex.get(filterType);
-    let best = -1, bestD = 64;
-    for (let i = 0; i < R.n; i++) {
-      if (R.code[i] < 0 || (want !== null && R.code[i] !== want)) continue;
-      const p = this.pixel(i, scale, ox, oy);
-      if (!p) continue;
-      const d = (p[0] - e.containerPoint.x) ** 2 + (p[1] - e.containerPoint.y) ** 2;
-      if (d < bestD) { bestD = d; best = i; }
-    }
-    if (best >= 0) explain(best);
-  },
-};
+// The classified plots as dots in the colour of their type (see resy_map.js).
+// With a type chosen in the list, the plots of the other types are greyed out
+// behind its plots.
+const dots = createDotMap('map', () => {
+  const want = filterType === null ? null : R.codeIndex.get(filterType);
+  const colours = R ? R.codes.map(colourOf) : [], faded = cssVar('--lv-none');
+  return {
+    n: R?.n ?? 0,
+    shown: R?.done ?? 0,
+    x: (i) => R.mx[i],
+    y: (i) => R.my[i],
+    state: (i) => { const k = R.code[i]; return k < 0 ? -1 : want === null || k === want ? 1 : 0; },
+    colour: (i, front) => (front ? colours[R.code[i]] : faded),
+    selected,
+  };
+}, (i) => explain(i));
 
 // ---- Why this type? ------------------------------------------------------------
-// The panel shows what RESY's resy_eval_plot() prints, as HTML: the decision,
-// the species, the lower-level types not reached (closest first) and the rule
-// of one of them condition by condition. Selecting another type in the list
-// shows its rule instead.
+// The panel shows what RESY's resy_eval_plot() prints, as HTML (see
+// resy_evidence.js). Selecting another type in a list shows its rule instead.
 function clearDetail() {
   $('d-empty').hidden = false; $('d-body').hidden = true; $('d-title').textContent = 'Why this type?';
+  $('d-body').innerHTML = '';
+  $('d-body').setAttribute('aria-busy', 'false');
+  $('d-status').textContent = '';
 }
 
-const NEAR_SHOWN = 8;
-const plural = (n, word) => `${fmt(n)} ${word}${n === 1 ? '' : 's'}`;
-
-function ruleHtml(t, label = '') {
-  const conds = t.conditions.map((c, k) => `
-    <li class="${c.satisfied ? 'ok' : 'no'}">
-      <span class="n">[${k + 1}]</span><span class="st">${escapeHtml(c.status)}</span>
-      <span class="tx">${escapeHtml(c.text)}${c.species ? `<span class="sp">${escapeHtml(c.species)}</span>` : ''}</span>
-    </li>`).join('');
-  return `<div class="rule">
-    <p class="mb-1"><b>${escapeHtml(t.code)}</b> ${escapeHtml(t.name)}${label}
-      <span class="verdict ${t.holds ? 'ok' : 'no'}">${t.holds ? 'rule holds' : 'rule not met'}</span></p>
-    <p class="formula">${escapeHtml(t.rule)}</p>
-    <ol class="conds">${conds}</ol>
-  </div>`;
-}
-
-function nearHtml(ty) {
-  const item = (t) => `
-    <li data-type="${escapeHtml(t.code)}" tabindex="0" title="Show the rule of ${escapeHtml(t.code)}"${t === ty[0] ? ' class="active"' : ''}>
-      <b>${escapeHtml(t.code)}</b>
-      <span class="nm">${escapeHtml(nameOf(t.code) || t.name)}${t.rules > 1 ? `<span class="text-body-secondary">, closest of ${t.rules} rules</span>` : ''}</span>
-      <span class="frac"><span class="bar"><i style="width:${(100 * t.satisfied / Math.max(1, t.conditions)).toFixed(0)}%"></i></span>${t.satisfied} of ${t.conditions}</span>
-    </li>`;
-  const head = ty.slice(0, NEAR_SHOWN).map(item).join('');
-  const rest = ty.slice(NEAR_SHOWN);
-  return `<ul class="near">${head}</ul>` + (rest.length ?
-    `<details><summary class="small">Show the other ${plural(rest.length, 'type')}</summary><ul class="near">${rest.map(item).join('')}</ul></details>` : '');
-}
-
-function evidenceHtml(ev) {
-  const out = [`<p class="mb-1">${escapeHtml(ev.sentence ?? '')}</p>`];
-  if (ev.holds?.length) out.push(`<p class="small text-body-secondary">Rules that hold: ${ev.holds.map((h) => `${escapeHtml(h.code)} (priority ${escapeHtml(h.priority)})`).join(', ')}</p>`);
-  out.push(`<details class="species" open><summary>${fmt(ev.species.length)} species</summary>
-    <table class="table table-sm mb-0"><tbody>${ev.species.map((s) => `<tr><td>${escapeHtml(s.species)}</td><td class="num">${s.cover ?? ''}</td></tr>`).join('')}</tbody></table></details>`);
-  ev.lower.forEach((lv) => {
-    if (!lv.below) { out.push(`<p class="small mt-3 mb-0">${escapeHtml(lv.anchor)} has no lower levels.</p>`); return; }
-    if (!lv.types?.length) return;
-    const heading = lv.anchor === '?' ? 'Top-level types not reached' : `Why not a lower level of ${lv.anchor}?`;
-    out.push(`<section class="lower">
-      <p class="h6 mt-3 mb-1">${escapeHtml(heading)}</p>
-      <p class="small text-body-secondary mb-2">Conditions of each rule that the plot meets, closest first. Select a type to see its rule.</p>
-      ${nearHtml(lv.types)}
-      <div class="full">${ruleHtml(lv.closest)}</div>
-    </section>`);
-  });
-  return out.join('');
-}
-
-// The rule(s) of `type` in place of the closest rule under the list it was picked from.
-function showType(li) {
-  const full = li.closest('.lower')?.querySelector('.full');
-  const i = selected;
-  if (!full || i === null) return;
-  for (const x of $('d-body').querySelectorAll('.near li.active')) x.classList.remove('active');
-  li.classList.add('active');
-  full.innerHTML = '<p class="text-body-secondary small">Evaluating…</p>';
-  evaluatePlot(i, li.dataset.type).then((ev) => {
-    if (selected !== i) return;
-    const ty = ev.types[0];
-    full.innerHTML = ty.rules.map((r, k) => ruleHtml(r, ty.rules.length > 1 ? `<span class="text-body-secondary">, rule ${k + 1} of ${ty.rules.length}</span>` : '')).join('');
-  }).catch((e) => { full.textContent = cleanError(e); });
-}
-
+let detailRequest = 0;
 async function explain(i) {
+  if (!R || running) return;
+  const request = ++detailRequest;
   selected = i;
-  renderTable();
+  for (const row of $('rows').querySelectorAll('tr[data-i]')) {
+    const active = Number(row.dataset.i) === i;
+    row.classList.toggle('table-active', active);
+    row.querySelector('button').setAttribute('aria-pressed', String(active));
+  }
   dots.draw();
   const code = R.codes[R.code[i]];
-  $('d-title').textContent = `Plot ${R.ids[i]}: ${code} ${nameOf(code)}`;
-  $('d-empty').hidden = true;
-  $('d-body').hidden = false;
-  $('d-body').innerHTML = '<p class="text-body-secondary mb-0">Evaluating…</p>';
+  const title = `Plot ${R.ids[i]}: ${code} ${nameOf(code)}`;
+  $('d-status').textContent = `Evaluating plot ${R.ids[i]}…`;
+  $('d-body').setAttribute('aria-busy', 'true');
+  if (getComputedStyle($('detail')).position !== 'sticky') $('detail').scrollIntoView({ block: 'nearest' });
   try {
     const ev = await evaluatePlot(i);
-    if (selected === i) $('d-body').innerHTML = evidenceHtml(ev);
+    if (request !== detailRequest) return;
+    $('d-title').textContent = title;
+    $('d-empty').hidden = true;
+    $('d-body').hidden = false;
+    $('d-body').innerHTML = evidenceHtml(ev, nameOf);
+    $('d-body').scrollTop = 0;
+    $('d-status').textContent = '';
   } catch (e) {
-    $('d-body').textContent = cleanError(e);
+    if (request === detailRequest) $('d-status').textContent = cleanError(e);
+  } finally {
+    if (request === detailRequest) $('d-body').setAttribute('aria-busy', 'false');
   }
-  $('detail').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 // Classifies plot i alone, from its rows of the species file, and returns
 // resy_page_explain()'s account of it, with the rules of `type` in full.
 async function evaluatePlot(i, type = null) {
-  const src = R.source;
+  const result = R, src = result.source;
   const lines = ['PlotObservationID\tname\tcover'];
-  for await (const chunk of lineChunks(src.blob, R.start[i], R.end[i])) {
+  for await (const chunk of lineChunks(src.blob, result.start[i], result.end[i])) {
     for (const line of chunk.lines) {
       if (!line) continue;
       const f = splitFields(line, src.delim);
@@ -990,9 +804,11 @@ async function evaluatePlot(i, type = null) {
   }
   const s = await acquire();
   try {
+    if (result !== R) throw new Error('The input changed. Select a plot from the new results.');
     await s.webR.FS.writeFile('/tmp/explain_species.tsv', new TextEncoder().encode(lines.join('\n') + '\n'));
-    await s.webR.FS.writeFile('/tmp/explain_sites.tsv', new TextEncoder().encode(sitesTsv(src.sites, [R.ids[i]])));
-    return JSON.parse(await s.webR.evalRString(`resy_page_explain("/tmp/explain_species.tsv", "/tmp/explain_sites.tsv", ${rString(R.ids[i])}, ${src.opts}${type ? `, type = ${rString(type)}` : ''})`));
+    await s.webR.FS.writeFile('/tmp/explain_sites.tsv', new TextEncoder().encode(sitesTsv(src.sites, [result.ids[i]])));
+    await prepareSites(s.webR, '/tmp/explain_sites.tsv', src.opts);
+    return JSON.parse(await s.webR.evalRString(`resy_page_explain("/tmp/explain_species.tsv", "/tmp/explain_sites.tsv", ${rString(result.ids[i])}, ${src.opts}${type ? `, type = ${rString(type)}` : ''})`));
   } finally {
     release(s);
   }
@@ -1002,24 +818,21 @@ async function evaluatePlot(i, type = null) {
 function download() {
   if (!R) return;
   const q = (v) => /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v;
-  const parts = ['plot_id,classification,classification_name,candidates\n'];
+  const sys = `${q(String(R.system.release_scheme ?? R.system.scheme))},${q(String(R.system.version ?? ''))}`;
+  const parts = ['plot_id,classification,classification_name,candidates,expert_system,expert_version\n'];
   let block = [];
   for (let i = 0; i < R.n; i++) {
     if (R.code[i] < 0) continue;
     const code = R.codes[R.code[i]];
-    block.push(`${q(R.ids[i])},${q(code)},${q(nameOf(code))},${q(R.candLists[R.cands[i]])}\n`);
+    block.push(`${q(R.ids[i])},${q(code)},${q(nameOf(code))},${q(R.candLists[R.cands[i]])},${sys}\n`);
     if (block.length === 50000) { parts.push(block.join('')); block = []; }
   }
   parts.push(block.join(''));
-  saveBlob(new Blob(parts, { type: 'text/csv' }), 'classification.csv');
+  saveResult(new Blob(parts, { type: 'text/csv' }), 'classification.csv');
 }
 
-function saveBlob(blob, suffix) {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `resy_${String(system.info.scheme).replace(/\.(json|txt)$/i, '').replace(/[^A-Za-z0-9_-]/g, '_')}_${suffix}`;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+function saveResult(blob, suffix, result = R) {
+  saveBlob(blob, `resy_${systemLabel(result?.system ?? system.info).replace(/\.(json|txt)$/i, '').replace(/[^A-Za-z0-9_-]/g, '_')}_${suffix}`);
 }
 
 // The map as it is shown, as an SVG: the country outlines, the plots in their
@@ -1030,25 +843,29 @@ async function downloadMap() {
   if (!R || !dots.map) return;
   const button = $('download-map');
   button.disabled = true;
+  button.textContent = 'Preparing map…';
+  status('Preparing the map download…');
   try {
+    const result = R;
     const v = dots.view(), W = v.size.x, H = v.size.y;
-    const s = await acquire();
-    let land;
-    try {
-      await ensureSf(s);
-      land = JSON.parse(await s.webR.evalRString(`resy_page_land(${v.scale}, ${v.ox}, ${v.oy}, ${W}, ${H})`));
-    } finally {
-      release(s);
-    }
     const faded = cssVar('--lv-none');
     const spots = new Map();
-    dots.eachDot(v, (x, y, k) => {
-      const key = k < 0 ? 'faded' : colourOf(R.codes[k]);
+    dots.eachDot(v, (x, y, i, front) => {
+      const key = front ? colourOf(R.codes[R.code[i]]) : 'faded';
       if (!spots.has(key)) spots.set(key, new Set());
       spots.get(key).add(`${x.toFixed(1)} ${y.toFixed(1)}`);
     });
     const r = dots.radius();
     const items = legendItems();
+    const p = dots.selectedPixel(v);
+    const s = await acquire();
+    let land;
+    try {
+      await ensureGeography(s.webR);
+      land = JSON.parse(await s.webR.evalRString(`resy_page_land(${v.scale}, ${v.ox}, ${v.oy}, ${W}, ${H})`));
+    } finally {
+      release(s);
+    }
     const total = H + 12 + 16 * items.length + 6;
     const svg = [
       `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${total}" viewBox="0 0 ${W} ${total}" font-family="Helvetica, Arial, sans-serif">`,
@@ -1061,7 +878,6 @@ async function downloadMap() {
       ...[...spots].map(([key, set]) => `<path stroke="${key === 'faded' ? faded : key}" stroke-opacity="${key === 'faded' ? 0.43 : 0.92}" d="${[...set].map((p) => `M${p}h0`).join('')}"/>`),
       '</g>',
     ];
-    const p = selected === null ? null : dots.pixel(selected, v.scale, v.ox, v.oy);
     if (p && p[0] >= 0 && p[1] >= 0 && p[0] <= W && p[1] <= H) {
       svg.push(`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${r + 5}" fill="none" stroke="#000" stroke-width="2"/>`);
     }
@@ -1071,12 +887,14 @@ async function downloadMap() {
       ...items.map((l, k) => `<circle cx="6" cy="${4 + 16 * k}" r="4" fill="${l.colour}"/><text x="16" y="${8 + 16 * k}" fill="#333">${escapeHtml(l.label)}</text>`),
       '</g>',
       '</svg>');
-    saveBlob(new Blob([svg.join('\n')], { type: 'image/svg+xml' }), 'map.svg');
+    saveResult(new Blob([svg.join('\n')], { type: 'image/svg+xml' }), 'map.svg', result);
+    status('Map download ready.', 'idle');
   } catch (e) {
     console.error(e);
     status(cleanError(e), 'error');
   } finally {
     button.disabled = false;
+    button.textContent = 'Download map (SVG)';
   }
 }
 
@@ -1085,25 +903,19 @@ async function downloadMap() {
 // show their names and a chosen file simply replaces one of them.
 const examples = { files: null };
 const DATA_INPUTS = ['f-species', 'f-sites'];
-const setFile = (input, file) => {
-  const dt = new DataTransfer();
-  dt.items.add(file);
-  input.files = dt.files;
-};
 const isExample = (i) => $(DATA_INPUTS[i]).files[0] === examples.files?.[i];
-const showReset = () => { $('reset-data').hidden = DATA_INPUTS.every((_, i) => isExample(i)); };
 
 async function loadExamples(s) {
   const paths = await s.webR.evalRRaw('resy_page_examples()', 'string[]');
   examples.files = await Promise.all(paths.map(async (p) =>
     new File([await s.webR.FS.readFile(p)], p.split('/').at(-1), { type: 'text/csv' })));
-  await resetData();
 }
 
 async function resetData() {
+  invalidateResults();
   DATA_INPUTS.forEach((id, i) => setFile($(id), examples.files[i]));
-  showReset();
   await describeSpecies();
+  status('Example files selected.', 'idle');
 }
 
 // An empty field lets the page choose the number of sessions.
@@ -1119,25 +931,39 @@ $('run').addEventListener('click', run);
 $('download').addEventListener('click', download);
 $('download-map').addEventListener('click', downloadMap);
 $('q').addEventListener('input', renderTable);
-$('rows').addEventListener('click', (e) => { const tr = e.target.closest('tr'); if (tr) explain(Number(tr.dataset.i)); });
-$('d-body').addEventListener('click', (e) => { const li = e.target.closest('.near li'); if (li) showType(li); });
-$('d-body').addEventListener('keydown', (e) => {
-  const li = e.target.closest('.near li');
-  if (li && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); showType(li); }
-});
+$('rows').addEventListener('click', (e) => { const tr = e.target.closest('tr[data-i]'); if (tr) explain(Number(tr.dataset.i)); });
+wireEvidence($('d-body'), (type) => evaluatePlot(selected, type), () => detailRequest,
+  { retain: true, report: (text) => { $('d-status').textContent = text; } });
 $('types').addEventListener('click', (e) => {
-  const li = e.target.closest('li'); if (!li) return;
-  filterType = filterType === li.dataset.code ? null : li.dataset.code;
+  const button = e.target.closest('button'); if (!button) return;
+  filterType = filterType === button.dataset.code ? null : button.dataset.code;
   renderTypes(); renderTable(); dots.draw();
 });
-for (const id of DATA_INPUTS) $(id).addEventListener('change', () => {
-  const i = DATA_INPUTS.indexOf(id);
-  if (!$(id).files.length && examples.files) setFile($(id), examples.files[i]);
-  showReset();
-  if (id === 'f-species') describeSpecies().catch((e) => status(cleanError(e), 'error'));
+$('clear-filter').addEventListener('click', () => {
+  filterType = null; renderTypes(); renderTable(); dots.draw();
+  $('q').focus({ preventScroll: true });
 });
+for (const id of DATA_INPUTS) $(id).addEventListener('change', async () => {
+  invalidateResults();
+  try {
+    if (id === 'f-species') await describeSpecies();
+    updateReadiness();
+    status('Data changed. Classify to update the results.', 'idle');
+  } catch (e) { status(cleanError(e), 'error'); }
+});
+for (const id of [...SPECIES_COLS.map(([, id]) => id), 'o-coast', 'o-buffer']) $(id).addEventListener('change', () => { invalidateResults(); updateReadiness(); });
 $('reset-data').addEventListener('click', resetData);
+for (const [kind, header] of Object.entries({ species: 'PlotObservationID,scientificName,Cover_Perc', sites: 'PlotObservationID,Longitude,Latitude' })) {
+  $(`template-${kind}`).addEventListener('click', () => saveBlob(new Blob([header + '\n'], { type: 'text/csv' }), `resy_${kind}_template.csv`));
+}
 $('f-expert').addEventListener('change', () => { document.querySelector('input[name=system][value=file]').checked = true; onSystemChange(); });
 for (const el of document.querySelectorAll('input[name=system]')) el.addEventListener('change', onSystemChange);
+$('eunis-version').addEventListener('change', () => { document.querySelector('input[name=system][value=EUNIS]').checked = true; onSystemChange(); });
+$('to-maker').addEventListener('click', (e) => openInMaker(e).catch((error) => status(cleanError(error), 'error')));
 
-start().catch((e) => status(`R could not start: ${e.message ?? e}`, 'error'));
+$('retry-start').addEventListener('click', () => location.reload());
+start().catch((e) => {
+  status(`R could not start: ${e.message ?? e}`, 'error');
+  $('retry-start').hidden = false;
+  shell.failed(e);
+});

@@ -12,7 +12,9 @@ data(ecoregions2017_epsg25832)
 
 ## Format
 
-An `sf` object with 159 polygons.
+A plain coordinate list with 159 polygon features. See
+[dunes_bohn_500mbuffer_epsg25832](https://florian-jansen.github.io/resy/reference/dunes_bohn_500mbuffer_epsg25832.md)
+for the ring and attribute fields.
 
 ## Source
 

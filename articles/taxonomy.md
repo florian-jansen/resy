@@ -87,7 +87,7 @@ plots <- data.frame(
 
 resolved <- resy_resolve_taxa(plots, species_col = "TaxonName")
 resolved
-#> <resy_taxa> 5 name(s) from column `TaxonName` resolved against 121877 reference names
+#> <resy_taxa> 5 name(s) from column `TaxonName` resolved against 122535 reference names
 #>   TaxonName         name as submitted
 #>   canonical         resolved canonical name; NA when unresolved
 #>   taxon_confidence  exact, synonym, cleaned_exact, cleaned_synonym or unresolved
@@ -189,7 +189,7 @@ its argument `expert` takes any other expert system:
 
 syn <- resy_read_synonyms()
 nrow(syn)
-#> [1] 67018
+#> [1] 67005
 head(syn)
 #>                    synonym          esy_canonical       source accepted_in
 #> 1       Abelmoschus bammia Abelmoschus esculentus col;gbif;wfo        <NA>
@@ -249,12 +249,12 @@ knitr::kable(
 
 | Backbone | Synonym pairs | % of table |
 |:---------|--------------:|-----------:|
-| gbif     |        55,750 |       83.2 |
-| wfo      |        48,459 |       72.3 |
-| col      |        48,027 |       71.7 |
+| gbif     |        55,738 |       83.2 |
+| wfo      |        48,450 |       72.3 |
+| col      |        48,025 |       71.7 |
 | itis     |         4,125 |        6.2 |
-| ncbi     |           949 |        1.4 |
-| euromed  |           392 |        0.6 |
+| ncbi     |           947 |        1.4 |
+| euromed  |           386 |        0.6 |
 
 The backbones also differ in size: in the releases above, the GBIF
 backbone holds 3,034,449 synonym rows and the Euro+Med backbone 85,335.

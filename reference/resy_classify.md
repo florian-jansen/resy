@@ -14,10 +14,10 @@ and inspect the result with its
 [`summary()`](https://rdrr.io/r/base/summary.html) before classifying,
 so the taxonomic choices stay visible (see the taxonomy vignette).
 Setting `resolve_taxa = TRUE` runs that resolution inside
-`resy_classify()` as a convenience: names the expert already knows pass
-through untouched, unknown names are looked up in the synonym table, and
-names that resolve to nothing keep their original value (never a best
-guess). What was resolved is then reported in the result's
+`resy_classify()` as a convenience: names already in the expert system
+pass through untouched, unknown names are looked up in the synonym
+table, and names that resolve to nothing keep their original value
+(never a best guess). What was resolved is then reported in the result's
 `taxon_resolution`.
 
 ## Usage
@@ -122,11 +122,15 @@ An object of class `resy_result`. When `resolve_taxa = TRUE` it also
 carries the [`summary()`](https://rdrr.io/r/base/summary.html) of the
 [resy_resolve_taxa](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)
 result as `taxon_resolution`; otherwise `taxon_resolution` is `NULL`.
+The expert-system release and, when the bundled synonym layer was used,
+its build are reported by
+[`resy_provenance()`](https://florian-jansen.github.io/resy/reference/resy_provenance.md).
 
 ## See also
 
 [resy_resolve_taxa](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md),
-[resy_check_taxonomy](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md)
+[resy_check_taxonomy](https://florian-jansen.github.io/resy/reference/resy_check_taxonomy.md),
+[`resy_provenance()`](https://florian-jansen.github.io/resy/reference/resy_provenance.md)
 
 ## Examples
 
@@ -156,8 +160,8 @@ res <- resy_classify(species, header, scheme = "Apennine-test",
 #> Step 5.9  Number of T$ NON conditions: 0
 #> Step 5.10  Header conditions with numeric values: 0
 #>   Header conditions with character values: 0
-#> adapt conditions 2026-11-23 19:07:34.419812
-#> classification from here on 2026-11-23 19:07:34.420358
+#> adapt conditions 2026-11-24 12:55:47.623236
+#> classification from here on 2026-11-24 12:55:47.623901
 head(res$result.classification)
 #> HU32 KW76 YB18 NX70 OL48 YL40 
 #>  "F"  "F"  "F"  "F"  "F"  "F" 

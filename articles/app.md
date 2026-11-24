@@ -9,45 +9,61 @@ are read inside this browser tab and are not uploaded anywhere.
 
 Starting R…
 
+The first visit downloads R and its packages. Keep this tab open.
+
+Retry loading
+
 Expert system
+
+[RESY Maker](https://florian-jansen.github.io/resy/articles/maker.md)
 
 EUNIS-ESy European habitat types (Chytrý et al. 2020), shipped with
 RESY. Apennine example system A small system with five types for the
 example data, shipped with RESY. Your own expert system Expert system
 file, `.json` or `.txt`
 
-Data
+[Open this system in the RESY
+Maker](https://florian-jansen.github.io/resy/articles/maker.md) to
+change it or to build your own from it.
 
-The files below are the example data shipped with RESY: 200 plots from
-Tuscany with 3,580 species records. Choose your own files to replace
-them. Files can be comma, semicolon or tab separated and of any size,
-such as a full EVA export; RESY reads them in parts.
+Your plot data
+
+Choose species and sites files with matching plot IDs. Use comma,
+semicolon or tab separated files. Large species files must have their
+rows grouped by plot.
+
+Species template
+
+Sites template
+
+Try the example data
+
+Choose both files to begin, or try the example data.
 
 Species file: one row per species in each plot
 
-Plot Species Cover (%)
+Plot Choose a file first Species Choose a file first Cover (%) Choose a
+file first
 
 Sites file: `PlotObservationID`, plus `Longitude` and `Latitude` (WGS84)
 for EUNIS-ESy and the map, plus the header columns the expert system
 reads
 
-Use the example data again
-
 Flag coast and dunes Coast buffer m
 
 Classify
 
-R sessions running in parallel, one per processor core
+R sessions at most, one per processor core
 
-plots
+**0**plots processed
 
-classified
+**0**classified
 
-no type's rule holds
+**0**unclassified
 
-tied at highest priority
+**0**tied types
 
-to classify
+**0 s**elapsed
 
 Plots
 
@@ -55,12 +71,14 @@ Download map (SVG)
 
 Types
 
+Show all types
+
 Classification
 
 | Plot | Type | Name | Species |
 |------|------|------|---------|
 
-Download all candidates (CSV)
+Download classification (CSV)
 
 Why this type?
 

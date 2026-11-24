@@ -227,11 +227,11 @@ and whether it matched (`matched`):
 ``` r
 
 outcome$species_checked
-#> <resy_taxa> 1006 name(s) from column `scientificName` checked against 20157 Section 1 species
+#> <resy_taxa> 1006 name(s) from column `scientificName` checked against 21844 species names of the expert system
 #>   scientificName  Name as submitted
 #>   TaxonName       Canonical name used by resy_classify(); NA when unmatched
-#>   matched         TRUE if found as a canonical name or Section 1 synonym
-#> 935 matched (92.9%), 71 unmatched; summary() lists them
+#>   matched         TRUE if found among the species names of the expert system
+#> 959 matched (95.3%), 47 unmatched; summary() lists them
 #> 
 #>                              scientificName                   TaxonName matched
 #> 1                      Dryopteris filix-mas  Dryopteris filix-mas aggr.    TRUE
@@ -250,29 +250,23 @@ outcome$species_checked
 ``` r
 
 summary(outcome$species_checked)
-#> 1006 names checked: 935 matched (92.9%), 71 not matched (7.1%).
+#> 1006 names checked: 959 matched (95.3%), 47 not matched (4.7%).
 #> 
 #> Not matched:
 #>   genus only (25): Allium, Anthoxanthum, Asparagus, Carex, Cirsium, Crocus,
 #>     Cuscuta, Dianthus, Festuca, Galium, Hieracium, Linaria, Medicago, Odontites,
 #>     Orchis, Potentilla, Ranunculus, Rosa, Rubus, Taraxacum, Tragopogon,
 #>     Trifolium, Usnea, Vicia, Viola
-#>   below species level (7): Artemisia caerulescens var. palmata,
+#>   below species level (6): Artemisia caerulescens var. palmata,
 #>     Cerastium arvense var. etruscum, Festuca arundinacea subsp. arundinacea,
 #>     Juniperus communis subsp. saxatilis, Melica minuta var. arrecta,
-#>     Plantago maritima subsp. serpentina, Tanacetum corymbosum var. tenuifolium
-#>   species (39): Aegopodium podagraria, Anthyllis barba-jovis,
-#>     Borago officinalis, Cardamine chelidonia, Cardamine monteluccii,
-#>     Carex macrolepis, Carex mucronata, Centaurea triumfetti, Crithmum maritimum,
-#>     Crocus neglectus, Echinophora spinosa, Eryngium maritimum,
-#>     Erysimum pseudorhaeticum, Festuca riccerii, Flavoparmelia caperata,
-#>     Humulus lupulus, Juglans regia, Laurus nobilis, Leopoldia comosa,
-#>     Marrubium incanum, Melica uniflora, Narcissus poëticus, Odontites rubra,
-#>     Ononis variegata, Oreojuncus trifidus, Paris quadrifolia, Phyteuma italicum,
-#>     Ranunculus velutinus, Scleropodium tourretti, Sherardia arvensis,
-#>     Silene paradoxa, Silene pichiana, Spartium junceum, Staphylea pinnata,
-#>     Stipellula capensis, Taraxacum erythrosperma, Thesium sommieri,
-#>     Tordylium apulum, Viola ferrarinii
+#>     Tanacetum corymbosum var. tenuifolium
+#>   species (16): Cardamine chelidonia, Cardamine monteluccii,
+#>     Centaurea triumfetti, Crocus neglectus, Festuca riccerii,
+#>     Flavoparmelia caperata, Narcissus poëticus, Odontites rubra,
+#>     Ononis variegata, Oreojuncus trifidus, Phyteuma italicum,
+#>     Scleropodium tourretti, Silene pichiana, Stipellula capensis,
+#>     Taraxacum erythrosperma, Viola ferrarinii
 ```
 
 ### Finalize species data
@@ -339,8 +333,8 @@ res <- resy_classify(
 #> Step 5.9  Number of T$ NON conditions: 140
 #> Step 5.10  Header conditions with numeric values: 4
 #>   Header conditions with character values: 4
-#> adapt conditions 2026-11-23 19:07:57.480733
-#> classification from here on 2026-11-23 19:07:57.55319
+#> adapt conditions 2026-11-24 12:56:11.456608
+#> classification from here on 2026-11-24 12:56:11.498881
 ```
 
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
@@ -367,11 +361,11 @@ cand
 #>   4:    AN57      T        3             3
 #>   5:    BE71      T        3             3
 #>  ---                                      
-#> 301:    ZS46      R        1             1
-#> 302:    ZX20    T32        4             4
-#> 303:    ZX20      T        3             3
-#> 304:    ZX92    T17        4             4
-#> 305:    ZX92      T        3             3
+#> 297:    ZS46      R        1             1
+#> 298:    ZX20    T32        4             4
+#> 299:    ZX20      T        3             3
+#> 300:    ZX92    T17        4             4
+#> 301:    ZX92      T        3             3
 ```
 
 `wide = TRUE` gives one row per plot: the type it is classified as, then

@@ -12,7 +12,10 @@ data(europe_resolution_1_epsg25832)
 
 ## Format
 
-An `sf` object with 37 polygons.
+A plain coordinate list with 37 polygon features. See
+[dunes_bohn_500mbuffer_epsg25832](https://florian-jansen.github.io/resy/reference/dunes_bohn_500mbuffer_epsg25832.md)
+for the ring and attribute fields. `land` holds simplified EPSG:3857
+outlines for map export.
 
 ## Source
 

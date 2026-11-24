@@ -43,6 +43,7 @@
     <li><a class="dropdown-item" href="../articles/altitude-vignette.html">Get altitude data</a></li>
     <li><a class="dropdown-item" href="../articles/taxonomy.html">Match species names</a></li>
     <li><a class="dropdown-item" href="../articles/app.html">RESY App</a></li>
+    <li><a class="dropdown-item" href="../articles/maker.html">RESY Maker</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -153,7 +154,7 @@ guess.</p>
 <span></span>
 <span><span class="va">resolved</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_resolve_taxa.html">resy_resolve_taxa</a></span><span class="op">(</span><span class="va">plots</span>, species_col <span class="op">=</span> <span class="st">"TaxonName"</span><span class="op">)</span></span>
 <span><span class="va">resolved</span></span>
-<span><span class="co">#&gt; &lt;resy_taxa&gt; 5 name(s) from column `TaxonName` resolved against 121877 reference names</span></span>
+<span><span class="co">#&gt; &lt;resy_taxa&gt; 5 name(s) from column `TaxonName` resolved against 122535 reference names</span></span>
 <span><span class="co">#&gt;   TaxonName         name as submitted</span></span>
 <span><span class="co">#&gt;   canonical         resolved canonical name; NA when unresolved</span></span>
 <span><span class="co">#&gt;   taxon_confidence  exact, synonym, cleaned_exact, cleaned_synonym or unresolved</span></span>
@@ -259,7 +260,7 @@ synonym table of the newest EUNIS release; its argument
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">syn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_read_synonyms.html">resy_read_synonyms</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">syn</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 67018</span></span>
+<span><span class="co">#&gt; [1] 67005</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html" class="external-link">head</a></span><span class="op">(</span><span class="va">syn</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                    synonym          esy_canonical       source accepted_in</span></span>
 <span><span class="co">#&gt; 1       Abelmoschus bammia Abelmoschus esculentus col;gbif;wfo        &lt;NA&gt;</span></span>
@@ -317,17 +318,17 @@ than the number of rows.</p>
 <tbody>
 <tr class="odd">
 <td align="left">gbif</td>
-<td align="right">55,750</td>
+<td align="right">55,738</td>
 <td align="right">83.2</td>
 </tr>
 <tr class="even">
 <td align="left">wfo</td>
-<td align="right">48,459</td>
+<td align="right">48,450</td>
 <td align="right">72.3</td>
 </tr>
 <tr class="odd">
 <td align="left">col</td>
-<td align="right">48,027</td>
+<td align="right">48,025</td>
 <td align="right">71.7</td>
 </tr>
 <tr class="even">
@@ -337,12 +338,12 @@ than the number of rows.</p>
 </tr>
 <tr class="odd">
 <td align="left">ncbi</td>
-<td align="right">949</td>
+<td align="right">947</td>
 <td align="right">1.4</td>
 </tr>
 <tr class="even">
 <td align="left">euromed</td>
-<td align="right">392</td>
+<td align="right">386</td>
 <td align="right">0.6</td>
 </tr>
 </tbody>

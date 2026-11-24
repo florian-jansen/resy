@@ -17,12 +17,20 @@ The file format is detected from the extension:
   Parsed via the legacy text parser.
 
 When no `expertfile` is supplied, the function looks for `expert.json`
-(or `expert.json.xz`), then `expert.txt` (in that order) under
-`<root>/<scheme>/<version>/`, where the roots are searched in the order
-given by `location`: classifications stored with
+(or `expert.json.xz`), then `expert.txt` (or `expert.txt.xz`), in that
+order, under `<root>/<scheme>/<version>/`, where the roots are searched
+in the order given by `location`: classifications stored with
 [`resy_add_classification()`](https://florian-jansen.github.io/resy/reference/resy_add_classification.md)
 (`"user"`) and the classifications shipped with the package
 (`"package"`).
+
+A loaded system is kept in RESY's cache directory
+(`tools::R_user_dir("RESY", "cache")`), so that loading the same file
+again restores it instead of parsing it. The cached copy is used only
+while the file keeps its size and modification time and the same
+installed version of RESY loads it; storing a new copy removes the older
+ones of that file. Set `options(RESY.cache = FALSE)` to parse every
+time, or `options(RESY.cache_dir = <path>)` to keep the cache elsewhere.
 
 ## Usage
 
@@ -58,12 +66,16 @@ resy_load_expert(
 
 ## Value
 
-A list of class `resy_parsed_expert`.
+A list of class `resy_parsed_expert`. Its scheme, version and file, and
+whether the file is byte-identical to the published release, are
+reported by
+[`resy_provenance()`](https://florian-jansen.github.io/resy/reference/resy_provenance.md).
 
 ## See also
 
 [`resy_available_classifications()`](https://florian-jansen.github.io/resy/reference/resy_available_classifications.md),
-[`resy_add_classification()`](https://florian-jansen.github.io/resy/reference/resy_add_classification.md)
+[`resy_add_classification()`](https://florian-jansen.github.io/resy/reference/resy_add_classification.md),
+[`resy_provenance()`](https://florian-jansen.github.io/resy/reference/resy_provenance.md)
 
 ## Examples
 

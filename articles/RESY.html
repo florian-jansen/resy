@@ -43,6 +43,7 @@
     <li><a class="dropdown-item" href="../articles/altitude-vignette.html">Get altitude data</a></li>
     <li><a class="dropdown-item" href="../articles/taxonomy.html">Match species names</a></li>
     <li><a class="dropdown-item" href="../articles/app.html">RESY App</a></li>
+    <li><a class="dropdown-item" href="../articles/maker.html">RESY Maker</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -179,7 +180,9 @@ versions bundled with the package.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/resy_available_classifications.html">resy_available_classifications</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">scheme</span>, <span class="va">version</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          scheme    version</span></span>
 <span><span class="co">#&gt; 1 Apennine-test 2026-06-27</span></span>
-<span><span class="co">#&gt; 2         EUNIS 2025-10-03</span></span></code></pre></div>
+<span><span class="co">#&gt; 2         EUNIS 2020-06-08</span></span>
+<span><span class="co">#&gt; 3         EUNIS 2021-06-01</span></span>
+<span><span class="co">#&gt; 4         EUNIS 2025-10-03</span></span></code></pre></div>
 <p>To add your own expert system, use
 <code><a href="../reference/resy_add_classification.html">resy_add_classification()</a></code>.</p>
 <p><code><a href="../reference/resy_load_expert.html">resy_load_expert()</a></code> reads a bundled expert system into a
@@ -222,10 +225,10 @@ matched.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tax_apennine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/resy_check_taxonomy.html">resy_check_taxonomy</a></span><span class="op">(</span>obs <span class="op">=</span> <span class="va">data_species</span>, parsed <span class="op">=</span> <span class="va">parsed_apennine</span><span class="op">)</span></span>
 <span><span class="va">tax_apennine</span></span>
-<span><span class="co">#&gt; &lt;resy_taxa&gt; 1009 name(s) from column `scientificName` checked against 950 Section 1 species</span></span>
+<span><span class="co">#&gt; &lt;resy_taxa&gt; 1009 name(s) from column `scientificName` checked against 950 species names of the expert system</span></span>
 <span><span class="co">#&gt;   scientificName  Name as submitted</span></span>
 <span><span class="co">#&gt;   TaxonName       Canonical name used by resy_classify(); NA when unmatched</span></span>
-<span><span class="co">#&gt;   matched         TRUE if found as a canonical name or Section 1 synonym</span></span>
+<span><span class="co">#&gt;   matched         TRUE if found among the species names of the expert system</span></span>
 <span><span class="co">#&gt; 1009 matched (100.0%), 0 unmatched</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;                                          scientificName</span></span>

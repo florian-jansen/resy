@@ -79,7 +79,9 @@ Authors:
 resy_available_classifications()[, c("scheme", "version")]
 #>          scheme    version
 #> 1 Apennine-test 2026-06-27
-#> 2         EUNIS 2025-10-03
+#> 2         EUNIS 2020-06-08
+#> 3         EUNIS 2021-06-01
+#> 4         EUNIS 2025-10-03
 
 parsed <- resy_load_expert(scheme = "Apennine-test")
 parsed$vegtype.formula.names

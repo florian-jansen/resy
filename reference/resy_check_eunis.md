@@ -38,7 +38,8 @@ resy_check_eunis(data, source_crs = NULL, verbose = TRUE)
   `NULL` (default), coordinates that are all valid longitudes and
   latitudes are read as degrees (EPSG:4326); other coordinates need the
   code. Ignored when `data` is an `sf` object, which carries its own
-  CRS.
+  CRS. The optional package `sf` is required for `sf` input and CRS
+  codes other than 4326, 4258 and 25832.
 
 - verbose:
 
