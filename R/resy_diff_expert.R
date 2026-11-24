@@ -102,11 +102,13 @@ print.summary.resy_expert_diff <- function(x, max = 30L, ...) {
 
 # ---- helpers ----------------------------------------------------------------
 
-# A parsed expert from a parsed object, a file path or a version of `scheme`.
+# A parsed expert from a parsed object, a classification result, a file path or
+# a version of `scheme`.
 .resy_as_parsed <- function(x, scheme) {
   if (inherits(x, "resy_parsed_expert")) return(x)
+  if (inherits(x, "resy_result")) return(x$parsed)
   if (!is.character(x) || length(x) != 1L || is.na(x))
-    stop("Each expert system must be a resy_parsed_expert, a file path or a version string.",
+    stop("Each expert system must be a resy_parsed_expert, a resy_result, a file path or a version string.",
          call. = FALSE)
   if (file.exists(x)) return(resy_load_expert(expertfile = x))
   resy_load_expert(scheme = scheme, version = x)

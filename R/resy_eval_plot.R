@@ -5,11 +5,17 @@
 #' Prints, in plain words, why one plot is classified as it is: the
 #' vegetation types whose rules hold for it with their priorities, the type it
 #' is classified as, and its species. Below that it lists the lower-level types of the
-#' classified type that the plot did not reach. Each is shown with its rule and
+#' classified type and the other types at the same level (its siblings, for
+#' example `R21` and `R23` for a plot classified as `R22`). For each it says
+#' what kept the plot from it: a rule that does not hold, with the number of
+#' its conditions the plot satisfies, or a rule that holds but has a lower
+#' priority than the type chosen. The closest is shown with its rule and
 #' with every condition the rule uses: whether the condition is met, the value
 #' the plot has, the value the condition requires, and the plot's species that
-#' count towards it. This shows, for example, why a plot is `R2` and not `R22`.
-#' A plot that matches no type is shown against the top-level types.
+#' count towards it. This shows, for example, why a plot is `R2` and not `R22`,
+#' or `R22` and not `R21`. A plot that matches no type is shown against the
+#' top-level types. To set any two types side by side, also from different
+#' expert systems, use [resy_compare_types()].
 #'
 #' In a rule, `[1]`, `[2]`, ... stand for the numbered conditions listed under
 #' it, combined with `and`, `or` and `not` as the expert system combines them.
@@ -18,10 +24,14 @@
 #' @param p Plot identifier (`PlotObservationID`) as character; if numeric, treated as
 #'   row index in `header`.
 #' @param type Optional vegetation-type short code(s) to show in the same way,
-#'   whether or not their rules hold for the plot.
+#'   whether or not their rules hold for the plot, each with why the plot is or
+#'   is not classified as it.
 #' @param lower Logical; if `TRUE` (default), list the lower-level types the
-#'   plot did not reach, with their conditions.
+#'   plot is not classified as, with their conditions.
+#' @param siblings Logical; if `TRUE` (default), list the other types at the
+#'   level of the classified type, with their conditions.
 #' @return `NULL`, invisibly. Called for the printed output.
+#' @seealso [resy_compare_types()]
 #' @examples
 #' species <- read.csv(
 #'   system.file("extdata", "data_example_species.csv", package = "RESY")
@@ -36,20 +46,57 @@
 #'
 #' resy_eval_plot(res, p = as.character(header$PlotObservationID[1]))
 #' @export
-resy_eval_plot <- function(res, p, type = character(), lower = TRUE) {
-  .resy_print_plot_evidence(.resy_plot_evidence(res, p, type, lower))
+resy_eval_plot <- function(res, p, type = character(), lower = TRUE, siblings = TRUE) {
+  .resy_print_plot_evidence(.resy_plot_evidence(res, p, type, lower, siblings))
   invisible(NULL)
 }
 
 # Everything resy_eval_plot() says about one plot, as data: the types whose
-# rule holds, the classification in words, the species, the lower levels not
-# reached and the types asked for with `type`. The printer below and the RESY
-# App both read this list.
-.resy_plot_evidence <- function(res, p, type = character(), lower = TRUE) {
+# rule holds, the classification in words, the species, the lower levels and
+# siblings not chosen and the types asked for with `type`. The printer below
+# and the RESY App both read this list.
+.resy_plot_evidence <- function(res, p, type = character(), lower = TRUE, siblings = TRUE) {
   stopifnot(inherits(res, "resy_result"))
   parsed <- res$parsed
   codes <- parsed$vegtype.formula.names.short
+  plot <- .resy_plot_of(res, p)
+  ev <- list(id = plot$id, species = plot$species, holds = NULL, sentence = NULL,
+             lower = list(), siblings = NULL, types = list())
+  held <- NULL
+  choice <- NA_character_
 
+  if (!is.null(res$logi2)) {
+    held <- .resy_plot_held(res, plot)
+    typ <- codes[held]
+    choice <- unname(res$result.classification[plot$id])
+    ev$holds <- data.frame(code = typ,
+                           priority = parsed$vegtype.priority[held],
+                           stringsAsFactors = FALSE)
+    ev$choice <- choice
+    if (!is.na(choice)) ev$sentence <- .resy_choice_sentence(choice, held, parsed)
+    if (isTRUE(lower) && !is.na(choice)) {
+      tree <- resy_expert_tree(parsed)
+      anchor <- if (choice == "+") typ else choice
+      ev$lower <- lapply(anchor, function(a) .resy_lower_levels(res, plot, a, held, choice, tree))
+    }
+    if (isTRUE(siblings) && !is.na(choice) && !choice %in% c("?", "+")) {
+      ev$siblings <- .resy_sibling_levels(res, plot, choice, held, resy_expert_tree(parsed, fill = TRUE))
+    }
+  }
+
+  ev$types <- lapply(type, function(code) {
+    t <- if (is.character(code)) which(codes == code) else integer()
+    if (!length(t)) return(list(code = as.character(code), defined = FALSE))
+    list(code = code, defined = TRUE,
+         verdict = if (!is.null(held)) .resy_code_verdict(res, plot, code, held, choice)$text,
+         rules = lapply(t, function(i) .resy_type_evidence(res, plot, i)))
+  })
+  ev
+}
+
+# The context of plot `p` (an identifier, or a row number of `header`) in a
+# classification result.
+.resy_plot_of <- function(res, p) {
   if (is.numeric(p)) {
     warning('Plot numbers ("PlotObservationID") should be characters (indices), not numeric row numbers.')
     p <- as.character(res$header$PlotObservationID[p])
@@ -58,36 +105,54 @@ resy_eval_plot <- function(res, p, type = character(), lower = TRUE) {
   }
   # logi1 and logi2 are in the solver's plot order, which need not be the row
   # order of `header`.
-  plot <- .resy_plot_context(res, p, match(p, names(res$types)))
-  ev <- list(id = p, species = plot$species, holds = NULL, sentence = NULL,
-             lower = list(), types = list())
+  n <- match(p, names(res$types))
+  if (is.na(n)) stop("Plot ", p, " is not in the classification result.", call. = FALSE)
+  .resy_plot_context(res, p, n)
+}
 
-  if (!is.null(res$logi2)) {
-    held <- res$type_rules[[p]]
-    if (is.null(held)) {
-      hit <- which(vapply(res$logi2, function(x) isTRUE(x[plot$n]), logical(1)))
-      held <- .resy_type_rule_indices(hit, codes, parsed$vegtype.priority)
-    }
-    typ <- codes[held]
-    choice <- unname(res$result.classification[p])
-    ev$holds <- data.frame(code = typ,
-                           priority = parsed$vegtype.priority[held],
-                           stringsAsFactors = FALSE)
-    ev$choice <- choice
-    if (!is.na(choice)) ev$sentence <- .resy_choice_sentence(choice, held, parsed)
-    if (isTRUE(lower) && !is.na(choice)) {
-      anchor <- if (choice == "+") typ else choice
-      ev$lower <- lapply(anchor, function(a) .resy_lower_levels(res, plot, a))
-    }
+# The rules that hold for the plot, the strongest per code, as the
+# classification chose among them.
+.resy_plot_held <- function(res, plot) {
+  held <- res$type_rules[[plot$id]]
+  if (!is.null(held)) return(held)
+  hit <- which(vapply(res$logi2, function(x) isTRUE(x[plot$n]), logical(1)))
+  .resy_type_rule_indices(hit, res$parsed$vegtype.formula.names.short, res$parsed$vegtype.priority)
+}
+
+# Why the plot is or is not classified as `code`, given the rules that hold
+# (`held`) and the classification (`choice`). A code can carry several rules;
+# it is judged by its strongest rule that holds, else by its closest rule (the
+# largest share of conditions satisfied). Returns that rule (`t`, and its
+# number among the code's rules), whether it holds, its priority, the
+# conditions satisfied, and the reason in words.
+.resy_code_verdict <- function(res, plot, code, held, choice) {
+  parsed <- res$parsed
+  codes <- parsed$vegtype.formula.names.short
+  priority <- as.integer(as.character(parsed$vegtype.priority))
+  t <- which(codes == code)
+  h <- intersect(held, t)
+  st <- lapply(t, function(i) .resy_condition_status(res, plot, i))
+  k <- vapply(st, function(s) sum(s$satisfied), integer(1))
+  m <- vapply(st, nrow, integer(1))
+  best <- if (length(h)) match(h[1L], t) else order(-k / pmax(m, 1L))[1L]
+  i <- t[best]
+  top <- if (length(held)) max(priority[held]) else NA_integer_
+  rivals <- setdiff(codes[held][priority[held] == top], code)
+  text <- if (!length(h)) {
+    paste0("rule not met: ", k[best], " of ", m[best], " conditions satisfied",
+           if (length(t) > 1L) paste0(", closest of ", length(t), " rules") else "")
+  } else if (identical(choice, code)) {
+    paste0("classified as ", code, " (priority ", priority[i], ")")
+  } else if (priority[i] < top) {
+    paste0("rule holds at priority ", priority[i], ", but ",
+           paste(rivals, collapse = ", "), if (length(rivals) > 1L) " have" else " has",
+           " priority ", top)
+  } else {
+    paste0("rule holds at priority ", priority[i], ", tied with ",
+           paste(rivals, collapse = ", "), ", so the plot is not classified")
   }
-
-  ev$types <- lapply(type, function(code) {
-    t <- if (is.character(code)) which(codes == code) else integer()
-    if (!length(t)) return(list(code = as.character(code), defined = FALSE))
-    list(code = code, defined = TRUE,
-         rules = lapply(t, function(i) .resy_type_evidence(res, plot, i)))
-  })
-  ev
+  list(code = code, t = i, rule = best, rules = length(t), holds = length(h) > 0L,
+       priority = priority[i], satisfied = k[best], conditions = m[best], text = text)
 }
 
 .resy_print_plot_evidence <- function(ev) {
@@ -104,12 +169,14 @@ resy_eval_plot <- function(res, p, type = character(), lower = TRUE) {
   print(ev$species, row.names = FALSE, right = FALSE)
 
   for (lv in ev$lower) .resy_print_lower_levels(lv)
+  if (!is.null(ev$siblings)) .resy_print_sibling_levels(ev$siblings)
 
   for (ty in ev$types) {
     cat("\n")
     if (!ty$defined) {
       cat("Type ", ty$code, " is not defined.\n", sep = "")
     } else {
+      if (!is.null(ty$verdict)) cat(ty$code, ": ", ty$verdict, "\n\n", sep = "")
       for (rule in ty$rules) .resy_print_type_evidence(rule)
     }
   }
@@ -147,65 +214,92 @@ resy_eval_plot <- function(res, p, type = character(), lower = TRUE) {
 }
 
 # The types one level below `anchor` (a short code; "?" stands for the top of
-# the hierarchy) whose rule does not hold for the plot. Levels follow the code
-# prefixes of the expert system, as in resy_expert_tree(). A code can carry
-# several rules (EUNIS-ESy defines T3M by twelve); the type holds when any of
-# them holds, and a type not reached is judged by its closest rule. The types
-# are ordered by the share of conditions the plot satisfies, closest first, and
-# the closest is described in full.
-.resy_lower_levels <- function(res, plot, anchor) {
-  parsed <- res$parsed
-  codes <- parsed$vegtype.formula.names.short
-  tree <- resy_expert_tree(parsed)
+# the hierarchy). Levels follow the code prefixes of the expert system, as in
+# resy_expert_tree().
+.resy_lower_levels <- function(res, plot, anchor, held, choice, tree) {
   parent_code <- tree$code[tree$parent]
   below <- unique(if (identical(anchor, "?")) tree$code[is.na(tree$parent)] else
     tree$code[!is.na(parent_code) & parent_code == anchor])
-  out <- list(anchor = anchor, below = length(below), types = NULL, closest = NULL)
-  holds <- function(t) isTRUE(res$logi2[[t]][plot$n])
-  missed <- below[!vapply(below, function(code) any(vapply(which(codes == code), holds, logical(1))),
-                          logical(1))]
-  if (!length(missed)) return(out)
-
-  per_code <- lapply(missed, function(code) {
-    t <- which(codes == code)
-    st <- lapply(t, function(i) .resy_condition_status(res, plot, i))
-    k <- vapply(st, function(s) sum(s$satisfied), integer(1))
-    m <- vapply(st, nrow, integer(1))
-    best <- order(-k / pmax(m, 1L))[1L]
-    data.frame(code = code, name = .resy_type_description(parsed, t[best]),
-               rule = best, rules = length(t), satisfied = k[best], conditions = m[best],
-               t = t[best], stringsAsFactors = FALSE)
-  })
-  types <- do.call(rbind, per_code)
-  types <- types[order(-types$satisfied / pmax(types$conditions, 1L), types$code), , drop = FALSE]
-  rownames(types) <- NULL
-  out$closest <- .resy_type_evidence(res, plot, types$t[1L])
-  out$types <- types[setdiff(names(types), "t")]
-  out
+  c(list(anchor = anchor, below = length(below)),
+    .resy_unchosen_types(res, plot, below, held, choice))
 }
 
-# Prints the lower levels of one anchor: a single missed type in full; several
-# one per line with how many of their conditions the plot satisfies, then the
-# closest in full.
+# The other types under the parent of `choice` (the other top-level types when
+# `choice` is one), in the tree with the group levels the codes imply filled in
+# (resy_expert_tree(fill = TRUE)): the siblings of EUNIS Q51 are Q52, Q53 and
+# Q54 under the group Q5, which the expert system does not define as a type.
+.resy_sibling_levels <- function(res, plot, choice, held, tree) {
+  parent_code <- tree$code[tree$parent]
+  parent <- parent_code[!tree$synthetic][match(choice, tree$code[!tree$synthetic])]
+  same <- if (is.na(parent)) is.na(tree$parent) else !is.na(parent_code) & parent_code == parent
+  others <- setdiff(unique(tree$code[same & !tree$synthetic]), choice)
+  c(list(anchor = choice, parent = parent, n = length(others)),
+    .resy_unchosen_types(res, plot, others, held, choice))
+}
+
+# The types `codes`, each with what kept the plot from it (see
+# .resy_code_verdict()). Types whose rule holds come first, highest priority
+# first; then those whose rule does not hold, by the share of conditions the
+# plot satisfies, closest first. The first is described in full.
+.resy_unchosen_types <- function(res, plot, codes, held, choice) {
+  codes <- setdiff(codes, choice)
+  if (!length(codes)) return(list(types = NULL, closest = NULL))
+  v <- lapply(codes, function(code) .resy_code_verdict(res, plot, code, held, choice))
+  field <- function(f, type) vapply(v, `[[`, type, f)
+  types <- data.frame(
+    code = codes,
+    name = vapply(v, function(x) .resy_type_description(res$parsed, x$t), character(1)),
+    holds = field("holds", logical(1)),
+    priority = field("priority", integer(1)),
+    rule = field("rule", integer(1)),
+    rules = field("rules", integer(1)),
+    satisfied = field("satisfied", integer(1)),
+    conditions = field("conditions", integer(1)),
+    why = field("text", character(1)),
+    t = field("t", integer(1)),
+    stringsAsFactors = FALSE
+  )
+  share <- types$satisfied / pmax(types$conditions, 1L)
+  types <- types[order(!types$holds, -ifelse(types$holds, types$priority, 0L), -share, types$code),
+                 , drop = FALSE]
+  rownames(types) <- NULL
+  list(types = types[setdiff(names(types), "t")],
+       closest = .resy_type_evidence(res, plot, types$t[1L]))
+}
+
+# Prints the lower levels of one anchor.
 .resy_print_lower_levels <- function(lv) {
   cat("\n")
   if (!lv$below) {
     cat(lv$anchor, " has no lower levels.\n", sep = "")
     return(invisible(NULL))
   }
-  if (is.null(lv$types)) return(invisible(NULL))
   heading <- if (identical(lv$anchor, "?")) "Top-level types not reached" else
     paste("Why not a lower level of", lv$anchor)
+  .resy_print_unchosen(heading, lv)
+}
+
+.resy_print_sibling_levels <- function(sb) {
+  if (!sb$n) return(invisible(NULL))
+  cat("\n")
+  heading <- if (is.na(sb$parent)) "Why not another top-level type" else
+    paste("Why not another type under", sb$parent)
+  .resy_print_unchosen(heading, sb)
+}
+
+# A single type in full; several one per line with what kept the plot from
+# each, then the first in full.
+.resy_print_unchosen <- function(heading, lv) {
   ty <- lv$types
+  if (is.null(ty)) return(invisible(NULL))
+  desc <- ifelse(nchar(ty$name) > 50L, paste0(substr(ty$name, 1L, 47L), "..."), ty$name)
+  cat(heading, if (nrow(ty) > 1L) paste0(": ", nrow(ty), " types, closest first") else ":",
+      "\n", sep = "")
+  cat(sprintf("  %-5s %-50s %s\n", ty$code, desc, ty$why), sep = "")
   if (nrow(ty) > 1L) {
-    desc <- ifelse(nchar(ty$name) > 50L, paste0(substr(ty$name, 1L, 47L), "..."), ty$name)
-    of_rules <- ifelse(ty$rules > 1L, sprintf(", closest of %d rules", ty$rules), "")
-    cat(heading, ": ", nrow(ty), " types, closest first\n", sep = "")
-    cat(sprintf("  %-5s %-50s %d of %d conditions satisfied%s\n",
-                ty$code, desc, ty$satisfied, ty$conditions, of_rules), sep = "")
     cat("\nClosest, in full (show any other with `type = \"", ty$code[2L], "\"`):\n\n", sep = "")
   } else {
-    cat(heading, ":\n\n", sep = "")
+    cat("\n")
   }
   .resy_print_type_evidence(lv$closest)
   invisible(NULL)
@@ -265,7 +359,9 @@ resy_eval_plot <- function(res, p, type = character(), lower = TRUE) {
 # The expression is parsed and walked, so `and`, `or`, `not` and brackets read
 # exactly as the solver evaluates them; each column becomes [k], numbered in the
 # order of occurrence. Returns the text and the column numbers in that order.
-.resy_rule_words <- function(formula) {
+# `number`, a function of the column number, numbers the conditions instead
+# (resy_compare_types() numbers them across two types).
+.resy_rule_words <- function(formula, number = NULL) {
   cols <- integer()
   negated <- integer()
   walk <- function(e, neg = FALSE) {
@@ -274,7 +370,7 @@ resy_eval_plot <- function(res, p, type = character(), lower = TRUE) {
       cols <<- c(cols, j)
       k <- length(cols)
       if (neg) negated <<- c(negated, k)
-      return(paste0("[", k, "]"))
+      return(paste0("[", if (is.null(number)) k else number(j), "]"))
     }
     if (!is.call(e)) return(as.character(e))
     op <- as.character(e[[1]])
@@ -297,11 +393,7 @@ resy_eval_plot <- function(res, p, type = character(), lower = TRUE) {
 # distinguishes in .resy_solve_membership().
 .resy_condition_words <- function(condition) {
   x <- trimws(condition)
-  groups <- function(s, code) {
-    parts <- .resy_membership_parts(s, prefix = code)
-    parts <- sub("^\\+[0-9]+\\s+", "", parts)
-    paste(parts, collapse = " and ")
-  }
+  groups <- function(s, code) paste(.resy_condition_parts(s, code), collapse = " and ")
   except <- function(s, code) {
     p <- trimws(strsplit(s, "EXCEPT", fixed = TRUE)[[1]])
     out <- groups(p[1], code)
@@ -344,6 +436,26 @@ resy_eval_plot <- function(res, p, type = character(), lower = TRUE) {
     "#SC" = list(words = paste("highest cover of a single species of", except(rest, code)), unit = "%"),
     list(words = x, unit = "")
   )
+}
+
+# The groups or species named in `s`, a list of parts of a condition with code
+# `code` ("Trees|#TC Shrubs"), without the code and without a "+12" weight.
+.resy_condition_parts <- function(s, code) {
+  sub("^\\+[0-9]+\\s+", "", .resy_membership_parts(s, prefix = code))
+}
+
+# The species groups a condition names, on either side of EXCEPT.
+.resy_condition_groups <- function(condition, groups.names) {
+  x <- trimws(condition)
+  if (startsWith(x, "NON ")) x <- trimws(substring(x, 5L))
+  if (!startsWith(x, "#")) return(character())
+  code <- substr(x, 1L, 3L)
+  rest <- trimws(sub("^EXCEPT", "", trimws(substring(x, 4L))))
+  if (!nzchar(rest)) return(character())
+  parts <- trimws(strsplit(rest, "EXCEPT", fixed = TRUE)[[1]])
+  # A group's name includes its weight ("+04 R22-..."), as in groups.names.
+  names <- unlist(lapply(parts, .resy_membership_parts, prefix = if (code == "#$$") NULL else code))
+  intersect(trimws(names), groups.names)
 }
 
 .resy_fmt <- function(v, unit = "") {

@@ -49,8 +49,32 @@ suppressPackageStartupMessages({
 # rests on and the names of its types.
 resy_page_set_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) {
   t0 <- Sys.time()
-  # A system read before in this session is kept, so choosing it again does not
-  # parse its file again. A file is known by its content.
+  kept <- .page_expert(scheme, version, path)
+  parsed <- kept$parsed
+  prov <- kept$provenance
+  sys <- .page_use_system(parsed, if (is.null(path)) scheme else basename(path))
+  .page_json(list(
+    scheme = sys$scheme,
+    release_scheme = prov$scheme,
+    version = prov$version,
+    doi = prov$release_doi,
+    identical_to_release = prov$identical_to_release,
+    eunis = sys$eunis,
+    n_types = length(unique(parsed$vegtype.formula.names.short)),
+    types = I(.page_type_codes(parsed)),
+    n_species = length(parsed$aggs),
+    header_cols = I(sys$header_cols),
+    derived_cols = I(sys$derived_cols),
+    names = sys$names,
+    levels = if (sys$eunis) sys$names[nchar(sys$names$code) == 1L, ] else sys$names,
+    seconds = round(as.numeric(difftime(Sys.time(), t0, units = "secs")), 2)
+  ))
+}
+
+# A parsed expert system and its provenance. A system read before in this
+# session is kept, so choosing it again does not parse its file again. A file
+# is known by its content.
+.page_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) {
   key <- if (is.null(path)) paste(scheme, version %||% "", sep = ":") else
     paste("file", unname(tools::md5sum(path)), sep = ":")
   kept <- .page$read[[key]]
@@ -63,24 +87,20 @@ resy_page_set_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) 
     kept <- list(parsed = parsed, provenance = resy_provenance(parsed))
     .page$read[[key]] <- kept
   }
-  parsed <- kept$parsed
-  prov <- kept$provenance
-  sys <- .page_use_system(parsed, if (is.null(path)) scheme else basename(path))
-  .page_json(list(
-    scheme = sys$scheme,
-    release_scheme = prov$scheme,
-    version = prov$version,
-    doi = prov$release_doi,
-    identical_to_release = prov$identical_to_release,
-    eunis = sys$eunis,
-    n_types = length(unique(parsed$vegtype.formula.names.short)),
-    n_species = length(parsed$aggs),
-    header_cols = I(sys$header_cols),
-    derived_cols = I(sys$derived_cols),
-    names = sys$names,
-    levels = if (sys$eunis) sys$names[nchar(sys$names$code) == 1L, ] else sys$names,
-    seconds = round(as.numeric(difftime(Sys.time(), t0, units = "secs")), 2)
-  ))
+  kept
+}
+
+# Runs `f()` with the expert system `parsed` in use, and the system in use
+# before (with its species-name matches) back in place afterwards.
+.page_with_system <- function(parsed, scheme, f) {
+  system <- .page$system
+  taxa <- .page$taxa
+  on.exit({
+    .page$system <- system
+    .page$taxa <- taxa
+  })
+  .page_use_system(parsed, scheme)
+  f()
 }
 
 # Makes a parsed expert system the one later runs use, and returns it with the
@@ -367,9 +387,39 @@ resy_page_explain <- function(species_tsv, sites_tsv, plot_id, coast_dunes = TRU
                               type = character()) {
   .page_check_buffer(coast_dunes, coast_buffer)
   sp <- .page_read_batch(species_tsv)
-  res <- suppressWarnings(suppressMessages(
-    .page_run(sp, .page_sites(.page_read_batch(sites_tsv), coast_dunes, coast_buffer))))
+  res <- .page_classify_one(sp, .page_read_batch(sites_tsv), coast_dunes, coast_buffer)
   .page_json(.page_name_unknown(suppressWarnings(RESY:::.resy_plot_evidence(res, plot_id, type = type)), sp))
+}
+
+.page_classify_one <- function(sp, sites, coast_dunes, coast_buffer) {
+  suppressWarnings(suppressMessages(.page_run(sp, .page_sites(sites, coast_dunes, coast_buffer))))
+}
+
+# Two types side by side for one plot (resy_compare_types()): type `a` of the
+# system in use and type `b` of the same system or, with `version_b`, of that
+# release of the scheme in use (the plot is then classified with it too).
+resy_page_compare <- function(species_tsv, sites_tsv, plot_id, coast_dunes = TRUE, coast_buffer = 5000,
+                              a, b, version_b = NULL) {
+  .page_check_buffer(coast_dunes, coast_buffer)
+  sp <- .page_read_batch(species_tsv)
+  sites <- .page_read_batch(sites_tsv)
+  res_a <- .page_classify_one(sp, sites, coast_dunes, coast_buffer)
+  res_b <- if (is.null(version_b)) res_a else {
+    scheme <- resy_provenance(.page$system$parsed)$scheme
+    other <- .page_expert(scheme, version_b)$parsed
+    .page_with_system(other, scheme, function() .page_classify_one(sp, sites, coast_dunes, coast_buffer))
+  }
+  .page_json(unclass(resy_compare_types(res_a, a, b, y = res_b, plot = plot_id)))
+}
+
+# The codes of the types an expert system defines (with a rule), in its order.
+.page_type_codes <- function(parsed) unique(parsed$vegtype.formula.names.short)
+
+# The codes and names of the types of release `version` of the scheme in use.
+resy_page_types <- function(version) {
+  scheme <- resy_provenance(.page$system$parsed)$scheme
+  parsed <- .page_expert(scheme, version)$parsed
+  .page_json(.page_type_names(parsed))
 }
 
 # The species table of the evidence `ev` has no name for the records of the

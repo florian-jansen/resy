@@ -6,29 +6,6 @@
 # solver's and/or/not structure. The condition helpers are checked on a
 # hand-built set of groups so each resolution rule is visible.
 
-eval_plot_data <- function() {
-  sp <- utils::read.csv(
-    system.file("extdata", "data_example_species.csv", package = "RESY"),
-    stringsAsFactors = FALSE
-  )
-  names(sp)[names(sp) == "scientificName"] <- "TaxonName"
-  sp
-}
-
-apennine_result <- local({
-  res <- NULL
-  function() {
-    if (is.null(res)) {
-      sp <- eval_plot_data()
-      header <- as.data.frame(unique(sp["PlotObservationID"]))
-      res <<- suppressMessages(
-        resy_classify(sp, header, scheme = "Apennine-test", mc = 1L)
-      )
-    }
-    res
-  }
-})
-
 eval_plot_text <- function(...) {
   paste(capture.output(resy_eval_plot(...)), collapse = "\n")
 }
@@ -168,8 +145,8 @@ test_that("repeated conditions retain truth and negation per occurrence", {
   expect_equal(ev$conditions$satisfied, c(TRUE, FALSE, TRUE))
 })
 
-test_that("lower = FALSE leaves the lower levels out", {
-  out <- capture.output(resy_eval_plot(apennine_result(), "AN57", lower = FALSE))
+test_that("lower = FALSE and siblings = FALSE leave the other types out", {
+  out <- capture.output(resy_eval_plot(apennine_result(), "AN57", lower = FALSE, siblings = FALSE))
   expect_false(any(grepl("lower level", out, fixed = TRUE)))
   expect_equal(out[2], "Classified as F (Forest).")
   expect_equal(length(out), match("Plot AN57: 10 species", out) + 1 + 10)
@@ -244,4 +221,75 @@ test_that("an expression's conditions are its sides", {
     .resy_expression_conditions("<#TC Trees GR #TC Abies alba>", conds),
     c("#TC Trees", "#TC Abies alba")
   )
+})
+
+test_that("the other types at the level of the classified type are explained", {
+  res <- apennine_result()
+  out <- eval_plot_text(res, "AN57", lower = FALSE)
+  expect_match(out, "Why not another top-level type:", fixed = TRUE)
+  expect_match(out, "N     Non-forest", fixed = TRUE)
+  expect_match(out, "rule not met: 1 of 3 conditions satisfied", fixed = TRUE)
+
+  p <- names(res$result.classification)[res$result.classification == "NG"][1]
+  sb <- .resy_plot_evidence(res, p, lower = FALSE)$siblings
+  expect_equal(sb$parent, "N")
+  expect_equal(sb$types$code, "NS")
+  expect_false(sb$types$holds)
+  expect_equal(sb$closest$code, "NS")
+})
+
+one_beech_plot <- function(rules) {
+  obs <- data.frame(PlotObservationID = "p", TaxonName = "Fagus sylvatica", Cover_Perc = 50)
+  suppressMessages(resy_classify(obs, obs["PlotObservationID"],
+                                 expertfile = tiny_expert(rules), mc = 1L))
+}
+
+test_that("a sibling whose rule holds is reported as losing on priority", {
+  res <- one_beech_plot(data.frame(
+    code = c("A", "A1", "A2", "A3"), priority = c("1", "5", "3", "3"),
+    expression = c("<Fagus sylvatica GR 0>", "<Fagus sylvatica GR 10>",
+                   "<Fagus sylvatica GR 20>", "<Fagus sylvatica GR 90>")))
+  expect_equal(res$result.classification[["p"]], "A1")
+
+  ev <- .resy_plot_evidence(res, "p", type = "A2")
+  ty <- ev$siblings$types
+  expect_equal(ev$siblings$parent, "A")
+  expect_equal(ty$code, c("A2", "A3"))
+  expect_equal(ty$holds, c(TRUE, FALSE))
+  expect_equal(ty$why[1], "rule holds at priority 3, but A1 has priority 5")
+  expect_equal(ev$types[[1]]$verdict, "rule holds at priority 3, but A1 has priority 5")
+  expect_equal(.resy_plot_evidence(res, "p", type = "A1")$types[[1]]$verdict,
+               "classified as A1 (priority 5)")
+
+  out <- eval_plot_text(res, "p")
+  expect_match(out, "Why not another type under A: 2 types, closest first", fixed = TRUE)
+  expect_match(out, "A1 has no lower levels.", fixed = TRUE)
+  expect_false(grepl("another type", eval_plot_text(res, "p", siblings = FALSE), fixed = TRUE))
+})
+
+test_that("a lower level whose rule holds is listed with the priority that beat it", {
+  res <- one_beech_plot(data.frame(code = c("A", "A1"), priority = c("5", "3"),
+                                   expression = c("<Fagus sylvatica GR 0>", "<Fagus sylvatica GR 10>")))
+  lv <- .resy_plot_evidence(res, "p")$lower[[1]]
+  expect_equal(lv$types$code, "A1")
+  expect_equal(lv$types$why, "rule holds at priority 3, but A has priority 5")
+})
+
+test_that("a tie is named in the verdict of each tied type", {
+  res <- one_beech_plot(data.frame(code = c("A1", "A2"), priority = c("5", "5"),
+                                   expression = c("<Fagus sylvatica GR 10>", "<Fagus sylvatica GR 20>")))
+  ev <- .resy_plot_evidence(res, "p", type = "A2")
+  expect_equal(ev$choice, "+")
+  expect_null(ev$siblings)
+  expect_equal(ev$types[[1]]$verdict,
+               "rule holds at priority 5, tied with A1, so the plot is not classified")
+})
+
+test_that("siblings follow the group levels the codes imply", {
+  res <- one_beech_plot(data.frame(code = c("Q51", "Q52", "Q61"), priority = c("2", "2", "2"),
+                                   expression = c("<Fagus sylvatica GR 10>", "<Fagus sylvatica GR 60>",
+                                                  "<Fagus sylvatica GR 70>")))
+  sb <- .resy_plot_evidence(res, "p", lower = FALSE)$siblings
+  expect_equal(sb$parent, "Q5")
+  expect_equal(sb$types$code, "Q52")
 })

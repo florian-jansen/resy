@@ -166,6 +166,35 @@ nav.navbar.resy-pinned { transform: none !important; }
 #resy-app .conds .sp { display: block; color: var(--bs-secondary-color); font-size: 0.8rem; margin-top: 2px; }
 #resy-app .rule .neg { display: inline-block; margin-right: 5px; padding: 0 4px; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius-sm);
   font-size: 0.75rem; line-height: 1.4; color: var(--bs-secondary-color); }
+#resy-app .near .frac.held { color: var(--bs-body-color); }
+#resy-app .near .frac.held .bar i { background: var(--bs-warning); opacity: 0.8; }
+#resy-app .lower .why { height: 3em; overflow: auto; margin: 8px 0 0; color: var(--bs-secondary-color); }
+#resy-app .lower .why + .full { margin-top: 4px; }
+
+#resy-app .compare { margin-top: 8px; }
+#resy-app .cmp-pick { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+#resy-app .cmp-pick select { width: auto; max-width: 15rem; flex: 1 1 9rem; }
+#resy-app .cmp-out { margin-top: 10px; min-height: 420px; }
+#resy-app .cmp-out[aria-busy=true] { opacity: 0.55; }
+#resy-app .cmp-out table { table-layout: fixed; border-collapse: collapse; margin-bottom: 10px; }
+#resy-app .cmp-out th { position: static; vertical-align: top; padding: 4px 6px; border-bottom: 1px solid var(--bs-border-color); }
+#resy-app .cmp-out td { vertical-align: top; padding: 4px 6px; border-top: 1px solid var(--bs-border-color-translucent); }
+#resy-app .cmp-out tbody tr { cursor: default; }
+#resy-app .cmp-sides th, #resy-app .cmp-sides td { width: 50%; }
+#resy-app .cmp-sides .sys { display: block; font-weight: 400; font-size: 0.8rem; color: var(--bs-secondary-color); }
+#resy-app .cmp-sides .formula { margin-bottom: 4px; }
+#resy-app .cmp-sides .formula.judged { color: var(--bs-body-color); }
+#resy-app .verdict-line { margin-bottom: 4px; font-size: 0.85rem; }
+#resy-app .verdict-line.ok { color: var(--bs-success-text-emphasis); }
+#resy-app .verdict-line.held { color: var(--bs-warning-text-emphasis); }
+#resy-app .verdict-line.no { color: var(--bs-danger-text-emphasis); }
+#resy-app .cmp-conds { font-size: 0.85rem; }
+#resy-app .cmp-conds col.c-n { width: 2.6rem; }
+#resy-app .cmp-conds col.c-v { width: 4.8rem; }
+#resy-app .cmp-conds .n { color: var(--bs-secondary-color); font-variant-numeric: tabular-nums; }
+#resy-app .cmp-conds td.ok { color: var(--bs-success-text-emphasis); font-weight: 500; }
+#resy-app .cmp-conds td.no { color: var(--bs-danger-text-emphasis); font-weight: 500; }
+#resy-app .cmp-groups ul { padding-left: 18px; margin: 4px 0 0; }
 #resy-app .warn { margin: 12px 0 0; padding-left: 18px; }
 #resy-app .warn:empty { display: none; }
 

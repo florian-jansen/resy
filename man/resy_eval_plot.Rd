@@ -4,7 +4,7 @@
 \alias{resy_eval_plot}
 \title{Evaluate and print details for a single plot}
 \usage{
-resy_eval_plot(res, p, type = character(), lower = TRUE)
+resy_eval_plot(res, p, type = character(), lower = TRUE, siblings = TRUE)
 }
 \arguments{
 \item{res}{A \code{resy_result} returned by \code{\link[=resy_classify]{resy_classify()}}.}
@@ -13,10 +13,14 @@ resy_eval_plot(res, p, type = character(), lower = TRUE)
 row index in \code{header}.}
 
 \item{type}{Optional vegetation-type short code(s) to show in the same way,
-whether or not their rules hold for the plot.}
+whether or not their rules hold for the plot, each with why the plot is or
+is not classified as it.}
 
 \item{lower}{Logical; if \code{TRUE} (default), list the lower-level types the
-plot did not reach, with their conditions.}
+plot is not classified as, with their conditions.}
+
+\item{siblings}{Logical; if \code{TRUE} (default), list the other types at the
+level of the classified type, with their conditions.}
 }
 \value{
 \code{NULL}, invisibly. Called for the printed output.
@@ -26,11 +30,17 @@ plot did not reach, with their conditions.}
 Prints, in plain words, why one plot is classified as it is: the
 vegetation types whose rules hold for it with their priorities, the type it
 is classified as, and its species. Below that it lists the lower-level types of the
-classified type that the plot did not reach. Each is shown with its rule and
+classified type and the other types at the same level (its siblings, for
+example \code{R21} and \code{R23} for a plot classified as \code{R22}). For each it says
+what kept the plot from it: a rule that does not hold, with the number of
+its conditions the plot satisfies, or a rule that holds but has a lower
+priority than the type chosen. The closest is shown with its rule and
 with every condition the rule uses: whether the condition is met, the value
 the plot has, the value the condition requires, and the plot's species that
-count towards it. This shows, for example, why a plot is \code{R2} and not \code{R22}.
-A plot that matches no type is shown against the top-level types.
+count towards it. This shows, for example, why a plot is \code{R2} and not \code{R22},
+or \code{R22} and not \code{R21}. A plot that matches no type is shown against the
+top-level types. To set any two types side by side, also from different
+expert systems, use \code{\link[=resy_compare_types]{resy_compare_types()}}.
 
 In a rule, \verb{[1]}, \verb{[2]}, ... stand for the numbered conditions listed under
 it, combined with \code{and}, \code{or} and \code{not} as the expert system combines them.
@@ -48,4 +58,7 @@ res <- resy_classify(
 )
 
 resy_eval_plot(res, p = as.character(header$PlotObservationID[1]))
+}
+\seealso{
+\code{\link[=resy_compare_types]{resy_compare_types()}}
 }

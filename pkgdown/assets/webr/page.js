@@ -4,7 +4,7 @@
 // plots, spread over several webR sessions, so files of any size can be used.
 import { $, escapeHtml, rString, cleanError, fmt, plural, createLoader, fetchAssets, bootSession, setFile, saveBlob, store, createShell, pinNavbar, prepareSites, ensureGeography } from './resy_core.js';
 import { lineChunks, splitFields, splitRecords, fileText, readHeader, pick, SPECIES_COLS, SPECIES_COL_LABEL, fillSpeciesColumns, tsvValue, plotId, tsvPlotId, fieldNumber } from './resy_files.js';
-import { evidenceHtml, wireEvidence } from './resy_evidence.js';
+import { compareHtml, evidenceHtml, wireEvidence } from './resy_evidence.js';
 import { placeOf, createDotMap } from './resy_map.js';
 import { PALETTE, level, colourVar, cssValue } from './resy_palette.js';
 
@@ -973,7 +973,7 @@ async function explain(i) {
     $('d-title').textContent = title;
     $('d-empty').hidden = true;
     $('d-body').hidden = false;
-    $('d-body').innerHTML = evidenceHtml(ev, nameOf);
+    $('d-body').innerHTML = evidenceHtml(ev, nameOf) + comparePickerHtml(ev);
     $('d-body').scrollTop = 0;
     $('d-status').textContent = '';
   } catch (e) {
@@ -988,7 +988,105 @@ async function explain(i) {
 
 // Classifies plot i alone, from its rows of the species file, and returns
 // resy_page_explain()'s account of it, with the rules of `type` in full.
-async function evaluatePlot(i, type = null) {
+const evaluatePlot = (i, type = null) => onPlot(i, (id, opts) =>
+  `resy_page_explain("/tmp/explain_species.tsv", "/tmp/explain_sites.tsv", ${id}, ${opts}${type ? `, type = ${rString(type)}` : ''})`);
+
+// ---- Two types side by side ----------------------------------------------------
+// Under the evidence of a plot: type A of the system in use against type B of
+// the same system or, for EUNIS-ESy, of another shipped release, for this plot
+// (resy_page_compare(), drawn by compareHtml()). A starts at the plot's type, B
+// at its closest sibling or lower level.
+const typesOfRelease = new Map();     // release -> [{ code, name }] of its types
+const releaseOf = () => R?.system.release_scheme === 'EUNIS' && R.system.version && (info?.eunis_versions?.length ?? 0) > 1 ? R.system.version : null;
+const typeOptions = (types, chosen) => types.map((t) =>
+  `<option value="${escapeHtml(t.code)}"${t.code === chosen ? ' selected' : ''}>${escapeHtml(t.code)} ${escapeHtml(t.name)}</option>`).join('');
+const ownTypes = () => R.system.types.map((code) => ({ code, name: nameOf(code) }));
+
+function comparePickerHtml(ev) {
+  const own = ownTypes(), known = new Set(R.system.types);
+  const a = known.has(ev.choice) ? ev.choice : (ev.holds?.find((h) => known.has(h.code))?.code ?? own[0]?.code);
+  const near = [...(ev.siblings?.types ?? []), ...ev.lower.flatMap((lv) => lv.types ?? [])].map((t) => t.code);
+  const b = near.find((c) => known.has(c) && c !== a) ?? own.find((t) => t.code !== a)?.code ?? a;
+  const release = releaseOf();
+  return `<section class="compare">
+      <p class="h6 mt-3 mb-1">Compare two types</p>
+      <div class="cmp-pick">
+        <select class="form-select form-select-sm" data-cmp="a" aria-label="First type">${typeOptions(own, a)}</select>
+        <span class="small">with</span>
+        <select class="form-select form-select-sm" data-cmp="b" aria-label="Second type">${typeOptions(own, b)}</select>
+        ${release ? `<select class="form-select form-select-sm" data-cmp="release" aria-label="Release of the second type">${info.eunis_versions.map((v) =>
+          `<option value="${escapeHtml(v)}"${v === release ? ' selected' : ''}>${escapeHtml(v)}${v === release ? ' (this classification)' : ''}</option>`).join('')}</select>` : ''}
+        <button type="button" class="btn btn-outline-primary btn-sm" data-cmp="go">Compare</button>
+      </div>
+      <div class="cmp-out" aria-busy="false"><p class="small text-body-secondary">Choose two types and select Compare to see, condition by condition, how this plot meets the rule of each.</p></div>
+    </section>`;
+}
+
+let compareRequest = 0;
+async function runCompare(section) {
+  const i = selected, token = detailRequest, request = ++compareRequest;
+  const pick = (k) => section.querySelector(`[data-cmp="${k}"]`)?.value;
+  const a = pick('a'), b = pick('b'), version = pick('release');
+  const versionB = version && version !== R.system.version ? version : null;
+  const out = section.querySelector('.cmp-out');
+  const active = () => token === detailRequest && request === compareRequest && out.isConnected;
+  out.setAttribute('aria-busy', 'true');
+  $('d-status').textContent = `Comparing ${a} with ${b}${versionB ? ` of ${versionB}` : ''}…`;
+  try {
+    const cmp = await onPlot(i, (id, opts) =>
+      `resy_page_compare("/tmp/explain_species.tsv", "/tmp/explain_sites.tsv", ${id}, ${opts}, a = ${rString(a)}, b = ${rString(b)}${versionB ? `, version_b = ${rString(versionB)}` : ''})`);
+    if (!active()) return;
+    out.innerHTML = compareHtml(cmp);
+    $('d-status').textContent = '';
+  } catch (e) {
+    if (active()) $('d-status').textContent = cleanError(e);
+  } finally {
+    if (active()) out.setAttribute('aria-busy', 'false');
+  }
+}
+
+// The types of the release chosen for B; the type chosen stays if that
+// release defines it.
+async function changeRelease(section) {
+  const token = detailRequest;
+  const version = section.querySelector('[data-cmp="release"]').value;
+  const select = section.querySelector('[data-cmp="b"]');
+  let types = version === R.system.version ? ownTypes() : typesOfRelease.get(version);
+  if (!types) {
+    select.disabled = true;
+    $('d-status').textContent = `Reading the types of EUNIS-ESy ${version}…`;
+    const s = await acquire();
+    try {
+      types = JSON.parse(await s.webR.evalRString(`resy_page_types(${rString(version)})`));
+      typesOfRelease.set(version, types);
+    } catch (e) {
+      if (token === detailRequest) $('d-status').textContent = cleanError(e);
+      return;
+    } finally {
+      release(s);
+      select.disabled = false;
+    }
+  }
+  if (token !== detailRequest) return;
+  const keep = types.some((t) => t.code === select.value) ? select.value : types[0]?.code;
+  select.innerHTML = typeOptions(types, keep);
+  $('d-status').textContent = '';
+}
+
+$('d-body').addEventListener('click', (e) => {
+  const go = e.target.closest('[data-cmp="go"]');
+  if (go) runCompare(go.closest('.compare'));
+});
+$('d-body').addEventListener('change', (e) => {
+  const section = e.target.closest('.compare');
+  if (!section) return;
+  if (e.target.dataset.cmp === 'release') changeRelease(section);
+});
+
+// Runs the R call `call(id, opts)` (`id` the plot's identifier and `opts` the
+// site options, both as R code) on plot i alone, written from its rows of the
+// species file, and returns its JSON parsed.
+async function onPlot(i, call) {
   const result = R, src = result.source;
   const lines = [src.header];
   for await (const chunk of lineChunks(src.blob, src.delim, result.start[i], result.end[i])) {
@@ -1004,7 +1102,7 @@ async function evaluatePlot(i, type = null) {
     await s.webR.FS.writeFile('/tmp/explain_species.tsv', new TextEncoder().encode(lines.join('\n') + '\n'));
     await s.webR.FS.writeFile('/tmp/explain_sites.tsv', new TextEncoder().encode(sitesTsv(src.sites, [result.ids[i]])));
     await prepareSites(s.webR, '/tmp/explain_sites.tsv', src.opts);
-    return JSON.parse(await s.webR.evalRString(`resy_page_explain("/tmp/explain_species.tsv", "/tmp/explain_sites.tsv", ${rString(result.ids[i])}, ${src.opts}${type ? `, type = ${rString(type)}` : ''})`));
+    return JSON.parse(await s.webR.evalRString(call(rString(result.ids[i]), src.opts)));
   } finally {
     release(s);
   }
