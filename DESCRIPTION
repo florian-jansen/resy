@@ -46,22 +46,21 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Depends: R (>= 4.1.0)
 Imports: 
-    dplyr (>= 1.1.4),
     rlang (>= 1.1.6),
-    sf (>= 1.0-21),
-    tidyselect (>= 1.2.1),
+    tibble,
     data.table,
     fastmatch,
     jsonlite,
     parallel,
     stats,
-    stringi,
     tools,
     utils,
     lifecycle
 Suggests:
+    sf (>= 1.0-21),
+    dplyr (>= 1.1.4),
+    getaca,
     here,
-    tibble,
     knitr,
     readr,
     rmarkdown,

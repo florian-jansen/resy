@@ -3,7 +3,7 @@
 
 # ---- Bundled GIS layers ------------------------------------------------------
 
-# Dataset in data/ -> name of the sf object it holds.
+# Dataset in data/ -> name of its coordinate and attribute list.
 .resy_gis_layers <- c(
   coastline_regions_epsg25832     = "co",
   dunes_bohn_500mbuffer_epsg25832 = "bohn",
@@ -38,7 +38,7 @@
 # CRS of the bundled GIS layers and of the sites while they are matched to them.
 .resy_eunis_crs <- 25832
 
-# Sites as an sf object in .resy_eunis_crs, with the site columns under their
+# Sites in .resy_eunis_crs, with the site columns under their
 # RESY names (Darwin Core names are accepted, see .resy_column_aliases). An sf
 # object keeps its own CRS; a data frame needs `Longitude` and `Latitude` in the
 # CRS `source_crs`. Without `source_crs`, coordinates that are all valid
@@ -51,6 +51,13 @@
 ) {
 
   data <- .resy_adopt_columns(data, .resy_site_cols)
+
+  if (inherits(data, "sf")) {
+    .resy_require_sf()
+    if (isTRUE(sf::st_crs(data)$epsg == .resy_eunis_crs)) return(data)
+    if (verbose) message("Transforming coordinates to ETRS89 / UTM zone 32N (EPSG:25832).")
+    return(sf::st_transform(data, .resy_eunis_crs))
+  }
 
   if (!inherits(data, "sf")) {
     
@@ -83,23 +90,50 @@
       source_crs <- 4326
     }
     
-    data <- sf::st_as_sf(
-      data,
-      coords = c("Longitude", "Latitude"),
-      crs = source_crs
-    )
   }
-  
-  if (isTRUE(sf::st_crs(data)$epsg == .resy_eunis_crs))
-    return(data)
-  
-  if (verbose) {
-    message(
-      "Transforming coordinates to ETRS89 / UTM zone 32N (EPSG:25832)."
-    )
+
+  xy <- cbind(X = as.numeric(data$Longitude), Y = as.numeric(data$Latitude))
+  if (anyNA(xy)) stop("missing values in coordinates not allowed", call. = FALSE)
+  if (!identical(as.character(source_crs), "25832")) {
+    if (verbose) message("Transforming coordinates to ETRS89 / UTM zone 32N (EPSG:25832).")
+    if (as.character(source_crs) %in% c("4326", "4258")) {
+      xy <- .resy_project(xy)
+    } else {
+      .resy_require_sf()
+      xy <- sf::st_coordinates(sf::st_transform(sf::st_as_sf(
+        data, coords = c("Longitude", "Latitude"), crs = source_crs), .resy_eunis_crs))
+    }
   }
-  
-  sf::st_transform(data, crs = .resy_eunis_crs)
+  data <- as.data.frame(data)
+  data[c("Longitude", "Latitude")] <- NULL
+  data$geometry <- I(xy)
+  attr(data, "resy_crs") <- .resy_eunis_crs
+  class(data) <- c("resy_sites", "data.frame")
+  data
+}
+
+#' @export
+`[.resy_sites` <- function(x, i, j, drop = FALSE) {
+  out <- NextMethod("[")
+  if (is.data.frame(out)) attr(out, "resy_crs") <- attr(x, "resy_crs")
+  out
+}
+
+.resy_require_sf <- function() {
+  if (!requireNamespace("sf", quietly = TRUE))
+    stop("Install the 'sf' package to use sf input or transform a CRS other than EPSG:4326, 4258 or 25832.", call. = FALSE)
+}
+
+.resy_coordinates <- function(data) {
+  if (inherits(data, "sf")) {
+    .resy_require_sf()
+    if (!isTRUE(sf::st_crs(data)$epsg == .resy_eunis_crs))
+      stop("Coordinates must be in EPSG:25832.", call. = FALSE)
+    return(sf::st_coordinates(data)[, 1:2, drop = FALSE])
+  }
+  if (!is.matrix(data$geometry) || !identical(attr(data, "resy_crs"), .resy_eunis_crs))
+    stop("Expected projected point data or an sf object in EPSG:25832.", call. = FALSE)
+  unclass(data$geometry)
 }
 
 # ---- EUNIS site columns -----------------------------------------------------
@@ -117,7 +151,7 @@
 
 # Move the EUNIS columns to the front.
 .resy_order_eunis_cols <- function(data) {
-  dplyr::select(data, tidyselect::any_of(.resy_eunis_cols), tidyselect::everything())
+  data[, c(intersect(.resy_eunis_cols, names(data)), setdiff(names(data), .resy_eunis_cols)), drop = FALSE]
 }
 
 # Assign Ecoreg and Country to sites that lack the column. Returns the data and
@@ -175,20 +209,24 @@
 #' @keywords internal
 .resy_assign_ecoregions <- function(data) {
   
-  ecoregions_sf <- .resy_gis("ecoregions2017_epsg25832")
+  data <- .resy_geo_join(data, .resy_gis("ecoregions2017_epsg25832"))
+  data <- data[, setdiff(names(data), c("OBJECTID", "BIOME_NUM", "BIOME_NAME", "REALM", "COLOR", "LICENSE")), drop = FALSE]
+  names(data)[match(c("ECO_ID", "ECO_NAME"), names(data))] <- c("Ecoreg", "Ecoreg_name")
+  data
+}
 
-  data |>
-    sf::st_join(ecoregions_sf, left = TRUE, largest = FALSE) |>
-    dplyr::select(
-      -dplyr::any_of(c(
-        "OBJECTID", "BIOME_NUM", "BIOME_NAME", "REALM", "COLOR", "LICENSE"
-        )),
-      dplyr::any_of(c("ECO_ID", "ECO_NAME"))
-    ) |>
-    dplyr::rename(
-      Ecoreg      = "ECO_ID",
-      Ecoreg_name = "ECO_NAME"
-    )
+# A left spatial join retains every feature match in input point/feature order.
+.resy_geo_join <- function(data, layer) {
+  hits <- .resy_intersects(.resy_coordinates(data), layer)
+  hits[lengths(hits) == 0L] <- list(NA_integer_)
+  row <- rep.int(seq_len(nrow(data)), lengths(hits))
+  attributes <- layer$attributes[unlist(hits, use.names = FALSE), , drop = FALSE]
+  out <- data[row, , drop = FALSE]
+  common <- intersect(names(out), names(attributes))
+  names(out)[match(common, names(out))] <- paste0(common, ".x")
+  names(attributes)[match(common, names(attributes))] <- paste0(common, ".y")
+  for (name in names(attributes)) out[[name]] <- attributes[[name]]
+  out
 }
 
 # ---- Country assignment ------------------------------------------------------
@@ -235,64 +273,41 @@
 #' @keywords internal
 .resy_assign_country <- function(data) {
   
-  if (!inherits(data, "sf"))
-    stop("`data` must be an sf object.", call. = FALSE)
-  
-  country_sf <- .resy_gis("europe_resolution_1_epsg25832")
-  
-  data <- sf::st_transform(data, sf::st_crs(country_sf))
-  
-  data |>
-    sf::st_join(country_sf, left = TRUE, largest = FALSE) |>
-    dplyr::rename(Country_ID = "NUTS_ID", Country = "NUTS_NAME") |>
-    dplyr::mutate(
-      Country = dplyr::recode(toupper(Country), !!!.country_map, .default = Country)
-      )
-  
+  data <- .resy_geo_join(data, .resy_gis("europe_resolution_1_epsg25832"))
+  names(data)[match(c("NUTS_ID", "NUTS_NAME"), names(data))] <- c("Country_ID", "Country")
+  mapped <- .country_map[toupper(data$Country)]
+  data$Country[!is.na(mapped)] <- unname(mapped[!is.na(mapped)])
+  data
 }
 
 # ---- Coast and dune assignment -----------------------------------------------
 
 .resy_assign_coast_dunes <- function(data_sf, buffer_dist = 5000) {
   
-  if (!inherits(data_sf, "sf"))
-    stop("`data_sf` must be an sf object.", call. = FALSE)
+  xy <- .resy_coordinates(data_sf)
   
-  if (isFALSE(sf::st_crs(data_sf)$epsg == .resy_eunis_crs))
-    stop("`data_sf` must be in EPSG:", .resy_eunis_crs, ".", call. = FALSE)
-  
-  if (!is.numeric(buffer_dist) || length(buffer_dist) != 1 || buffer_dist <= 0)
+  if (!is.numeric(buffer_dist) || length(buffer_dist) != 1 || !is.finite(buffer_dist) || buffer_dist <= 0)
     stop(
       "`buffer_dist` must be a single positive number (metres).", call. = FALSE
       )
 
-  # The maps are cropped to the plots' extent widened by the buffer distance, so
-  # every coastline part within `buffer_dist` of a plot is kept and a plot's
-  # flags do not depend on the other plots classified with it.
-  bbox <- sf::st_bbox(data_sf)
-  bbox[c("xmin", "ymin")] <- bbox[c("xmin", "ymin")] - buffer_dist
-  bbox[c("xmax", "ymax")] <- bbox[c("xmax", "ymax")] + buffer_dist
-
-  coastline <- .resy_gis("coastline_regions_epsg25832") |>
-    sf::st_zm() |> sf::st_set_agr("constant") |> sf::st_crop(bbox)
-
-  dunes <- .resy_gis("dunes_bohn_500mbuffer_epsg25832") |>
-    sf::st_set_agr("constant") |> sf::st_crop(bbox)
+  coastline <- .resy_gis("coastline_regions_epsg25832")
+  dunes <- .resy_gis("dunes_bohn_500mbuffer_epsg25832")
 
   # A plot within `buffer_dist` of a coastline takes the coast of the first
   # such coastline. The distance is measured directly, without a buffer
   # polygon, so it is exact.
   coast_flag <- vapply(
-    sf::st_is_within_distance(data_sf, coastline, dist = buffer_dist),
-    function(x) if (length(x) == 0L) "N_COAST" else coastline$COAST_EEA[x[1L]],
+    .resy_within_distance(xy, coastline, buffer_dist),
+    function(x) if (length(x) == 0L) "N_COAST" else coastline$attributes$COAST_EEA[x[1L]],
     character(1)
     )
 
   dune_flag <- ifelse(
-    rowSums(sf::st_intersects(data_sf, dunes, sparse = FALSE)) > 0,
+    lengths(.resy_intersects(xy, dunes)) > 0,
     "Y_DUNES", "N_DUNES"
     )
 
-  dplyr::tibble(Coast_EEA = coast_flag, Dunes_Bohn = dune_flag)
+  tibble::tibble(Coast_EEA = coast_flag, Dunes_Bohn = dune_flag)
   
 }

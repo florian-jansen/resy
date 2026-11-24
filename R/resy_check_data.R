@@ -13,17 +13,20 @@
 #'   frame. When `NULL` (default), coordinates that are all valid longitudes and
 #'   latitudes are read as degrees (EPSG:4326); other coordinates need the code.
 #'   Ignored when `data` is an `sf` object, which carries its own CRS.
+#'   The optional package `sf` is required for `sf` input and CRS codes other
+#'   than 4326, 4258 and 25832.
 #' @param verbose Logical; if `TRUE`, informational messages about coordinate
 #'   interpretation and transformation are shown. Defaults to [interactive()].
-#' @return An `sf` object in EPSG:25832 with all available ESy columns ordered
+#' @return A `resy_sites` data frame in EPSG:25832 with a two-column coordinate matrix
+#'   `geometry` and a `resy_crs` attribute. For `sf` input, an `sf` object is
+#'   returned. All available ESy columns are ordered
 #'   to the front: `PlotObservationID`, `Altitude (m)`, `Coast_EEA`, `Dunes_Bohn`,
 #'   `Ecoreg`, `Ecoreg_name`, `Country`, `Country_ID`, `geometry`.
 #' @seealso [resy_harmonize_eunis()] for the EUNIS-specific enrichment workflow.
 #' @examples
 #'   data <- data.frame(
-#'     PlotObservationID = 1L, x = 701327, y = 5364375
-#'   ) |>
-#'     sf::st_as_sf(coords = c("x", "y"), crs = 25832)
+#'     PlotObservationID = 1L, Longitude = 701327, Latitude = 5364375
+#'   )
 #'   resy_check_data(data, source_crs = 25832)
 #' @export
 resy_check_data <- function(data, source_crs = NULL, verbose = interactive()) {

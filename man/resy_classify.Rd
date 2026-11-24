@@ -65,7 +65,9 @@ data classified in several parts reads the expert system only once.}
 \value{
 An object of class \code{resy_result}. When \code{resolve_taxa = TRUE} it also
 carries the \code{summary()} of the \link{resy_resolve_taxa} result as
-\code{taxon_resolution}; otherwise \code{taxon_resolution} is \code{NULL}.
+\code{taxon_resolution}; otherwise \code{taxon_resolution} is \code{NULL}. The
+expert-system release and, when the bundled synonym layer was used, its
+build are reported by \code{\link[=resy_provenance]{resy_provenance()}}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -79,7 +81,7 @@ Euro+Med, a national checklist), harmonise them first as an explicit step with
 \link{resy_resolve_taxa} and inspect the result with its \code{summary()} before
 classifying, so the taxonomic choices stay visible (see the taxonomy
 vignette). Setting \code{resolve_taxa = TRUE} runs that resolution inside
-\code{resy_classify()} as a convenience: names the expert already knows pass through
+\code{resy_classify()} as a convenience: names already in the expert system pass through
 untouched, unknown names are looked up in the synonym table, and names that
 resolve to nothing keep their original value (never a best guess). What was
 resolved is then reported in the result's \code{taxon_resolution}.
@@ -100,5 +102,5 @@ head(res$result.classification)
 }
 }
 \seealso{
-\link{resy_resolve_taxa}, \link{resy_check_taxonomy}
+\link{resy_resolve_taxa}, \link{resy_check_taxonomy}, \code{\link[=resy_provenance]{resy_provenance()}}
 }

@@ -4,7 +4,7 @@
 # Input : full-resolution layers in data-raw/gis_full/ (the versions tracked
 #         before this change; also recoverable from git history). Not shipped
 #         (data-raw is in .Rbuildignore) and not committed (see .gitignore).
-# Output: data/*.rda, with object names unchanged (co, bohn, ecoregions2017_...).
+# Output: data-raw/gis_simplified/*.rda for build_geometry.R.
 #
 # Per-layer keep fractions are the strongest simplification that leaves the
 # coast, ecoregion and dune assignments on inst/extdata's 200-plot example
@@ -28,6 +28,8 @@ library(sf)
 library(rmapshaper)
 
 src <- "data-raw/gis_full"
+out <- "data-raw/gis_simplified"
+dir.create(out, showWarnings = FALSE)
 
 keep <- c(
   coastline_regions_epsg25832     = 0.30,  # 5 km distance rule; 0 flips on the example
@@ -65,5 +67,5 @@ for (f in intersect(list.files(src, pattern = "\\.rda$"), shipped)) {
   if (b %in% names(grid)) g <- round_to_grid(g, grid[[b]])
   if (b %in% names(drop_cols)) g <- g[, setdiff(names(g), drop_cols[[b]])]
   assign(nm, g)
-  save(list = nm, file = file.path("data", f), compress = "xz")
+  save(list = nm, file = file.path(out, f), compress = "xz")
 }

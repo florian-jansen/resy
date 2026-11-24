@@ -3,18 +3,21 @@
 # json/txt format switch, and fail loudly (or return NA) when the file is absent,
 # so a mistyped scheme is caught at the call site rather than downstream.
 
-test_that("resy_expert_path returns an existing json file for a bundled scheme", {
-  p <- resy_expert_path("EUNIS", "2025-10-03", format = "json")
+test_that("resy_expert_path returns an existing file of the requested format", {
+  p <- resy_expert_path("Apennine-test", "2026-06-27", format = "json")
   expect_true(file.exists(p))
   expect_match(p, "expert\\.json(\\.xz)?$")
+  p <- resy_expert_path("EUNIS", "2025-10-03", format = "txt")
+  expect_true(file.exists(p))
   expect_match(p, "EUNIS")
+  expect_true(is.na(resy_expert_path("EUNIS", "2025-10-03", format = "json", mustWork = FALSE)))
 })
 
-test_that("resy_expert_path defaults to the json format", {
-  expect_equal(
-    resy_expert_path("EUNIS", "2025-10-03"),
-    resy_expert_path("EUNIS", "2025-10-03", format = "json")
-  )
+test_that("resy_expert_path defaults to the file the classification is stored in", {
+  expect_equal(resy_expert_path("EUNIS", "2025-10-03"),
+               resy_expert_path("EUNIS", "2025-10-03", format = "txt"))
+  expect_equal(resy_expert_path("Apennine-test", "2026-06-27"),
+               resy_expert_path("Apennine-test", "2026-06-27", format = "json"))
 })
 
 test_that("resy_expert_path errors on a missing file when mustWork = TRUE", {

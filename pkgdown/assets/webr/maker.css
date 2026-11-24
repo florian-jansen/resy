@@ -1,0 +1,314 @@
+/* Styles for vignettes/articles/maker.Rmd, on top of page.css. The --k-*
+   colours mark the kinds of condition in a rule. */
+#resy-app.maker {
+  --k-cover: #1e8a5a; --k-count: #3a8fc8; --k-species: #c55a11; --k-max: #b4508f; --k-site: #8a6a46; --k-raw: #5f6b8a; --k-other: #7a7d2a;
+  position: relative;
+}
+#resy-app.maker .error { color: var(--bs-danger-text-emphasis) !important; }
+#resy-app.maker .mini { border: 0; background: none; color: var(--bs-secondary-color); padding: 0 4px; line-height: 1.4; border-radius: var(--bs-border-radius-sm); }
+#resy-app.maker .mini:hover { background: var(--bs-secondary-bg); color: var(--bs-body-color); }
+#resy-app.maker .mini.txt { font-size: 0.8rem; text-decoration: underline dotted; }
+
+/* The top bar stays in view while the page scrolls; its sheets drop from it. */
+#resy-app .top { position: sticky; top: var(--resy-top, 0px); z-index: 20; background: var(--bs-body-bg); padding: 10px 0 6px; border-bottom: 1px solid var(--bs-border-color); }
+#resy-app .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+#resy-app .bar .title { flex: 1 1 12rem; max-width: 22rem; font-weight: 500; }
+#resy-app .bar .version { flex: 0 1 8rem; width: 8rem; }
+#resy-app .bar .title, #resy-app .bar .version { border-color: transparent; background: var(--bs-tertiary-bg); }
+#resy-app .bar .title:focus, #resy-app .bar .version:focus { border-color: var(--bs-primary); background: var(--bs-body-bg); }
+#resy-app .bar .btn-outline-secondary[aria-expanded=true] { background: var(--bs-secondary-bg); color: var(--bs-body-color); }
+#resy-app .playbar { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 14px; align-items: center; margin-top: 10px; font-size: 0.875rem; }
+#resy-app #plots-open { grid-row: 1 / 3; }
+#resy-app #play-stats { height: 3em; overflow: auto; text-align: left; line-height: 1.5; }
+#resy-app #play-status { display: block; height: 1.5rem; line-height: 1.5rem; overflow: auto; }
+/* The number of notes has its place in the bar before the first check, so the buttons do not wrap when it appears. */
+#resy-app #play-problems { min-width: 4.6rem; text-align: right; }
+#resy-app #plots-open[aria-expanded=true] { box-shadow: 0 0 0 3px var(--bs-primary-bg-subtle); }
+#resy-app #play-stats { text-decoration: none; color: var(--bs-body-color); }
+#resy-app #play-stats:hover { text-decoration: underline; }
+#resy-app.stale #play-stats { opacity: 0.55; }
+#resy-app .sheet { position: absolute; left: 0; right: 0; top: 100%; z-index: 25; max-height: calc(100vh - var(--resy-top, 0px) - 110px); overflow-y: auto; box-shadow: var(--bs-box-shadow); }
+#resy-app .note.welcome { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; border-left-color: var(--bs-primary); margin-top: 12px; }
+#resy-app .note.welcome { height: 6em; overflow: auto; }
+#resy-app .note.welcome[hidden] { display: flex !important; visibility: hidden; }
+#resy-app #pane-rule { height: 64rem; overflow-y: auto; scrollbar-gutter: stable; }
+#resy-app #t-mapbox[hidden] { display: block !important; visibility: hidden; }
+
+/* The bench: the types, the rule of the type shown, the parts. */
+#resy-app .bench { display: grid; gap: 16px; margin-top: 16px; align-items: start; grid-template-columns: minmax(0, 1fr); }
+#resy-app .bench > .card, #resy-app #col-rule { min-width: 0; }
+/* The rule with the map of the test plots below it. */
+#resy-app #col-rule { display: flex; flex-direction: column; gap: 16px; }
+#resy-app #pane-rule { order: -1; }
+@media (min-width: 768px) {
+  #resy-app .bench { grid-template-columns: 17rem minmax(0, 1fr); grid-template-areas: "types rule" "parts rule"; grid-template-rows: auto 1fr; }
+  #resy-app #pane-types { grid-area: types; } #resy-app #col-rule { grid-area: rule; } #resy-app #pane-parts { grid-area: parts; }
+}
+@media (min-width: 1200px) {
+  #resy-app .bench { grid-template-columns: 16rem minmax(0, 1fr) 23rem; grid-template-areas: "types rule parts"; grid-template-rows: auto; }
+  /* Beside a long rule the lists stay in view and scroll on their own. */
+  /* They keep the height of the window, however short a list is after a search. */
+  #resy-app .pane { position: sticky; top: calc(var(--resy-top, 0px) + var(--maker-toolbar, 130px) + 12px); height: calc(100vh - var(--resy-top, 0px) - var(--maker-toolbar, 130px) - 24px); overflow-y: auto; scrollbar-gutter: stable; }
+}
+/* Above or beside the rule on a narrower window, a long list of types scrolls
+   on its own, so the rule and the parts stay within reach. */
+@media (max-width: 1199.98px) {
+  #resy-app #pane-types { height: 24rem; overflow-y: auto; scrollbar-gutter: stable; }
+  #resy-app #pane-parts { height: 38rem; overflow-y: auto; scrollbar-gutter: stable; }
+  #resy-app #g-list { max-height: 60vh; overflow-y: auto; }
+}
+/* The heading and the search of the list of types stay at the top of the list
+   while it scrolls, over the padding of the card. */
+#resy-app .panehead { position: sticky; top: 0; z-index: 1; background: var(--bs-card-bg, var(--bs-body-bg));
+  margin: calc(-1 * var(--bs-card-spacer-y)) calc(-1 * var(--bs-card-spacer-x)) 0; padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x) 1px; }
+#resy-app .empty { max-width: 34rem; margin: 2rem auto; text-align: center; }
+#resy-app .tabs { display: flex; gap: 4px; margin: -4px 0 12px; border-bottom: 1px solid var(--bs-border-color); }
+#resy-app .tab { white-space: nowrap; font-size: 0.95rem; border: 0; border-bottom: 2px solid transparent; background: none; color: var(--bs-secondary-color); padding: 4px 7px 6px; font-weight: 500; }
+#resy-app .tab span { font-weight: 400; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+#resy-app .tab:hover { color: var(--bs-body-color); }
+#resy-app .tab.active { color: var(--bs-body-color); border-bottom-color: var(--bs-primary); }
+
+/* Rows of labelled fields. */
+#resy-app .fields { display: grid; gap: 4px 12px; }
+#resy-app .fields label { margin: 0; min-width: 0; }
+#resy-app .fields.group { grid-template-columns: minmax(0, 1fr) 13rem; }
+#resy-app .fields.type { grid-template-columns: 9rem minmax(0, 1fr) 6rem; }
+#resy-app .fields .wide { grid-column: 1 / -1; }
+@media (max-width: 575.98px) { #resy-app .fields { grid-template-columns: minmax(0, 1fr) !important; } }
+
+#resy-app .listhead { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; }
+#resy-app .picklist, #resy-app .species-list, #resy-app .chips, #resy-app .problems { list-style: none; margin: 0; padding: 0; }
+#resy-app .picklist li { padding: 6px 8px; border-radius: var(--bs-border-radius-sm); cursor: pointer; }
+/* The row under the pointer is grey; the row in use has the colour of the selection. */
+#resy-app .picklist li:hover { background: var(--bs-tertiary-bg); }
+#resy-app .picklist li.active { background: var(--bs-primary-bg-subtle); }
+#resy-app .picklist li:focus-visible { outline: 2px solid var(--bs-primary); outline-offset: -2px; }
+#resy-app .picklist .nm { display: block; overflow-wrap: anywhere; font-size: 0.95rem; }
+#resy-app .picklist .meta, #resy-app .species-list .meta { color: var(--bs-secondary-color); font-size: 0.8rem; }
+#resy-app .picklist li.more, #resy-app .species-list li.more { cursor: default; color: var(--bs-secondary-color); font-size: 0.875rem; background: none; }
+#resy-app .picklist.rest:not(:empty) { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--bs-border-color); }
+#resy-app .picklist.rest li { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; color: var(--bs-secondary-color); }
+/* The test plots as dots under the type they are classified as; .on marks the plots lit. */
+#resy-app .dots { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 2px; margin-top: 2px; height: 20px; padding: 2px; overflow-y: auto; scrollbar-gutter: stable; }
+#resy-app .dots::-webkit-scrollbar { width: 4px; }
+#resy-app .dots::-webkit-scrollbar-button { display: none; }
+#resy-app .dots::-webkit-scrollbar-thumb { border-radius: 2px; background: color-mix(in srgb, var(--bs-secondary-color) 45%, transparent); }
+@supports not selector(::-webkit-scrollbar) { #resy-app .dots { scrollbar-width: thin; } }
+#resy-app .dots i, #resy-app .lit .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--bs-secondary-color) 35%, transparent); }
+/* --c, set on each strip, is the colour of its type (see resy_palette.js). */
+#resy-app .dots i.on, #resy-app .dots i.sel { background: var(--c, var(--lv-none)); }
+#resy-app .lit .dot { background: var(--bs-secondary-color); }
+#resy-app .picklist .sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; }
+#resy-app #t-rest li.active[data-show="none"] { background: var(--bs-secondary-bg); }
+#resy-app .dots i[data-plot] { cursor: pointer; }
+#resy-app .dots i[data-plot]:hover, #resy-app .dots i.sel { outline: 2px solid var(--bs-body-color); outline-offset: 0; }
+#resy-app .dots i.moved { animation: dot-in 0.6s ease-out; }
+@keyframes dot-in { from { transform: scale(1.8); } }
+@media (prefers-reduced-motion: reduce) { #resy-app .dots i.moved { animation: none; } }
+#resy-app.stale .dots, #resy-app.stale [data-rule-hits], #resy-app.stale [data-group-hits] { opacity: 0.5; }
+#resy-app .picklist.rest li { flex-wrap: wrap; }
+#resy-app .picklist.rest .dots { flex: 0 0 100%; }
+#resy-app .lit { margin: 10px 0 0; height: 4.5em; overflow: auto; color: var(--bs-secondary-color); }
+#resy-app .mapbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; min-height: 31px; margin-bottom: 8px; }
+#resy-app #map-region[aria-pressed=true] { background: var(--bs-secondary-bg); color: var(--bs-body-color); }
+/* The map is a layer of its own, so its parts stay below the top bar while the page scrolls. */
+#resy-app #t-map { position: relative; z-index: 0; isolation: isolate; height: 240px; border-radius: var(--bs-border-radius); border: 1px solid var(--bs-border-color); }
+#resy-app.stale #t-verdict, #resy-app.stale #t-trail { opacity: 0.55; }
+/* Result text keeps its space while the next classification runs. */
+#resy-app #t-verdict { height: 4.5em; line-height: 1.5; overflow: auto; }
+/* A group opens in the list of groups to show its species. */
+#resy-app #g-list > li { padding: 0; cursor: default; background: none; }
+#resy-app #g-list > li.more { padding: 6px 8px; }
+#resy-app #g-list .head { padding: 6px 8px; border-radius: var(--bs-border-radius-sm); cursor: pointer; }
+#resy-app #g-list .head[draggable] { cursor: grab; }
+#resy-app #g-list .head:hover { background: var(--bs-tertiary-bg); }
+#resy-app #g-list > li.open > .head { background: var(--bs-primary-bg-subtle); }
+#resy-app #g-list .head:focus-visible { outline: 2px solid var(--bs-primary); outline-offset: -2px; }
+#resy-app #g-list > li.open { border: 1px solid var(--bs-primary-border-subtle); border-radius: var(--bs-border-radius); margin: 4px 0; }
+#resy-app #g-editor { padding: 10px 8px 8px; }
+#resy-app #g-editor .fields.group { grid-template-columns: minmax(0, 1fr); }
+#resy-app #g-editor .chips { max-height: 14rem; overflow-y: auto; margin-top: 8px; }
+#resy-app #g-editor .actions { gap: 6px; margin-top: 10px; }
+#resy-app #g-problem { height: 3em; overflow: auto; margin-top: 4px; }
+
+#resy-app .note { margin: 10px 0 0; padding: 6px 10px; border-left: 3px solid var(--bs-warning); background: var(--bs-tertiary-bg); }
+#resy-app .species-list { margin-top: 12px; max-height: 50vh; overflow-y: auto; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); }
+#resy-app .species-list li { padding: 4px 10px; border-top: 1px solid var(--bs-border-color-translucent); font-size: 0.9rem; }
+#resy-app .species-list li:first-child { border-top: 0; }
+#resy-app .species-list .line { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 10px; align-items: center; }
+#resy-app .species-list .nm { overflow-wrap: anywhere; }
+#resy-app .species-list .meta { display: block; }
+#resy-app .species-list li.open { background: var(--bs-tertiary-bg); }
+
+#resy-app .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+#resy-app .chips li { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--bs-border-color); border-radius: 999px; padding: 1px 4px 1px 10px; font-size: 0.875rem; font-style: italic; }
+#resy-app .chips .n { font-style: normal; font-size: 0.75rem; color: var(--bs-secondary-color); font-variant-numeric: tabular-nums; }
+
+/* The rule as blocks. */
+#resy-app .palette { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+#resy-app .chip { border: 1px solid var(--bs-border-color); border-left: 4px solid var(--k); background: var(--bs-body-bg); color: var(--bs-body-color);
+  border-radius: var(--bs-border-radius-sm); padding: 2px 10px; font-size: 0.85rem; cursor: grab; }
+#resy-app .chip:hover { background: var(--bs-tertiary-bg); }
+#resy-app .k-cover { --k: var(--k-cover); } #resy-app .k-count { --k: var(--k-count); } #resy-app .k-species { --k: var(--k-species); }
+#resy-app .k-max { --k: var(--k-max); } #resy-app .k-site { --k: var(--k-site); } #resy-app .k-raw { --k: var(--k-raw); } #resy-app .k-other { --k: var(--k-other); }
+#resy-app .grp { border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); padding: 8px; background: var(--bs-body-bg); }
+#resy-app .grp .grp { margin: 6px 0; background: var(--bs-tertiary-bg); }
+#resy-app .grp .grp .grp { background: var(--bs-body-bg); }
+#resy-app .grp.or { border-left: 4px solid var(--bs-warning); }
+#resy-app .grp.and { border-left: 4px solid var(--bs-primary); }
+#resy-app .grp.target { box-shadow: 0 0 0 2px var(--bs-primary-border-subtle); }
+#resy-app .grp-head { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+#resy-app .grp-head select { width: auto; font-weight: 500; }
+#resy-app .grp-head .x { margin-left: auto; }
+#resy-app .zone { min-height: 14px; border-radius: var(--bs-border-radius-sm); }
+#resy-app .zone.drop-into { box-shadow: inset 0 -3px 0 var(--bs-primary); }
+#resy-app .drop-before { box-shadow: 0 -3px 0 var(--bs-primary); }
+#resy-app .dragging { opacity: 0.4; }
+#resy-app .grp-add { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+#resy-app .grp-add .btn { padding: 1px 8px; font-size: 0.8rem; }
+#resy-app .grp-not { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--bs-border-color); }
+/* The rule a subtype inherits: the conditions of the parent locked, those the
+   subtype leaves out struck through, those it changed marked at the left. */
+#resy-app .inherit { margin: 4px 0 10px; }
+#resy-app .from { margin-bottom: 12px; }
+#resy-app .grp.locked { background: var(--bs-tertiary-bg); border-left-color: var(--bs-secondary-border-subtle, var(--bs-border-color)); }
+#resy-app .grp.locked .grp-head { color: var(--bs-secondary-color); font-weight: 500; }
+#resy-app .cond fieldset.body { border: 0; margin: 0; padding: 0; min-width: 0; }
+#resy-app .cond.locked .body :is(select, input) { background-color: transparent; }
+#resy-app .cond.off .body { opacity: 0.45; text-decoration: line-through; }
+#resy-app .cond.off .hits { color: var(--bs-secondary-color); }
+#resy-app .cond.changed { box-shadow: inset 3px 0 0 var(--bs-primary); }
+#resy-app .cond .body > .origin { font-size: 0.75rem; font-weight: 600; padding: 1px 5px; border-radius: 3px; background: var(--bs-secondary-bg); color: var(--bs-secondary-color); }
+#resy-app #t-full { white-space: pre-wrap; overflow-wrap: anywhere; padding: 6px 8px; border-radius: var(--bs-border-radius-sm); background: var(--bs-tertiary-bg); }
+#resy-app .grp-not .lbl { margin: 0 0 6px; font-size: 0.875rem; font-weight: 500; color: var(--bs-danger-text-emphasis); }
+/* A condition: its fields one after the other, wrapping, and at the end of the
+   first line the count, the mark of the selected plot and the button to remove
+   it. That place has a fixed width (--tail) and is kept free by a float at the
+   start of the fields, so a count that arrives moves nothing and the lines
+   below the first use the whole width. */
+#resy-app .cond { --tail: 7.7rem; position: relative; display: flow-root; margin: 6px 0; padding: 6px 8px 0; border: 1px solid var(--bs-border-color);
+  border-left: 4px solid var(--k); border-radius: var(--bs-border-radius-sm); background: var(--bs-body-bg); }
+#resy-app .cond .body::before { content: ""; float: right; width: var(--tail); height: 31px; }
+#resy-app .cond .body > * { display: inline-block; vertical-align: middle; margin: 0 6px 6px 0; }
+#resy-app .cond .tail { position: absolute; top: 6px; right: 8px; width: var(--tail); height: 31px; display: flex; align-items: center; gap: 2px; }
+#resy-app .cond select, #resy-app .cond input:not([type=range]) { width: auto; max-width: min(100%, 21rem); text-overflow: ellipsis; }
+/* The kind of the condition stays on the first line, beside the count. */
+#resy-app .cond select.kind { font-weight: 500; max-width: min(21rem, calc(100% - var(--tail) - 2rem)); }
+#resy-app .cond select.missing { border-color: var(--bs-danger); }
+#resy-app .cond input.n { width: 5.5rem; }
+#resy-app .cond input.sp { width: 16rem; font-style: italic; }
+#resy-app .cond input.ex { width: 14rem; }
+#resy-app .cond input.raw { width: min(100%, 30rem); font-family: var(--bs-font-monospace); font-size: 0.8rem; }
+/* The slider of a condition with the histogram of the plots above it. */
+#resy-app .cond .body > .dial { display: flex; flex-direction: column; width: 100%; margin-right: 0; clear: both; }
+#resy-app .cond .dial input[type=range] { width: 100%; }
+#resy-app .cond .hist { position: relative; height: 36px; }
+#resy-app .cond .hist i { position: absolute; bottom: 0; min-width: 2px; max-width: 14px; transform: translateX(-50%); border-radius: 2px 2px 0 0; overflow: hidden; background: color-mix(in srgb, var(--bs-secondary-color) 35%, transparent); }
+#resy-app .cond .hist b { position: absolute; left: 0; right: 0; bottom: 0; background: var(--k); }
+#resy-app.stale .cond .hist { opacity: 0.6; }
+#resy-app .cond .w { font-size: 0.875rem; color: var(--bs-secondary-color); }
+#resy-app .cond .hits { flex: 1 1 auto; min-width: 0; text-align: right; font-size: 0.8rem; font-variant-numeric: tabular-nums; color: var(--bs-success-text-emphasis); white-space: nowrap; }
+#resy-app .cond .hits.zero { color: var(--bs-secondary-color); }
+#resy-app.stale .cond .hits { opacity: 0.5; }
+/* The conditions the selected plot meets and misses. */
+#resy-app .cond .tick { flex: 0 0 1.1rem; font-weight: 700; text-align: center; }
+#resy-app .cond.held { background: var(--bs-success-bg-subtle); } #resy-app .cond.held .tick { color: var(--bs-success-text-emphasis); }
+#resy-app .cond.failed { background: var(--bs-danger-bg-subtle); } #resy-app .cond.failed .tick { color: var(--bs-danger-text-emphasis); }
+#resy-app .trail { height: 6em; overflow: auto; padding: 4px 8px; border-left: 3px solid var(--bs-primary); background: var(--bs-tertiary-bg); }
+#resy-app .grip { cursor: grab; color: var(--bs-secondary-color); user-select: none; padding: 0 2px; }
+#resy-app textarea.formula { font-family: var(--bs-font-monospace); font-size: 0.8rem; }
+
+#resy-app .typeahead { position: absolute; z-index: 30; list-style: none; margin: 0; padding: 4px; max-height: 18rem; overflow-y: auto;
+  background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); box-shadow: var(--bs-box-shadow); }
+#resy-app .typeahead li { display: flex; justify-content: space-between; gap: 8px; padding: 6px 8px; overflow-wrap: anywhere; border-radius: var(--bs-border-radius-sm); cursor: pointer; font-size: 0.9rem; font-style: italic; }
+#resy-app .typeahead li.active, #resy-app .typeahead li:hover { background: var(--bs-primary-bg-subtle); }
+#resy-app .typeahead .meta { font-style: normal; font-size: 0.8rem; color: var(--bs-secondary-color); white-space: nowrap; }
+
+#resy-app #tab-plots .tablewrap { max-height: 46vh; }
+#resy-app #shown { display: block; height: 8em; overflow: auto; margin-top: 6px; }
+#resy-app #notes summary { cursor: pointer; }
+#resy-app #notes .warn { margin-top: 4px; }
+#resy-app #detail { scroll-margin-top: calc(var(--resy-top, 0px) + 104px); }
+#resy-app .problems details .problems { margin-top: 4px; }
+@media (min-width: 1200px) {
+  /* Beside the rule, the list of species and the table of plots take the height
+     the pane has left and are the one part of it that scrolls. */
+  #resy-app #pane-parts > .card-body { display: flex; flex-direction: column; min-height: 0; }
+  #resy-app #tab-species:not([hidden]), #resy-app #tab-plots:not([hidden]) { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+  #resy-app #tab-species > *, #resy-app #tab-plots > * { flex: 0 0 auto; }
+  #resy-app #tab-species .species-list, #resy-app #tab-plots .tablewrap { flex: 1 1 auto; min-height: 9rem; max-height: none; }
+}
+#resy-app #detail .listhead { align-items: flex-start; }
+#resy-app .problems li { padding: 4px 0; border-top: 1px solid var(--bs-border-color-translucent); font-size: 0.9rem; }
+#resy-app .problems li:first-child { border-top: 0; }
+#resy-app .problems .tag { display: inline-block; min-width: 3.4rem; font-size: 0.75rem; font-weight: 500; color: var(--bs-secondary-color); }
+#resy-app .problems .error .tag { color: var(--bs-danger); }
+#resy-app .problems .ok { color: var(--bs-success-text-emphasis); }
+#resy-app #x-snippet { font-size: 0.8rem; }
+/* What RESY says about the system takes up to two lines; they are there while it reads. */
+#resy-app #x-check { height: 6em; overflow: auto; }
+@media (max-width: 575.98px) {
+  #resy-app .cond input.sp, #resy-app .cond input.ex { width: 100%; }
+  #resy-app .cond { --tail: 6.6rem; }
+}
+#resy-app #tab-species > p, #resy-app #sp-notes .note { font-size: 0.82rem; }
+#resy-app #tab-species .listhead .form-select { flex: 1 1 55%; }
+#resy-app #tab-species .listhead input { flex: 1 1 45%; }
+#resy-app #sp-remove[hidden] { display: block; visibility: hidden; }
+/* Every type and group has a delete button on its row; it shows on the row in use. */
+#resy-app #t-list > li, #resy-app #g-list > li { position: relative; }
+#resy-app #t-list > li, #resy-app #g-list .head { padding-right: 28px; }
+#resy-app .picklist .del { position: absolute; top: 5px; right: 4px; opacity: 0; }
+#resy-app .picklist li:hover > .del, #resy-app .picklist li.active > .del, #resy-app .picklist li.open > .del, #resy-app .picklist li:focus-within > .del, #resy-app .picklist .del:focus-visible { opacity: 1; }
+#resy-app .picklist .del:hover { color: var(--bs-danger); }
+@media (hover: none) { #resy-app .picklist .del { opacity: 1; } }
+
+#resy-app.maker :is(button, [tabindex], summary):focus-visible { outline: 2px solid var(--bs-primary); outline-offset: 2px; }
+#resy-app.maker .mini { min-width: 24px; min-height: 24px; }
+#resy-app.maker .btn-outline-secondary { --bs-btn-color: var(--bs-secondary-color); }
+#resy-app.maker .btn-outline-primary { --bs-btn-color: var(--bs-link-color); }
+#resy-app.maker .btn-outline-danger { --bs-btn-color: var(--bs-danger-text-emphasis); }
+#resy-app .sheet-close { position: absolute; top: 12px; right: 12px; }
+#resy-app .sheet .card-title { padding-right: 30px; }
+#resy-app #t-list .nm { height: 3em; line-height: 1.5; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+#resy-app #t-list .meta { display: block; height: 1.5em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* The hierarchy of the types: each level is indented by one step, and a type
+   with subtypes has the arrow that folds them away in the space in front. */
+#resy-app #t-list.tree > li[data-id] { padding-left: calc(8px + 16px + var(--depth, 0) * var(--step)); }
+#resy-app #t-list .fold { position: absolute; top: 6px; left: calc(4px + var(--depth, 0) * var(--step)); width: 18px; height: 1.5em; padding: 0; border: 0; border-radius: 3px; background: none; color: var(--bs-secondary-color); line-height: 1; }
+#resy-app #t-list .fold:hover { color: var(--bs-body-color); background: var(--bs-secondary-bg); }
+/* A type with subtypes counts the plots of its branch on a line of its own. */
+#resy-app #t-list li[aria-expanded] .meta { height: 3em; }
+#resy-app #t-list [data-branch-hits] { display: block; overflow: hidden; text-overflow: ellipsis; }
+#resy-app #t-list li.holds { box-shadow: inset 3px 0 0 var(--bs-primary-border-subtle); }
+#resy-app #t-list li.context .nm { color: var(--bs-secondary-color); }
+#resy-app .mapbar { display: grid; grid-template-columns: auto auto; justify-content: start; }
+#resy-app #map-note { grid-column: 1 / -1; height: 1.5em; overflow: auto; }
+#resy-app #map-all[hidden] { display: block; visibility: hidden; }
+#resy-app #t-mapbox { margin-top: 0; }
+#resy-app #pane-rule, #resy-app #detail { scroll-margin-top: calc(var(--resy-top, 0px) + var(--maker-toolbar, 130px) + 12px); }
+#resy-app .sheet { max-height: calc(100dvh - var(--resy-top, 0px) - var(--maker-toolbar, 130px) - 12px); }
+#resy-app .sheet .actions > [aria-live] { flex-basis: 100%; height: 3em; overflow: auto; }
+#resy-app #tab-plots .tablewrap { height: 22rem; }
+#resy-app #sp-notes { height: 7rem; overflow: auto; }
+#resy-app #sp-removed[hidden] { display: block; visibility: hidden; }
+#resy-app #sp-removed { height: 4.5em; overflow: auto; }
+#resy-app #draft-status { display: block; min-height: 3em; }
+#resy-app #detail #d-body { height: 28rem; overflow: auto; scrollbar-gutter: stable; }
+#resy-app #detail[aria-busy=true] #d-body { opacity: 0.55; }
+@media (max-width: 767.98px) {
+  #resy-app .note.welcome { height: 10em; }
+  #resy-app .top { position: relative; top: auto; }
+  #resy-app .playbar { grid-template-columns: minmax(0, 1fr); }
+  #resy-app #plots-open { grid-row: auto; justify-self: start; }
+  #resy-app #play-stats { height: 4.5em; }
+  #resy-app .bar .title { flex-basis: calc(100% - 9rem); }
+  #resy-app #pane-rule, #resy-app #detail { scroll-margin-top: calc(var(--resy-top, 0px) + 12px); }
+  #resy-app #t-verdict, #resy-app .trail { height: 7.5em; }
+  #resy-app #map-note { height: 3em; }
+  #resy-app .cond .body::before { display: none; }
+  #resy-app .cond .tail { position: static; width: 100%; justify-content: flex-end; margin-bottom: 4px; }
+  #resy-app .cond .hits { flex: 0 1 auto; }
+  #resy-app .cond select.kind { max-width: calc(100% - 3rem); }
+  #resy-app .typeahead .meta { white-space: normal; flex: 0 0 4rem; }
+}

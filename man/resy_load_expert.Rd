@@ -25,7 +25,9 @@ first, so a user-stored classification takes precedence over a shipped
 one with the same scheme and version.}
 }
 \value{
-A list of class \code{resy_parsed_expert}.
+A list of class \code{resy_parsed_expert}. Its scheme, version and file,
+and whether the file is byte-identical to the published release, are
+reported by \code{\link[=resy_provenance]{resy_provenance()}}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -40,15 +42,24 @@ file format is detected from the extension:
 }
 
 When no \code{expertfile} is supplied, the function looks for
-\code{expert.json} (or \code{expert.json.xz}), then \code{expert.txt} (in that order) under
+\code{expert.json} (or \code{expert.json.xz}), then \code{expert.txt} (or \code{expert.txt.xz}), in that order, under
 \verb{<root>/<scheme>/<version>/}, where the roots are searched in the order
 given by \code{location}: classifications stored with \code{\link[=resy_add_classification]{resy_add_classification()}}
 (\code{"user"}) and the classifications shipped with the package (\code{"package"}).
+
+A loaded system is kept in RESY's cache directory
+(\code{tools::R_user_dir("RESY", "cache")}), so that loading the same file again
+restores it instead of parsing it. The cached copy is used only while the
+file keeps its size and modification time and the same installed version of
+RESY loads it; storing a new copy removes the older ones of that file. Set
+\code{options(RESY.cache = FALSE)} to parse every time, or
+\code{options(RESY.cache_dir = <path>)} to keep the cache elsewhere.
 }
 \examples{
 expert <- resy_load_expert(scheme = "Apennine-test")
 expert$vegtype.formula.names
 }
 \seealso{
-\code{\link[=resy_available_classifications]{resy_available_classifications()}}, \code{\link[=resy_add_classification]{resy_add_classification()}}
+\code{\link[=resy_available_classifications]{resy_available_classifications()}}, \code{\link[=resy_add_classification]{resy_add_classification()}},
+\code{\link[=resy_provenance]{resy_provenance()}}
 }

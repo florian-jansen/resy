@@ -108,7 +108,8 @@ test_that("a stored .json classification loads by scheme and version", {
 
   stored <- resy_load_expert(scheme = "MyScheme", version = "1.0")
   expect_s3_class(stored, "resy_parsed_expert")
-  expect_identical(stored, resy_load_expert(expertfile = src))
+  expect_identical(without_source(stored),
+                   without_source(resy_load_expert(expertfile = src)))
 })
 
 test_that("a stored .txt classification loads by scheme and version", {
@@ -117,7 +118,8 @@ test_that("a stored .txt classification loads by scheme and version", {
   resy_add_classification(src, scheme = "MiniTxt", version = "1")
 
   stored <- resy_load_expert(scheme = "MiniTxt", version = "1")
-  expect_identical(stored, resy_load_expert(expertfile = src))
+  expect_identical(without_source(stored),
+                   without_source(resy_load_expert(expertfile = src)))
   expect_equal(stored$vegtype.formula.names.short, c("GR", "FO"))
 })
 
@@ -128,8 +130,8 @@ test_that("the newest stored version is loaded when version is NULL", {
                           version = "2026-09-21")
 
   expect_identical(
-    resy_load_expert(scheme = "MiniTxt"),
-    resy_load_expert(expertfile = apennine_json())
+    without_source(resy_load_expert(scheme = "MiniTxt")),
+    without_source(resy_load_expert(expertfile = apennine_json()))
   )
 })
 
@@ -219,7 +221,7 @@ test_that("arguments are checked before anything is written", {
   csv <- tempfile(fileext = ".csv")
   writeLines("x", csv)
   expect_error(resy_add_classification(csv, "S", "1"),
-               "\\.txt, \\.json or \\.json\\.xz")
+               "\\.txt, \\.json, \\.txt\\.xz or \\.json\\.xz")
 
   expect_error(resy_add_classification(apennine_json(), "", "1"), "`scheme`")
   expect_error(resy_add_classification(apennine_json(), "S", ""), "`version`")

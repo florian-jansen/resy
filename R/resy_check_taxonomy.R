@@ -2,9 +2,10 @@
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
-#' Validates taxon names in a plot observation table against the canonical
-#' names and synonyms declared in Section 1 of the loaded expert system.
-#' Returns a per-taxon table of matches and canonical name mappings.
+#' Validates taxon names in a plot observation table against the species names
+#' of the loaded expert system: the aggregates of Section 1 with the names they
+#' include, and the species that a species group or a membership condition
+#' names. Returns a per-taxon table of matches and canonical name mappings.
 #'
 #' This is a purely offline check; no external name-resolution service is
 #' called.
@@ -22,8 +23,8 @@
 #'     \item{`scientificName`}{The name as submitted in `obs`.}
 #'     \item{`TaxonName`}{The canonical name used by [resy_classify()], or `NA`
 #'       when unmatched.}
-#'     \item{`matched`}{`TRUE` if the name was found as a canonical name or
-#'       synonym in Section 1 of the expert system.}
+#'     \item{`matched`}{`TRUE` if the name was found among the species names
+#'       of the expert system.}
 #'   }
 #' @seealso [resy_load_expert()], [resy_harmonize_eunis()]
 #' @examples
@@ -49,8 +50,12 @@ resy_check_taxonomy <- function(obs, parsed, col = NULL) {
     stop("`parsed` must be a resy_parsed_expert object (from resy_load_expert()).")
   col <- .resy_species_col(obs, col, arg = "col")
 
-  canon_names <- names(parsed$aggs)
-  lookup      <- .resy_agg_lookup(parsed$aggs)
+  # Section 1 maps aggregate names and their members to the aggregate; a
+  # species that only a species group or a membership condition names is
+  # evaluated as itself.
+  targets <- .resy_expert_names(parsed, mapping = FALSE)$targets
+  lookup  <- c(.resy_agg_lookup(parsed$aggs), stats::setNames(targets, targets))
+  lookup  <- lookup[!duplicated(names(lookup))]
 
   taxa      <- unique(as.character(obs[[col]]))
   taxa      <- taxa[!is.na(taxa)]
@@ -69,9 +74,10 @@ resy_check_taxonomy <- function(obs, parsed, col = NULL) {
     columns = c(
       scientificName = "Name as submitted",
       TaxonName      = "Canonical name used by resy_classify(); NA when unmatched",
-      matched        = "TRUE if found as a canonical name or Section 1 synonym"
+      matched        = "TRUE if found among the species names of the expert system"
     ),
-    reference = sprintf("checked against %d Section 1 species", length(canon_names))
+    reference = sprintf("checked against %d species names of the expert system",
+                        length(targets))
   )
   
 }

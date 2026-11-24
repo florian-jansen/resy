@@ -22,7 +22,7 @@ The function scans the package's classification store directory structure:
 \item Top-level directories represent classification schemes (e.g., "EUNIS").
 \item Second-level directories represent versions within each scheme.
 \item Within each version directory, the function looks for \code{expert.json}
-(or xz-compressed \code{expert.json.xz}) and \code{expert.txt} files.
+and \code{expert.txt} files, each possibly xz-compressed (\code{.xz}).
 }
 }
 \examples{

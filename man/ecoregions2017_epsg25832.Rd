@@ -5,7 +5,8 @@
 \alias{ecoregions2017_epsg25832}
 \title{Ecoregions of Europe (EPSG:25832)}
 \format{
-An \code{sf} object with 159 polygons.
+A plain coordinate list with 159 polygon features. See
+\link{dunes_bohn_500mbuffer_epsg25832} for the ring and attribute fields.
 }
 \source{
 Dinerstein, E. et al. (2017): An ecoregion-based approach to

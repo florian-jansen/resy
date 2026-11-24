@@ -56,8 +56,19 @@
   if (!file.exists(path))
     stop("File not found: ", path)
 
-  x <- jsonlite::read_json(path, simplifyVector = FALSE)
+  .resy_parsed_from_json(.resy_raw_json(.resy_read_raw(path)))
+}
 
+# A JSON document held as bytes, read as `jsonlite::read_json()` reads a file.
+.resy_raw_json <- function(bytes) {
+  con <- rawConnection(bytes)
+  on.exit(close(con))
+  jsonlite::parse_json(con, simplifyVector = FALSE)
+}
+
+# The `resy_parsed_expert` of a JSON expert system already read into a list
+# (as `jsonlite::read_json(path, simplifyVector = FALSE)` returns it).
+.resy_parsed_from_json <- function(x) {
   missing <- setdiff(.resy_json_required, names(x))
   if (length(missing))
     stop("JSON expert file is missing required keys: ",

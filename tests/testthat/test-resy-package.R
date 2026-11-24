@@ -1,18 +1,16 @@
 # resy-package.R holds the package help page and the namespace-wide imports
-# (data.table, fastmatch::fmatch, stringi::stri_replace_all_fixed, and the utils
-# helpers). The engine calls these without a namespace prefix, so they must be
-# reachable from the package namespace; the help page must name the package and
-# point at the front-door verbs its workflow section describes.
+# (data.table, fastmatch::fmatch and the utils helpers). The engine calls these
+# without a namespace prefix, so they must be reachable from the package
+# namespace; the help page must name the package and point at the front-door
+# verbs its workflow section describes.
 
 test_that("the namespace-wide imports resolve inside the package", {
   ns <- asNamespace("RESY")
-  for (fn in c("fmatch", "stri_replace_all_fixed", "head", "read.csv", "stack",
+  for (fn in c("fmatch", "head", "read.csv", "stack",
                "data.table", "setDT", ":=", "fread")) {
     expect_true(exists(fn, envir = ns, inherits = TRUE), info = fn)
   }
   expect_identical(get("fmatch", envir = ns), fastmatch::fmatch)
-  expect_identical(get("stri_replace_all_fixed", envir = ns),
-                   stringi::stri_replace_all_fixed)
 })
 
 test_that("the package help page exists and names the package", {

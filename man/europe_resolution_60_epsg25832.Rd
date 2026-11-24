@@ -5,7 +5,9 @@
 \alias{europe_resolution_60_epsg25832}
 \title{European countries at low resolution (EPSG:25832)}
 \format{
-An \code{sf} object with 37 polygons.
+A plain coordinate list with 37 polygon features. See
+\link{dunes_bohn_500mbuffer_epsg25832} for the ring and attribute fields.
+\code{land} holds simplified EPSG:3857 outlines for map export.
 }
 \source{
 Eurostat GISCO: NUTS boundaries.

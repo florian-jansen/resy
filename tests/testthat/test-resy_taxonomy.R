@@ -49,7 +49,7 @@ test_that("the shipped layer matches its recorded build", {
 })
 
 test_that("the table anchored on EUNIS 2025-10-03 keeps its recorded content", {
-  expert <- resy_expert_path("EUNIS", "2025-10-03", "json", mustWork = FALSE)
+  expert <- resy_expert_path("EUNIS", "2025-10-03", mustWork = FALSE)
   skip_if(is.na(expert) || !file.exists(expert), "EUNIS expert not installed")
   parsed <- resy_load_expert(expertfile = expert)
   syn <- resy_read_synonyms(expert = parsed)
@@ -64,8 +64,8 @@ test_that("the table anchored on EUNIS 2025-10-03 keeps its recorded content", {
   con <- file(f, "wb")
   utils::write.csv(syn, con, row.names = FALSE, na = "", eol = "\n")
   close(con)
-  expect_equal(nrow(syn), 67018L)
-  expect_equal(unname(tools::md5sum(f)), "b36fd67b891b40927914bea9c6145135")
+  expect_equal(nrow(syn), 67005L)
+  expect_equal(unname(tools::md5sum(f)), "3bda19b7283eb88de6de81ebf990eb23")
 })
 
 mini_expert <- function() {
@@ -263,7 +263,7 @@ test_that("dropping a defining column turns a resy_taxa table into a data frame"
 })
 
 test_that("classify with resolve_taxa = TRUE resolves and never corrupts known names", {
-  expert <- resy_expert_path("EUNIS", "2025-10-03", "json", mustWork = FALSE)
+  expert <- resy_expert_path("EUNIS", "2025-10-03", mustWork = FALSE)
   skip_if(is.na(expert) || !file.exists(expert), "EUNIS expert not installed")
   sp_path <- system.file(
     "extdata", "data_example_species.csv", package = "RESY"

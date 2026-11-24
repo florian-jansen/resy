@@ -6,7 +6,9 @@
 \alias{co}
 \title{Regional seas around Europe (EPSG:25832)}
 \format{
-An \code{sf} object with 5 multilinestrings.
+A plain coordinate list with 5 multiline features. See
+\link{dunes_bohn_500mbuffer_epsg25832} for the ring and attribute fields.
+\code{segments}, \code{segment_bbox} and \code{segment_feature} index the line segments.
 }
 \source{
 European Environment Agency: Regional seas around Europe.
@@ -16,7 +18,7 @@ data(coastline_regions_epsg25832)
 }
 \description{
 The regional seas around Europe (Marine Strategy Framework Directive regions)
-in EPSG:25832. The dataset holds the \code{sf} object \code{co}; its column \code{COAST_EEA}
+in EPSG:25832. The dataset holds the list \code{co}; \code{attributes$COAST_EEA}
 gives the coast code of each sea (for example \code{MED_COAST}). Used to set
 \code{Coast_EEA} in \code{\link[=resy_harmonize_eunis]{resy_harmonize_eunis()}}.
 }

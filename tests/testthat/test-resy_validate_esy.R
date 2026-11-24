@@ -31,22 +31,27 @@ test_that(".resy_esy_extract_group_refs: ignores species names and thresholds", 
   expect_length(refs, 0L)
 })
 
-test_that(".resy_esy_extract_group_refs: extracts all prefix types", {
-  expr  <- "(<#TC group1> OR <### group2> OR <#SC group3> OR <##D group4> OR <$$C group5> OR <$$N group6>)"
+test_that(".resy_esy_extract_group_refs: extracts the groups of every group condition code", {
+  expr  <- "(<#TC group1> OR <### group2> OR <#SC group3> OR <##D group4> OR <##Q group5> OR <#02 group6>)"
   refs  <- RESY:::.resy_esy_extract_group_refs(expr)
-  expect_contains(refs, "group1")
-  expect_contains(refs, "group2")
-  expect_contains(refs, "group3")
-  expect_contains(refs, "group4")
-  expect_contains(refs, "group5")
-  expect_contains(refs, "group6")
+  expect_setequal(refs, paste0("group", 1:6))
 })
 
-test_that(".resy_esy_extract_group_refs: handles EXCEPT clauses", {
-  expr  <- "<#TC Beech GR 15 EXCEPT Fagus>"
-  refs  <- RESY:::.resy_esy_extract_group_refs(expr)
-  expect_contains(refs, "Beech")
-  expect_contains(refs, "Fagus")
+test_that(".resy_esy_extract_group_refs: header columns are not groups", {
+  expr  <- "(<$$C Country EQ Italy> AND <$$N Altitude (m) GR 1500>)"
+  expect_length(RESY:::.resy_esy_extract_group_refs(expr), 0L)
+})
+
+test_that(".resy_esy_extract_group_refs: names after EXCEPT may be species and are not checked", {
+  expr  <- "<Fagus sylvatica GR #TC Trees EXCEPT Fagus sylvatica>"
+  expect_equal(RESY:::.resy_esy_extract_group_refs(expr), "Trees")
+})
+
+test_that(".resy_esy_extract_group_refs: resolves names as the solver does", {
+  # a name with spaces, a set tag, and groups joined by "|" on either side
+  expr <- "(<##Q +01 Dry grassland> AND <#TC Trees|#TC Shrubs GR #TC Dwarf-shrubs|#TC Herbs>)"
+  expect_setequal(RESY:::.resy_esy_extract_group_refs(expr),
+                  c("+01 Dry grassland", "Trees", "Shrubs", "Dwarf-shrubs", "Herbs"))
 })
 
 # ---- Shared helper tests: .resy_esy_check_formula -------------------------
@@ -113,6 +118,45 @@ test_that(".resy_esy_make_parseable: replaces conditions with tokens", {
 })
 
 # ---- Valid real files -------
+
+test_that("resy_validate_esy: the shipped EUNIS-ESy file gets no undefined-group warning for header columns, set tags or joined groups", {
+  result <- resy_validate_esy(resy_expert_path("EUNIS", "2025-10-03"), verbose = FALSE)
+  expect_true(result$ok)
+  undefined <- grep("Undefined group", result$warnings, value = TRUE)
+  expect_false(any(grepl("Coast_EEA|DEG_LON|Country|Altitude|\\+[0-9]{2}(,|$)|\\|#TC", undefined)))
+  expect_lte(length(undefined), 1L)
+})
+
+test_that("resy_validate_esy: the same system gives the same report as .json and as .txt", {
+  groups <- list(`### G` = list("Sp1"), `XX Bad` = list("Sp2"))
+  rules <- list(
+    list(priority = "2", code = "A", description = "Fine", expression = "<#TC G GR 10>"),
+    list(priority = "2", code = "A", description = "", expression = "<#TC Missing GR 10> AND"),
+    list(priority = "3", code = "B", description = "No formula", expression = "")
+  )
+  json <- tempfile(fileext = ".json")
+  txt <- tempfile(fileext = ".txt")
+  on.exit(unlink(c(json, txt)))
+  jsonlite::write_json(list(metadata = list(scheme = "t", version = "0"), synonyms = list(Sp1 = list()),
+                            groups = groups, rules = rules), json, auto_unbox = TRUE)
+  writeLines(c(
+    "SECTION 1: Species aggregation", "Sp1", "SECTION 1: End",
+    "SECTION 2: Species groups", "### G", "     Sp1", "XX Bad", "     Sp2", "SECTION 2: End",
+    "SECTION 3: Group definitions",
+    unlist(lapply(rules, function(r) c(RESY:::.resy_rule_header(r$priority, r$code, r$description), r$expression, ""))),
+    "SECTION 3: End"
+  ), txt)
+  # A message names the place in the file and the format's word for a formula;
+  # everything else is the same text.
+  neutral <- function(x) sort(gsub("(rule|line) [0-9]+", "<where>", gsub("expression", "formula", x)))
+  a <- resy_validate_esy(json, verbose = FALSE)
+  b <- resy_validate_esy(txt, verbose = FALSE)
+  expect_equal(neutral(a$errors), neutral(b$errors))
+  expect_equal(neutral(a$warnings), neutral(b$warnings))
+  expect_equal(a$meta[c("groups_defined", "vegtypes_defined")], b$meta[c("groups_defined", "vegtypes_defined")])
+  expect_length(a$errors, 3L)
+  expect_length(a$warnings, 3L)
+})
 
 test_that("resy_validate_esy: Apennine-test JSON passes validation", {
   path <- system.file(

@@ -98,20 +98,20 @@ test_that(".resy_esy_extract_group_refs: extracts ##D names", {
   
 })
 
-test_that(".resy_esy_extract_group_refs: extracts $$C names", {
-  
+test_that(".resy_esy_extract_group_refs: $$C names a header column, not a group", {
+
   expr  <- "<$$C Cultivation EQ 1>"
   refs  <- RESY:::.resy_esy_extract_group_refs(expr)
-  expect_contains(refs, "Cultivation")
-  
+  expect_length(refs, 0L)
+
 })
 
-test_that(".resy_esy_extract_group_refs: extracts $$N names", {
-  
+test_that(".resy_esy_extract_group_refs: $$N names a header column, not a group", {
+
   expr  <- "<$$N Natural UP 10>"
   refs  <- RESY:::.resy_esy_extract_group_refs(expr)
-  expect_contains(refs, "Natural")
-  
+  expect_length(refs, 0L)
+
 })
 
 test_that(".resy_esy_extract_group_refs: extracts multiple names", {
@@ -142,13 +142,12 @@ test_that(".resy_esy_extract_group_refs: ignores bare thresholds", {
   
 })
 
-test_that(".resy_esy_extract_group_refs: handles EXCEPT clauses", {
-  
+test_that(".resy_esy_extract_group_refs: a name after EXCEPT may be a species and is not a group reference", {
+
   expr  <- "<#TC Beech GR 15 EXCEPT Fagus>"
   refs  <- RESY:::.resy_esy_extract_group_refs(expr)
-  expect_contains(refs, "Beech")
-  expect_contains(refs, "Fagus")
-  
+  expect_equal(refs, "Beech")
+
 })
 
 test_that(".resy_esy_extract_group_refs: extracts EXCEPT with special tokens", {

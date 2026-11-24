@@ -4,60 +4,101 @@
   --lv-M: #c55a11; --lv-N: #3a8fc8; --lv-Q: #1f5f9e; --lv-R: #d49a00; --lv-S: #b4508f;
   --lv-P: #2a9d8f; --lv-T: #1e8a5a; --lv-U: #8a6a46; --lv-V: #7a7d2a; --lv-other: #5f6b8a; --lv-none: #9a9d96;
   container-type: inline-size;
+  position: relative;
+  font-variant-numeric: tabular-nums;
 }
 /* The app uses the whole page width: no table of contents column. */
 main#main { flex: 0 0 100%; max-width: 100%; width: 100%; }
 main#main + aside { display: none; }
+/* The site's navigation bar stays in place on the pages of the tools (see pinNavbar()). */
+nav.navbar.resy-pinned { transform: none !important; }
 #resy-app code { font-size: 0.85em; }
+#resy-app .card-title { font-size: 1.125rem; font-weight: 600; color: var(--bs-emphasis-color); }
+#resy-app :is(button, a, input, select, summary):focus-visible { outline: 3px solid var(--bs-primary); outline-offset: 3px; }
+#resy-app [inert] { opacity: 0.65; }
+#resy-app :is(#d-body, .full, #sys-info)[aria-busy=true] { opacity: 0.55; }
+#resy-app #results[aria-busy=true] .results-grid { opacity: 0.65; }
+#resy-app #results[hidden] { display: block !important; opacity: 0.5; pointer-events: none; }
+#resy-app a[aria-busy=true] { opacity: 0.55; }
+#resy-app #sys-info { height: 4.5rem; overflow: auto; scrollbar-gutter: stable; }
+#resy-app .data-tools { display: flex; flex-wrap: wrap; gap: 8px; }
+#resy-app #data-note { height: 1.5em; margin: 10px 0; overflow: auto; }
+#resy-app #size-note { height: 1.5em; flex-basis: 100%; }
+#resy-app #run { width: 7rem; flex: 0 0 7rem; }
+#resy-app #download-map { width: 13rem; }
+#resy-app #status { flex-basis: 100%; height: 3em; overflow: auto; overflow-wrap: anywhere; }
+#resy-app #footer { min-height: 1.5em; }
 #resy-app .choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
 #resy-app .choice { border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); padding: 12px; cursor: pointer; display: block; }
 #resy-app .choice:has(input[type=radio]:checked) { border-color: var(--bs-primary); background: var(--bs-primary-bg-subtle); }
 #resy-app .choice .form-check-input { margin-right: 4px; }
 #resy-app .choice .hint { display: block; color: var(--bs-secondary-color); font-size: 0.875rem; margin-top: 4px; }
-#resy-app #sys-info.error { color: var(--bs-danger); }
+#resy-app #sys-info.error { color: var(--bs-danger-text-emphasis); }
 /* The EUNIS-ESy site options stay in place for other systems, greyed out, so
    switching the system does not move the rest of the page. */
 #resy-app #eunis-opts:disabled { opacity: 0.5; }
 #resy-app .options { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-top: 14px; font-size: 0.9rem; }
 #resy-app .options input[type=number] { width: 90px; }
-#resy-app #o-sessions { width: 6.5rem; }
+#resy-app #o-sessions { width: 8rem; }
 #resy-app .colpick { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: end; margin-top: 8px; }
-#resy-app .colpick select { width: auto; min-width: 10rem; max-width: 16rem; }
+#resy-app .colpick label { flex: 1 1 10rem; min-width: 0; max-width: 18rem; }
+#resy-app .colpick select { width: 100%; }
 #resy-app .progress { height: 6px; }
+#resy-app #progress[hidden] { display: flex !important; visibility: hidden; }
 #resy-app .progress-bar { transition: width 0.4s; }
 #resy-app .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 14px; }
-#resy-app #status.error { color: var(--bs-danger); }
+#resy-app #status.error { color: var(--bs-danger-text-emphasis); }
 
-#loader { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
-  min-height: max(320px, 70vh); margin-top: 16px; transition: opacity 0.4s; }
+#loader { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 16px;
+  padding: 16px 16px 32px; text-align: center; }
+/* Over a tool that is laid out but not yet shown, the loader covers it; otherwise it takes its own place in the page. */
+#resy-app:has(#tool:not([hidden])) #loader { position: absolute; inset: 0; z-index: 2; padding-top: 64px; }
 #loader.done { opacity: 0; }
-/* The loader holds about the height of the app, so the page does not shrink
-   and grow again when the app replaces it. */
-#tool:not([hidden]) { animation: resy-in 0.4s ease-out; }
-@keyframes resy-in { from { opacity: 0; } }
+#resy-app:has(#loader:not([hidden])) #tool { visibility: hidden; }
 #loader .hex { position: relative; width: 140px; aspect-ratio: 240 / 278; }
 #loader .hex img { position: absolute; inset: 0; width: 100%; height: 100%; }
 #loader .base { filter: grayscale(1); opacity: 0.22; }
 #loader .fill { clip-path: inset(calc(100% - var(--p, 0%)) 0 0 0); transition: clip-path var(--dur, 0.3s) linear; }
-#loader-step { color: var(--bs-secondary-color); margin: 0; text-align: center; max-width: 30rem; min-height: 1.5em; }
-#loader.error #loader-step { color: var(--bs-danger); }
+#loader-step { color: var(--bs-secondary-color); margin: 0; text-align: center; width: 100%; max-width: 30rem; height: 4.5em; overflow: auto; }
+#loader.error #loader-step { color: var(--bs-danger-text-emphasis); }
 @media (prefers-reduced-motion: reduce) { #loader, #loader .fill { transition: none; } #tool:not([hidden]) { animation: none; } }
 
 #resy-app .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
 #resy-app .stat { border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); padding: 10px 12px; }
 #resy-app .stat b { display: block; font-size: 1.4rem; font-weight: 500; line-height: 1.2; }
-#resy-app .stat span { color: var(--bs-secondary-color); font-size: 0.85rem; }
+#resy-app .stat span { display: block; height: 3em; color: var(--bs-secondary-color); font-size: 0.85rem; }
 
 #resy-app #map { height: 420px; border-radius: var(--bs-border-radius); border: 1px solid var(--bs-border-color); }
 #resy-app .leaflet-container { background: var(--bs-tertiary-bg); font: inherit; }
+#resy-app .leaflet-control-attribution { font-size: 0.7rem; }
+#resy-app .leaflet-container.drawing { cursor: crosshair; user-select: none; }
 #resy-app .resy-dots { position: absolute; left: 0; top: 0; pointer-events: none; }
-#resy-app .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 10px; font-size: 0.85rem; color: var(--bs-secondary-color); }
+#resy-app .legend { display: flex; flex-wrap: wrap; align-content: start; gap: 4px 14px; height: 100px; overflow: auto; scrollbar-gutter: stable; margin-top: 10px; font-size: 0.85rem; color: var(--bs-secondary-color); }
 #resy-app .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; }
 
-#resy-app .types { list-style: none; margin: 0; padding: 0; max-height: 420px; overflow-y: auto; }
-#resy-app .types li { display: grid; grid-template-columns: 14px 3.4rem minmax(0, 1fr) auto; gap: 8px; align-items: center;
-  padding: 4px 6px; border-radius: var(--bs-border-radius-sm); cursor: pointer; font-size: 0.9rem; }
-#resy-app .types li:hover, #resy-app .types li.active { background: var(--bs-primary-bg-subtle); }
+/* The evidence scrolls within a viewport-sized panel beside the results. */
+#resy-app .results-grid { display: grid; gap: 16px; margin-top: 16px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+#resy-app .results-main { display: grid; gap: 16px; min-width: 0; }
+#resy-app .results-grid > #detail { min-width: 0; height: clamp(420px, 90svh, 920px); scroll-margin-top: calc(var(--resy-top, 0px) + 12px); }
+#resy-app #detail > .card-body { display: flex; flex-direction: column; min-height: 0; }
+#resy-app #d-title { height: 3em; flex-shrink: 0; overflow: auto; overflow-wrap: anywhere; }
+#resy-app #d-status { height: 1.5em; flex-shrink: 0; margin-bottom: 8px; overflow: auto; }
+#resy-app #d-body { flex: 1; min-height: 0; overflow: auto; scrollbar-gutter: stable; }
+@media (min-width: 992px) {
+  #resy-app .results-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+  #resy-app .results-grid > #detail { position: sticky; top: calc(var(--resy-top, 0px) + 12px); }
+}
+#resy-app #s-system { height: 3em; overflow: auto; }
+/* The notes of a run open under their number: the line is there from the start
+   of the run, so notes that arrive with later batches move nothing. */
+#resy-app #results #notes { min-height: 1.5em; margin-top: 4px; }
+#resy-app #results #notes summary { cursor: pointer; }
+#resy-app #results #notes .warn { display: block; margin-top: 4px; height: 180px; overflow: auto; }
+
+#resy-app .types { list-style: none; margin: 0; padding: 3px; height: 264px; overflow-y: auto; scrollbar-gutter: stable; }
+#resy-app .types button { display: grid; grid-template-columns: 14px 3.4rem minmax(0, 1fr) auto; gap: 8px; align-items: center;
+  width: 100%; border: 0; background: transparent; color: var(--bs-body-color); text-align: left; min-height: 44px; padding: 4px 6px; border-radius: var(--bs-border-radius-sm); cursor: pointer; font-size: 0.9rem; }
+#resy-app .types button:hover, #resy-app .types button.active { background: var(--bs-primary-bg-subtle); }
 #resy-app .types .sw { width: 12px; height: 12px; border-radius: 3px; }
 #resy-app .types .mid { min-width: 0; }
 #resy-app .types .nm { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--bs-secondary-color); }
@@ -65,11 +106,20 @@ main#main + aside { display: none; }
 
 #resy-app .tablehead { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
 #resy-app .tablehead input { max-width: 260px; }
-#resy-app .tablewrap { max-height: 380px; overflow: auto; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); }
+#resy-app .tablewrap { height: 380px; overflow: auto; scrollbar-gutter: stable; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); }
+#resy-app .tablewrap table { table-layout: fixed; min-width: 440px; }
+#resy-app .tablewrap th:nth-child(1) { width: 22%; }
+#resy-app .tablewrap th:nth-child(2) { width: 14%; }
+#resy-app .tablewrap th:nth-child(4) { width: 16%; }
+#resy-app .tablewrap td { overflow-wrap: anywhere; }
+#resy-app .plot-button { border: 0; padding: 4px 0; background: transparent; color: var(--bs-link-color); text-decoration: underline; text-align: left; }
+#resy-app .empty-table { padding: 20px; color: var(--bs-secondary-color); }
+#resy-app #shown { display: block; flex-basis: 100%; height: 3em; overflow: auto; }
 #resy-app table { display: table; width: 100%; font-size: 0.875rem; }
 #resy-app th { position: sticky; top: 0; background: var(--bs-body-bg); font-weight: 500; }
 #resy-app tbody tr { cursor: pointer; }
-#resy-app td.num, #resy-app th.num { text-align: right; font-variant-numeric: tabular-nums; }
+#resy-app td.num, #resy-app th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+#resy-app .species td.num { width: 4rem; }
 #resy-app #d-body { font-size: 0.9rem; overflow-wrap: anywhere; }
 #resy-app #d-body .species summary, #resy-app #d-body details > summary { cursor: pointer; color: var(--bs-secondary-color); }
 #resy-app #d-body .species table { font-size: 0.85rem; max-width: 26rem; margin-top: 4px; }
@@ -84,7 +134,7 @@ main#main + aside { display: none; }
 #resy-app .near .bar { flex: 0 0 3rem; height: 5px; background: var(--bs-tertiary-bg); border-radius: 3px; overflow: hidden; }
 #resy-app .near .bar i { display: block; height: 100%; background: var(--bs-primary); opacity: 0.6; }
 #resy-app #d-body details > .near { margin-top: 4px; }
-#resy-app .full { margin-top: 12px; }
+#resy-app .full { margin-top: 12px; height: 340px; overflow: auto; scrollbar-gutter: stable; }
 #resy-app .rule { background: var(--bs-tertiary-bg); border-radius: var(--bs-border-radius); padding: 10px 12px; }
 #resy-app .rule + .rule { margin-top: 8px; }
 #resy-app .verdict { font-size: 0.8rem; margin-left: 6px; }
@@ -97,5 +147,36 @@ main#main + aside { display: none; }
 #resy-app .conds .n { color: var(--bs-secondary-color); font-variant-numeric: tabular-nums; }
 #resy-app .conds .st { font-weight: 500; }
 #resy-app .conds .sp { display: block; color: var(--bs-secondary-color); font-size: 0.8rem; margin-top: 2px; }
+#resy-app .rule .neg { display: inline-block; margin-right: 5px; padding: 0 4px; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius-sm);
+  font-size: 0.75rem; line-height: 1.4; color: var(--bs-secondary-color); }
 #resy-app .warn { margin: 12px 0 0; padding-left: 18px; }
 #resy-app .warn:empty { display: none; }
+
+@media (max-width: 575px) {
+  #resy-app .choice { min-height: 140px; }
+  #resy-app #sys-info { height: 12rem; }
+  #resy-app #data-note { height: 3em; }
+  #resy-app #status { height: 4.5em; }
+  #resy-app #footer { min-height: 3em; }
+  #resy-app #map { height: 300px; }
+  #resy-app .legend { height: 140px; }
+  #resy-app #s-system { height: 6em; }
+  #resy-app .colpick label { max-width: none; flex-basis: 100%; }
+  #resy-app .tablehead input { max-width: none; }
+  #resy-app .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #resy-app .near li { grid-template-columns: 2.5rem minmax(0, 1fr); }
+  #resy-app .near .frac { grid-column: 2; }
+}
+@media (prefers-reduced-motion: reduce) { #resy-app .progress-bar { transition: none; } }
+
+/* The other tool (the RESY App beside the RESY Maker, or the reverse) in a
+   frame over this page's content, below the navigation bar; see createShell()
+   in resy_core.js. The page in the frame has no navigation bar and footer. */
+.resy-frame { position: fixed; left: 0; top: var(--resy-nav, 0px); width: 100%; height: calc(100% - var(--resy-nav, 0px)); border: 0;
+  background: var(--bs-body-bg); z-index: 1000; visibility: hidden; }
+html.resy-other .resy-frame { visibility: visible; }
+html.resy-other body { overflow: hidden; }
+html.resy-framed nav.navbar, html.resy-framed body > footer, html.resy-framed .container > footer, html.resy-framed footer { display: none; }
+html.resy-framed body { padding-top: 0 !important; }
+html.resy-framed #tool:not([hidden]) { animation: none; }
+html.resy-framed main { margin-top: 26px; }

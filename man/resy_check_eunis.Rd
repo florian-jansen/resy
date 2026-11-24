@@ -12,7 +12,9 @@ resy_check_eunis(data, source_crs = NULL, verbose = TRUE)
 \item{source_crs}{Integer EPSG code of the coordinates in a plain data
 frame. When \code{NULL} (default), coordinates that are all valid longitudes and
 latitudes are read as degrees (EPSG:4326); other coordinates need the code.
-Ignored when \code{data} is an \code{sf} object, which carries its own CRS.}
+Ignored when \code{data} is an \code{sf} object, which carries its own CRS.
+The optional package \code{sf} is required for \code{sf} input and CRS codes other
+than 4326, 4258 and 25832.}
 
 \item{verbose}{Logical; if \code{TRUE} (default), print a summary of issues.}
 }

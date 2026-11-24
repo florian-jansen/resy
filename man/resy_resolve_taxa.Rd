@@ -23,8 +23,8 @@ If \code{NULL} (default), uses \code{TaxonName}, then Darwin Core
 on \code{expert} (see \code{\link{resy_read_synonyms}}); pass a path or data
 frame to override it.}
 
-\item{canonical}{\code{NULL} (default) uses every species name \code{expert}
-knows for the exact-match step, so a name the expert system already uses is
+\item{canonical}{\code{NULL} (default) uses every species name in
+\code{expert} for the exact-match step, so a name the expert system already uses is
 left untouched; pass a path, a data frame, or a character vector of names to
 override it.}
 

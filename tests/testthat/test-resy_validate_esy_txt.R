@@ -169,7 +169,7 @@ test_that("resy_validate_esy_txt: empty vegetation type code → error", {
   
 })
 
-test_that("resy_validate_esy_txt: missing formula for type → warning (not strict)", {
+test_that("resy_validate_esy_txt: missing formula for type → error", {
   
   tmp <- make_txt(
     sec1 = "Test",
@@ -178,8 +178,10 @@ test_that("resy_validate_esy_txt: missing formula for type → warning (not stri
     sec3 = type_block("0", "AB", NULL, name = "NoFormula")
   )
   result <- resy_validate_esy(tmp, verbose = FALSE)
-  expect_true(result$ok)  # warning, not error
-  expect_true(any(grepl("Missing formula", result$warnings)))
+  # RESY cannot read a file in which a type has no formula
+  expect_false(result$ok)
+  expect_true(any(grepl("Empty formula", result$errors)))
+  expect_error(suppressMessages(resy_load_expert(expertfile = tmp)))
   
 })
 

@@ -196,3 +196,36 @@ test_that("whole-plot cover conditions do not depend on the row order of obs", {
   expect_equal(rev_res$result.classification[c("z", "a")],
                res$result.classification[c("z", "a")])
 })
+
+test_that("a numeric header condition leaves the other conditions of a single plot untouched", {
+  tmp <- tempfile(fileext = ".json")
+  on.exit(unlink(tmp))
+  jsonlite::write_json(list(
+    metadata = list(scheme = "t", version = "0"),
+    synonyms = list(Sp1 = list(), Sp2 = list()),
+    groups   = list(`### GrpA` = list("Sp1", "Sp2")),
+    rules    = list(
+      list(priority = "2", code = "A", description = "Group cover",
+           expression = "<#TC GrpA GR 50>"),
+      list(priority = "5", code = "B", description = "Group cover, above 1000 m",
+           expression = "<#TC GrpA GR 50> AND <$$N Altitude (m) GR 1000>")
+    )
+  ), tmp, auto_unbox = TRUE)
+  obs <- data.frame(PlotObservationID = c("p1", "p1", "p2"),
+                    TaxonName = c("Sp1", "Sp2", "Sp1"),
+                    Cover_Perc = c(80, 10, 5))
+  header <- data.frame(PlotObservationID = c("p1", "p2"),
+                       `Altitude (m)` = c(12, 2000), check.names = FALSE)
+  classify <- function(plots) {
+    suppressMessages(resy_classify(
+      obs = obs[obs$PlotObservationID %in% plots, ],
+      header = header[header$PlotObservationID %in% plots, ],
+      expertfile = tmp, mc = 1L
+    ))
+  }
+  both <- classify(c("p1", "p2"))
+  alone <- classify("p1")
+  expect_equal(unname(unlist(alone$plot.cond["p1", ])),
+               unname(unlist(both$plot.cond["p1", ])))
+  expect_equal(unname(alone$result.classification), "A")
+})

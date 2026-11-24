@@ -73,11 +73,18 @@ The vegetation relevés of the example dataset are in Tuscany in Italy.
 utils::data(
   "europe_resolution_1_epsg25832", package = "RESY", envir = environment()
   )
+layer <- europe_resolution_1_epsg25832
+outlines <- lapply(seq_len(nrow(layer$attributes)), function(i) {
+  at <- which(layer$feature == i)
+  parts <- split(at, layer$part[at])
+  st_multipolygon(lapply(parts, function(j) layer$rings[j]))
+})
+countries <- st_sf(layer$attributes, geometry = st_sfc(outlines, crs = layer$crs))
 bbox <- data_sites |>
    st_transform(crs = 25832) |>
    st_bbox()
 ggplot() +
-   geom_sf(data = europe_resolution_1_epsg25832) +
+   geom_sf(data = countries) +
    geom_sf(
       data = data_sites |> st_transform(crs = 25832),
       colour = "black", size = 1
@@ -145,7 +152,7 @@ Here is the updated map with the ecoregions in different colors:
 
 ```{r map-2, echo=FALSE}
 ggplot() +
-   geom_sf(data = europe_resolution_1_epsg25832) +
+   geom_sf(data = countries) +
    geom_sf(
       data = outcome$sites |>
          st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326),

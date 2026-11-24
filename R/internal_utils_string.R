@@ -35,7 +35,7 @@ NULL
 #' @seealso `.resy_trim()`, `.resy_trim_leading()`
 #' @keywords internal
 #' @noRd
-.resy_trim_trailing <- function(x) sub("\\s+$|\\s+\\d$|\\s+\\-\\s+\\d$", "", x)
+.resy_trim_trailing <- function(x) sub("\\s+(?:-\\s+\\d|\\d)?$", "", x, perl = TRUE)
 
 #' Trim Leading Whitespace
 #'
@@ -46,4 +46,4 @@ NULL
 #' @seealso `.resy_trim()`, `.resy_trim_trailing()`
 #' @keywords internal
 #' @noRd
-.resy_trim_leading <- function(x) sub("^\\s+", "", x)
+.resy_trim_leading <- function(x) sub("^\\s+", "", x, perl = TRUE)

@@ -1,4 +1,5 @@
 ^data-raw$
+^dev_notes$
 ^renv$
 ^renv\.lock$
 .*\.Rproj$

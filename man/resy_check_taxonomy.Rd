@@ -20,15 +20,16 @@ A \code{resy_taxa} data frame with one row per unique taxon name in \code{obs}:
 \item{\code{scientificName}}{The name as submitted in \code{obs}.}
 \item{\code{TaxonName}}{The canonical name used by \code{\link[=resy_classify]{resy_classify()}}, or \code{NA}
 when unmatched.}
-\item{\code{matched}}{\code{TRUE} if the name was found as a canonical name or
-synonym in Section 1 of the expert system.}
+\item{\code{matched}}{\code{TRUE} if the name was found among the species names
+of the expert system.}
 }
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-Validates taxon names in a plot observation table against the canonical
-names and synonyms declared in Section 1 of the loaded expert system.
-Returns a per-taxon table of matches and canonical name mappings.
+Validates taxon names in a plot observation table against the species names
+of the loaded expert system: the aggregates of Section 1 with the names they
+include, and the species that a species group or a membership condition
+names. Returns a per-taxon table of matches and canonical name mappings.
 
 This is a purely offline check; no external name-resolution service is
 called.

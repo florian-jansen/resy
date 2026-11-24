@@ -1,0 +1,4 @@
+scheme,version,doi,file,url,size,md5,sha256,licence
+EUNIS,2020-06-08,10.5281/zenodo.3841729,EUNIS-ESy-2020-06-08.txt,https://zenodo.org/api/records/3841729/files/EUNIS-ESy-2020-06-08.txt/content,1556300,d9bfdd9f1c20740143b2ef4d3dd16cf6,b8d7ce1e3d04fb2ce61414c5250c5d88c90abf81c2a2de3eeb25f2bfd979dfa5,cc-by-4.0
+EUNIS,2021-06-01,10.5281/zenodo.4812736,EUNIS-ESy-2021-06-01.txt,https://zenodo.org/api/records/4812736/files/EUNIS-ESy-2021-06-01.txt/content,1663673,775ea4542b1ef7a7ea23e9f1dac01bc6,2f32c78a90c718a284805079bf032382b9db93c049fec7372aab5c4f3536a1d9,cc-by-4.0
+EUNIS,2025-10-03,10.5281/zenodo.16895007,EUNIS-ESy-2025-10-03.txt,https://zenodo.org/api/records/16895007/files/EUNIS-ESy-2025-10-03.txt/content,8467096,f5fbfc31dde8d0f29b9f9d7e7731ac48,724ad8611e0ddb9e8a39e54aae840119a2219202f74a1e8b208d0a65d35d235f,cc-by-4.0

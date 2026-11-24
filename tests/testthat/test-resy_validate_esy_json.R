@@ -30,14 +30,14 @@ test_that("resy_validate_esy_json: multiple groups and rules pass", {
     synonyms = list(),
     groups   = list(
       `### Forest` = list("Sp1", "Sp2"),
-      `#TC Beech` = list("Fagus"),
-      `#SC Oak` = list("Quercus")
+      `### Beech` = list("Fagus"),
+      `##D +01 Oak` = list("Quercus")
     ),
     rules    = list(
       list(priority = "1", code = "BF", description = "Beech forest",
-           expression = "(<### Forest> AND <#TC Beech>)"),
+           expression = "(<### Forest GR 1> AND <#TC Beech GR 25>)"),
       list(priority = "2", code = "OF", description = "Oak forest",
-           expression = "(<### Forest> AND <#SC Oak>)")
+           expression = "(<### Forest GR 1> AND <##Q +01 Oak>)")
     )
   )
   result <- resy_validate_esy(tmp, verbose = FALSE)
@@ -108,7 +108,7 @@ test_that("resy_validate_esy_json: empty code → error", {
   )
   result <- resy_validate_esy(tmp, verbose = FALSE)
   expect_false(result$ok)
-  expect_true(any(grepl("Empty code", result$errors)))
+  expect_true(any(grepl("Empty vegetation type code", result$errors)))
 })
 
 test_that("resy_validate_esy_json: invalid priority character → error", {

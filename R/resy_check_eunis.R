@@ -21,6 +21,8 @@
 #'   frame. When `NULL` (default), coordinates that are all valid longitudes and
 #'   latitudes are read as degrees (EPSG:4326); other coordinates need the code.
 #'   Ignored when `data` is an `sf` object, which carries its own CRS.
+#'   The optional package `sf` is required for `sf` input and CRS codes other
+#'   than 4326, 4258 and 25832.
 #' @param verbose Logical; if `TRUE` (default), print a summary of issues.
 #' @return A list with:
 #'   \describe{
@@ -57,7 +59,7 @@ resy_check_eunis <- function(data, source_crs = NULL, verbose = TRUE) {
 
   if (!is.null(data_sf)) {
 
-    if (anyNA(sf::st_coordinates(data_sf)))
+    if (anyNA(.resy_coordinates(data_sf)))
       errors <- c(errors, "Some sites have missing coordinates (NA in geometry).")
 
     if (!rlang::has_name(data_sf, "PlotObservationID"))

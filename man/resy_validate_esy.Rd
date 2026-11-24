@@ -25,37 +25,51 @@ types defined.}
 }
 \description{
 Checks an ESy expert file (\code{.txt} or \code{.json}) for structural and syntactic
-problems. Does not assess ecological correctness. The rules are:
+problems. Does not assess ecological correctness. Both formats are read into
+the same parts (species groups and type definitions) and checked by the same
+rules; only the checks of the file layout differ between them.
 
-\strong{Errors} (always fatal — the file cannot be imported):
+\strong{Errors} (always fatal: the file cannot be imported):
 \enumerate{
 \item All required sections / top-level keys must be present and, for
 \code{.txt}, in the correct order (Section 1 < 2 < 3).
+\item At least one vegetation type must be defined.
 \item Every vegetation type must have a non-empty code with no whitespace.
 \item Every vegetation type must have a formula / expression.
 \item Every formula must contain at least one membership condition
 \code{<...>}.
 \item Brackets inside formulas must be balanced (\code{()}, \code{[]},
 \code{\{\}}).
+\item A formula must not start or end with a logical operator
+(\code{AND}/\code{OR}/\code{NOT}).
 \item Priority must be a single character in \code{0-9}, \code{A-Z} or
 \code{a-z}.
 \item Group keys in Section 2 / \code{"groups"} must start with a
 recognised prefix (\code{###}, \code{##D}, \code{##Q}, \code{##C},
-\code{$$C}, \code{$$N}).
+\code{$$C}, \code{$$N}) followed by a name.
+\item For \code{.txt}: no relational operator outside \code{<...>} angle
+brackets.
+\item For \code{.json}: every rule has the keys \code{priority}, \code{code},
+\code{description} and \code{expression}.
 }
 
 \strong{Warnings} (errors when \code{strict = TRUE}):
 \enumerate{
 \item Duplicate vegetation type codes.
-\item Group names referenced in formulas that are not defined.
-\item Dangling logical operators (\code{AND}/\code{OR}/\code{NOT} at the
-start or end of a formula).
+\item Species groups referenced in formulas that are not defined. Groups
+are resolved the way the classifier resolves them; header columns
+(\code{$$C}, \code{$$N}) and the names after \code{EXCEPT}, which may be
+single species, are not checked.
 \item Legacy relational operator \code{UP} (deprecated in JUICE 7.0).
-\item For \code{.txt}: relational operators found outside \code{<...>} angle
-brackets.
+\item Empty description for a vegetation type.
+}
+
+\strong{Notes} (warnings also when \code{strict = TRUE}):
+\enumerate{
+\item For \code{.txt}: tab characters (only the text before the first tab of a
+line is used).
 \item For \code{.json}: missing or empty \code{metadata.scheme} /
 \code{metadata.version}.
-\item Empty description for a vegetation type.
 }
 }
 \examples{

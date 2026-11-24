@@ -94,3 +94,25 @@ test_that("an unknown group prefix is rejected", {
     "known group prefixes"
   )
 })
+
+test_that(".resy_parse_expert_lines: a priority may be a letter, and a formula may run over several lines", {
+  lines <- c(
+    "SECTION 1: Species aggregation", "Sp1", "SECTION 1: End",
+    "SECTION 2: Species groups", "### G", "     Sp1", "SECTION 2: End",
+    "SECTION 3: Group definitions",
+    "2          A     Digit", "<#TC G GR 10>", "",
+    "A          B     Letter", "(<#TC G GR 20>", "AND <#TC G GR 30>)", "",
+    "b          C     Lower-case letter", "<#TC G GR 40>", "",
+    "SECTION 3: End"
+  )
+  parsed <- RESY:::.resy_build_parsed(RESY:::.resy_parse_expert_lines(lines))
+  expect_equal(parsed$vegtype.formula.names.short, c("A", "B", "C"))
+  expect_equal(as.character(parsed$vegtype.priority), c("2", "A", "b"))
+  expect_true(all(diff(as.integer(parsed$vegtype.priority)) > 0))
+  expect_equal(unname(parsed$vegtype.formulas[2]), "(<#TC G GR 20> AND <#TC G GR 30>)")
+
+  path <- tempfile(fileext = ".txt")
+  on.exit(unlink(path))
+  writeLines(lines, path)
+  expect_true(resy_validate_esy(path, verbose = FALSE)$ok)
+})

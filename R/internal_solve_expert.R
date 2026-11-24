@@ -98,21 +98,51 @@
   taxa
 }
 
-# The conditions of `conditions` that occur in a membership expression, found
-# longest first with each match removed before the next, the order in which the
-# solver substitutes conditions by their columns.
+# The comparison operators of membership expressions and their R equivalents.
+.resy_comparison_ops <- c(GR = ">", GE = ">=", EQ = "==")
+
+# Sides and operators of membership expressions: a membership expression
+# compares two sides ("#TC Trees GR 15", "#TC Trees GR #TC Abies alba"), each
+# a membership condition or a number. Returns the tokens of all expressions
+# in order (sides trimmed, operators alternating with them), the expression
+# each token belongs to, and whether it is a side.
+#' @keywords internal
+#' @noRd
+.resy_expression_sides <- function(expressions) {
+  x <- gsub("[<>]", "", expressions)
+  x <- gsub(paste0("\\s+(", paste(names(.resy_comparison_ops), collapse = "|"), ")\\s+"),
+            "\001\\1\001", x, perl = TRUE)
+  pieces <- strsplit(x, "\001", fixed = TRUE)
+  n <- lengths(pieces)
+  token <- unlist(pieces, use.names = FALSE)
+  is_side <- sequence(n) %% 2L == 1L
+  token[is_side] <- trimws(token[is_side])
+  list(token = token, expr = rep.int(seq_along(expressions), n), is_side = is_side)
+}
+
+# The conditions of `conditions` that a membership expression compares.
 #' @keywords internal
 #' @noRd
 .resy_expression_conditions <- function(expression, conditions) {
-  rest <- expression
-  hit <- character()
-  for (cond in conditions[order(nchar(conditions), decreasing = TRUE)]) {
-    if (grepl(cond, rest, fixed = TRUE)) {
-      hit <- c(hit, cond)
-      rest <- gsub(cond, " ", rest, fixed = TRUE)
-    }
-  }
-  hit
+  p <- .resy_expression_sides(expression)
+  sides <- p$token[p$is_side]
+  unique(sides[sides %in% conditions])
+}
+
+# Membership expressions as R comparisons: each side that is a condition
+# becomes col<i>, its position in `conditions`, and each operator its R
+# equivalent ("#TC Trees GR 15" becomes "col3 > 15").
+#' @keywords internal
+#' @noRd
+.resy_expressions_to_r <- function(expressions, conditions) {
+  p <- .resy_expression_sides(expressions)
+  token <- p$token
+  i <- match(token, conditions)
+  cond <- p$is_side & !is.na(i)
+  token[cond] <- paste0("col", i[cond])
+  token[!p$is_side] <- .resy_comparison_ops[token[!p$is_side]]
+  unname(vapply(split(token, factor(p$expr, levels = seq_along(expressions))),
+                paste, character(1), collapse = " "))
 }
 
 # Taxa of each condition of the form "A EXCEPT B": the union of the groups in A
@@ -354,35 +384,46 @@
 
   ################################################## #
   # 5.9 NON conditions                              ####
-  # "NON ##Q +01 A": the highest sum of square-rooted cover among the other
-  # differential groups (##D) of the same set (+01).
+  # "NON ##Q +01 A": the highest value, among the other differential groups
+  # (##D) of the same set (+01), of the statistic the left-hand side of the
+  # condition takes for A: the sum of square-rooted cover for ##Q (step 5.3),
+  # the total cover for ##C and ##D (step 5.4, which a ##D condition reaches
+  # last).
   wn <- which(startsWith(conditions, "NON "))
   message('Step 5.9  Number of T$ NON conditions: ', length(wn))
-  if (any(substr(conditions[wn], 5, 7) != "##Q"))
-    stop('Only square root cover value NON condition implemented.')
+  non_stat <- c("##Q" = "sqrt_q", "##C" = "sum", "##D" = "sum")
+  kind <- substr(conditions[wn], 5, 7)
+  if (any(!kind %in% names(non_stat)))
+    stop("NON conditions are implemented for ##Q, ##C and ##D groups; found ",
+         paste(unique(kind[!kind %in% names(non_stat)]), collapse = ", "), ".",
+         call. = FALSE)
 
   if (length(wn)) {
     group.d <- which(substr(names(groups), 3, 3) == "D")
-    q <- matrix(0, nrow = length(plots), ncol = length(group.d))
-    q <- .resy_fill_conditions(q, obs$TaxonName, plot_row, obs$Cover_Perc, seq_along(group.d),
-                               lapply(group.d, function(i) unlist(groups[i], use.names = FALSE)),
-                               "sqrt_q")
     group.d.names <- names(groups)[group.d]
-    # Highest value per plot over the columns `others` of q; -Inf where all are NA.
-    row_max <- function(others) {
+    group.d.taxa <- lapply(group.d, function(i) unlist(groups[i], use.names = FALSE))
+    # One plot x group matrix per statistic in use.
+    values <- lapply(stats::setNames(nm = unique(non_stat[kind])), function(s)
+      .resy_fill_conditions(matrix(0, nrow = length(plots), ncol = length(group.d)),
+                            obs$TaxonName, plot_row, obs$Cover_Perc, seq_along(group.d),
+                            group.d.taxa, s))
+    # Highest value per plot over the columns `others`; -Inf where all are NA.
+    row_max <- function(q, others) {
       m <- do.call(pmax, c(lapply(others, function(o) q[, o]), na.rm = TRUE))
       m[is.na(m)] <- -Inf
       round(m, 5)
     }
     done <- list()
-    for (j in wn) {
+    for (i in seq_along(wn)) {
+      j <- wn[i]
       target <- body(conditions[j])
       substr(target, 1, 3) <- "##D"
       others <- which(substr(group.d.names, 5, 7) == substr(target, 5, 7) &
                         group.d.names != target)
       if (!length(others)) next
-      key <- paste(others, collapse = " ")
-      if (is.null(done[[key]])) done[[key]] <- row_max(others)
+      s <- non_stat[[kind[i]]]
+      key <- paste(s, paste(others, collapse = " "))
+      if (is.null(done[[key]])) done[[key]] <- row_max(values[[s]], others)
       plot.cond[, j] <- done[[key]]
     }
   }
@@ -400,7 +441,9 @@
                     rep(fmatch(W, conditions), each = nrow(header)),
                     as.numeric(unlist(header[, m], use.names = FALSE))), ncol = 3)
     ind[,3][is.na(ind[,3])] <- 0
-    plot.cond[ind[,1:2]] <- ind[,3]
+    # drop = FALSE: with one plot and one column `ind` has a single row, which
+    # must stay a (row, column) pair and not become two linear indices.
+    plot.cond[ind[, 1:2, drop = FALSE]] <- ind[,3]
   }
   ### Categorical
   is_cat <- startsWith(conditions, '$$C')
@@ -457,19 +500,8 @@
   ############################################################################## #
   ### Step 7: Turn membership expressions text into logical expressions in R  ####
   ############################################################################## #
-  # go through the loop of single components of the expressions,
-  # both left-hand and right-hand side, which is in conditions and replace them with col1, col2 etc.
-  # This has to be done in descending length of conditions
-  # membership.expressions.eval <- membership.expressions
-  o <- order(nchar(conditions), decreasing =TRUE)
-
-  # # then replace all into logical expressions
-  membership.expressions.eval <- stri_replace_all_fixed(membership.expressions,
-          pattern = conditions[o], replacement = paste("col", o, sep=""), vectorize_all = FALSE)
-
-  membership.expressions.eval <- gsub("GR", ">", membership.expressions.eval)
-  membership.expressions.eval <- gsub("GE",">=", membership.expressions.eval)
-  membership.expressions.eval <- gsub("EQ","==", membership.expressions.eval)
+  # Both sides of each expression refer to the condition columns col1, col2, ...
+  membership.expressions.eval <- .resy_expressions_to_r(membership.expressions, conditions)
 
   ####################################################################################### #
   ### Step 8: Evaluate member-ship expressions. Obtain logical plot x expression lists ####

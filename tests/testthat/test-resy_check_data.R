@@ -1,5 +1,5 @@
 library(testthat)
-library(sf)
+skip_if_not_installed("sf")
 library(tibble)
 
 test_that("transforms sf with non-25832 CRS to EPSG:25832 and returns sf", {

@@ -15,7 +15,7 @@
 #'   \item Top-level directories represent classification schemes (e.g., "EUNIS").
 #'   \item Second-level directories represent versions within each scheme.
 #'   \item Within each version directory, the function looks for `expert.json`
-#'     (or xz-compressed `expert.json.xz`) and `expert.txt` files.
+#'     and `expert.txt` files, each possibly xz-compressed (`.xz`).
 #' }
 #' 
 #' @examples

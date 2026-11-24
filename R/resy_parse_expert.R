@@ -10,9 +10,14 @@
   vegtype.priority       <- parsing.result$membership.priority
 
   # Name of a type: its header line without the priority character, i.e. the
-  # code followed by the description.
+  # code followed by the description, separated by a space where the header
+  # has none (a code filling the five-character field).
   vegtype.formula.names <- trimws(sub("^[0-9A-Za-z]\\s+", "", names(vegtype.formulas), perl = TRUE))
-  vegtype.formula.names.short <- sub("^(\\S+).*$", "\\1", vegtype.formula.names)
+  vegtype.formula.names.short <- .resy_parse_definition_header(names(vegtype.formulas))$code
+  n <- nchar(vegtype.formula.names.short)
+  abut <- !is.na(n) & grepl("^\\S", substring(vegtype.formula.names, n + 1L))
+  vegtype.formula.names[abut] <- paste(vegtype.formula.names.short[abut],
+                                       substring(vegtype.formula.names[abut], n[abut] + 1L))
 
   # Replace inner expressions with col1, col2, ... to make formulas parseable in R
   vegtype.formulas.p <- .resy_formula_to_r(vegtype.formulas, membership.expressions)
@@ -39,50 +44,47 @@
 
 # ---- Low-level text parser ---------------------------------------------------
 
-.resy_parse_expert_file <- function(expertfile) {
-  expert <- readLines(expertfile, warn = FALSE, encoding = "UTF-8")
-  .resy_parse_expert_lines(expert)
-}
-
 # Members of each header-led block of a section: the non-blank lines after a
 # header, up to the next header or the end of the section. Blank lines separate
-# blocks and are never members.
-.resy_block_members <- function(lines, header_idx) {
-  ends <- c(header_idx[-1L] - 1L, length(lines))
-  lapply(seq_along(header_idx), function(i) {
-    n <- max(0L, ends[i] - header_idx[i])
-    block <- lines[seq.int(header_idx[i] + 1L, length.out = n)]
-    .resy_trim_leading(block[nzchar(trimws(block))])
-  })
+# blocks and are never members. `clean` tidies the member lines.
+.resy_block_members <- function(lines, header_idx, clean = .resy_trim_leading) {
+  owner <- findInterval(seq_along(lines), header_idx)
+  keep <- owner > 0L & !seq_along(lines) %in% header_idx & .resy_has_text(lines)
+  unname(split(clean(lines[keep]),
+               factor(owner[keep], levels = seq_along(header_idx))))
 }
 
+# TRUE for lines holding more than blanks, tabs and line ends.
+.resy_has_text <- function(x) grepl("[^ \t\r\n]", x, perl = TRUE)
+
 # Body of section `n`: the lines between its opener and its "SECTION n: End".
-.resy_section_body <- function(lines, n) {
-  at <- .resy_section_rows(lines, n)
+# `marks` restricts the search to rows known to hold a section marker.
+.resy_section_body <- function(lines, n, marks = seq_along(lines)) {
+  at <- marks[.resy_section_rows(lines[marks], n)]
   lines[(at[1] + 1):(at[2] - 1)]
 }
 
 .resy_parse_expert_lines <- function(expert) {
   # Drop everything after the first tab (TSV compatibility) and '---' lines
-  expert <- sub("\t.*$", "", expert)
-  expert <- expert[!grepl("---", expert)]
+  tab <- grep("\t", expert, fixed = TRUE)
+  expert[tab] <- sub("\t.*$", "", expert[tab], perl = TRUE)
+  expert <- expert[!grepl("---", expert, fixed = TRUE)]
+  marks <- grep("^\\s*SECTION\\s+\\d", expert, ignore.case = TRUE, perl = TRUE)
 
   # ---- Section 1: Species aggregation
-  species.agg     <- .resy_section_body(expert, 1)
-  index.agg.names <- which(
-    substr(species.agg, 1, 1) != " " &
-    nzchar(trimws(species.agg)) &
-    !grepl("^SECTION\\s+\\d", trimws(species.agg))
-  )
-  aggs <- .resy_block_members(species.agg, index.agg.names)
+  species.agg     <- .resy_section_body(expert, 1, marks)
+  index.agg.names <- which(substr(species.agg, 1, 1) != " " & .resy_has_text(species.agg))
+  index.agg.names <- index.agg.names[
+    !grepl("^[ \t\r\n]*SECTION\\s+\\d", species.agg[index.agg.names], perl = TRUE)
+  ]
+  aggs <- .resy_block_members(species.agg, index.agg.names,
+                              clean = function(x) .resy_trim_trailing(.resy_trim_leading(x)))
   names(aggs) <- .resy_trim_trailing(species.agg[index.agg.names])
   if (any(!nzchar(names(aggs)))) aggs <- aggs[nzchar(names(aggs))]
-  for (i in seq_along(aggs))
-    aggs[[i]] <- vapply(aggs[[i]], .resy_trim_trailing, character(1), USE.NAMES = FALSE)
 
   # ---- Section 2: Species groups
-  species.groups    <- .resy_section_body(expert, 2)
-  index.group.names <- which(substr(species.groups, 1, 1) != " " & nzchar(trimws(species.groups)))
+  species.groups    <- .resy_section_body(expert, 2, marks)
+  index.group.names <- which(substr(species.groups, 1, 1) != " " & .resy_has_text(species.groups))
   groups            <- .resy_block_members(species.groups, index.group.names)
   names(groups) <- species.groups[index.group.names]
 
@@ -98,8 +100,10 @@
     stop(paste("Discriminating set", names(table(discr)[table(discr) < 2]), "occurs only once!"))
 
   # ---- Section 3: Formula headers and formulas. A header starts with its
-  # priority digit; the lines after it, up to the next header, are its formula.
-  group.definitions <- .resy_section_body(expert, 3)
+  # priority character (a digit or a letter) followed by the type code; the
+  # lines after it, up to the next header or blank line, are its formula.
+  group.definitions <- .resy_section_body(expert, 3, marks)
+  is.header <- .resy_is_definition_header(group.definitions)
 
   membership.formula.names <- NULL
   membership.formulas      <- NULL
@@ -107,14 +111,13 @@
   while (i < length(group.definitions)) {
     i <- i + 1
     if (substr(group.definitions[i], 1, 3) != "---") {
-      if (nzchar(trimws(group.definitions[i])) &&
-          !grepl("[^0-9]", substr(group.definitions[i], 1, 1))) {
+      if (is.header[i]) {
         membership.formula.names <- c(membership.formula.names, group.definitions[i])
       } else {
         formula <- group.definitions[i]
-        while (grepl("[^0-9]", substr(group.definitions[i + 1], 1, 1)) &&
-               substr(group.definitions[i + 1], 1, 1) != "-" &&
-               i < length(group.definitions)) {
+        while (i < length(group.definitions) &&
+               nzchar(group.definitions[i + 1]) && !is.header[i + 1] &&
+               substr(group.definitions[i + 1], 1, 1) != "-") {
           i <- i + 1
           formula <- paste(formula, group.definitions[i], sep = " ")
         }

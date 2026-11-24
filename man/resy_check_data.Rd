@@ -12,13 +12,17 @@ resy_check_data(data, source_crs = NULL, verbose = interactive())
 \item{source_crs}{Integer EPSG code of the coordinates in a plain data
 frame. When \code{NULL} (default), coordinates that are all valid longitudes and
 latitudes are read as degrees (EPSG:4326); other coordinates need the code.
-Ignored when \code{data} is an \code{sf} object, which carries its own CRS.}
+Ignored when \code{data} is an \code{sf} object, which carries its own CRS.
+The optional package \code{sf} is required for \code{sf} input and CRS codes other
+than 4326, 4258 and 25832.}
 
 \item{verbose}{Logical; if \code{TRUE}, informational messages about coordinate
 interpretation and transformation are shown. Defaults to \code{\link[=interactive]{interactive()}}.}
 }
 \value{
-An \code{sf} object in EPSG:25832 with all available ESy columns ordered
+A \code{resy_sites} data frame in EPSG:25832 with a two-column coordinate matrix
+\code{geometry} and a \code{resy_crs} attribute. For \code{sf} input, an \code{sf} object is
+returned. All available ESy columns are ordered
 to the front: \code{PlotObservationID}, \code{Altitude (m)}, \code{Coast_EEA}, \code{Dunes_Bohn},
 \code{Ecoreg}, \code{Ecoreg_name}, \code{Country}, \code{Country_ID}, \code{geometry}.
 }
@@ -32,9 +36,8 @@ columns are reported as warnings.
 }
 \examples{
   data <- data.frame(
-    PlotObservationID = 1L, x = 701327, y = 5364375
-  ) |>
-    sf::st_as_sf(coords = c("x", "y"), crs = 25832)
+    PlotObservationID = 1L, Longitude = 701327, Latitude = 5364375
+  )
   resy_check_data(data, source_crs = 25832)
 }
 \seealso{

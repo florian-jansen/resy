@@ -186,7 +186,16 @@ test_that("a condition resolves to the taxa of the groups it names", {
   expect_length(taxa("#T$"), 0L)
 })
 
-test_that("an expression's conditions are found longest first", {
+test_that("membership expressions become comparisons of condition columns", {
+  conds <- c("#TC Trees", "#TC Trees EXCEPT #TC Abies alba", "#TC Abies alba")
+  expect_equal(
+    .resy_expressions_to_r(c("#TC Trees EXCEPT #TC Abies alba GR 20",
+                             "#TC Trees GE #TC Abies alba", "#TC Abies alba EQ 0"), conds),
+    c("col2 > 20", "col1 >= col3", "col3 == 0")
+  )
+})
+
+test_that("an expression's conditions are its sides", {
   conds <- c("#TC Trees", "#TC Trees EXCEPT #TC Abies alba", "#TC Abies alba")
   expect_equal(
     .resy_expression_conditions("<#TC Trees EXCEPT #TC Abies alba GR 20>", conds),

@@ -20,6 +20,8 @@
 #'   When `NULL` (default), coordinates that are all valid longitudes and
 #'   latitudes are read as degrees (EPSG:4326); other coordinates need the code.
 #'   Ignored when `data` is an `sf` object, which carries its own CRS.
+#'   The optional package `sf` is required for `sf` input and CRS codes other
+#'   than 4326, 4258 and 25832.
 #' @param run_taxonomy Logical; if `TRUE`, runs [resy_check_taxonomy()] on
 #'   `species_data`.
 #' @param species_data A data frame with a column `scientificName`. Required
@@ -67,7 +69,7 @@ resy_harmonize_eunis <- function(
     verbose = interactive()
     ) {
 
-  # ---- 1. Sites as sf in the CRS of the base maps ----
+  # ---- 1. Sites in the CRS of the base maps ----
 
   data_sf <- .resy_check_coordinates(
     data, source_crs = source_crs, verbose = verbose
@@ -120,17 +122,20 @@ resy_harmonize_eunis <- function(
 
   # ---- 7. Re-export WGS84 coordinates, drop geometry ----
   
-  coords_wgs84       <- sf::st_transform(data_sf, 4326)
-  coords_mat         <- sf::st_coordinates(coords_wgs84)
+  coords_mat         <- .resy_project(.resy_coordinates(data_sf), inverse = TRUE)
   data_sf$Longitude  <- coords_mat[, 1]
   data_sf$Latitude   <- coords_mat[, 2]
   # EUNIS-ESy reads the plot position from the header fields DEG_LON and DEG_LAT.
   data_sf$DEG_LON    <- coords_mat[, 1]
   data_sf$DEG_LAT    <- coords_mat[, 2]
 
-  sites_output <- sf::st_drop_geometry(data_sf) |>
-    tibble::as_tibble() |>
-    dplyr::select(-dplyr::any_of("...1"))
+  if (inherits(data_sf, "sf")) {
+    .resy_require_sf()
+    data_sf <- sf::st_drop_geometry(data_sf)
+  }
+  data_sf$geometry <- NULL
+  attr(data_sf, "resy_crs") <- NULL
+  sites_output <- tibble::as_tibble(data_sf[, setdiff(names(data_sf), "...1"), drop = FALSE])
   
   list(sites = sites_output, species_checked = taxonomy_checked)
   

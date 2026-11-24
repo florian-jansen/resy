@@ -9,6 +9,7 @@ pkgdown/*
 !pkgdown/favicon/
 !pkgdown/assets/
 !pkgdown/build_webr_bundle.R
+!pkgdown/tests/
 !pkgdown/extra.css
 pkgdown/assets/webr/bundle.json
 *.tar.gz
@@ -16,6 +17,7 @@ pkgdown/assets/webr/bundle.json
 .claude/
 docs
 data-raw/gis_full/
+data-raw/gis_simplified/
 renv/library/
 renv/staging/
 renv/sandbox/

@@ -5,13 +5,15 @@
 #'
 #' @param scheme Classification scheme, e.g. `"EUNIS"`.
 #' @param version Version identifier, e.g. `"2025-10-03"`.
-#' @param format One of `"json"` (default) or `"txt"`.
+#' @param format `NULL` (default) for the file the classification is stored
+#'   in, the one [resy_load_expert()] reads (JSON when both exist); `"json"` or
+#'   `"txt"` for that format only.
 #' @param mustWork Logical; if `TRUE` (default) an error is thrown when the
 #'   file does not exist.
 #' @return A file path string, or `NA` (invisibly) when `mustWork = FALSE` and
 #'   the file is absent.
 #' @examples
-#' # Path to the bundled EUNIS expert system (JSON by default).
+#' # Path to the bundled EUNIS expert system (the published .txt, compressed).
 #' resy_expert_path("EUNIS", "2025-10-03")
 #'
 #' # Probe without erroring when a scheme/version is not installed.
@@ -19,9 +21,9 @@
 #' @export
 resy_expert_path <- function(scheme,
                              version,
-                             format   = c("json", "txt"),
+                             format   = NULL,
                              mustWork = TRUE) {
-  format <- match.arg(format)
+  if (!is.null(format)) format <- match.arg(format, c("json", "txt"))
 
   base <- system.file("extdata", "classifications", scheme, version, package = "RESY")
   p    <- if (nzchar(base)) .resy_find_expert_file(base, format) else NA_character_
@@ -29,7 +31,7 @@ resy_expert_path <- function(scheme,
   if (mustWork && (is.na(p) || !file.exists(p)))
     stop(sprintf(
       "Expert file not found: scheme='%s', version='%s', format='%s'.",
-      scheme, version, format
+      scheme, version, format %||% "json/txt"
     ), call. = FALSE)
 
   p

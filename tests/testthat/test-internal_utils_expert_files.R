@@ -39,14 +39,14 @@ test_that("an xz-compressed expert file parses identically to the plain one", {
   dir <- withr::local_tempdir()
   xz <- xz_copy(apennine_json_path(), dir)
   expect_identical(
-    resy_load_expert(expertfile = xz),
-    resy_load_expert(expertfile = apennine_json_path())
+    without_source(resy_load_expert(expertfile = xz)),
+    without_source(resy_load_expert(expertfile = apennine_json_path()))
   )
 })
 
 test_that("the bundled EUNIS system is shipped compressed and loads", {
   p <- resy_expert_path("EUNIS", "2025-10-03")
-  expect_match(basename(p), "^expert\\.json\\.xz$")
+  expect_match(basename(p), "^expert\\.txt\\.xz$")
   parsed <- resy_load_expert(scheme = "EUNIS", version = "2025-10-03",
                              location = "package")
   expect_gt(length(parsed$vegtype.formula.names), 100L)
@@ -59,7 +59,7 @@ test_that("resy_add_classification stores a .json.xz file byte-identical", {
   expect_equal(basename(out$json), "expert.json.xz")
   expect_identical(unname(tools::md5sum(out$json)), unname(tools::md5sum(xz)))
   expect_identical(
-    resy_load_expert(scheme = "XzScheme", version = "1.0"),
-    resy_load_expert(expertfile = apennine_json_path())
+    without_source(resy_load_expert(scheme = "XzScheme", version = "1.0")),
+    without_source(resy_load_expert(expertfile = apennine_json_path()))
   )
 })

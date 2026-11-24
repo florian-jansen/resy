@@ -1,17 +1,21 @@
 # Rewrite vegetation-type formulas as R expressions: each membership expression
 # (the text inside <...>) becomes col<i>, its position in `expressions`, and the
-# logical keywords become R operators ("A NOT B" is "A & !B"). Expressions are
-# substituted longest first so that one containing another is replaced whole.
+# logical keywords become R operators ("A NOT B" is "A & !B"). Each bracketed
+# condition is looked up as a whole, so that only a complete condition is
+# replaced and never text that happens to equal it (a keyword, or part of a
+# longer expression); a condition not in `expressions` keeps its text.
+# `expressions` given as a list holds one set per formula, and the conditions
+# of a formula are then numbered within its own set.
 .resy_formula_to_r <- function(formulas, expressions) {
-  if (length(expressions)) {
-    o <- order(nchar(expressions), decreasing = TRUE)
-    formulas <- stringi::stri_replace_all_fixed(
-      formulas,
-      pattern       = expressions[o],
-      replacement   = paste0("col", seq_along(expressions))[o],
-      vectorize_all = FALSE
-    )
-  }
+  formulas <- unname(formulas)
+  m <- gregexpr("<[^<>]*>", formulas, perl = TRUE)
+  sets <- if (is.list(expressions)) expressions else
+    rep(list(expressions), length(formulas))
+  regmatches(formulas, m) <- Map(function(tok, set) {
+    inner <- substr(tok, 2L, nchar(tok) - 1L)
+    i <- match(inner, set)
+    ifelse(is.na(i), inner, paste0("col", i))
+  }, regmatches(formulas, m), sets)
   formulas <- gsub("[<>]", "", formulas)
   formulas <- gsub("\\bAND\\b", "&", formulas, perl = TRUE)
   formulas <- gsub("\\bOR\\b", "|", formulas, perl = TRUE)
@@ -126,11 +130,11 @@
     index4 <- grep("#SC", b[[2]])
     if (length(index4) > 0) {
       for (i in seq_along(index4)) {
-        index6 <- grep(a[index4[i]], membership.expressions)
+        index6 <- grep(a[index4[i]], membership.expressions, fixed = TRUE)
         membership.expressions[index6] <- paste(
           membership.expressions[index6], "EXCEPT", b[[1]][index4[i]], sep = " "
         )
-        index5 <- grep(a[index4[i]], membership.formulas)
+        index5 <- grep(a[index4[i]], membership.formulas, fixed = TRUE)
         membership.formulas[index5] <- gsub(
           a[index4[i]],
           paste(a[index4[i]], "EXCEPT", b[[1]][index4[i]], sep = " "),

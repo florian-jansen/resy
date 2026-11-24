@@ -2,10 +2,13 @@
 #'
 #' Polygons of the coastal vegetation (formation P) of the Map of the Natural
 #' Vegetation of Europe (Bohn et al.), buffered by 500 m, in EPSG:25832. The
-#' dataset holds the `sf` object `bohn`; its column `DUNE` marks dune polygons.
+#' dataset holds the list `bohn`; `attributes$DUNE` marks dune polygons.
 #' Used to set `Dunes_Bohn` in [resy_harmonize_eunis()].
 #'
-#' @format An `sf` object with 367 polygons.
+#' @format A plain list for 367 polygon features: `rings` holds two-column
+#'   coordinate matrices, `feature`, `part` and `ring` identify each ring,
+#'   `ring_bbox` and `bbox` hold bounding boxes, `attributes` holds the feature
+#'   table, and `crs` is the EPSG code. Ring 1 is the shell; later rings are holes.
 #' @source Bohn, U. et al.: Map of the Natural Vegetation of Europe.
 #' @usage data(dunes_bohn_500mbuffer_epsg25832)
 #' @name dunes_bohn_500mbuffer_epsg25832
@@ -17,11 +20,13 @@ NULL
 #' Regional seas around Europe (EPSG:25832)
 #'
 #' The regional seas around Europe (Marine Strategy Framework Directive regions)
-#' in EPSG:25832. The dataset holds the `sf` object `co`; its column `COAST_EEA`
+#' in EPSG:25832. The dataset holds the list `co`; `attributes$COAST_EEA`
 #' gives the coast code of each sea (for example `MED_COAST`). Used to set
 #' `Coast_EEA` in [resy_harmonize_eunis()].
 #'
-#' @format An `sf` object with 5 multilinestrings.
+#' @format A plain coordinate list with 5 multiline features. See
+#'   [dunes_bohn_500mbuffer_epsg25832] for the ring and attribute fields.
+#'   `segments`, `segment_bbox` and `segment_feature` index the line segments.
 #' @source European Environment Agency: Regional seas around Europe.
 #' @usage data(coastline_regions_epsg25832)
 #' @name coastline_regions_epsg25832
@@ -36,7 +41,8 @@ NULL
 #' EPSG:25832. Used to set `Ecoreg` (column `ECO_ID`) in
 #' [resy_harmonize_eunis()].
 #'
-#' @format An `sf` object with 159 polygons.
+#' @format A plain coordinate list with 159 polygon features. See
+#'   [dunes_bohn_500mbuffer_epsg25832] for the ring and attribute fields.
 #' @source Dinerstein, E. et al. (2017): An ecoregion-based approach to
 #'   protecting half the terrestrial realm. BioScience 67. Licence CC-BY 4.0.
 #' @usage data(ecoregions2017_epsg25832)
@@ -51,7 +57,9 @@ NULL
 #' 1:1 million scale, in EPSG:25832. Used to set `Country` in
 #' [resy_harmonize_eunis()].
 #'
-#' @format An `sf` object with 37 polygons.
+#' @format A plain coordinate list with 37 polygon features. See
+#'   [dunes_bohn_500mbuffer_epsg25832] for the ring and attribute fields.
+#'   `land` holds simplified EPSG:3857 outlines for map export.
 #' @source Eurostat GISCO: NUTS boundaries.
 #' @usage data(europe_resolution_1_epsg25832)
 #' @name europe_resolution_1_epsg25832
@@ -64,7 +72,9 @@ NULL
 #' Country boundaries (NUTS level 0, columns `NUTS_ID` and `NUTS_NAME`) at the
 #' 1:60 million scale, in EPSG:25832, for maps.
 #'
-#' @format An `sf` object with 37 polygons.
+#' @format A plain coordinate list with 37 polygon features. See
+#'   [dunes_bohn_500mbuffer_epsg25832] for the ring and attribute fields.
+#'   `land` holds simplified EPSG:3857 outlines for map export.
 #' @source Eurostat GISCO: NUTS boundaries.
 #' @usage data(europe_resolution_60_epsg25832)
 #' @name europe_resolution_60_epsg25832

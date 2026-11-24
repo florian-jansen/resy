@@ -1,4 +1,4 @@
-# Each bundled GIS dataset loads as a non-empty sf object in EPSG:25832, under
+# Each bundled GIS dataset loads as a non-empty coordinate list in EPSG:25832, under
 # the object name the package code reads it by.
 
 datasets <- c(
@@ -17,8 +17,10 @@ for (ds in names(datasets)) {
 
     expect_true(exists(obj, envir = env, inherits = FALSE))
     x <- get(obj, envir = env)
-    expect_s3_class(x, "sf")
-    expect_equal(sf::st_crs(x)$epsg, 25832)
-    expect_true(nrow(x) > 0)
+    expect_type(x, "list")
+    expect_identical(x$crs, 25832L)
+    expect_true(nrow(x$attributes) > 0)
+    expect_length(x$feature, length(x$rings))
+    expect_equal(nrow(x$ring_bbox), length(x$rings))
   })
 }

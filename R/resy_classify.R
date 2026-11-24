@@ -28,7 +28,7 @@
 #' [resy_resolve_taxa] and inspect the result with its `summary()` before
 #' classifying, so the taxonomic choices stay visible (see the taxonomy
 #' vignette). Setting `resolve_taxa = TRUE` runs that resolution inside
-#' `resy_classify()` as a convenience: names the expert already knows pass through
+#' `resy_classify()` as a convenience: names already in the expert system pass through
 #' untouched, unknown names are looked up in the synonym table, and names that
 #' resolve to nothing keep their original value (never a best guess). What was
 #' resolved is then reported in the result's `taxon_resolution`.
@@ -65,8 +65,10 @@
 #'   data classified in several parts reads the expert system only once.
 #' @return An object of class `resy_result`. When `resolve_taxa = TRUE` it also
 #'   carries the `summary()` of the [resy_resolve_taxa] result as
-#'   `taxon_resolution`; otherwise `taxon_resolution` is `NULL`.
-#' @seealso [resy_resolve_taxa], [resy_check_taxonomy]
+#'   `taxon_resolution`; otherwise `taxon_resolution` is `NULL`. The
+#'   expert-system release and, when the bundled synonym layer was used, its
+#'   build are reported by [resy_provenance()].
+#' @seealso [resy_resolve_taxa], [resy_check_taxonomy], [resy_provenance()]
 #' @examples
 #' \donttest{
 #' # Classify the bundled example plots with the minimal Apennine-test scheme.
@@ -188,8 +190,13 @@ resy_classify <- function(obs,
     data.table::setorder(cand, plot_id, -priority_rank, type)
   }
   
+  src <- parsed$source
   structure(
-    c(list(obs = obs2, header = header, expertfile = expertfile, scheme = scheme, version = version, prefer = location, candidates = cand, taxon_resolution = taxon_resolution),
+    c(list(obs = obs2, header = header, expertfile = expertfile,
+           scheme = src$scheme %||% scheme, version = src$version %||% version,
+           prefer = location, candidates = cand, taxon_resolution = taxon_resolution,
+           synonym_layer = if (isTRUE(resolve_taxa) && is.null(synonyms))
+             .resy_synonym_layer_build() else NULL),
       res,
       list(parsed = parsed)),
     class = "resy_result"

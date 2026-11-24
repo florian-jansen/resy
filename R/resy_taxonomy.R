@@ -97,16 +97,10 @@ resy_read_synonyms <- function(path = NULL, expert = NULL) {
   df[, keep, drop = FALSE]
 }
 
-# Species names an expert system uses. `vocab` holds every name it knows: the
-# aggregate names of Section 1 with their members, the members of the species
-# groups of Section 2, and the species named directly in membership conditions.
-# `targets` holds the names the classifier evaluates as themselves: the
-# aggregate names, and the group or condition names that no aggregate absorbs.
+# Species named in groups and membership conditions.
 # Values of header groups ($$C, $$N) are not species names.
-.resy_expert_names <- function(parsed) {
+.resy_expert_used <- function(parsed) {
   norm <- .resy_normalize_name
-  agg_names <- norm(names(parsed$aggs))
-  agg_members <- norm(unlist(parsed$aggs, use.names = FALSE))
   is_header <- startsWith(names(parsed$groups), "$$")
   header_values <- norm(unlist(parsed$groups[is_header], use.names = FALSE))
   group_members <- norm(unlist(parsed$groups[!is_header], use.names = FALSE))
@@ -120,8 +114,20 @@ resy_read_synonyms <- function(path = NULL, expert = NULL) {
                is.na(match(tok, parsed$groups.names))]
 
   used <- setdiff(unique(c(group_members, tok)), header_values)
-  used <- used[!is.na(used) & nzchar(used)]
+  used[!is.na(used) & nzchar(used)]
+}
+
+# Species names an expert system uses. `vocab` holds every name it knows: the
+# aggregate names of Section 1 with their members, the members of the species
+# groups of Section 2, and the species named directly in membership conditions.
+# `targets` holds the names the classifier evaluates as themselves: the
+# aggregate names, and the group or condition names that no aggregate absorbs.
+.resy_expert_names <- function(parsed, mapping = TRUE) {
+  agg_names <- .resy_normalize_name(names(parsed$aggs))
+  agg_members <- .resy_normalize_name(unlist(parsed$aggs, use.names = FALSE))
+  used <- .resy_expert_used(parsed)
   targets <- unique(c(agg_names, setdiff(used, agg_members)))
+  if (!mapping) return(list(targets = targets))
   vocab <- unique(c(agg_names, agg_members, used))
 
   # The name each vocabulary name is evaluated as: a target as itself, an
@@ -304,8 +310,8 @@ resy_canonical_species <- function(path = NULL, expert = NULL) {
 #' @param synonyms \code{NULL} (default) uses the shipped synonym layer anchored
 #'   on \code{expert} (see \code{\link{resy_read_synonyms}}); pass a path or data
 #'   frame to override it.
-#' @param canonical \code{NULL} (default) uses every species name \code{expert}
-#'   knows for the exact-match step, so a name the expert system already uses is
+#' @param canonical \code{NULL} (default) uses every species name in
+#'   \code{expert} for the exact-match step, so a name the expert system already uses is
 #'   left untouched; pass a path, a data frame, or a character vector of names to
 #'   override it.
 #' @param expert An expert system read with \code{\link{resy_load_expert}}, whose

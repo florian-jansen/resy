@@ -4,14 +4,16 @@
 \alias{resy_expert_path}
 \title{Get the path to a bundled classification file}
 \usage{
-resy_expert_path(scheme, version, format = c("json", "txt"), mustWork = TRUE)
+resy_expert_path(scheme, version, format = NULL, mustWork = TRUE)
 }
 \arguments{
 \item{scheme}{Classification scheme, e.g. \code{"EUNIS"}.}
 
 \item{version}{Version identifier, e.g. \code{"2025-10-03"}.}
 
-\item{format}{One of \code{"json"} (default) or \code{"txt"}.}
+\item{format}{\code{NULL} (default) for the file the classification is stored
+in, the one \code{\link[=resy_load_expert]{resy_load_expert()}} reads (JSON when both exist); \code{"json"} or
+\code{"txt"} for that format only.}
 
 \item{mustWork}{Logical; if \code{TRUE} (default) an error is thrown when the
 file does not exist.}
@@ -24,7 +26,7 @@ the file is absent.
 Returns the full path to an expert-system file bundled with the package.
 }
 \examples{
-# Path to the bundled EUNIS expert system (JSON by default).
+# Path to the bundled EUNIS expert system (the published .txt, compressed).
 resy_expert_path("EUNIS", "2025-10-03")
 
 # Probe without erroring when a scheme/version is not installed.

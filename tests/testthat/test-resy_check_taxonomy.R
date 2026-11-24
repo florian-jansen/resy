@@ -11,7 +11,10 @@ toy_expert <- function() {
                                       "Achillea pratensis"),
       `Fagus sylvatica`           = "Fagus sylvatica L.",
       `Abies alba`                = character(0)
-    )),
+    ),
+    groups = stats::setNames(list(), character()),
+    groups.names = character(),
+    conditions = character()),
     class = "resy_parsed_expert"
   )
 }
@@ -165,4 +168,14 @@ test_that("wrapped name lists never break a name across lines", {
   expect_equal(out[1], "  species (4): Borago officinalis,")
   expect_equal(out[2], "    Cardamine chelidonia,")
   expect_equal(out[3], "    Carex mucronata, Crithmum maritimum")
+})
+
+test_that("species named only in groups or conditions count as known", {
+  # The 2020 release lists in Section 1 only the aggregates; Fagus sylvatica
+  # appears only in species groups and membership conditions.
+  parsed <- resy_load_expert(scheme = "EUNIS", version = "2020-06-08")
+  expect_false("Fagus sylvatica" %in% names(parsed$aggs))
+  out <- resy_check_taxonomy(data.frame(TaxonName = c("Fagus sylvatica", "Planta inventa")), parsed)
+  expect_identical(out$matched, c(TRUE, FALSE))
+  expect_identical(out$TaxonName, c("Fagus sylvatica", NA))
 })

@@ -73,8 +73,8 @@ test_that("resy_available_classifications expert_txt paths are valid or NA", {
     for (path in txt_paths) {
       expect_true(file.exists(path),
                   info = paste("Path should exist:", path))
-      expect_true(grepl("\\.txt$", path, ignore.case = TRUE),
-                  info = paste("Path should end with .txt:", path))
+      expect_true(grepl("\\.txt(\\.xz)?$", path, ignore.case = TRUE),
+                  info = paste("Path should end with .txt or .txt.xz:", path))
     }
   } else {
     # It's acceptable for some/all classifications to only have JSON

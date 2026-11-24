@@ -10,6 +10,9 @@ navbar:
     app:
       text: RESY App ✨
       href: articles/app.html
+    maker:
+      text: RESY Maker
+      href: articles/maker.html
 
 articles:
 - title: Articles
@@ -22,7 +25,8 @@ articles:
   navbar: ~
   contents:
   - articles/app
-  
+  - articles/maker
+
 reference:
   - title: Main functions
     contents:
@@ -33,6 +37,8 @@ reference:
       - resy_available_classifications
       - resy_load_expert
       - resy_read_expert
+      - resy_provenance
+      - resy_diff_expert
   - title: Other functions
     contents:
       - RESY-package

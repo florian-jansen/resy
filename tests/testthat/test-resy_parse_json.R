@@ -92,3 +92,17 @@ test_that("a nonexistent path errors", {
   expect_error(RESY:::.resy_parse_json(tempfile(fileext = ".json")),
                "File not found")
 })
+
+test_that("a JSON expert system already read into a list parses like its file", {
+  x <- list(
+    metadata = list(scheme = "t", version = "0"),
+    synonyms = list(Sp1 = list("Sp1 L."), Sp2 = list()),
+    groups   = list(`### G1` = list("Sp1", "Sp2")),
+    rules    = minimal_rules()
+  )
+  tmp <- do.call(write_expert_json, x)
+  on.exit(unlink(tmp))
+  from_file <- RESY:::.resy_parse_json(tmp)
+  from_list <- RESY:::.resy_parsed_from_json(jsonlite::read_json(tmp, simplifyVector = FALSE))
+  expect_identical(from_list, from_file)
+})

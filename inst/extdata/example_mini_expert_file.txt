@@ -10,6 +10,9 @@ SECTION 2: Species groups
      Abies alba
 SECTION 2: End
 SECTION 3: Group definitions
-F Forest
-N Non-forest
+2          F     Forest
+<#TC Beech-forest-trees GR 10>
+
+5          FB    Beech-fir forest
+(<#TC Beech-forest-trees GR 50> AND <Abies alba GR 5>)
 SECTION 3: End

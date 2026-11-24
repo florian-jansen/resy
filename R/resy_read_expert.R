@@ -69,8 +69,7 @@ resy_read_expert <- function(file, entries = TRUE) {
          call. = FALSE)
   }
 
-  size <- file.info(file)$size
-  bytes <- readBin(file, what = "raw", n = size)
+  bytes <- .resy_read_raw(file)
   text <- rawToChar(bytes)
   Encoding(text) <- "UTF-8"
 
@@ -230,11 +229,14 @@ resy_read_expert <- function(file, entries = TRUE) {
 # The code is a bare integer (synonyms: "0") or a `-` flag plus an integer
 # (canonical lines: "-  0"); lines with neither keep the whole text as the name.
 .resy_split_name_code <- function(lines) {
-  re <- "^(.*?)\\s+(-\\s+\\d+|\\d+)\\s*$"
-  has <- grepl(re, lines, perl = TRUE)
-  name <- ifelse(has, sub(re, "\\1", lines, perl = TRUE), lines)
-  code <- ifelse(has, sub(re, "\\2", lines, perl = TRUE), "")
-  list(name = trimws(name), code = code)
+  m <- regexpr("\\s+(-\\s+\\d+|\\d+)\\s*$", lines, perl = TRUE)
+  has <- m > 0L
+  name <- lines
+  name[has] <- substr(lines[has], 1L, m[has] - 1L)
+  code <- character(length(lines))
+  from <- attr(m, "capture.start")[has, 1L]
+  code[has] <- substr(lines[has], from, from + attr(m, "capture.length")[has, 1L] - 1L)
+  list(name = gsub("^[ \t\r\n]+|[ \t\r\n]+$", "", name, perl = TRUE), code = code)
 }
 
 # --- Section 2: Species groups ----------------------------------------------
@@ -287,21 +289,56 @@ resy_read_expert <- function(file, entries = TRUE) {
 # description. A header carrying only a priority and code (no description) keeps
 # its code; anything that does not begin with a priority character resolves to
 # NA fields.
+#
+# Trailing "!" marks on a code number further rules of the same type (N15,
+# N15!, N15!!). A code with two marks fills the five-character code field, so
+# the description follows it without a space ("N15!!Atlantic ..."); the code
+# therefore ends after its marks.
+#
+# Vectorised over `header`: returns a list of three character vectors, one
+# element per header.
 .resy_parse_definition_header <- function(header) {
-  m <- regmatches(header,
-                  regexec("^([0-9A-Za-z])\\s+(\\S+)\\s+(.*?)\\s*$",
-                          header, perl = TRUE))[[1]]
-  if (length(m) >= 4L) {
-    return(list(priority = m[2L], code = m[3L], description = m[4L]))
+  full <- regexpr("^([0-9A-Za-z])\\s+([^\\s!]+!*)(?:\\s+|(?<=!)(?=\\S))(.*?)\\s*$",
+                  header, perl = TRUE)
+  bare <- regexpr("^([0-9A-Za-z])\\s+(\\S+)\\s*$", header, perl = TRUE)
+  is_full <- as.vector(full) > 0L
+  is_bare <- !is_full & as.vector(bare) > 0L
+  none <- !is_full & !is_bare
+
+  field <- function(k) {
+    out <- rep(NA_character_, length(header))
+    out[is_full] <- .resy_capture(header, full, k)[is_full]
+    if (k < 3L) out[is_bare] <- .resy_capture(header, bare, k)[is_bare]
+    out
   }
-  m <- regmatches(header,
-                  regexec("^([0-9A-Za-z])\\s+(\\S+)\\s*$",
-                          header, perl = TRUE))[[1]]
-  if (length(m) >= 3L) {
-    return(list(priority = m[2L], code = m[3L], description = ""))
-  }
-  list(priority = NA_character_, code = NA_character_,
-       description = trimws(header))
+  description <- field(3L)
+  description[is_bare] <- ""
+  description[none] <- trimws(header[none])
+  list(priority = field(1L), code = field(2L), description = description)
+}
+
+# Text of capture group `k` of a perl regexpr() match `m` on `x`; "" where
+# `x` did not match.
+.resy_capture <- function(x, m, k) {
+  start <- attr(m, "capture.start")[, k]
+  substring(x, start, start + attr(m, "capture.length")[, k] - 1L)
+}
+
+# The fields of Section 3 lines when they are type headers, with NA fields
+# when they are not. A line holding a priority character alone is a header
+# without a code.
+.resy_definition_header <- function(line) {
+  h <- .resy_parse_definition_header(line)
+  alone <- is.na(h$priority) & grepl("^[0-9A-Za-z]\\s*$", line, perl = TRUE)
+  h$priority[alone] <- substr(line[alone], 1L, 1L)
+  h$code[alone] <- ""
+  h$description[alone] <- ""
+  h
+}
+
+# TRUE for the Section 3 lines that are type headers.
+.resy_is_definition_header <- function(lines) {
+  !is.na(.resy_definition_header(lines)$priority)
 }
 
 # --- Section 4: Similarity --------------------------------------------------
@@ -318,7 +355,7 @@ resy_read_expert <- function(file, entries = TRUE) {
 # runs share an id). Single source of grouping for both .resy_split_blocks() and
 # the vectorised Section 1 parser. A blank line is empty or whitespace-only.
 .resy_block_index <- function(lines) {
-  is_blank <- !nzchar(trimws(lines))
+  is_blank <- !grepl("[^ \t\r\n]", lines, perl = TRUE)
   keep <- which(!is_blank)
   list(keep = keep, grp = cumsum(is_blank)[keep])
 }

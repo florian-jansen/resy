@@ -1,5 +1,6 @@
 library(testthat)
-library(sf)
+skip_if_not_installed("sf")
+skip_if_not_installed("dplyr")
 
 # ---- Helper: Create valid test data ----
 

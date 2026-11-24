@@ -6,7 +6,10 @@
 \alias{bohn}
 \title{Coastal vegetation of the Bohn map with a 500 m buffer (EPSG:25832)}
 \format{
-An \code{sf} object with 367 polygons.
+A plain list for 367 polygon features: \code{rings} holds two-column
+coordinate matrices, \code{feature}, \code{part} and \code{ring} identify each ring,
+\code{ring_bbox} and \code{bbox} hold bounding boxes, \code{attributes} holds the feature
+table, and \code{crs} is the EPSG code. Ring 1 is the shell; later rings are holes.
 }
 \source{
 Bohn, U. et al.: Map of the Natural Vegetation of Europe.
@@ -17,7 +20,7 @@ data(dunes_bohn_500mbuffer_epsg25832)
 \description{
 Polygons of the coastal vegetation (formation P) of the Map of the Natural
 Vegetation of Europe (Bohn et al.), buffered by 500 m, in EPSG:25832. The
-dataset holds the \code{sf} object \code{bohn}; its column \code{DUNE} marks dune polygons.
+dataset holds the list \code{bohn}; \code{attributes$DUNE} marks dune polygons.
 Used to set \code{Dunes_Bohn} in \code{\link[=resy_harmonize_eunis]{resy_harmonize_eunis()}}.
 }
 \keyword{internal}

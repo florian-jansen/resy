@@ -5,21 +5,25 @@
 \title{Add a new classification to the RESY store}
 \usage{
 resy_add_classification(
-  file,
+  file = NULL,
   scheme,
-  version,
+  version = NULL,
   location = c("user", "package"),
   overwrite = FALSE,
   validate = TRUE
 )
 }
 \arguments{
-\item{file}{Path to an ESy expert file (\code{.txt}, \code{.json} or xz-compressed
-\code{.json.xz}).}
+\item{file}{Path to an ESy expert file (\code{.txt}, \code{.json}, \code{.txt.xz} or
+\code{.json.xz}), or \code{NULL} to download the published release
+\code{scheme}/\code{version}.}
 
-\item{scheme}{Scheme name to store under (e.g. \code{"MyClassification"}).}
+\item{scheme}{Scheme name to store under (e.g. \code{"MyClassification"}).
+With \code{file = NULL}, the scheme of the published release (e.g. \code{"EUNIS"}).}
 
-\item{version}{Version string to store under (e.g. \code{"2026-07-05"}).}
+\item{version}{Version string to store under (e.g. \code{"2026-07-05"}). With
+\code{file = NULL}, the version of the published release; \code{NULL} takes the
+newest one.}
 
 \item{location}{Where to store: \code{"user"} (default, recommended) or
 \code{"package"} (requires a writable library).}
@@ -27,35 +31,45 @@ resy_add_classification(
 \item{overwrite}{Logical; overwrite an existing classification. Defaults to
 \code{FALSE}.}
 
-\item{validate}{Logical; run \code{\link[=resy_validate_esy]{resy_validate_esy()}} before storing. Defaults
-to \code{TRUE}. Set to \code{FALSE} only if you are certain the file is valid.}
+\item{validate}{Logical; run \code{\link[=resy_validate_esy]{resy_validate_esy()}} on \code{file} before
+storing. Defaults to \code{TRUE}. Set to \code{FALSE} only if you are certain the
+file is valid. Not used for a downloaded release.}
 }
 \value{
 Invisibly, a named list with the paths of the files written:
 \describe{
-\item{\code{txt}}{Path to the stored \code{.txt} file, or \code{NULL} for JSON input.}
-\item{\code{json}}{Path to the stored \code{.json} file, or \code{NULL} for \code{.txt}
-input.}
+\item{\code{txt}}{Path to the stored text file, or \code{NULL} for JSON input.}
+\item{\code{json}}{Path to the stored JSON file, or \code{NULL} for text input.}
 }
 }
 \description{
-Validates and copies an ESy expert file (\code{.txt}, \code{.json} or \code{.json.xz}) into the RESY
-classification store so that it becomes available to \code{\link[=resy_load_expert]{resy_load_expert()}} and
-\code{\link[=resy_classify]{resy_classify()}}.
+Validates and copies an ESy expert file (\code{.txt}, \code{.json}, or either
+xz-compressed) into the RESY classification store so that it becomes
+available to \code{\link[=resy_load_expert]{resy_load_expert()}} and \code{\link[=resy_classify]{resy_classify()}}.
 
-The file is validated with \code{\link[=resy_validate_esy]{resy_validate_esy()}} before anything is written.
+Without \code{file}, the published release \code{scheme}/\code{version} is downloaded
+from the source listed in the RESY release registry (Zenodo for EUNIS-ESy),
+checked against its SHA-256 checksum and stored. The registry is read from
+the RESY repository on GitHub, so a release published after this version of
+RESY can be added without updating the package. Downloading requires the
+\href{https://CRAN.R-project.org/package=getaca}{getaca} package.
+
+A file you supply is validated with \code{\link[=resy_validate_esy]{resy_validate_esy()}} before anything
+is written; a downloaded release is checked against its published checksum
+instead.
 If validation fails the function stops with a message that lists every error
 found, so you can fix the file and try again. Pass \code{validate = FALSE} to skip
 validation (not recommended).
 }
 \details{
 The file is stored as \verb{<root>/<scheme>/<version>/expert.txt},
-\code{expert.json} or \code{expert.json.xz}, where \verb{<root>} is \code{tools::R_user_dir("RESY", "data")} for
-\code{location = "user"}. A \code{.txt} file is stored unchanged, together with a
-\code{metadata.json} sidecar recording the scheme, version, source path and
-time of storage. Replacing a classification with \code{overwrite = TRUE} removes
-the files of the previous one, so a \code{.txt} never sits beside a stale
-\code{.json} that \code{\link[=resy_load_expert]{resy_load_expert()}} would read first.
+\code{expert.txt.xz}, \code{expert.json} or \code{expert.json.xz}, where \verb{<root>} is
+\code{tools::R_user_dir("RESY", "data")} for \code{location = "user"}. A text file is
+stored unchanged, together with a \code{metadata.json} sidecar recording the
+scheme, version, source path and time of storage. Replacing a
+classification with \code{overwrite = TRUE} removes the files of the previous
+one, so a \code{.txt} never sits beside a stale \code{.json} that
+\code{\link[=resy_load_expert]{resy_load_expert()}} would read first.
 }
 \examples{
 # Store the bundled Apennine-test system under a new name. The store is
@@ -74,6 +88,11 @@ parsed <- resy_load_expert(scheme = "MyApennine", version = "2026-09-21")
 parsed$vegtype.formula.names.short
 
 Sys.setenv(R_USER_DATA_DIR = old)
+
+\dontrun{
+# Download a published EUNIS-ESy release from Zenodo into the user store.
+resy_add_classification(scheme = "EUNIS", version = "2025-10-03")
+}
 }
 \seealso{
 \code{\link[=resy_validate_esy]{resy_validate_esy()}}, \code{\link[=resy_load_expert]{resy_load_expert()}},

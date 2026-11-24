@@ -1,5 +1,5 @@
 library(testthat)
-library(sf)
+skip_if_not_installed("sf")
 
 # ---- .resy_check_coordinates -------------------------------------------------
 
@@ -39,7 +39,10 @@ test_that(".resy_check_coordinates: data frame with Lon/Lat and source_crs works
     out <- RESY:::.resy_check_coordinates(df, source_crs = 4326, verbose = TRUE),
     "Transforming"
     )
-  expect_equal(sf::st_crs(out)$epsg, 25832)
+  expect_identical(attr(out, "resy_crs"), 25832)
+  expect_equal(unname(out$geometry), unname(sf::st_coordinates(sf::st_transform(
+    sf::st_as_sf(df, coords = c("Longitude", "Latitude"), crs = 4326), 25832))),
+    ignore_attr = TRUE, tolerance = 1e-8)
   
 })
 

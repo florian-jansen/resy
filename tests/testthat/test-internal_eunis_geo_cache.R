@@ -1,7 +1,7 @@
 # .resy_gis() is the one accessor for the GIS layers in data/. A layer is read
 # on first use and kept for the session, so attaching RESY reads no layer and a
 # second call does not read the file again. The tests pin that every registered
-# layer loads as the sf object stored in its file, that a cached layer is served
+# layer loads as the plain list stored in its file, that a cached layer is served
 # without re-reading, and that an unknown layer name fails.
 
 test_that("every registered GIS layer loads as the object stored in its file", {
@@ -9,7 +9,9 @@ test_that("every registered GIS layer loads as the object stored in its file", {
     env <- new.env()
     utils::data(list = ds, package = "RESY", envir = env)
     obj <- RESY:::.resy_gis(ds)
-    expect_s3_class(obj, "sf")
+    expect_type(obj, "list")
+    expect_identical(obj$crs, 25832L)
+    expect_true(all(vapply(obj$rings, is.matrix, logical(1))))
     expect_identical(obj, get(RESY:::.resy_gis_layers[[ds]], envir = env))
   }
 })
@@ -27,6 +29,7 @@ test_that("a cached layer is served without reading the file again", {
 })
 
 test_that("the geo helpers read their layers through the cache", {
+  skip_if_not_installed("sf")
   pts <- sf::st_as_sf(
     data.frame(PlotObservationID = 1L, x = 701327, y = 5364375),
     coords = c("x", "y"), crs = 25832
