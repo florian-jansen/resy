@@ -10,6 +10,8 @@
 /* The app uses the whole page width: no table of contents column. */
 main#main { flex: 0 0 100%; max-width: 100%; width: 100%; }
 main#main + aside { display: none; }
+/* The pages of the tools show no link to their source file. */
+main#main > .page-header > .dont-index { display: none; }
 /* The site's navigation bar stays in place on the pages of the tools (see pinNavbar()). */
 nav.navbar.resy-pinned { transform: none !important; }
 #resy-app code { font-size: 0.85em; }

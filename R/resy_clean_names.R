@@ -1,3 +1,25 @@
+# Infraspecific rank markers of a cleaned name; each is followed by an epithet.
+.RESY_INFRA_RANKS <- c("subsp.", "nothosubsp.", "nssp.", "var.", "f.", "cv.")
+
+# The species a cleaned name belongs to: the words before its first
+# infraspecific rank marker. `infra` marks names below species level, `autonym`
+# those whose infraspecific epithet repeats the last word of the species
+# ("Festuca rubra subsp. rubra"), the name of the type of the species. A name at
+# species level is its own species.
+.resy_species_part <- function(cleaned) {
+  words <- strsplit(cleaned, " ", fixed = TRUE)
+  at <- vapply(words, function(w) match(TRUE, w %in% .RESY_INFRA_RANKS, nomatch = 0L),
+               integer(1))
+  infra <- at > 1L
+  species <- cleaned
+  species[infra] <- vapply(which(infra), function(k)
+    paste(words[[k]][seq_len(at[k] - 1L)], collapse = " "), character(1))
+  autonym <- infra & vapply(seq_along(words), function(k)
+    infra[k] && length(words[[k]]) > at[k] &&
+      identical(words[[k]][at[k] + 1L], words[[k]][at[k] - 1L]), logical(1))
+  list(species = species, infra = infra, autonym = autonym)
+}
+
 #' Remove taxonomic authorities from scientific names
 #'
 #' Strips author citations from scientific plant names while keeping the
@@ -42,7 +64,6 @@
 #' @export
 resy_clean_names <- function(x) {
   # Infraspecific rank markers are followed by an epithet and kept with it.
-  infra_ranks <- c("subsp.", "nothosubsp.", "nssp.", "var.", "f.", "cv.")
   # Aggregate and collective markers stand alone, denote a broader taxon
   # concept, and are kept as-is (usually terminal, sometimes after an epithet).
   agg_markers <- c("agg.", "aggr.", "coll.", "s.l.", "s.str.", "s.lat.")
@@ -92,7 +113,7 @@ resy_clean_names <- function(x) {
       i <- 3L
     }
     while (i <= n) {
-      if (w[i] %in% infra_ranks && i < n) {
+      if (w[i] %in% .RESY_INFRA_RANKS && i < n) {
         out <- c(out, w[i], w[i + 1L])
         i <- i + 2L
       } else if (w[i] %in% agg_markers) {

@@ -144,20 +144,25 @@ resy_read_synonyms <- function(path = NULL, expert = NULL) {
 }
 
 # The synonym layer: synonym pairs harvested from the taxonomic backbones,
-# independent of any expert system. Read once per session.
+# independent of any expert system. Read once per session from `path`, the
+# shipped file unless a copy elsewhere is named (the browser pages load it on
+# demand). The anchored tables belong to the layer they were built from.
 .resy_synonym_cache <- new.env(parent = emptyenv())
 
-.resy_synonym_layer <- function() {
-  if (is.null(.resy_synonym_cache$layer)) {
-    path <- system.file("extdata", "esy_synonym_layer.csv.xz", package = "RESY")
-    if (!nzchar(path)) {
-      stop("shipped synonym layer not found at ",
-           "inst/extdata/esy_synonym_layer.csv.xz.", call. = FALSE)
+.resy_synonym_layer <- function(path = system.file("extdata", "esy_synonym_layer.csv.xz",
+                                                   package = "RESY")) {
+  if (!identical(.resy_synonym_cache$path, path)) {
+    if (!nzchar(path) || !file.exists(path)) {
+      stop("synonym layer not found: ",
+           if (nzchar(path)) path else "inst/extdata/esy_synonym_layer.csv.xz", ".",
+           call. = FALSE)
     }
     layer <- utils::read.csv(path, stringsAsFactors = FALSE,
                              na.strings = c("", "NA"), encoding = "UTF-8")
     layer$sc_drop <- as.logical(layer$sc_drop)
     .resy_synonym_cache$layer <- layer
+    .resy_synonym_cache$path <- path
+    .resy_synonym_cache$anchored <- NULL
   }
   .resy_synonym_cache$layer
 }

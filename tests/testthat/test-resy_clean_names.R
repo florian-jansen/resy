@@ -101,3 +101,12 @@ test_that("clean_names strips authors but keeps ranks and aggregate markers", {
     c("Fagus sylvatica", NA, "Taraxacum officinale agg.")
   )
 })
+
+test_that(".resy_species_part() takes a name below species level to its species", {
+  part <- .resy_species_part(c("Carex pilulifera subsp. pilulifera", "Lotus corniculatus subsp. alpinus",
+                               "Thymus pulegioides var. pulegioides", "Salix x rubens", "Fagus sylvatica", NA))
+  expect_identical(part$species, c("Carex pilulifera", "Lotus corniculatus", "Thymus pulegioides",
+                                   "Salix x rubens", "Fagus sylvatica", NA))
+  expect_identical(part$infra, c(TRUE, TRUE, TRUE, FALSE, FALSE, FALSE))
+  expect_identical(part$autonym, c(TRUE, FALSE, TRUE, FALSE, FALSE, FALSE))
+})

@@ -177,13 +177,18 @@ dir.create(gis)
 file.copy(list.files(file.path(lib, "RESY", "data"), full.names = TRUE), gis)
 # A placeholder keeps the read-only package's data mount point present.
 file.create(file.path(lib, "RESY", "data", ".mount"))
+# The synonym layer is fetched only when the Maker matches names against it.
+synonyms <- file.path(work, "synonyms")
+dir.create(synonyms)
+file.copy(file.path(lib, "RESY", "extdata", "esy_synonym_layer.csv.xz"), synonyms)
 images <- list(resy = library_image(lib, "resy", function(x)
                  runtime_files(x) & (!startsWith(x, "RESY/data/") | endsWith(x, "/.mount")) &
                    !endsWith(x, "data_example_altitude.tif") &
                    !grepl("^RESY/extdata/esy_synonym_layer", x)),
                core = library_image(file.path(work, "core"), "core", runtime_files),
                tables = library_image(file.path(work, "tables"), "tables", runtime_files),
-               gis = library_image(gis, "gis"))
+               gis = library_image(gis, "gis"),
+               synonyms = library_image(synonyms, "synonyms"))
 # The EUNIS-ESy releases in the bundle, newest first, for the release menu.
 eunis_versions <- sort(list.dirs(file.path(lib, "RESY", "extdata", "classifications", "EUNIS"),
                                  full.names = FALSE, recursive = FALSE), decreasing = TRUE)

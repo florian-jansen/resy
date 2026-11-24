@@ -2,13 +2,11 @@
 title: "RESY Maker"
 ---
 
-Build your own expert system: give each vegetation type a rule made of
-conditions on groups of species, and fill the groups as you need them. While
-you build, RESY classifies a set of test plots with your system and shows how
-many plots each condition, each rule and each type catches. Export the finished
-system to classify with it in the [RESY App](app.html) or with `resy_classify()`. Everything
-runs in this browser tab through [webR](https://docs.r-wasm.org/webr/latest/);
-your files are not uploaded anywhere.
+Build an expert system: each vegetation type gets a rule of conditions on
+species groups. As you build, RESY classifies a set of test plots with it.
+Export the system for the [RESY App](app.html) or `resy_classify()`. Runs in
+this browser tab through [webR](https://docs.r-wasm.org/webr/latest/); nothing
+is uploaded.
 
 ```{=html}
 <script type="module" src="../webr/resy_core.js"></script>
@@ -75,12 +73,21 @@ your files are not uploaded anywhere.
 
       <div class="sheet card" id="sheet-clear" hidden><div class="card-body">
         <p class="card-title h5">Clear everything?</p>
-        <p class="mb-0" id="clear-text"></p>
+        <p class="small mb-0" id="clear-text"></p>
         <div class="actions">
           <button type="button" class="btn btn-danger" id="clear-go">Clear everything</button>
           <button type="button" class="btn btn-outline-primary" id="clear-save">Save a copy first</button>
-          <button type="button" class="btn btn-outline-secondary" data-sheet="clear">Cancel</button>
+          <button type="button" class="btn btn-outline-secondary" data-sheet="clear" data-autofocus>Cancel</button>
           <span id="clear-status" class="small text-body-secondary" aria-live="polite"></span>
+        </div>
+      </div></div>
+
+      <div class="sheet card" id="sheet-match" hidden><div class="card-body">
+        <p class="card-title h5">Add the names of the test plots</p>
+        <div id="match-body"></div>
+        <div class="actions">
+          <button type="button" class="btn btn-primary" id="match-go" disabled>Add the names</button>
+          <button type="button" class="btn btn-outline-secondary" data-sheet="match">Cancel</button>
         </div>
       </div></div>
 
@@ -94,7 +101,7 @@ your files are not uploaded anywhere.
           <label>Species <select class="form-select form-select-sm" id="c-name"></select></label>
           <label>Cover (%) <select class="form-select form-select-sm" id="c-cover"></select></label>
         </div>
-        <label class="form-label small d-block mt-2">Sites file: the plot column, plus every column a rule should read (altitude, country, …)
+        <label class="form-label small d-block mt-2">Sites file: the plot column and the columns your rules read
           <input class="form-control form-control-sm mt-1" type="file" id="f-sites" accept=".csv,.tsv,.txt,text/csv"></label>
         <div class="actions">
           <button type="button" class="btn btn-primary btn-sm" id="data-use" disabled>Test on these files</button>
@@ -168,16 +175,14 @@ your files are not uploaded anywhere.
         </div>
 
         <div id="tab-species" role="tabpanel" aria-labelledby="tab-button-species" hidden>
-          <p class="small text-body-secondary">The species of your system, each under one name. Other names for the same species (with author, synonyms, subspecies you want to merge) are listed under it, and RESY reads them all as that species. A species added to a group or named in a rule is added here. Any other species name of your data is not used in the classification.</p>
           <div class="actions mt-0">
-            <button type="button" class="btn btn-outline-primary btn-sm" id="sp-add-data"></button>
-            <button type="button" class="btn btn-outline-primary btn-sm" id="sp-paste-toggle">Add names…</button>
+            <button type="button" class="btn btn-outline-primary btn-sm" id="sp-paste-toggle">Add species…</button>
+            <button type="button" class="btn btn-outline-primary btn-sm" id="sp-match" data-sheet="match" aria-expanded="false" aria-controls="sheet-match" disabled>Add the names of the test plots…</button>
           </div>
           <div id="sp-paste" hidden>
             <textarea class="form-control form-control-sm mt-2" id="sp-text" rows="5" placeholder="One species name per line" aria-label="Species names, one per line"></textarea>
             <button type="button" class="btn btn-primary btn-sm mt-2" id="sp-paste-add">Add to the list</button>
           </div>
-          <div id="sp-notes"></div>
           <div class="listhead mt-3 mb-2">
             <select class="form-select form-select-sm" id="sp-filter" aria-label="Which species to list"></select>
             <input class="form-control form-control-sm" type="search" id="sp-q" placeholder="Search" aria-label="Search the species list">
@@ -188,6 +193,7 @@ your files are not uploaded anywhere.
           </div>
           <p class="small note" id="sp-removed" hidden><span id="sp-removed-text"></span> <button type="button" class="btn btn-link btn-sm p-0 align-baseline" id="sp-restore">Put them back</button></p>
           <ul class="species-list" id="sp-list"></ul>
+          <div id="sp-notes"></div>
         </div>
 
         <div id="tab-plots" role="tabpanel" aria-labelledby="tab-button-plots" hidden>
@@ -217,7 +223,7 @@ your files are not uploaded anywhere.
     </div></div>
 
     <ul id="ta" class="typeahead" role="listbox" aria-label="Species suggestions" hidden></ul>
-    <p id="footer" class="small text-body-secondary mt-3">runs on <a href="https://docs.r-wasm.org/webr/latest/">webR</a> · your work is kept in this browser as a draft; <b>Save</b> downloads it as a file<span id="draft-status" role="status" aria-live="polite"></span></p>
+    <p id="footer" class="small text-body-secondary mt-3"><span id="draft-status" role="status" aria-live="polite"></span></p>
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>

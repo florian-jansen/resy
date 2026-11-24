@@ -11,12 +11,25 @@ suppressPackageStartupMessages({
 .page_json <- function(x, ...) jsonlite::toJSON(x, auto_unbox = TRUE, na = "null", dataframe = "rows", ...)
 
 # Code and name of every type in a parsed expert system, from the Section 3
-# header lines ("FB    Beech-fir montane forest").
+# header lines ("FB    Beech-fir montane forest"). A code with several rules has
+# one description per rule ("... trees 1", "... trees 2"); the type's name is
+# the words they share.
 .page_type_names <- function(parsed) {
-  full <- trimws(parsed$vegtype.formula.names)
-  data.frame(code = parsed$vegtype.formula.names.short,
-             name = trimws(sub("^\\S+", "", full)),
-             stringsAsFactors = FALSE)
+  code <- parsed$vegtype.formula.names.short
+  name <- trimws(sub("^\\S+", "", trimws(parsed$vegtype.formula.names)))
+  by_code <- split(name, factor(code, levels = unique(code)))
+  data.frame(code = names(by_code),
+             name = vapply(by_code, .page_shared_words, character(1)),
+             stringsAsFactors = FALSE, row.names = NULL)
+}
+
+.page_shared_words <- function(x) {
+  words <- strsplit(x, " ", fixed = TRUE)
+  first <- words[[1]]
+  k <- 0L
+  while (k < min(lengths(words)) &&
+         all(vapply(words, function(w) w[k + 1L] == first[k + 1L], logical(1)))) k <- k + 1L
+  if (k == 0L) x[1] else paste(first[seq_len(k)], collapse = " ")
 }
 
 # Header columns the expert system reads through $$C and $$N conditions.
@@ -79,12 +92,11 @@ resy_page_set_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) 
   header_cols <- .page_header_cols(parsed)
   eunis <- any(header_cols %in% .page_eunis_site_cols)
   names <- .page_type_names(parsed)
-  # A code with several rules has one description per rule ("... trees 1",
-  # "... trees 2"); the EUNIS names table gives the type's own name.
-  names <- names[!duplicated(names$code), ]
+  # A type keeps the name its expert system gives it; the EUNIS names table
+  # names the habitat groups the system does not define as types.
   if (eunis) {
     eunis_names <- resy_eunis_names()[c("code", "name")]
-    names <- rbind(eunis_names, names[!names$code %in% eunis_names$code, ])
+    names <- rbind(names, eunis_names[!eunis_names$code %in% names$code, ])
   }
   .page$system <- list(
     scheme = scheme,

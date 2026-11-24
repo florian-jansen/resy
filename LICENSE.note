@@ -63,8 +63,18 @@ inst/extdata/data_example_altitude.tif
 
 inst/extdata/data_example_species.csv
 inst/extdata/data_example_sites.csv
-inst/extdata/eunis_2021_names.csv
   Source: <not found>
+  Licence: <not found>
+
+inst/extdata/eunis_2021_names.csv
+  Source: the names follow the EEA EUNIS habitat type hierarchical view
+  (marine version 2022, terrestrial version 2021),
+  https://eunis.eea.europa.eu/habitats-code-browser-revised.jsp. The types
+  the EEA list does not hold follow Chytrý et al. (2020), EUNIS Habitat
+  Classification: Expert system, characteristic species combinations and
+  distribution maps of European habitats, Applied Vegetation Science (N23,
+  N24, Q32 and others), and Schaminée et al. (2022), Support to EUNIS habitat
+  classification (Pa to Pj).
   Licence: <not found>
 
 

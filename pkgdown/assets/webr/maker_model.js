@@ -281,10 +281,39 @@ const parentIn = (byCode, r) => {
 };
 // The parent type of `rule` among `rules` (see typeTree()), or null.
 export const parentOf = (rule, rules) => parentIn(codeIndex(rules), rule);
-export function typeTree(rules) {
-  const byCode = codeIndex(rules);
+// With `fill`, as resy_expert_tree(fill = TRUE) does, the levels a code implies
+// (one per character: Q11 under Q1 under Q) that no type defines are added as
+// levels: { id: 'level:<code>', code, description: names[code], level: true },
+// before the first type under them.
+export const isLevel = (r) => Boolean(r?.level);
+// The name of the type `code`: a code with several rules has one description
+// per rule ("... trees 1", "... trees 2"), and the type's name is the words
+// they share.
+export function typeName(rules, code) {
+  const words = rules.filter((r) => r.code === code).map((r) => (r.description ?? '').split(' '));
+  if (!words.length) return '';
+  let k = 0;
+  while (k < Math.min(...words.map((w) => w.length)) && words.every((w) => w[k] === words[0][k])) k++;
+  return k ? words[0].slice(0, k).join(' ') : words[0].join(' ');
+}
+export function typeTree(rules, { fill = false, names = {} } = {}) {
+  let nodes = rules;
+  if (fill) {
+    const defined = codeIndex(rules), added = new Set();
+    nodes = [];
+    for (const r of rules) {
+      for (let k = 1; k < (r.code?.length ?? 0); k++) {
+        const code = r.code.slice(0, k);
+        if (defined.has(code) || added.has(code)) continue;
+        added.add(code);
+        nodes.push({ id: `level:${code}`, code, description: names[code] ?? '', level: true });
+      }
+      nodes.push(r);
+    }
+  }
+  const byCode = codeIndex(nodes);
   const kids = new Map(), parent = new Map();
-  for (const r of rules) {
+  for (const r of nodes) {
     const p = parentIn(byCode, r)?.id ?? null;
     parent.set(r.id, p);
     if (!kids.has(p)) kids.set(p, []);

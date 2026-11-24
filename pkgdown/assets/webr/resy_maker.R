@@ -157,6 +157,39 @@ resy_maker_synonyms <- function(path) {
   invisible(length(.maker$synonyms))
 }
 
+# Proposals for the species names of the test plots that the system in
+# `rules_json` does not know: the species of its list each name may be read as.
+# A name below species level is taken to the words before its rank marker
+# (`kind` "autonym" for the type subspecies or variety, "infra" for another);
+# a name at species level, or such a species not in the list, is looked up in
+# the synonym layer at `layer_path`, anchored on the list as RESY anchors it on
+# an expert system (`via_synonym`; `kind` "synonym" for a name at species
+# level, "same" for one the list has once its author is removed). Names that
+# match nothing are left out. Each name comes with its form without author
+# (`cleaned`), the form the page and RESY look up. Reads
+# the names as the last test did (resy_maker_test()).
+resy_maker_suggest_synonyms <- function(rules_json, layer_path) {
+  sp <- .maker$all$sp
+  if (is.null(sp)) return(.page_json(list()))
+  parsed <- .maker_system(rules_json)$parsed
+  records <- table(sp$name)
+  unknown <- names(records)[is.na(.page_taxa(names(records)))]
+  cleaned <- resy_clean_names(unknown)
+  part <- RESY:::.resy_species_part(cleaned)
+  nm <- RESY:::.resy_expert_names(parsed)
+  lookup <- RESY:::.resy_synonym_lookup(
+    RESY:::.resy_anchor_synonyms(RESY:::.resy_synonym_layer(layer_path), nm))
+  m <- RESY:::.resy_match_taxa(part$species, nm$vocab, lookup)
+  species <- unname(nm$evaluated_as[m$canonical])
+  ok <- which(!is.na(species))
+  kind <- ifelse(part$autonym, "autonym", ifelse(part$infra, "infra",
+                 ifelse(m$confidence == "synonym", "synonym", "same")))
+  .page_json(unname(Map(function(k) list(name = unknown[k], cleaned = cleaned[k],
+                                         species = species[k], kind = kind[k],
+                                         via_synonym = m$confidence[k] == "synonym",
+                                         records = as.integer(records[[unknown[k]]])), ok)))
+}
+
 # The parsed system belongs to the complete rules document and the current
 # synonym table. Site preparation and classification share that object.
 .maker_system <- function(path) {
@@ -224,6 +257,15 @@ resy_maker_test <- function(rules_json, coast_dunes = TRUE, coast_buffer = 5000)
   out$columns <- .maker_columns(.maker$sites)
   out$eunis <- sys$eunis
   out$derived_cols <- I(sys$derived_cols)
+  # The EUNIS names of the levels the type codes imply but no type defines, as
+  # resy_expert_tree(fill = TRUE, names = resy_eunis_names()) labels them.
+  if (isTRUE(sys$eunis)) {
+    codes <- vapply(x$rules, function(r) as.character(r$code %||% ""), character(1))
+    levels <- setdiff(unlist(lapply(codes, RESY:::.resy_code_path)), codes)
+    eunis_names <- resy_eunis_names()
+    eunis_names <- eunis_names[eunis_names$code %in% levels, ]
+    out$level_names <- as.list(stats::setNames(eunis_names$name, eunis_names$code))
+  }
 
   sp <- .maker$sp
   taxon <- .page_taxa(sp$name)

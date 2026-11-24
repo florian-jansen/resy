@@ -643,7 +643,6 @@ function render(now) {
   $('s-class').textContent = fmt(R.done - count('?') - count('+'));
   $('s-none').textContent = fmt(count('?'));
   $('s-tie').textContent = fmt(count('+'));
-  $('s-time').textContent = formatTime(R.seconds);
   $('s-system').innerHTML = `Classified with the ${escapeHtml(systemLabel(R.system))} expert system${R.system.doi ? ` (<a href="https://doi.org/${escapeHtml(R.system.doi)}">doi:${escapeHtml(R.system.doi)}</a>)` : ''}.`;
 
   const notes = [...R.warnings, missingWarning()].filter(Boolean);
