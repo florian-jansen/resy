@@ -17,10 +17,12 @@
 #resy-app .bar .title, #resy-app .bar .version { border-color: transparent; background: var(--bs-tertiary-bg); }
 #resy-app .bar .title:focus, #resy-app .bar .version:focus { border-color: var(--bs-primary); background: var(--bs-body-bg); }
 #resy-app .bar .btn-outline-secondary[aria-expanded=true] { background: var(--bs-secondary-bg); color: var(--bs-body-color); }
-#resy-app .playbar { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 14px; align-items: center; margin-top: 10px; font-size: 0.875rem; }
-#resy-app #plots-open { grid-row: 1 / 3; }
-#resy-app #play-stats { height: 3em; overflow: auto; text-align: left; line-height: 1.5; }
-#resy-app #play-status { display: block; height: 1.5rem; line-height: 1.5rem; overflow: auto; }
+/* One line under the bar: the plots button, the counts, the status. Text that does not fit ends in an ellipsis and is shown whole on hover. */
+#resy-app .playbar { display: flex; gap: 14px; align-items: center; margin-top: 6px; font-size: 0.875rem; }
+#resy-app #plots-open { flex: none; --bs-btn-padding-y: 0.25rem; --bs-btn-padding-x: 0.5rem; --bs-btn-font-size: 0.875rem; --bs-btn-border-radius: var(--bs-border-radius-sm); }
+#resy-app #play-stats, #resy-app #play-status { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.5; }
+#resy-app #play-stats { flex: 0 1 auto; min-width: 0; text-align: left; }
+#resy-app #play-status { flex: 1 1 0; min-width: 0; text-align: right; }
 /* The number of notes has its place in the bar before the first check, so the buttons do not wrap when it appears. */
 #resy-app #play-problems { min-width: 4.6rem; text-align: right; }
 #resy-app #plots-open[aria-expanded=true] { box-shadow: 0 0 0 3px var(--bs-primary-bg-subtle); }
@@ -30,7 +32,6 @@
 #resy-app .sheet { position: absolute; left: 0; right: 0; top: 100%; z-index: 25; max-height: calc(100vh - var(--resy-top, 0px) - 110px); overflow-y: auto; box-shadow: var(--bs-box-shadow); }
 #resy-app .note.welcome { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; border-left-color: var(--bs-primary); margin-top: 12px; }
 #resy-app .note.welcome { height: 6em; overflow: auto; }
-#resy-app .note.welcome[hidden] { display: flex !important; visibility: hidden; }
 #resy-app #pane-rule { height: 64rem; overflow-y: auto; scrollbar-gutter: stable; }
 #resy-app #t-mapbox[hidden] { display: block !important; visibility: hidden; }
 
@@ -48,7 +49,10 @@
   #resy-app .bench { grid-template-columns: 16rem minmax(0, 1fr) 23rem; grid-template-areas: "types rule parts"; grid-template-rows: auto; }
   /* Beside a long rule the lists stay in view and scroll on their own. */
   /* They keep the height of the window, however short a list is after a search. */
-  #resy-app .pane { position: sticky; top: calc(var(--resy-top, 0px) + var(--maker-toolbar, 130px) + 12px); height: calc(100vh - var(--resy-top, 0px) - var(--maker-toolbar, 130px) - 24px); overflow-y: auto; scrollbar-gutter: stable; }
+  #resy-app .bench { --maker-pane-h: max(28rem, calc(100vh - var(--resy-top, 0px) - var(--maker-toolbar, 80px) - 24px)); }
+  #resy-app .pane { position: sticky; top: calc(var(--resy-top, 0px) + var(--maker-toolbar, 80px) + 12px); height: var(--maker-pane-h); overflow-y: auto; scrollbar-gutter: stable; }
+  /* The rule is as tall as the lists beside it, so all three fit the window at once. */
+  #resy-app #pane-rule { height: var(--maker-pane-h); }
 }
 /* Above or beside the rule on a narrower window, a long list of types scrolls
    on its own, so the rule and the parts stay within reach. */
@@ -192,17 +196,26 @@
 #resy-app .cond .body > * { display: inline-block; vertical-align: middle; margin: 0 6px 6px 0; }
 #resy-app .cond .tail { position: absolute; top: 6px; right: 8px; width: var(--tail); height: 31px; display: flex; align-items: center; gap: 2px; }
 #resy-app .cond select, #resy-app .cond input:not([type=range]) { width: auto; max-width: min(100%, 21rem); text-overflow: ellipsis; }
+/* A select is as wide as the option chosen, so a condition reads as one sentence on as few lines as possible. */
+#resy-app .cond select { field-sizing: content; padding-right: 1.9rem; }
 /* The kind of the condition stays on the first line, beside the count. */
 #resy-app .cond select.kind { font-weight: 500; max-width: min(21rem, calc(100% - var(--tail) - 2rem)); }
 #resy-app .cond select.missing { border-color: var(--bs-danger); }
-#resy-app .cond input.n { width: 5.5rem; }
+#resy-app .cond input.n { width: 4.5rem; }
+/* A folded card shows the condition as a sentence; the open one shows its fields. */
+#resy-app .cond:not(.open) .body > :not(.grip, .origin, .summary) { display: none; }
+#resy-app .cond.open .body > .summary { display: none; }
+#resy-app .cond .summary { max-width: calc(100% - var(--tail) - 2rem); padding: 4px 2px; font-size: 0.875rem; line-height: 1.35; border-radius: var(--bs-border-radius-sm); }
+#resy-app .cond .summary:focus-visible { outline: 2px solid var(--bs-primary); outline-offset: 1px; }
+#resy-app .cond:not(.open) { cursor: pointer; }
+#resy-app .cond:not(.open):not(.held, .failed):hover { background: var(--bs-tertiary-bg); }
 #resy-app .cond input.sp { width: 16rem; font-style: italic; }
 #resy-app .cond input.ex { width: 14rem; }
 #resy-app .cond input.raw { width: min(100%, 30rem); font-family: var(--bs-font-monospace); font-size: 0.8rem; }
 /* The slider of a condition with the histogram of the plots above it. */
 #resy-app .cond .body > .dial { display: flex; flex-direction: column; width: 100%; margin-right: 0; clear: both; }
 #resy-app .cond .dial input[type=range] { width: 100%; }
-#resy-app .cond .hist { position: relative; height: 36px; }
+#resy-app .cond .hist { position: relative; height: 24px; }
 #resy-app .cond .hist i { position: absolute; bottom: 0; min-width: 2px; max-width: 14px; transform: translateX(-50%); border-radius: 2px 2px 0 0; overflow: hidden; background: color-mix(in srgb, var(--bs-secondary-color) 35%, transparent); }
 #resy-app .cond .hist b { position: absolute; left: 0; right: 0; bottom: 0; background: var(--k); }
 #resy-app.stale .cond .hist { opacity: 0.6; }
@@ -252,6 +265,7 @@
   #resy-app .cond { --tail: 6.6rem; }
 }
 #resy-app #tab-species > p, #resy-app #sp-notes .note { font-size: 0.82rem; }
+#resy-app #tab-species > p { margin: 8px 0 0; }
 #resy-app #tab-species .listhead .form-select { flex: 1 1 55%; }
 #resy-app #tab-species .listhead input { flex: 1 1 45%; }
 #resy-app #sp-remove[hidden] { display: block; visibility: hidden; }
@@ -282,6 +296,9 @@
 #resy-app #t-list [data-branch-hits] { display: block; overflow: hidden; text-overflow: ellipsis; }
 #resy-app #t-list li.holds { box-shadow: inset 3px 0 0 var(--bs-primary-border-subtle); }
 #resy-app #t-list li.context .nm { color: var(--bs-secondary-color); }
+#resy-app #t-list li.level { padding-right: 8px; }
+#resy-app #t-list li.level .nm { height: auto; max-height: 3em; }
+#resy-app #t-list li.level .meta { height: 1.5em; }
 #resy-app .mapbar { display: grid; grid-template-columns: auto auto; justify-content: start; }
 #resy-app #map-note { grid-column: 1 / -1; height: 1.5em; overflow: auto; }
 #resy-app #map-all[hidden] { display: block; visibility: hidden; }
@@ -290,18 +307,23 @@
 #resy-app .sheet { max-height: calc(100dvh - var(--resy-top, 0px) - var(--maker-toolbar, 130px) - 12px); }
 #resy-app .sheet .actions > [aria-live] { flex-basis: 100%; height: 3em; overflow: auto; }
 #resy-app #tab-plots .tablewrap { height: 22rem; }
-#resy-app #sp-notes { height: 7rem; overflow: auto; }
+#resy-app #sp-notes { height: 4.4rem; margin-top: 8px; overflow: auto; }
+#resy-app #sp-notes .note { margin-top: 0; }
+#resy-app #sp-notes .note + .note { margin-top: 6px; }
+#resy-app .match-kind { padding: 8px 0; border-top: 1px solid var(--bs-border-color-translucent); }
+#resy-app .match-kind details { margin: 4px 0 0 1.6rem; }
+#resy-app .match-list { max-height: 12rem; overflow-y: auto; margin: 4px 0 0; padding-left: 1rem; scrollbar-width: thin; }
 #resy-app #sp-removed[hidden] { display: block; visibility: hidden; }
 #resy-app #sp-removed { height: 4.5em; overflow: auto; }
 #resy-app #draft-status { display: block; min-height: 3em; }
+#resy-app #t-priority { height: 1.5em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #resy-app #detail #d-body { height: 28rem; overflow: auto; scrollbar-gutter: stable; }
 #resy-app #detail[aria-busy=true] #d-body { opacity: 0.55; }
 @media (max-width: 767.98px) {
   #resy-app .note.welcome { height: 10em; }
   #resy-app .top { position: relative; top: auto; }
-  #resy-app .playbar { grid-template-columns: minmax(0, 1fr); }
-  #resy-app #plots-open { grid-row: auto; justify-self: start; }
-  #resy-app #play-stats { height: 4.5em; }
+  #resy-app .playbar { flex-wrap: wrap; gap: 4px 14px; }
+  #resy-app #play-stats { white-space: normal; }
   #resy-app .bar .title { flex-basis: calc(100% - 9rem); }
   #resy-app #pane-rule, #resy-app #detail { scroll-margin-top: calc(var(--resy-top, 0px) + 12px); }
   #resy-app #t-verdict, #resy-app .trail { height: 7.5em; }

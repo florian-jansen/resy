@@ -1,15 +1,12 @@
 # RESY Maker
 
-Build your own expert system: give each vegetation type a rule made of
-conditions on groups of species, and fill the groups as you need them.
-While you build, RESY classifies a set of test plots with your system
-and shows how many plots each condition, each rule and each type
-catches. Export the finished system to classify with it in the [RESY
-App](https://florian-jansen.github.io/resy/articles/app.md) or with
+Build an expert system: each vegetation type gets a rule of conditions
+on species groups. As you build, RESY classifies a set of test plots
+with it. Export the system for the [RESY
+App](https://florian-jansen.github.io/resy/articles/app.md) or
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md).
-Everything runs in this browser tab through
-[webR](https://docs.r-wasm.org/webr/latest/); your files are not
-uploaded anywhere.
+Runs in this browser tab through
+[webR](https://docs.r-wasm.org/webr/latest/); nothing is uploaded.
 
 ![](../logo.png)![RESY](../logo.png)
 
@@ -47,14 +44,19 @@ Save a copy first
 
 Cancel
 
+Add the names of the test plots
+
+Add the names
+
+Cancel
+
 Your plots
 
 Species file: one row per species in each plot
 
 Plot Species Cover (%)
 
-Sites file: the plot column, plus every column a rule should read
-(altitude, country, …)
+Sites file: the plot column and the columns your rules read
 
 Test on these files
 
@@ -102,13 +104,9 @@ Plots
 
 New group
 
-The species of your system, each under one name. Other names for the
-same species (with author, synonyms, subspecies you want to merge) are
-listed under it, and RESY reads them all as that species. A species
-added to a group or named in a rule is added here. Any other species
-name of your data is not used in the classification.
+Add species…
 
-Add names…
+Add the names of the test plots…
 
 Add to the list
 
@@ -118,6 +116,3 @@ Put them back
 |------|------|-----------------|
 
 ✕
-
-runs on [webR](https://docs.r-wasm.org/webr/latest/) · your work is kept
-in this browser as a draft; **Save** downloads it as a file

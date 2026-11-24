@@ -94,18 +94,36 @@ export async function fetchAssets(scriptNames) {
   return { libraries: startupLibraries, info, scripts };
 }
 
-const geography = new WeakMap();
-export function ensureGeography(webR) {
-  if (!geography.has(webR)) {
-    const pending = (async () => {
-      const info = await manifest;
-      const [gis, tables] = await Promise.all(['gis', 'tables'].map((name) => fetchImage(info.images[name])));
-      await webR.FS.mount('WORKERFS', { packages: [gis] }, '/library-resy/RESY/data');
-      await mountLibraries(webR, [['tables', tables]]);
-    })();
-    geography.set(webR, pending);
+// Libraries a session needs only for some tasks are fetched and mounted the
+// first time a task asks for them, once per session.
+const onDemand = new WeakMap();
+function once(webR, key, load) {
+  if (!onDemand.has(webR)) onDemand.set(webR, new Map());
+  const loaded = onDemand.get(webR);
+  if (!loaded.has(key)) {
+    const pending = load();
+    loaded.set(key, pending);
+    pending.catch(() => loaded.delete(key));
   }
-  return geography.get(webR);
+  return loaded.get(key);
+}
+export function ensureGeography(webR) {
+  return once(webR, 'geography', async () => {
+    const info = await manifest;
+    const [gis, tables] = await Promise.all(['gis', 'tables'].map((name) => fetchImage(info.images[name])));
+    await webR.FS.mount('WORKERFS', { packages: [gis] }, '/library-resy/RESY/data');
+    await mountLibraries(webR, [['tables', tables]]);
+  });
+}
+// The synonym layer of RESY (inst/extdata/esy_synonym_layer.csv.xz); returns its path in the session.
+export function ensureSynonymLayer(webR) {
+  return once(webR, 'synonyms', async () => {
+    const info = await manifest;
+    const image = await fetchImage(info.images.synonyms);
+    await webR.FS.mkdir('/synonyms');
+    await webR.FS.mount('WORKERFS', { packages: [image] }, '/synonyms');
+    return '/synonyms/esy_synonym_layer.csv.xz';
+  });
 }
 
 export async function prepareSites(webR, path, options) {

@@ -29,11 +29,11 @@ A data frame with columns `code` and `name`.
 
 ``` r
 head(resy_eunis_names())
-#>    code                                name
-#> 1     M    Littoral biogenic (salt marshes)
-#> 2    MA                     Marine habitats
-#> 3   MA2                     Marine habitats
-#> 4  MA21   Arctic littoral biogenic habitats
-#> 5 MA211            Arctic coastal saltmarsh
-#> 6  MA22 Atlantic littoral biogenic habitats
+#>    code                               name
+#> 1     M    Marine benthic habitats (MA-MG)
+#> 2   MA2          Littoral biogenic habitat
+#> 3  MA21   Arctic littoral biogenic habitat
+#> 4 MA211           Arctic coastal saltmarsh
+#> 5  MA22 Atlantic littoral biogenic habitat
+#> 6 MA221       Atlantic saltmarsh driftline
 ```
