@@ -341,13 +341,25 @@ level.</p>
 <span><span class="co">#&gt;  Prenanthes purpurea      0.1 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Why not a lower level of F:</span></span>
+<span><span class="co">#&gt;   FB    Beech-fir montane forest                           rule not met: 1 of 2 conditions satisfied</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; FB    Beech-fir montane forest: rule not met</span></span>
 <span><span class="co">#&gt;       Rule: [1] and [2]</span></span>
 <span><span class="co">#&gt;       [1] met      total cover of Beech-forest-trees is 62.7%, needs more than 15%</span></span>
 <span><span class="co">#&gt;                    Fagus sylvatica 62.5, Abies alba 0.5</span></span>
 <span><span class="co">#&gt;       [2] not met  total cover of Beech-forest-herbs is 0.6%, needs more than 10%</span></span>
-<span><span class="co">#&gt;                    Oxalis acetosella 0.5, Prenanthes purpurea 0.1</span></span></code></pre></div>
+<span><span class="co">#&gt;                    Oxalis acetosella 0.5, Prenanthes purpurea 0.1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Why not another top-level type:</span></span>
+<span><span class="co">#&gt;   N     Non-forest                                         rule not met: 1 of 3 conditions satisfied</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; N     Non-forest: rule not met</span></span>
+<span><span class="co">#&gt;       Rule: ([1] or [2]) and not [3]</span></span>
+<span><span class="co">#&gt;       [1] met      total cover of Nardus-grassland is 37.5%, needs more than 5%</span></span>
+<span><span class="co">#&gt;                    Vaccinium myrtillus 37.5</span></span>
+<span><span class="co">#&gt;       [2] not met  total cover of Sub-Mediterranean is 0%, needs more than 5%</span></span>
+<span><span class="co">#&gt;       [3] excludes total cover of Beech-forest-trees is 62.7%, needs more than 15%</span></span>
+<span><span class="co">#&gt;                    Fagus sylvatica 62.5, Abies alba 0.5</span></span></code></pre></div>
 <p>Passing <code>type</code> explains any other type in the same way,
 whether or not its rule holds for the plot:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -369,6 +381,7 @@ whether or not its rule holds for the plot:</p>
 <span><span class="co">#&gt;  Prenanthes purpurea      0.1 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Why not a lower level of F:</span></span>
+<span><span class="co">#&gt;   FB    Beech-fir montane forest                           rule not met: 1 of 2 conditions satisfied</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; FB    Beech-fir montane forest: rule not met</span></span>
 <span><span class="co">#&gt;       Rule: [1] and [2]</span></span>
@@ -376,6 +389,19 @@ whether or not its rule holds for the plot:</p>
 <span><span class="co">#&gt;                    Fagus sylvatica 62.5, Abies alba 0.5</span></span>
 <span><span class="co">#&gt;       [2] not met  total cover of Beech-forest-herbs is 0.6%, needs more than 10%</span></span>
 <span><span class="co">#&gt;                    Oxalis acetosella 0.5, Prenanthes purpurea 0.1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Why not another top-level type:</span></span>
+<span><span class="co">#&gt;   N     Non-forest                                         rule not met: 1 of 3 conditions satisfied</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; N     Non-forest: rule not met</span></span>
+<span><span class="co">#&gt;       Rule: ([1] or [2]) and not [3]</span></span>
+<span><span class="co">#&gt;       [1] met      total cover of Nardus-grassland is 37.5%, needs more than 5%</span></span>
+<span><span class="co">#&gt;                    Vaccinium myrtillus 37.5</span></span>
+<span><span class="co">#&gt;       [2] not met  total cover of Sub-Mediterranean is 0%, needs more than 5%</span></span>
+<span><span class="co">#&gt;       [3] excludes total cover of Beech-forest-trees is 62.7%, needs more than 15%</span></span>
+<span><span class="co">#&gt;                    Fagus sylvatica 62.5, Abies alba 0.5</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; FB: rule not met: 1 of 2 conditions satisfied</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; FB    Beech-fir montane forest: rule not met</span></span>
 <span><span class="co">#&gt;       Rule: [1] and [2]</span></span>

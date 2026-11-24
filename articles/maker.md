@@ -108,9 +108,15 @@ Add species…
 
 Add the names of the test plots…
 
+ⓘ
+
 Add to the list
 
 Put them back
+
+Previous
+
+Next
 
 | Plot | Type | Rules that hold |
 |------|------|-----------------|

@@ -93,11 +93,16 @@
 #resy-app .picklist.rest:not(:empty) { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--bs-border-color); }
 #resy-app .picklist.rest li { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; color: var(--bs-secondary-color); }
 /* The test plots as dots under the type they are classified as; .on marks the plots lit. */
-#resy-app .dots { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 2px; margin-top: 2px; height: 20px; padding: 2px; overflow-y: auto; scrollbar-gutter: stable; }
-#resy-app .dots::-webkit-scrollbar { width: 4px; }
-#resy-app .dots::-webkit-scrollbar-button { display: none; }
-#resy-app .dots::-webkit-scrollbar-thumb { border-radius: 2px; background: color-mix(in srgb, var(--bs-secondary-color) 45%, transparent); }
-@supports not selector(::-webkit-scrollbar) { #resy-app .dots { scrollbar-width: thin; } }
+#resy-app .dots { display: grid; grid-template-columns: repeat(auto-fill, 11px); grid-auto-rows: 11px;
+  place-items: center; align-content: start; margin-top: 2px; height: 22px; padding-inline: 2px;
+  overflow-y: auto; scrollbar-gutter: stable; scroll-snap-type: y mandatory; }
+#resy-app .dots i { scroll-snap-align: start; scroll-margin-top: 2px; }
+#resy-app.maker *::-webkit-scrollbar { width: 6px; height: 6px; }
+#resy-app.maker *::-webkit-scrollbar-button { display: none; }
+#resy-app.maker *::-webkit-scrollbar-thumb { border-radius: 3px; background: color-mix(in srgb, var(--bs-secondary-color) 45%, transparent); }
+@supports not selector(::-webkit-scrollbar) {
+  #resy-app.maker * { scrollbar-width: thin; }
+}
 #resy-app .dots i, #resy-app .lit .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: color-mix(in srgb, var(--bs-secondary-color) 35%, transparent); }
 /* --c, set on each strip, is the colour of its type (see resy_palette.js). */
 #resy-app .dots i.on, #resy-app .dots i.sel { background: var(--c, var(--lv-none)); }
@@ -107,7 +112,7 @@
 #resy-app .dots i[data-plot] { cursor: pointer; }
 #resy-app .dots i[data-plot]:hover, #resy-app .dots i.sel { outline: 2px solid var(--bs-body-color); outline-offset: 0; }
 #resy-app .dots i.moved { animation: dot-in 0.6s ease-out; }
-@keyframes dot-in { from { transform: scale(1.8); } }
+@keyframes dot-in { from { opacity: 0.25; } }
 @media (prefers-reduced-motion: reduce) { #resy-app .dots i.moved { animation: none; } }
 #resy-app.stale .dots, #resy-app.stale [data-rule-hits], #resy-app.stale [data-group-hits] { opacity: 0.5; }
 #resy-app .picklist.rest li { flex-wrap: wrap; }
@@ -131,12 +136,19 @@
 #resy-app #g-list > li.open { border: 1px solid var(--bs-primary-border-subtle); border-radius: var(--bs-border-radius); margin: 4px 0; }
 #resy-app #g-editor { padding: 10px 8px 8px; }
 #resy-app #g-editor .fields.group { grid-template-columns: minmax(0, 1fr); }
-#resy-app #g-editor .chips { max-height: 14rem; overflow-y: auto; margin-top: 8px; }
+#resy-app #g-editor .chips { max-height: 14rem; overflow-y: auto; margin-top: 8px; padding: 4px; }
 #resy-app #g-editor .actions { gap: 6px; margin-top: 10px; }
-#resy-app #g-problem { height: 3em; overflow: auto; margin-top: 4px; }
+/* A group name that cannot be used: a note over what lies below the field, so
+   the editor keeps its layout while the name is typed. */
+#resy-app .g-name { position: relative; }
+#resy-app .g-name > label { display: block; }
+#resy-app #g-problem { position: absolute; z-index: 15; top: calc(100% - 0.6rem); left: 0; right: 0; margin: 0;
+  padding: 6px 8px; background: var(--bs-body-bg); border: 1px solid var(--bs-danger-border-subtle);
+  border-radius: var(--bs-border-radius); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12); }
+#resy-app #g-problem:empty { display: none; }
 
 #resy-app .note { margin: 10px 0 0; padding: 6px 10px; border-left: 3px solid var(--bs-warning); background: var(--bs-tertiary-bg); }
-#resy-app .species-list { margin-top: 12px; max-height: 50vh; overflow-y: auto; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); }
+#resy-app .species-list { margin-top: 12px; max-height: 50vh; overflow-y: auto; padding-block: 4px; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); }
 #resy-app .species-list li { padding: 4px 10px; border-top: 1px solid var(--bs-border-color-translucent); font-size: 0.9rem; }
 #resy-app .species-list li:first-child { border-top: 0; }
 #resy-app .species-list .line { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: 10px; align-items: center; }
@@ -147,6 +159,8 @@
 #resy-app .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 #resy-app .chips li { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--bs-border-color); border-radius: 999px; padding: 1px 4px 1px 10px; font-size: 0.875rem; font-style: italic; }
 #resy-app .chips .n { font-style: normal; font-size: 0.75rem; color: var(--bs-secondary-color); font-variant-numeric: tabular-nums; }
+#resy-app .chips [data-member-count] { width: calc(var(--member-digits, 1) * 1ch); text-align: end; }
+#resy-app #sp-pages { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 6px; }
 
 /* The rule as blocks. */
 #resy-app .palette { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
@@ -260,14 +274,15 @@
 #resy-app #x-snippet { font-size: 0.8rem; }
 /* What RESY says about the system takes up to two lines; they are there while it reads. */
 #resy-app #x-check { height: 6em; overflow: auto; }
+#resy-app #x-check[aria-busy=true] { opacity: 0.55; }
 @media (max-width: 575.98px) {
   #resy-app .cond input.sp, #resy-app .cond input.ex { width: 100%; }
   #resy-app .cond { --tail: 6.6rem; }
 }
 #resy-app #tab-species > p, #resy-app #sp-notes .note { font-size: 0.82rem; }
 #resy-app #tab-species > p { margin: 8px 0 0; }
-#resy-app #tab-species .listhead .form-select { flex: 1 1 55%; }
-#resy-app #tab-species .listhead input { flex: 1 1 45%; }
+#resy-app #tab-species .listhead .form-select, #resy-app #tab-groups .listhead .form-select { flex: 1 1 auto; min-width: 0; }
+#resy-app #tab-species .listhead input, #resy-app #tab-groups .listhead input { flex: 0 1 7.5rem; min-width: 5rem; }
 #resy-app #sp-remove[hidden] { display: block; visibility: hidden; }
 /* Every type and group has a delete button on its row; it shows on the row in use. */
 #resy-app #t-list > li, #resy-app #g-list > li { position: relative; }
@@ -278,6 +293,7 @@
 @media (hover: none) { #resy-app .picklist .del { opacity: 1; } }
 
 #resy-app.maker :is(button, [tabindex], summary):focus-visible { outline: 2px solid var(--bs-primary); outline-offset: 2px; }
+#resy-app.maker .picklist > li:focus-visible { outline-offset: -2px; }
 #resy-app.maker .mini { min-width: 24px; min-height: 24px; }
 #resy-app.maker .btn-outline-secondary { --bs-btn-color: var(--bs-secondary-color); }
 #resy-app.maker .btn-outline-primary { --bs-btn-color: var(--bs-link-color); }
@@ -297,7 +313,8 @@
 #resy-app #t-list li.holds { box-shadow: inset 3px 0 0 var(--bs-primary-border-subtle); }
 #resy-app #t-list li.context .nm { color: var(--bs-secondary-color); }
 #resy-app #t-list li.level { padding-right: 8px; }
-#resy-app #t-list li.level .nm { height: auto; max-height: 3em; }
+#resy-app #t-list li.level[aria-expanded] .nm { text-decoration: underline; text-underline-offset: 2px; }
+#resy-app #t-list li.level .fold { display: grid; place-items: center; }
 #resy-app #t-list li.level .meta { height: 1.5em; }
 #resy-app .mapbar { display: grid; grid-template-columns: auto auto; justify-content: start; }
 #resy-app #map-note { grid-column: 1 / -1; height: 1.5em; overflow: auto; }
@@ -310,15 +327,28 @@
 #resy-app #sp-notes { height: 4.4rem; margin-top: 8px; overflow: auto; }
 #resy-app #sp-notes .note { margin-top: 0; }
 #resy-app #sp-notes .note + .note { margin-top: 6px; }
+/* An (i) beside a control: its text shows on hover, keyboard focus or tap,
+   over the page, so nothing around it moves. */
+#resy-app .info-tip { position: relative; display: inline-block; }
+#resy-app .actions .info-tip { margin-left: -8px; }
+#resy-app.maker .form-label .info-tip .mini { min-width: 0; min-height: 0; padding: 0 2px; line-height: 1; }
+#resy-app .info-tip[hidden] { display: inline-block; visibility: hidden; }
+#resy-app .info-tip .bubble { position: absolute; z-index: 20; top: calc(100% + 4px); right: 0; width: 17rem;
+  padding: 8px 10px; font-size: 0.8rem; line-height: 1.35; color: var(--bs-body-color);
+  background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12); visibility: hidden; opacity: 0; transition: opacity 0.12s; }
+#resy-app .info-tip.start .bubble { right: auto; left: 0; }
+#resy-app .info-tip:hover .bubble, #resy-app .info-tip:focus-within .bubble { visibility: visible; opacity: 1; }
 #resy-app .match-kind { padding: 8px 0; border-top: 1px solid var(--bs-border-color-translucent); }
 #resy-app .match-kind details { margin: 4px 0 0 1.6rem; }
-#resy-app .match-list { max-height: 12rem; overflow-y: auto; margin: 4px 0 0; padding-left: 1rem; scrollbar-width: thin; }
+#resy-app .match-list { max-height: 12rem; overflow-y: auto; margin: 4px 0 0; padding-left: 1rem; }
 #resy-app #sp-removed[hidden] { display: block; visibility: hidden; }
 #resy-app #sp-removed { height: 4.5em; overflow: auto; }
 #resy-app #draft-status { display: block; min-height: 3em; }
 #resy-app #t-priority { height: 1.5em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-#resy-app #detail #d-body { height: 28rem; overflow: auto; scrollbar-gutter: stable; }
-#resy-app #detail[aria-busy=true] #d-body { opacity: 0.55; }
+#resy-app #detail #d-body { height: 28rem; overflow: auto; scrollbar-gutter: stable; padding: 4px; }
+#resy-app #detail[aria-busy=true] #d-body, #resy-app #d-body .full[aria-busy=true] { opacity: 0.55; }
+#resy-app #d-status { height: 1.5em; line-height: 1.5; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 @media (max-width: 767.98px) {
   #resy-app .note.welcome { height: 10em; }
   #resy-app .top { position: relative; top: auto; }

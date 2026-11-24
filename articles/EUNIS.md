@@ -333,8 +333,8 @@ res <- resy_classify(
 #> Step 5.9  Number of T$ NON conditions: 140
 #> Step 5.10  Header conditions with numeric values: 4
 #>   Header conditions with character values: 4
-#> adapt conditions 2026-11-24 16:06:06.142608
-#> classification from here on 2026-11-24 16:06:06.180626
+#> adapt conditions 2026-11-24 17:29:36.507083
+#> classification from here on 2026-11-24 17:29:36.53546
 ```
 
 [`resy_classify()`](https://florian-jansen.github.io/resy/reference/resy_classify.md)
@@ -361,11 +361,11 @@ cand
 #>   4:    AN57      T        3             3
 #>   5:    BE71      T        3             3
 #>  ---                                      
-#> 297:    ZS46      R        1             1
-#> 298:    ZX20    T32        4             4
-#> 299:    ZX20      T        3             3
-#> 300:    ZX92    T17        4             4
-#> 301:    ZX92      T        3             3
+#> 311:    ZS46      R        1             1
+#> 312:    ZX20    T32        4             4
+#> 313:    ZX20      T        3             3
+#> 314:    ZX92    T17        4             4
+#> 315:    ZX92      T        3             3
 ```
 
 `wide = TRUE` gives one row per plot: the type it is classified as, then
@@ -433,6 +433,46 @@ resy_eval_plot(res, p = "AM30") # p = PlotObservationID
 #>  Luzula nivea                0.1 
 #> 
 #> T17 has no lower levels.
+#> 
+#> Why not another type under T1: 16 types, closest first
+#>   T18   Fagus forest on acid soils                         rule not met: 10 of 12 conditions satisfied
+#>   T1C   Temperate and boreal mountain Betula and Populu... rule not met: 3 of 7 conditions satisfied
+#>   T1E   Carpinus and Quercus mesic deciduous forest        rule not met: 6 of 14 conditions satisfied
+#>   T11   Temperate Salix and Populus riparian forest        rule not met: 2 of 5 conditions satisfied
+#>   T13   Temperate hardwood riparian forest                 rule not met: 6 of 15 conditions satisfied
+#>   T1B   Acidophilous Quercus forest                        rule not met: 2 of 5 conditions satisfied
+#>   T19   Temperate and submediterranean thermophilous de... rule not met: 4 of 11 conditions satisfied
+#>   T15   Broadleaved swamp forest on non-acid peat          rule not met: 1 of 4 conditions satisfied
+#>   T1F   Ravine forest                                      rule not met: 2 of 8 conditions satisfied
+#>   T1H   Broadleaved deciduous plantation of non site-na... rule not met: 2 of 11 conditions satisfied
+#>   T1A   Mediterranean thermophilous deciduous forest       rule not met: 1 of 7 conditions satisfied
+#>   T12   Alnus glutinosa-Alnus incana forest on riparian... rule not met: 0 of 12 conditions satisfied
+#>   T14   Mediterranean and Macaronesian riparian forest     rule not met: 0 of 6 conditions satisfied
+#>   T16   Broadleaved mire forest on acid peat               rule not met: 0 of 4 conditions satisfied
+#>   T1D   Southern European mountain Betula and Populus t... rule not met: 0 of 2 conditions satisfied
+#>   T1G   Alnus cordata forest                               rule not met: 0 of 3 conditions satisfied
+#> 
+#> Closest, in full (show any other with `type = "T1C"`):
+#> 
+#> T18   Fagus forest on acid soils: rule not met
+#>       Rule: ((([1] and ([2] or [3])) and [4]) and not [5]) and not (([6] or ([7] and [8])) or (([9] and [10]) or ([11] and [12])))
+#>       [1] met      total cover of Fagus-sylvatica-orientalis is 87.5%, needs more than 30%
+#>                    Fagus sylvatica 87.5
+#>       [2] met      cover of Fagus sylvatica is 87.5%, needs more than the highest cover of a single species of Trees not counting Fagus sylvatica (0.5%)
+#>                    Fagus sylvatica 87.5, Abies alba 0.5, Acer pseudoplatanus 0.5, Sorbus aucuparia 0.5
+#>       [3] not met  cover of Fagus orientalis is 0%, needs more than the highest cover of a single species of Trees not counting Fagus orientalis (87.5%)
+#>                    Fagus sylvatica 87.5, Abies alba 0.5, Acer pseudoplatanus 0.5, Sorbus aucuparia 0.5
+#>       [4] not met  number of species of Acidophilous-forest-species is 2, needs more than the number of species of Eutrophic-deciduous-forest-species (3)
+#>                    Prenanthes purpurea 3, Dryopteris filix-mas aggr. 0.5, Hieracium murorum 0.5, Veronica urticifolia 0.5, Luzula nivea 0.1
+#>       [5] not met  total cover of Eutrophic-deciduous-forest-species is 4%, needs more than 25%
+#>                    Prenanthes purpurea 3, Dryopteris filix-mas aggr. 0.5, Veronica urticifolia 0.5
+#>       [6] not met  Country is Italy, needs Ireland
+#>       [7] not met  Country is Italy, needs United Kingdom
+#>       [8] not met  DEG_LAT is 44.1, needs more than 53
+#>       [9] not met  DEG_LAT is 44.1, needs more than 48
+#>       [10] not met  DEG_LON is 10.7, needs more than 26.5
+#>       [11] not met  DEG_LAT is 44.1, needs more than 55
+#>       [12] not met  DEG_LON is 10.7, needs more than 19
 ```
 
 Passing `type` explains any other type in the same way, whether or not
@@ -460,6 +500,48 @@ resy_eval_plot(res, p = "AM30", type = "T17")
 #>  Luzula nivea                0.1 
 #> 
 #> T17 has no lower levels.
+#> 
+#> Why not another type under T1: 16 types, closest first
+#>   T18   Fagus forest on acid soils                         rule not met: 10 of 12 conditions satisfied
+#>   T1C   Temperate and boreal mountain Betula and Populu... rule not met: 3 of 7 conditions satisfied
+#>   T1E   Carpinus and Quercus mesic deciduous forest        rule not met: 6 of 14 conditions satisfied
+#>   T11   Temperate Salix and Populus riparian forest        rule not met: 2 of 5 conditions satisfied
+#>   T13   Temperate hardwood riparian forest                 rule not met: 6 of 15 conditions satisfied
+#>   T1B   Acidophilous Quercus forest                        rule not met: 2 of 5 conditions satisfied
+#>   T19   Temperate and submediterranean thermophilous de... rule not met: 4 of 11 conditions satisfied
+#>   T15   Broadleaved swamp forest on non-acid peat          rule not met: 1 of 4 conditions satisfied
+#>   T1F   Ravine forest                                      rule not met: 2 of 8 conditions satisfied
+#>   T1H   Broadleaved deciduous plantation of non site-na... rule not met: 2 of 11 conditions satisfied
+#>   T1A   Mediterranean thermophilous deciduous forest       rule not met: 1 of 7 conditions satisfied
+#>   T12   Alnus glutinosa-Alnus incana forest on riparian... rule not met: 0 of 12 conditions satisfied
+#>   T14   Mediterranean and Macaronesian riparian forest     rule not met: 0 of 6 conditions satisfied
+#>   T16   Broadleaved mire forest on acid peat               rule not met: 0 of 4 conditions satisfied
+#>   T1D   Southern European mountain Betula and Populus t... rule not met: 0 of 2 conditions satisfied
+#>   T1G   Alnus cordata forest                               rule not met: 0 of 3 conditions satisfied
+#> 
+#> Closest, in full (show any other with `type = "T1C"`):
+#> 
+#> T18   Fagus forest on acid soils: rule not met
+#>       Rule: ((([1] and ([2] or [3])) and [4]) and not [5]) and not (([6] or ([7] and [8])) or (([9] and [10]) or ([11] and [12])))
+#>       [1] met      total cover of Fagus-sylvatica-orientalis is 87.5%, needs more than 30%
+#>                    Fagus sylvatica 87.5
+#>       [2] met      cover of Fagus sylvatica is 87.5%, needs more than the highest cover of a single species of Trees not counting Fagus sylvatica (0.5%)
+#>                    Fagus sylvatica 87.5, Abies alba 0.5, Acer pseudoplatanus 0.5, Sorbus aucuparia 0.5
+#>       [3] not met  cover of Fagus orientalis is 0%, needs more than the highest cover of a single species of Trees not counting Fagus orientalis (87.5%)
+#>                    Fagus sylvatica 87.5, Abies alba 0.5, Acer pseudoplatanus 0.5, Sorbus aucuparia 0.5
+#>       [4] not met  number of species of Acidophilous-forest-species is 2, needs more than the number of species of Eutrophic-deciduous-forest-species (3)
+#>                    Prenanthes purpurea 3, Dryopteris filix-mas aggr. 0.5, Hieracium murorum 0.5, Veronica urticifolia 0.5, Luzula nivea 0.1
+#>       [5] not met  total cover of Eutrophic-deciduous-forest-species is 4%, needs more than 25%
+#>                    Prenanthes purpurea 3, Dryopteris filix-mas aggr. 0.5, Veronica urticifolia 0.5
+#>       [6] not met  Country is Italy, needs Ireland
+#>       [7] not met  Country is Italy, needs United Kingdom
+#>       [8] not met  DEG_LAT is 44.1, needs more than 53
+#>       [9] not met  DEG_LAT is 44.1, needs more than 48
+#>       [10] not met  DEG_LON is 10.7, needs more than 26.5
+#>       [11] not met  DEG_LAT is 44.1, needs more than 55
+#>       [12] not met  DEG_LON is 10.7, needs more than 19
+#> 
+#> T17: classified as T17 (priority 4)
 #> 
 #> T17   Fagus forest on non-acid soils: rule holds
 #>       Rule: ((([1] and ([2] or [3])) and [4]) and not [5]) and not (([6] or ([7] and [8])) or (([9] and [10]) or ([11] and [12])))

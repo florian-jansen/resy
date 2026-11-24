@@ -7,6 +7,8 @@
   system
 - [`resy_eval_plot()`](https://florian-jansen.github.io/resy/reference/resy_eval_plot.md)
   **\[experimental\]** : Evaluate and print details for a single plot
+- [`resy_compare_types()`](https://florian-jansen.github.io/resy/reference/resy_compare_types.md)
+  **\[experimental\]** : Compare two vegetation types
 - [`resy_harmonize_eunis()`](https://florian-jansen.github.io/resy/reference/resy_harmonize_eunis.md)
   **\[experimental\]** : Harmonize plot data for EUNIS classification
 - [`resy_resolve_taxa()`](https://florian-jansen.github.io/resy/reference/resy_resolve_taxa.md)

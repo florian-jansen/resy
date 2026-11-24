@@ -278,6 +278,7 @@ resy_eval_plot(res_apennine, p = "AN57")
 #>  Prenanthes purpurea      0.1 
 #> 
 #> Why not a lower level of F:
+#>   FB    Beech-fir montane forest                           rule not met: 1 of 2 conditions satisfied
 #> 
 #> FB    Beech-fir montane forest: rule not met
 #>       Rule: [1] and [2]
@@ -285,6 +286,17 @@ resy_eval_plot(res_apennine, p = "AN57")
 #>                    Fagus sylvatica 62.5, Abies alba 0.5
 #>       [2] not met  total cover of Beech-forest-herbs is 0.6%, needs more than 10%
 #>                    Oxalis acetosella 0.5, Prenanthes purpurea 0.1
+#> 
+#> Why not another top-level type:
+#>   N     Non-forest                                         rule not met: 1 of 3 conditions satisfied
+#> 
+#> N     Non-forest: rule not met
+#>       Rule: ([1] or [2]) and not [3]
+#>       [1] met      total cover of Nardus-grassland is 37.5%, needs more than 5%
+#>                    Vaccinium myrtillus 37.5
+#>       [2] not met  total cover of Sub-Mediterranean is 0%, needs more than 5%
+#>       [3] excludes total cover of Beech-forest-trees is 62.7%, needs more than 15%
+#>                    Fagus sylvatica 62.5, Abies alba 0.5
 ```
 
 Passing `type` explains any other type in the same way, whether or not
@@ -310,6 +322,7 @@ resy_eval_plot(res_apennine, p = "AN57", type = "FB")
 #>  Prenanthes purpurea      0.1 
 #> 
 #> Why not a lower level of F:
+#>   FB    Beech-fir montane forest                           rule not met: 1 of 2 conditions satisfied
 #> 
 #> FB    Beech-fir montane forest: rule not met
 #>       Rule: [1] and [2]
@@ -317,6 +330,19 @@ resy_eval_plot(res_apennine, p = "AN57", type = "FB")
 #>                    Fagus sylvatica 62.5, Abies alba 0.5
 #>       [2] not met  total cover of Beech-forest-herbs is 0.6%, needs more than 10%
 #>                    Oxalis acetosella 0.5, Prenanthes purpurea 0.1
+#> 
+#> Why not another top-level type:
+#>   N     Non-forest                                         rule not met: 1 of 3 conditions satisfied
+#> 
+#> N     Non-forest: rule not met
+#>       Rule: ([1] or [2]) and not [3]
+#>       [1] met      total cover of Nardus-grassland is 37.5%, needs more than 5%
+#>                    Vaccinium myrtillus 37.5
+#>       [2] not met  total cover of Sub-Mediterranean is 0%, needs more than 5%
+#>       [3] excludes total cover of Beech-forest-trees is 62.7%, needs more than 15%
+#>                    Fagus sylvatica 62.5, Abies alba 0.5
+#> 
+#> FB: rule not met: 1 of 2 conditions satisfied
 #> 
 #> FB    Beech-fir montane forest: rule not met
 #>       Rule: [1] and [2]

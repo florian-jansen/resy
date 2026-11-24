@@ -436,21 +436,21 @@ export function modelFromJson(x) {
         pending: inh && Array.isArray(inh.overrides) ? inh.overrides.filter((o) => o && Number.isInteger(o.at) && typeof o.was === 'string')
           .map((o) => ({ at: o.at, was: o.was, set: typeof o.set === 'string' ? o.set : null })) : [],
         file: inh ? String(r.expression ?? '') : null,
+        fileParent: inh ? String(inh.from ?? '') : null,
       };
     }),
   };
-  // A subtype whose inherited rule and own conditions no longer make the
-  // formula in the file (the file was edited elsewhere, or its parent changed
-  // there) keeps the formula of the file, as its own rule.
-  for (const r of model.rules) {
+  // Resolve parents first so a subtype can inherit their standalone formula.
+  for (const r of [...model.rules].sort((a, b) => a.code.length - b.code.length)) {
     if (!r.inherit) continue;
     if (!r.expression.trim()) Object.assign(r, { tree: groupNode('AND'), order: [] });
     const f = fullRule(r, model.rules);
-    if (!f.problem && f.text !== r.file) {
-      Object.assign(r, { inherit: false, overrides: {}, pending: [], expression: r.file, tree: undefined, order: [] });
+    if (r.file.trim() && (f.problem || f.text !== r.file || (r.fileParent && f.parent.code !== r.fileParent))) {
+      Object.assign(r, { inherit: false, overrides: {}, pending: [], expression: r.file, tree: undefined, order: [], problem: null });
       r.note = 'The file holds an inherited rule that no longer matches its formula; the type keeps the formula of the file as its own rule.';
     }
     delete r.file;
+    delete r.fileParent;
   }
   return model;
 }
@@ -473,23 +473,68 @@ export function ruleTree(rule) {
   return rule.tree;
 }
 
-// Writes the text of a rule from its changed tree, or notes why it cannot.
+// Writes the current formula and records any unfinished conditions.
 // A type that inherits a rule needs no conditions of its own.
 export function syncRule(rule) {
   const empty = !rule.tree.items.length && !rule.tree.not.length;
   rule.problem = empty && rule.inherit ? null : formulaProblem(rule.tree);
-  if (!rule.problem) ({ text: rule.expression, order: rule.order } = empty ? { text: '', order: [] } : serializeFormula(rule.tree));
+  ({ text: rule.expression, order: rule.order } = serializeFormula(rule.tree));
+}
+
+// Preserve unique matches and single edits between unchanged conditions.
+function retainConditionIds(before, after) {
+  const pairs = [], oldMatched = new Set(), newMatched = new Set();
+  const positions = (nodes, matched, key) => {
+    const index = new Map();
+    nodes.forEach((n, i) => {
+      if (matched.has(i)) return;
+      const id = key(n);
+      index.set(id, index.has(id) ? -1 : i);
+    });
+    return index;
+  };
+  const matchUnique = (key) => {
+    const old = positions(before, oldMatched, key), next = positions(after, newMatched, key);
+    for (const [text, i] of old) {
+      const j = next.get(text);
+      if (i < 0 || !(j >= 0)) continue;
+      after[j].id = before[i].id;
+      pairs.push([i, j]);
+      oldMatched.add(i);
+      newMatched.add(j);
+    }
+  };
+  matchUnique(condText);
+  matchUnique(({ c }) => c.raw ?? JSON.stringify([c.lhs, c.rhs?.k === 'num' ? c.rhs.k : c.rhs]));
+  pairs.push([-1, -1]);
+  pairs.sort(([a], [b]) => a - b);
+  pairs.push([before.length, after.length]);
+  if (pairs.some(([, j], k) => k && j <= pairs[k - 1][1])) return;
+  for (let k = 1; k < pairs.length; k++) {
+    const [i, j] = pairs[k - 1];
+    const [end, stop] = pairs[k];
+    if (end - i !== stop - j) continue;
+    const unchanged = before.slice(i + 1, end).every((n, at) => condText(n) === condText(after[j + 1 + at]));
+    if (end - i === 2 || unchanged) {
+      for (let at = 1; i + at < end; at++) after[j + at].id = before[i + at].id;
+    }
+  }
 }
 
 // Sets the text of a rule edited as text.
 export function setRuleText(rule, text) {
+  ruleTree(rule);
+  const before = rule.order;
   rule.expression = text.replace(/\s+/g, ' ').trim();
   rule.tree = undefined;
   rule.problem = null;
   ruleTree(rule);
   if (rule.tree === null) {
     try { parseFormula(rule.expression); } catch (e) { rule.problem = e.message; }
-  } else rule.problem = rule.inherit && !rule.tree.items.length && !rule.tree.not.length ? null : formulaProblem(rule.tree);
+  } else {
+    retainConditionIds(before, rule.order);
+    rule.problem = rule.inherit && !rule.tree.items.length && !rule.tree.not.length ? null : formulaProblem(rule.tree);
+  }
 }
 
 // What keeps a rule from being tested and exported, or null. `rules`, all
@@ -505,10 +550,10 @@ export function ruleProblem(rule, rules) {
 
 // The `_inherit` entry of a subtype in a JSON file (see fullRule()). Overrides
 // read from a file and not yet matched to the parent's conditions stay as read.
-function inheritJson(rule, f) {
+function inheritJson(rule, f, own) {
   const overrides = rule.overrides ?? {};
   return {
-    from: f.parent?.code ?? '', own: rule.expression,
+    from: f.parent?.code ?? '', own,
     overrides: [...(f.from?.order ?? []).flatMap((n, at) => {
       const o = overrides[n.id];
       return o ? [{ at, was: condText(n), set: o.off ? null : condText(o.node) }] : [];
@@ -524,12 +569,12 @@ export function modelToJson(model, { synonyms = true, rules = model.rules.filter
     synonyms: synonyms ? Object.fromEntries(model.synonyms) : {},
     groups: Object.fromEntries(model.groups.filter((g) => g.name.trim()).map((g) => [groupKey(g), g.members])),
     rules: rules.map((r) => {
-      // An unfinished subtype, written only to a draft file, keeps its own formula.
       const f = r.inherit ? fullRule(r, model.rules) : null;
+      const own = r.tree && r.problem ? serializeFormula(r.tree).text : r.expression;
       return {
         ...(r.comment ? { _comment: r.comment } : {}),
-        priority: r.priority, code: r.code, description: r.description, expression: f && !f.problem ? f.text : r.expression,
-        ...(f ? { _inherit: inheritJson(r, f) } : {}),
+        priority: r.priority, code: r.code, description: r.description, expression: f ? f.text : own,
+        ...(f ? { _inherit: inheritJson(r, f, own) } : {}),
       };
     }),
   };

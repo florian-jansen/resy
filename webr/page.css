@@ -19,8 +19,11 @@ nav.navbar.resy-pinned { transform: none !important; }
 #resy-app :is(button, a, input, select, summary):focus-visible { outline: 3px solid var(--bs-primary); outline-offset: 3px; }
 #resy-app [inert] { opacity: 0.65; }
 #resy-app :is(#d-body, .full, #sys-info)[aria-busy=true] { opacity: 0.55; }
-#resy-app #results[aria-busy=true] .results-grid { opacity: 0.65; }
-#resy-app #results[hidden] { display: block !important; opacity: 0.5; pointer-events: none; }
+#resy-app .result-space { display: grid; grid-template-columns: minmax(0, 1fr); }
+#resy-app .result-space > * { grid-area: 1 / 1; }
+#resy-app #results.unavailable { visibility: hidden; }
+#resy-app #results-empty { align-self: start; margin: 1rem 0 0; }
+#resy-app #results-empty:empty { visibility: hidden; }
 #resy-app a[aria-busy=true] { opacity: 0.55; }
 #resy-app #sys-info { height: 4.5rem; overflow: auto; scrollbar-gutter: stable; }
 #resy-app .data-tools { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -47,7 +50,7 @@ nav.navbar.resy-pinned { transform: none !important; }
 #resy-app .colpick select { width: 100%; }
 #resy-app .progress { height: 6px; }
 #resy-app #progress[hidden] { display: flex !important; visibility: hidden; }
-#resy-app .progress-bar { transition: width 0.4s; }
+#resy-app .progress-bar { transition: none; }
 #resy-app .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 14px; }
 #resy-app #status.error { color: var(--bs-danger-text-emphasis); }
 
@@ -97,24 +100,36 @@ nav.navbar.resy-pinned { transform: none !important; }
 #resy-app #results #notes summary { cursor: pointer; }
 #resy-app #results #notes .warn { display: block; margin-top: 4px; height: 180px; overflow: auto; }
 
-#resy-app .types { list-style: none; margin: 0; padding: 3px; height: 264px; overflow-y: auto; scrollbar-gutter: stable; }
+#resy-app .types { --type-height: 44px; --type-count: 5; list-style: none; margin: 0; padding: 0;
+  height: calc(var(--type-height) * var(--type-count)); overflow-y: auto; scrollbar-gutter: stable; scroll-snap-type: y mandatory; }
+#resy-app :is(.types, .tablewrap, .legend, #sys-info, #d-body, .full, .warn) {
+  scrollbar-width: thin; scrollbar-color: var(--bs-secondary-color) transparent;
+}
+#resy-app .types li { height: var(--type-height); scroll-snap-align: start; }
 #resy-app .types button { display: grid; grid-template-columns: 14px 3.4rem minmax(0, 1fr) auto; gap: 8px; align-items: center;
-  width: 100%; border: 0; background: transparent; color: var(--bs-body-color); text-align: left; min-height: 44px; padding: 4px 6px; border-radius: var(--bs-border-radius-sm); cursor: pointer; font-size: 0.9rem; }
+  width: 100%; height: 100%; border: 0; background: transparent; color: var(--bs-body-color); text-align: left; padding: 4px 6px;
+  border-radius: var(--bs-border-radius-sm); cursor: pointer; font-size: 0.9rem; }
+#resy-app .types button:focus-visible { outline-offset: -3px; }
 #resy-app .types button:hover, #resy-app .types button.active { background: var(--bs-primary-bg-subtle); }
 #resy-app .types .sw { width: 12px; height: 12px; border-radius: 3px; }
+#resy-app .types b { overflow-wrap: anywhere; }
 #resy-app .types .mid { min-width: 0; }
 #resy-app .types .nm { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--bs-secondary-color); }
-#resy-app .types .bar { height: 5px; background: var(--bs-primary); border-radius: 3px; margin-top: 3px; opacity: 0.6; }
+#resy-app .types .bar { display: block; height: 5px; background: var(--bs-primary); border-radius: 3px; margin-top: 3px; opacity: 0.6; }
 
 #resy-app .tablehead { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
 #resy-app .tablehead input { max-width: 260px; }
-#resy-app .tablewrap { height: 380px; overflow: auto; scrollbar-gutter: stable; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); }
-#resy-app .tablewrap table { table-layout: fixed; min-width: 440px; }
+#resy-app .tablewrap { --row-height: 38px; height: 380px; overflow: auto; overflow-anchor: none;
+  scrollbar-gutter: stable; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); }
+#resy-app .tablewrap table { table-layout: fixed; }
 #resy-app .tablewrap th:nth-child(1) { width: 22%; }
 #resy-app .tablewrap th:nth-child(2) { width: 14%; }
-#resy-app .tablewrap th:nth-child(4) { width: 16%; }
+#resy-app .tablewrap th:nth-child(4) { width: max(16%, 3.75rem); }
 #resy-app .tablewrap td { overflow-wrap: anywhere; }
-#resy-app .plot-button { border: 0; padding: 4px 0; background: transparent; color: var(--bs-link-color); text-decoration: underline; text-align: left; }
+#resy-app .tablewrap th { z-index: 1; }
+#resy-app .tablewrap .row-gap td { padding: 0; border: 0; box-shadow: none; }
+#resy-app .plot-button { border: 0; padding: 4px; background: transparent; color: var(--bs-link-color); text-decoration: underline; text-align: left; overflow-wrap: anywhere; }
+#resy-app .plot-button:focus-visible { outline-offset: -2px; }
 #resy-app .empty-table { padding: 20px; color: var(--bs-secondary-color); }
 #resy-app #shown { display: block; flex-basis: 100%; height: 3em; overflow: auto; }
 #resy-app table { display: table; width: 100%; font-size: 0.875rem; }
@@ -151,6 +166,35 @@ nav.navbar.resy-pinned { transform: none !important; }
 #resy-app .conds .sp { display: block; color: var(--bs-secondary-color); font-size: 0.8rem; margin-top: 2px; }
 #resy-app .rule .neg { display: inline-block; margin-right: 5px; padding: 0 4px; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius-sm);
   font-size: 0.75rem; line-height: 1.4; color: var(--bs-secondary-color); }
+#resy-app .near .frac.held { color: var(--bs-body-color); }
+#resy-app .near .frac.held .bar i { background: var(--bs-warning); opacity: 0.8; }
+#resy-app .lower .why { height: 3em; overflow: auto; margin: 8px 0 0; color: var(--bs-secondary-color); }
+#resy-app .lower .why + .full { margin-top: 4px; }
+
+#resy-app .compare { margin-top: 8px; }
+#resy-app .cmp-pick { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+#resy-app .cmp-pick select { width: auto; max-width: 15rem; flex: 1 1 9rem; }
+#resy-app .cmp-out { margin-top: 10px; min-height: 420px; }
+#resy-app .cmp-out[aria-busy=true] { opacity: 0.55; }
+#resy-app .cmp-out table { table-layout: fixed; border-collapse: collapse; margin-bottom: 10px; }
+#resy-app .cmp-out th { position: static; vertical-align: top; padding: 4px 6px; border-bottom: 1px solid var(--bs-border-color); }
+#resy-app .cmp-out td { vertical-align: top; padding: 4px 6px; border-top: 1px solid var(--bs-border-color-translucent); }
+#resy-app .cmp-out tbody tr { cursor: default; }
+#resy-app .cmp-sides th, #resy-app .cmp-sides td { width: 50%; }
+#resy-app .cmp-sides .sys { display: block; font-weight: 400; font-size: 0.8rem; color: var(--bs-secondary-color); }
+#resy-app .cmp-sides .formula { margin-bottom: 4px; }
+#resy-app .cmp-sides .formula.judged { color: var(--bs-body-color); }
+#resy-app .verdict-line { margin-bottom: 4px; font-size: 0.85rem; }
+#resy-app .verdict-line.ok { color: var(--bs-success-text-emphasis); }
+#resy-app .verdict-line.held { color: var(--bs-warning-text-emphasis); }
+#resy-app .verdict-line.no { color: var(--bs-danger-text-emphasis); }
+#resy-app .cmp-conds { font-size: 0.85rem; }
+#resy-app .cmp-conds col.c-n { width: 2.6rem; }
+#resy-app .cmp-conds col.c-v { width: 4.8rem; }
+#resy-app .cmp-conds .n { color: var(--bs-secondary-color); font-variant-numeric: tabular-nums; }
+#resy-app .cmp-conds td.ok { color: var(--bs-success-text-emphasis); font-weight: 500; }
+#resy-app .cmp-conds td.no { color: var(--bs-danger-text-emphasis); font-weight: 500; }
+#resy-app .cmp-groups ul { padding-left: 18px; margin: 4px 0 0; }
 #resy-app .warn { margin: 12px 0 0; padding-left: 18px; }
 #resy-app .warn:empty { display: none; }
 
@@ -165,11 +209,17 @@ nav.navbar.resy-pinned { transform: none !important; }
   #resy-app #s-system { height: 6em; }
   #resy-app .colpick label { max-width: none; flex-basis: 100%; }
   #resy-app .tablehead input { max-width: none; }
+  #resy-app .tablewrap { --row-height: 58px; }
   #resy-app .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #resy-app .near li { grid-template-columns: 2.5rem minmax(0, 1fr); }
   #resy-app .near .frac { grid-column: 2; }
 }
-@media (prefers-reduced-motion: reduce) { #resy-app .progress-bar { transition: none; } }
+@media (max-width: 575px), (pointer: coarse) {
+  #resy-app .types { --type-height: 110px; --type-count: 2; }
+  #resy-app .types button { grid-template-columns: 12px 2.6rem minmax(0, 1fr) auto; }
+  #resy-app .types .nm { max-height: calc(var(--type-height) - 18px); overflow-y: auto;
+    white-space: normal; overflow-wrap: anywhere; line-height: 1.2; scrollbar-width: thin; }
+}
 
 /* The other tool (the RESY App beside the RESY Maker, or the reverse) in a
    frame over this page's content, below the navigation bar; see createShell()

@@ -33,9 +33,8 @@ suppressPackageStartupMessages({
 }
 
 # Header columns the expert system reads through $$C and $$N conditions.
-.page_header_cols <- function(parsed) {
-  conds <- parsed$conditions[startsWith(parsed$conditions, "$$C") |
-                               startsWith(parsed$conditions, "$$N")]
+.page_header_cols <- function(parsed, kinds = c("$$C", "$$N")) {
+  conds <- parsed$conditions[substr(parsed$conditions, 1L, 3L) %in% kinds]
   sort(unique(trimws(substring(conds, 4L))))
 }
 
@@ -50,8 +49,32 @@ suppressPackageStartupMessages({
 # rests on and the names of its types.
 resy_page_set_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) {
   t0 <- Sys.time()
-  # A system read before in this session is kept, so choosing it again does not
-  # parse its file again. A file is known by its content.
+  kept <- .page_expert(scheme, version, path)
+  parsed <- kept$parsed
+  prov <- kept$provenance
+  sys <- .page_use_system(parsed, if (is.null(path)) scheme else basename(path))
+  .page_json(list(
+    scheme = sys$scheme,
+    release_scheme = prov$scheme,
+    version = prov$version,
+    doi = prov$release_doi,
+    identical_to_release = prov$identical_to_release,
+    eunis = sys$eunis,
+    n_types = length(unique(parsed$vegtype.formula.names.short)),
+    types = I(.page_type_codes(parsed)),
+    n_species = length(parsed$aggs),
+    header_cols = I(sys$header_cols),
+    derived_cols = I(sys$derived_cols),
+    names = sys$names,
+    levels = if (sys$eunis) sys$names[nchar(sys$names$code) == 1L, ] else sys$names,
+    seconds = round(as.numeric(difftime(Sys.time(), t0, units = "secs")), 2)
+  ))
+}
+
+# A parsed expert system and its provenance. A system read before in this
+# session is kept, so choosing it again does not parse its file again. A file
+# is known by its content.
+.page_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) {
   key <- if (is.null(path)) paste(scheme, version %||% "", sep = ":") else
     paste("file", unname(tools::md5sum(path)), sep = ":")
   kept <- .page$read[[key]]
@@ -64,24 +87,20 @@ resy_page_set_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) 
     kept <- list(parsed = parsed, provenance = resy_provenance(parsed))
     .page$read[[key]] <- kept
   }
-  parsed <- kept$parsed
-  prov <- kept$provenance
-  sys <- .page_use_system(parsed, if (is.null(path)) scheme else basename(path))
-  .page_json(list(
-    scheme = sys$scheme,
-    release_scheme = prov$scheme,
-    version = prov$version,
-    doi = prov$release_doi,
-    identical_to_release = prov$identical_to_release,
-    eunis = sys$eunis,
-    n_types = length(unique(parsed$vegtype.formula.names.short)),
-    n_species = length(parsed$aggs),
-    header_cols = I(sys$header_cols),
-    derived_cols = I(sys$derived_cols),
-    names = sys$names,
-    levels = if (sys$eunis) sys$names[nchar(sys$names$code) == 1L, ] else sys$names,
-    seconds = round(as.numeric(difftime(Sys.time(), t0, units = "secs")), 2)
-  ))
+  kept
+}
+
+# Runs `f()` with the expert system `parsed` in use, and the system in use
+# before (with its species-name matches) back in place afterwards.
+.page_with_system <- function(parsed, scheme, f) {
+  system <- .page$system
+  taxa <- .page$taxa
+  on.exit({
+    .page$system <- system
+    .page$taxa <- taxa
+  })
+  .page_use_system(parsed, scheme)
+  f()
 }
 
 # Makes a parsed expert system the one later runs use, and returns it with the
@@ -126,23 +145,45 @@ resy_page_set_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) 
   }
 }
 
-# Species names as the expert system knows them. Each distinct name is cleaned
-# and checked once per expert system; later batches reuse the result.
+# Species names as the expert system knows them. A name the system lists as
+# written (a species or one of its synonyms, author included) is taken as it
+# is; only the other names are cleaned and checked again. Each distinct name is
+# checked once per expert system; later batches reuse the result.
 .page_taxa <- function(raw) {
   new <- setdiff(unique(raw), names(.page$taxa))
   if (length(new)) {
-    cleaned <- resy_clean_names(new)
-    checked <- as.data.frame(resy_check_taxonomy(data.frame(scientificName = unique(cleaned)),
-                                                 .page$system$parsed, col = "scientificName"))
-    known <- checked$TaxonName[match(cleaned, checked$scientificName)]
+    known <- .page_check_taxa(new)
+    open <- is.na(known)
+    if (any(open)) known[open] <- .page_check_taxa(resy_clean_names(new[open]))
     .page$taxa <- c(.page$taxa, stats::setNames(known, new))
   }
   unname(.page$taxa[raw])
+}
+.page_check_taxa <- function(names) {
+  checked <- as.data.frame(resy_check_taxonomy(data.frame(scientificName = unique(names)),
+                                               .page$system$parsed, col = "scientificName"))
+  checked$TaxonName[match(names, checked$scientificName)]
+}
+
+# Numbers written with a decimal point or a decimal comma ("60.5", "60,5"), as
+# covers and coordinates come; anything else is NA. Same rule as fieldNumber()
+# in resy_files.js.
+.page_number <- function(x) {
+  x <- trimws(x)
+  comma <- grepl("^[-+]?[0-9]*,[0-9]+$", x)
+  x[comma] <- sub(",", ".", x[comma], fixed = TRUE)
+  suppressWarnings(as.numeric(x))
 }
 
 .page_read <- function(path) {
   data.table::fread(path, sep = "\t", quote = "", colClasses = "character",
                     na.strings = "", encoding = "UTF-8", data.table = FALSE)
+}
+
+.page_read_batch <- function(path) {
+  data <- .page_read(path)
+  data$PlotObservationID <- utils::URLdecode(data$PlotObservationID)
+  data
 }
 
 # Sites as the header table for the classifier. For a system that reads the
@@ -180,7 +221,15 @@ resy_page_set_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) 
 }
 
 resy_page_sites_cached <- function(path, coast_dunes = TRUE, coast_buffer = 5000) {
-  !.page$system$eunis || !is.null(.page_cached_sites(.page_site_input(.page_read(path)), coast_dunes, coast_buffer))
+  .page_check_buffer(coast_dunes, coast_buffer)
+  !.page$system$eunis || !is.null(.page_cached_sites(.page_site_input(.page_read_batch(path)), coast_dunes, coast_buffer))
+}
+
+.page_check_buffer <- function(coast_dunes, coast_buffer) {
+  if (.page$system$eunis && isTRUE(coast_dunes) &&
+      (!is.numeric(coast_buffer) || length(coast_buffer) != 1L ||
+       !is.finite(coast_buffer) || coast_buffer < 1))
+    stop("Enter a coast buffer of at least 1 metre.", call. = FALSE)
 }
 
 .page_sites <- function(si, coast_dunes, coast_buffer) {
@@ -191,8 +240,8 @@ resy_page_sites_cached <- function(path, coast_dunes = TRUE, coast_buffer = 5000
     for (w in cached$warnings) warning(w, call. = FALSE)
     return(cached$sites)
   }
-  si$Longitude <- suppressWarnings(as.numeric(si$Longitude))
-  si$Latitude <- suppressWarnings(as.numeric(si$Latitude))
+  si$Longitude <- .page_number(si$Longitude)
+  si$Latitude <- .page_number(si$Latitude)
   placed <- !is.na(si$Longitude) & !is.na(si$Latitude)
   out <- if (!any(placed)) si else {
     h <- resy_harmonize_eunis(
@@ -246,39 +295,85 @@ resy_page_sites_cached <- function(path, coast_dunes = TRUE, coast_buffer = 5000
 resy_page_batch <- function(species_tsv, sites_tsv, coast_dunes = TRUE, coast_buffer = 5000) {
   warnings <- character()
   out <- withCallingHandlers({
-    res <- .page_classify(species_tsv, sites_tsv, coast_dunes, coast_buffer)
-    cand <- res$candidates
-    list(
-      id = names(res$result.classification),
-      code = unname(res$result.classification),
-      candidates = unname(vapply(split(cand$type, factor(cand$plot_id, levels = names(res$result.classification))),
-                                 paste, character(1), collapse = " ")),
-      n_obs = nrow(res$obs),
-      unmatched = sum(is.na(res$obs$TaxonName))
-    )
+    .page_check_buffer(coast_dunes, coast_buffer)
+    sp <- .page_read_batch(species_tsv)
+    if ("organismQuantityType" %in% names(sp)) {
+      unit <- sp$organismQuantityType
+      unit[is.na(unit) & !is.na(sp$cover)] <- "(missing)"
+      RESY:::.resy_dwc_cover(data.frame(organismQuantity = 0, organismQuantityType = unit))
+    }
+    raw_sites <- .page_read_batch(sites_tsv)
+    sites <- .page_sites(raw_sites, coast_dunes, coast_buffer)
+    res <- .page_run(sp, sites)
+    types <- .page_plot_types(res)
+    c(types, list(n_obs = nrow(res$obs), unmatched = sum(is.na(res$obs$TaxonName)),
+                  sites = .page_site_counts(types$id, raw_sites, res$header)))
   },
   warning = function(w) {
-    warnings <<- c(warnings, conditionMessage(w))
+    msg <- conditionMessage(w)
+    if (!any(startsWith(msg, .page_counted_site_warnings))) warnings <<- c(warnings, msg)
     invokeRestart("muffleWarning")
   },
   message = function(m) invokeRestart("muffleMessage"))
   out$warnings <- I(.page_notes(warnings))
-  rm(res, cand)
+  rm(res)
   invisible(gc())
   out$heap <- .page_heap()
   .page_json(out)
 }
 
-.page_classify <- function(species_tsv, sites_tsv, coast_dunes, coast_buffer) {
-  .page_run(.page_read(species_tsv), .page_sites(.page_read(sites_tsv), coast_dunes, coast_buffer))
+.page_counted_site_warnings <- c(
+  "`header` is missing columns used by the expert system: ",
+  "Header columns used by the expert system have missing values: ",
+  "No site falls inside the ",
+  '\"Ecoreg\" is missing for some plots because they fall outside the ',
+  '\"Country\" is missing for some plots because they fall outside the '
+)
+
+.page_site_counts <- function(ids, raw, sites) {
+  at <- match(ids, sites$PlotObservationID)
+  input <- match(ids, raw$PlotObservationID)
+  present <- intersect(.page$system$header_cols, names(sites))
+  numeric <- .page_header_cols(.page$system$parsed, "$$N")
+  missing <- vapply(numeric, function(col) {
+    if (!col %in% present) return(length(ids))
+    sum(is.na(suppressWarnings(as.numeric(sites[[col]][at]))))
+  }, integer(1))
+  maps <- data.frame(column = character(), located = integer(), matched = integer())
+  if (.page$system$eunis) {
+    located <- is.finite(.page_number(raw$Longitude[input])) &
+      is.finite(.page_number(raw$Latitude[input]))
+    for (col in setdiff(c("Ecoreg", "Country"), names(raw))) {
+      matched <- if (col %in% names(sites)) sum(!is.na(sites[[col]][at[located]])) else 0L
+      maps[nrow(maps) + 1L, ] <- list(col, sum(located), matched)
+    }
+  }
+  list(matched = sum(!is.na(input)), absent = sum(is.na(input)), present = I(present),
+       missing = data.frame(column = names(missing), n = unname(missing)), maps = maps)
+}
+
+# Per plot of a classification `res`: its id, its type and its candidate types
+# (highest priority first, separated by spaces), as arrays in JSON whatever the
+# number of plots.
+.page_plot_types <- function(res) {
+  type <- res$result.classification
+  cand <- res$candidates
+  list(
+    id = I(names(type)),
+    code = I(unname(type)),
+    candidates = I(unname(vapply(split(cand$type, factor(cand$plot_id, levels = names(type))),
+                                 paste, character(1), collapse = " ")))
+  )
 }
 
 # Classifies the species records `sp` (columns PlotObservationID, name, cover)
 # of plots whose header table is `sites`, with the expert system in use.
 .page_run <- function(sp, sites) {
+  cover <- .page_number(sp$cover)
+  if (any(is.na(cover) & !is.na(sp$cover))) warning("Some species records have a cover that is not a number.", call. = FALSE)
   obs <- data.frame(PlotObservationID = sp$PlotObservationID,
                     TaxonName = .page_taxa(sp$name),
-                    Cover_Perc = suppressWarnings(as.numeric(sp$cover)))
+                    Cover_Perc = cover)
   utils::capture.output(
     res <- resy_classify(obs = obs, header = sites, expert = .page$system$parsed, mc = 1L)
   )
@@ -290,10 +385,41 @@ resy_page_batch <- function(species_tsv, sites_tsv, coast_dunes = TRUE, coast_bu
 # full.
 resy_page_explain <- function(species_tsv, sites_tsv, plot_id, coast_dunes = TRUE, coast_buffer = 5000,
                               type = character()) {
-  sp <- .page_read(species_tsv)
-  res <- suppressWarnings(suppressMessages(
-    .page_run(sp, .page_sites(.page_read(sites_tsv), coast_dunes, coast_buffer))))
+  .page_check_buffer(coast_dunes, coast_buffer)
+  sp <- .page_read_batch(species_tsv)
+  res <- .page_classify_one(sp, .page_read_batch(sites_tsv), coast_dunes, coast_buffer)
   .page_json(.page_name_unknown(suppressWarnings(RESY:::.resy_plot_evidence(res, plot_id, type = type)), sp))
+}
+
+.page_classify_one <- function(sp, sites, coast_dunes, coast_buffer) {
+  suppressWarnings(suppressMessages(.page_run(sp, .page_sites(sites, coast_dunes, coast_buffer))))
+}
+
+# Two types side by side for one plot (resy_compare_types()): type `a` of the
+# system in use and type `b` of the same system or, with `version_b`, of that
+# release of the scheme in use (the plot is then classified with it too).
+resy_page_compare <- function(species_tsv, sites_tsv, plot_id, coast_dunes = TRUE, coast_buffer = 5000,
+                              a, b, version_b = NULL) {
+  .page_check_buffer(coast_dunes, coast_buffer)
+  sp <- .page_read_batch(species_tsv)
+  sites <- .page_read_batch(sites_tsv)
+  res_a <- .page_classify_one(sp, sites, coast_dunes, coast_buffer)
+  res_b <- if (is.null(version_b)) res_a else {
+    scheme <- resy_provenance(.page$system$parsed)$scheme
+    other <- .page_expert(scheme, version_b)$parsed
+    .page_with_system(other, scheme, function() .page_classify_one(sp, sites, coast_dunes, coast_buffer))
+  }
+  .page_json(unclass(resy_compare_types(res_a, a, b, y = res_b, plot = plot_id)))
+}
+
+# The codes of the types an expert system defines (with a rule), in its order.
+.page_type_codes <- function(parsed) unique(parsed$vegtype.formula.names.short)
+
+# The codes and names of the types of release `version` of the scheme in use.
+resy_page_types <- function(version) {
+  scheme <- resy_provenance(.page$system$parsed)$scheme
+  parsed <- .page_expert(scheme, version)$parsed
+  .page_json(.page_type_names(parsed))
 }
 
 # The species table of the evidence `ev` has no name for the records of the

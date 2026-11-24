@@ -234,7 +234,11 @@ is uploaded.</p>
 
         <div id="tab-groups" role="tabpanel" aria-labelledby="tab-button-groups">
           <div class="listhead">
-            <input class="form-control form-control-sm" type="search" id="g-q" placeholder="Search the groups" aria-label="Search the groups"><button type="button" class="btn btn-outline-primary btn-sm ms-auto" id="g-new">New group</button>
+            <select class="form-select form-select-sm" id="g-filter" aria-label="Which groups to list"></select><input class="form-control form-control-sm" type="search" id="g-q" placeholder="Search" aria-label="Search the groups">
+</div>
+          <div class="listhead">
+            <span id="g-count" class="small text-body-secondary"></span>
+            <button type="button" class="btn btn-outline-primary btn-sm" id="g-new">New group</button>
           </div>
           <ul class="picklist" id="g-list"></ul>
 </div>
@@ -243,6 +247,7 @@ is uploaded.</p>
           <div class="actions mt-0">
             <button type="button" class="btn btn-outline-primary btn-sm" id="sp-paste-toggle">Add species…</button>
             <button type="button" class="btn btn-outline-primary btn-sm" id="sp-match" data-sheet="match" aria-expanded="false" aria-controls="sheet-match" disabled>Add the names of the test plots…</button>
+            <span class="info-tip" id="sp-info" hidden><button type="button" class="mini" aria-label="About these names" aria-describedby="sp-info-text">ⓘ</button><span class="bubble" role="tooltip" id="sp-info-text"></span></span>
           </div>
           <div id="sp-paste" hidden>
             <textarea class="form-control form-control-sm mt-2" id="sp-text" rows="5" placeholder="One species name per line" aria-label="Species names, one per line"></textarea><button type="button" class="btn btn-primary btn-sm mt-2" id="sp-paste-add">Add to the list</button>
@@ -256,7 +261,10 @@ is uploaded.</p>
           </div>
           <p class="small note" id="sp-removed" hidden><span id="sp-removed-text"></span> <button type="button" class="btn btn-link btn-sm p-0 align-baseline" id="sp-restore">Put them back</button></p>
           <ul class="species-list" id="sp-list"></ul>
-<div id="sp-notes"></div>
+<nav class="invisible" id="sp-pages" aria-label="Species pages"><button type="button" class="btn btn-outline-secondary btn-sm" id="sp-prev">Previous</button>
+            <span class="small text-body-secondary" id="sp-page" aria-live="polite"></span>
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="sp-next">Next</button>
+          </nav><div id="sp-notes"></div>
         </div>
 
         <div id="tab-plots" role="tabpanel" aria-labelledby="tab-button-plots" hidden>
@@ -281,6 +289,7 @@ is uploaded.</p>
         <p class="card-title h5 mb-0" id="d-title"></p>
         <button type="button" class="mini x" id="d-close" title="Close" aria-label="Close">✕</button>
       </div>
+      <p id="d-status" class="small text-body-secondary mb-0" role="status"></p>
       <div id="d-body"></div>
     </div></div>
 

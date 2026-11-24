@@ -105,6 +105,27 @@
   removed or changed between two expert systems, for example two
   EUNIS-ESy releases given by version. A `.txt` and a `.json` file can
   be compared with each other.
+- [`resy_eval_plot()`](https://florian-jansen.github.io/resy/reference/resy_eval_plot.md)
+  also lists the other types at the level of the classified type
+  (`siblings = TRUE`): for a plot classified as R22, the types R21, R23
+  and R24 under R2. Each type in this list, in the list of lower levels
+  and in `type =` says what kept the plot from it: a rule that does not
+  hold, with the number of its conditions the plot satisfies, or a rule
+  that holds but has a lower priority than the type chosen. Lower levels
+  whose rule holds are now listed too. Siblings follow the group levels
+  the codes imply (`resy_expert_tree(fill = TRUE)`), so the siblings of
+  Q51 are Q52, Q53 and Q54 under Q5, which EUNIS-ESy does not define as
+  a type.
+- [`resy_compare_types()`](https://florian-jansen.github.io/resy/reference/resy_compare_types.md)
+  sets two types side by side, each from its own expert system: two
+  types of one system (R11 and R22) or one type in two releases (R22 in
+  2020-06-08 and 2025-10-03). Conditions both rules use have the same
+  number in both rules, and species groups are compared member by
+  member. With `plot`, it shows for one classified plot which conditions
+  it meets in each type and why it is or is not classified as each.
+- RESY App: the plot panel lists the sibling types, and “Compare two
+  types” sets the plot’s type against any other type of the system or,
+  for EUNIS-ESy, of another shipped release.
 - NON conditions on `##C` and `##D` groups are evaluated. The right-hand
   side is the highest total cover among the other groups of the same
   set, the statistic the left-hand side takes for these groups; `##Q` is

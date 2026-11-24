@@ -14,9 +14,60 @@ export const placeOf = (lon, lat) => (Number.isFinite(lon) && Number.isFinite(la
 const latLngOf = (x, y) => L.latLng(Math.atan(Math.sinh(Math.PI * (1 - 2 * y))) * 180 / Math.PI, x * 360 - 180);
 const boundsOf = (box) => L.latLngBounds(latLngOf(box.x0, box.y1), latLngOf(box.x1, box.y0));
 
+function plotIndex(f) {
+  const order = new Uint32Array(f.n);
+  let n = 0;
+  for (let i = 0; i < f.n; i++) {
+    if (f.state(i) >= 0 && Number.isFinite(f.x(i)) && Number.isFinite(f.y(i))) order[n++] = i;
+  }
+  // Partition once in place. Each subtree holds its own bounding box and
+  // refers to a contiguous range of plot indices in `order`.
+  function build(start, end, depth) {
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    for (let j = start; j < end; j++) {
+      const i = order[j], x = f.x(i), y = f.y(i);
+      x0 = Math.min(x0, x); x1 = Math.max(x1, x);
+      y0 = Math.min(y0, y); y1 = Math.max(y1, y);
+    }
+    const node = { x0, x1, y0, y1, start, end };
+    if (end - start <= 48 || depth === 32 || (x0 === x1 && y0 === y1)) return node;
+    const useX = x1 - x0 >= y1 - y0, coord = useX ? f.x : f.y;
+    const midpoint = useX ? (x0 + x1) / 2 : (y0 + y1) / 2;
+    let a = start, b = end - 1;
+    while (a <= b) {
+      if (coord(order[a]) < midpoint) { a++; continue; }
+      const i = order[a]; order[a] = order[b]; order[b--] = i;
+    }
+    if (a > start && a < end) node.children = [build(start, a, depth + 1), build(a, end, depth + 1)];
+    return node;
+  }
+  const root = n ? build(0, n, 0) : null;
+  return { root, order };
+}
+
+function queryPlots({ root, order }, f, x0, y0, x1, y1) {
+  const result = [];
+  function query(node) {
+    if (node.x1 < x0 || node.x0 > x1 || node.y1 < y0 || node.y0 > y1) return;
+    if (node.x0 >= x0 && node.x1 <= x1 && node.y0 >= y0 && node.y1 <= y1) {
+      for (let j = node.start; j < node.end; j++) result.push(order[j]);
+    } else if (node.children) {
+      for (const child of node.children) query(child);
+    } else {
+      for (let j = node.start; j < node.end; j++) {
+        const i = order[j], x = f.x(i), y = f.y(i);
+        if (x >= x0 && x <= x1 && y >= y0 && y <= y1) result.push(i);
+      }
+    }
+  }
+  if (root) query(root);
+  return Uint32Array.from(result).sort();
+}
+
 // A map in the element with the id `id`. `frame()` is called once for every
 // drawing and every click and says what the map shows then:
 //   n                 the number of plots
+//   positions         optional identity of a fixed set of drawable positions
 //   shown             how many of them are drawn (n when left out); the dots get smaller with it
 //   x(i), y(i)        the position of plot i (see mercator()), NaN without one
 //   state(i)          -1 not drawn, 0 drawn behind the other plots, 1 drawn in front
@@ -27,7 +78,7 @@ const boundsOf = (box) => L.latLngBounds(latLngOf(box.x0, box.y1), latLngOf(box.
 // is first drawn.
 export function createDotMap(id, frame, pick) {
   return {
-    map: null, canvas: null, fitted: false, drawing: false, box: null,
+    map: null, canvas: null, fitted: false, drawing: false, box: null, index: null,
     init() {
       this.map = L.map(id, { scrollWheelZoom: false, worldCopyJump: false }).setView([50, 10], 4);
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -45,23 +96,23 @@ export function createDotMap(id, frame, pick) {
     // to the plots when `fitted` is false.
     redraw() {
       if (!this.map) this.init();
+      if (frame().positions === undefined) this.index = null;
       this.map.invalidateSize();
       const size = this.map.getSize();
       if (!this.fitted && size.x && size.y) this.fit();
       this.draw();
     },
     fit() {
-      const f = frame();
-      let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity, any = false;
-      for (let i = 0; i < f.n; i++) {
-        const x = f.x(i), y = f.y(i);
-        if (Number.isNaN(x) || f.state(i) < 0) continue;
-        any = true;
-        x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y);
-      }
-      if (!any) return;
-      this.map.fitBounds(boundsOf({ x0, x1, y0, y1 }).pad(0.15));
+      const { root } = this.indexOf(frame());
+      if (!root) return;
+      this.map.fitBounds(boundsOf(root).pad(0.15));
       this.fitted = true;
+    },
+    indexOf(f) {
+      if (!this.index || this.index.key !== f.positions || this.index.n !== f.n) {
+        this.index = { ...plotIndex(f), key: f.positions, n: f.n };
+      }
+      return this.index;
     },
     view() {
       const size = this.map.getSize(), scale = 256 * 2 ** this.map.getZoom();
@@ -78,9 +129,11 @@ export function createDotMap(id, frame, pick) {
     // on top of them.
     eachDot({ size, scale, ox, oy }, fn, f = frame()) {
       const pad = this.radius(f) + 1;
+      const plots = queryPlots(this.indexOf(f), f, (ox - pad) / scale, (oy - pad) / scale,
+        (ox + size.x + pad) / scale, (oy + size.y + pad) / scale);
       for (const front of [false, true]) {
         const want = front ? 1 : 0;
-        for (let i = 0; i < f.n; i++) {
+        for (const i of plots) {
           if (f.state(i) !== want) continue;
           const x = f.x(i);
           if (Number.isNaN(x)) continue;
@@ -192,11 +245,11 @@ export function createDotMap(id, frame, pick) {
       const onDot = (this.radius(f) + 1) ** 2;
       const under = [];
       let best = -1, bestD = 64;
-      for (let i = 0; i < f.n; i++) {
+      const x0 = ox + e.containerPoint.x, y0 = oy + e.containerPoint.y;
+      for (const i of queryPlots(this.indexOf(f), f, (x0 - 8) / scale, (y0 - 8) / scale,
+        (x0 + 8) / scale, (y0 + 8) / scale)) {
         if (!picks(i)) continue;
-        const x = f.x(i);
-        if (Number.isNaN(x)) continue;
-        const d = (x * scale - ox - e.containerPoint.x) ** 2 + (f.y(i) * scale - oy - e.containerPoint.y) ** 2;
+        const d = (f.x(i) * scale - x0) ** 2 + (f.y(i) * scale - y0) ** 2;
         if (d <= onDot) under.push({ i, d, front: f.state(i) === 1 });
         if (d < bestD) { bestD = d; best = i; }
       }
