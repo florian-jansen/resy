@@ -41,6 +41,14 @@ A \code{resy_taxa} data frame: \code{obs} with three appended columns,
 and \code{matched} (\code{TRUE} unless unresolved).
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+This function belongs to the name matching through the synonym layer, used by the
+published expert systems with Section 1 aggregations. Expert systems with a
+taxonomic backbone (the bundled default versions) match species along the
+backbone; check names with \code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}}. It will be removed in
+RESY 0.4.
+}
+\details{
 Maps a column of plot species names to the canonical ESy names used by the
 expert system, so the result can be classified with \code{\link{resy_classify}}
 without hand-harmonising names. A name already equal to a canonical ESy name
@@ -51,8 +59,7 @@ with its author citation removed by \code{\link{resy_clean_names}}
 only for matching, so a name is never altered when it already matches. A name
 that still matches nothing is left \code{NA} and flagged \code{"unresolved"};
 it is never replaced with a best guess.
-}
-\details{
+
 The synonym table pools synonymy from six backbones (Euro+Med, WFO, GBIF, COL,
 ITIS, NCBI), so plot data named under any of them resolves without the caller
 needing to say which backbone the names came from.

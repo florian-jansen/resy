@@ -229,6 +229,8 @@ resy_validate_esy <- function(path, strict = FALSE, verbose = TRUE) {
   warnings <- unname(warnings)
 
   missing <- setdiff(.resy_json_required, names(x))
+  if (!any(.resy_json_taxonomy %in% names(x)))
+    missing <- c(missing, "synonyms or backbone")
   if (length(missing))
     return(.resy_esy_parts(
       paste0("Missing required top-level key(s): ", paste(missing, collapse = ", ")),

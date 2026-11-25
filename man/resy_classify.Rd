@@ -13,8 +13,8 @@ resy_classify(
   location = c("user", "package"),
   id_col = NULL,
   species_col = NULL,
-  resolve_taxa = FALSE,
-  synonyms = NULL,
+  resolve_taxa = lifecycle::deprecated(),
+  synonyms = lifecycle::deprecated(),
   mc = max(1L, floor(parallel::detectCores() * 0.75)),
   expert = NULL
 )
@@ -47,14 +47,10 @@ PlotObservationID, then PlotID, then Darwin Core eventID.}
 \code{NULL} (default), uses \code{TaxonName}, then Darwin Core \code{scientificName}.
 Resolved names are written back to \code{TaxonName}.}
 
-\item{resolve_taxa}{Logical; if \code{FALSE} (default) the classifier is
-taxonomy-agnostic and uses the names in \code{obs} as given. If \code{TRUE}, species
-names are resolved to the expert's vocabulary via \link{resy_resolve_taxa} before
-classification (see Description).}
-
-\item{synonyms}{Synonym-table override passed to \link{resy_resolve_taxa} when
-\code{resolve_taxa = TRUE}; \code{NULL} uses the shipped synonym layer anchored on
-the expert system used for the classification.}
+\item{resolve_taxa, synonyms}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Resolution
+of names through the synonym layer (\code{\link[=resy_resolve_taxa]{resy_resolve_taxa()}}) for expert
+systems with Section 1 aggregations. Expert systems with a taxonomic
+backbone always match names along the backbone.}
 
 \item{mc}{Number of CPU cores to use.}
 
@@ -63,28 +59,36 @@ given, \code{expertfile}, \code{scheme}, \code{version} and \code{location} are 
 data classified in several parts reads the expert system only once.}
 }
 \value{
-An object of class \code{resy_result}. When \code{resolve_taxa = TRUE} it also
-carries the \code{summary()} of the \link{resy_resolve_taxa} result as
-\code{taxon_resolution}; otherwise \code{taxon_resolution} is \code{NULL}. The
+An object of class \code{resy_result}. For an expert system with a
+taxonomic backbone, \code{taxon_resolution} is the table of plot taxon names
+matched against the backbone (as from \code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}}); its
+\code{summary()} lists the names not matched, split into potentially important
+and probably unimportant ones, and \code{backbone_version} is the version of the
+backbone used. With the deprecated \code{resolve_taxa = TRUE},
+\code{taxon_resolution} is the \code{summary()} of the \code{\link[=resy_resolve_taxa]{resy_resolve_taxa()}} result;
+otherwise it is \code{NULL}. The
 expert-system release and, when the bundled synonym layer was used, its
 build are reported by \code{\link[=resy_provenance]{resy_provenance()}}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
-Loads an expert system (by file or by scheme/version), aggregates taxa,
-evaluates the membership conditions, and returns plot classifications.
+Loads an expert system (by file or by scheme/version), matches the species
+of the plots to it, evaluates the membership conditions, and returns plot
+classifications.
 
-The classifier is taxonomy-agnostic: it classifies the species names in \code{obs}
-as they are given. Names should already match the expert system's vocabulary.
-If your plot data uses names from a general backbone (GBIF, WFO, POWO,
-Euro+Med, a national checklist), harmonise them first as an explicit step with
-\link{resy_resolve_taxa} and inspect the result with its \code{summary()} before
-classifying, so the taxonomic choices stay visible (see the taxonomy
-vignette). Setting \code{resolve_taxa = TRUE} runs that resolution inside
-\code{resy_classify()} as a convenience: names already in the expert system pass through
-untouched, unknown names are looked up in the synonym table, and names that
-resolve to nothing keep their original value (never a best guess). What was
-resolved is then reported in the result's \code{taxon_resolution}.
+How species names are matched depends on Section 1 of the expert system:
+\itemize{
+\item An expert system with a taxonomic backbone (the bundled defaults, e.g.
+EUNIS \code{2025-10-03-EuroSL} with EuroSL) resolves the plot names to taxon
+concepts of the backbone (see \code{\link[=resy_backbone]{resy_backbone()}}). A plot taxon counts for
+an expert taxon if the backbone places it at or below that taxon. Names
+that cannot be used are reported in the result's \code{taxon_resolution},
+split into potentially important and probably unimportant ones (see the
+taxonomy vignette).
+\item An expert system with species aggregations in Section 1 (the published
+EUNIS-ESy releases) classifies the names as they are given, after merging
+the names each aggregation lists.
+}
 }
 \examples{
 \donttest{
@@ -96,11 +100,11 @@ species <- utils::read.csv(
 # A one-row-per-plot header is required even without geographic conditions.
 header <- as.data.frame(unique(species["PlotObservationID"]))
 
-res <- resy_classify(species, header, scheme = "Apennine-test",
+res <- resy_classify(species, header, scheme = "Apennine-test", version = "2026-06-27",
                      species_col = "scientificName")
 head(res$result.classification)
 }
 }
 \seealso{
-\link{resy_resolve_taxa}, \link{resy_check_taxonomy}, \code{\link[=resy_provenance]{resy_provenance()}}
+\code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}}, \code{\link[=resy_backbone]{resy_backbone()}}, \code{\link[=resy_provenance]{resy_provenance()}}
 }

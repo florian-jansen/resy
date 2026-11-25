@@ -11,7 +11,8 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>",
+                      eval = requireNamespace("vegdata", quietly = TRUE))
 ```
 
 This vignette classifies 200 example vegetation plots from Tuscany with
@@ -23,8 +24,10 @@ Bruelheide [1997](https://doi.org/10.1007/BF02803883); Bruelheide et al.
 [2021](https://doi.org/10.1111/avsc.12562)), a text file of rules with three
 sections:
 
-1. **Taxonomy**: which species names count as one taxon, for example a species
-   and its subspecies.
+1. **Taxonomy**: the taxonomic backbone the species names refer to, for
+   example [EuroSL](https://eurosl.infinitenature.org). A species counts
+   together with everything the backbone places below it, such as its
+   subspecies and synonyms.
 2. **Species groups**: sets of indicator species, such as beech-forest herbs,
    that the rules refer to.
 3. **Vegetation types**: for each type, a rule on the cover of the species
@@ -40,6 +43,19 @@ ecoregion and the country; `vignette("EUNIS")` shows how to add them.
 library(readr)
 library(dplyr)
 library(RESY)
+```
+
+### The taxonomic backbone
+
+RESY reads the backbone with the [vegdata](https://cran.r-project.org/package=vegdata)
+package. For your own data, install EuroSL once with
+`vegdata::taxref_download_eurosl()`; RESY then finds it by itself. This
+vignette uses the small part of EuroSL that ships with RESY and covers the
+example data:
+
+```{r backbone}
+options(resy.backbone = system.file("extdata", "eurosl_example.csv.xz",
+                                    package = "RESY"))
 ```
 
 ## Load and prepare species data
@@ -92,9 +108,12 @@ To add your own expert system, use `resy_add_classification()`.
 `resy_load_expert()` reads a bundled expert system into a `resy_parsed_expert`
 object, which the taxonomy check below uses. `resy_classify()` does not need
 this object: it loads the expert system itself from `scheme` and `version`.
+Without `version`, the newest version is used; for `Apennine-test` that is
+`2026-11-25`, which declares EuroSL as its backbone:
 
 ```{r load-experts}
 parsed_apennine <- resy_load_expert(scheme = "Apennine-test")
+parsed_apennine$backbone
 ```
 
 The types of an expert system form a hierarchy. `resy_expert_tree()` prints it;
@@ -106,30 +125,45 @@ tree_filled <- resy_expert_tree(parsed_apennine, fill = TRUE)
 print(tree_filled)
 ```
 
-`Apennine-test` has two top-level types, forest (`F`) and non-forest (`N`),
-each with lower-level types. To browse the hierarchy in the browser, use
+`Apennine-test` has three top-level types, forest (`F`), non-forest (`N`) and
+wetland (`W`), each with lower-level types. Some of its species groups name a
+genus, such as `Quercus` in the group of trees: along the backbone, a genus
+stands for all its species. To browse the hierarchy in the browser, use
 `resy_view_expert()`.
 
 ## Check taxonomy
 
-`resy_check_taxonomy()` checks the species names of the species table against
-the species list of the expert system, including its synonyms. Each expert
-system has its own list, so a name can match in one system and not in another.
-The result has one row per distinct name: `scientificName` is the name as
-submitted, `TaxonName` the name the expert system uses for it (`NA` when
-unmatched), and `matched` whether it was found. Printing it lists what each
-column holds and how many names matched.
+`resy_check_taxonomy()` matches the species names of the species table to the
+taxon concepts of the backbone and finds, for each name, the taxon of the
+expert system it counts for. Author citations may stay in the names. The
+result has one row per distinct name: `scientificName` is the name as
+submitted, `TaxonName` the expert taxon it counts for (`NA` when none),
+`status` how it was matched, and `importance`, for names that could not be
+used, whether that may matter. Printing it lists what each column holds.
 
 ```{r taxonomy-apennine}
 tax_apennine <- resy_check_taxonomy(obs = data_species, parsed = parsed_apennine)
 tax_apennine
 ```
 
-`summary()` gives the match counts and lists the names that did not match:
+`summary()` lists the names that could not be used, in two parts:
 
 ```{r taxonomy-summary}
 summary(tax_apennine)
 ```
+
+- **Potentially important** names may change a classification: names the
+  backbone does not know whose genus the expert system uses, names broader
+  than an expert taxon (a record of `Festuca ovina agg.` does not count for an
+  expert's `Festuca ovina`), and species whose expert taxon has no concept in
+  the backbone. Check their spelling, or determine them more precisely.
+- **Probably unimportant** names cannot affect the rules: records determined
+  only to genus, uncertain determinations (`cf.`, `aff.`, `?`), and names of
+  genera the expert system does not use.
+
+Names that the backbone knows but the expert system does not use (status
+`not_used`) are not a problem: they still count for the total cover and the
+number of species of a plot.
 
 ## Classify
 
@@ -153,9 +187,9 @@ cand_wide <- resy_candidates(res_apennine, wide = TRUE)
 table(cand_wide$classification)
 ```
 
-A plot marked `?` meets no type's rule and is not classified. Here, 92 of the
-200 plots remain unclassified. In these plots, all four indicator groups have at
-most 4% cover, below the lowest threshold in the rules (5%).
+A plot marked `?` would meet no type's rule. In the example data every plot
+gets a type; a plot that meets only the rule of a broad type (`F`, `N`, `W`)
+keeps that type.
 
 ## Inspect results
 
@@ -202,9 +236,8 @@ next:
 - **Your plots have coordinates and you want EUNIS habitat types:**
   `vignette("EUNIS")` adds the ecoregion, country and coastal position from the
   coordinates and classifies the plots.
-- **Your species names follow another taxonomy**, such as GBIF or World Flora
-  Online, and `resy_check_taxonomy()` reports many unmatched names:
-  `vignette("taxonomy")` matches them to the names of the expert system.
+- **`resy_check_taxonomy()` reports potentially important names**, or you want
+  to know how names are matched to the backbone: `vignette("taxonomy")`.
 - **Your plots have no altitude:** `vignette("altitude-vignette")` takes the
   altitude that some EUNIS rules use from a separately downloaded elevation map.
 - **You have your own expert system:** `resy_validate_esy()` checks the file,

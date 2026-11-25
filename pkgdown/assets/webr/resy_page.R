@@ -8,6 +8,49 @@ suppressPackageStartupMessages({
 
 .page <- new.env()
 
+# Species names are matched without vegdata, against EuroSL prepared for the
+# pages: a shipped system brings the part of EuroSL it names
+# (extdata/backbone/<scheme>/<version>.rds); other systems use the whole list,
+# which the page loads on demand and names with resy_page_backbone().
+options(resy.backbone_match = "light")
+# Expert systems with species aggregations (the published releases) still go
+# through the name cleaning that RESY deprecates for its users.
+.page_clean_names <- function(x) {
+  old <- options(lifecycle_verbosity = "quiet")
+  on.exit(options(old))
+  resy_clean_names(x)
+}
+resy_page_backbone <- function(path) {
+  .page$full_backbone <- path
+  invisible(TRUE)
+}
+
+# The prepared backbone a parsed expert system uses, NULL when it has none or
+# the whole list is not loaded yet.
+.page_backbone_source <- function(parsed) {
+  if (is.null(parsed$backbone)) return(NULL)
+  src <- parsed$source
+  shipped <- if (.page_shipped(parsed))
+    system.file("extdata", "backbone", src$scheme, paste0(src$version, ".rds"), package = "RESY") else ""
+  if (nzchar(shipped)) shipped else .page$full_backbone
+}
+
+# Whether a parsed system is the shipped file of its scheme and version (a
+# file the user brings may have the same name but other taxa).
+.page_shipped <- function(parsed) {
+  src <- parsed$source
+  if (is.null(src$scheme) || is.null(src$version) || is.na(src$scheme) || is.na(src$version))
+    return(FALSE)
+  path <- tryCatch(resy_expert_path(src$scheme, src$version), error = function(e) "")
+  nzchar(path) && identical(normalizePath(path, mustWork = FALSE),
+                            normalizePath(src$file %||% "", mustWork = FALSE))
+}
+
+# Points RESY to the backbone of the system in use before names are matched.
+.page_set_backbone <- function() {
+  options(resy.backbone = .page$system$backbone_source %||% .page$full_backbone)
+}
+
 .page_json <- function(x, ...) jsonlite::toJSON(x, auto_unbox = TRUE, na = "null", dataframe = "rows", ...)
 
 # Code and name of every type in a parsed expert system, from the Section 3
@@ -62,7 +105,10 @@ resy_page_set_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) 
     eunis = sys$eunis,
     n_types = length(unique(parsed$vegtype.formula.names.short)),
     types = I(.page_type_codes(parsed)),
-    n_species = length(parsed$aggs),
+    n_species = if (is.null(parsed$backbone)) length(parsed$aggs) else
+      length(RESY:::.resy_expert_used(parsed)),
+    backbone = parsed$backbone$name,
+    needs_backbone = !is.null(parsed$backbone) && is.null(sys$backbone_source),
     header_cols = I(sys$header_cols),
     derived_cols = I(sys$derived_cols),
     names = sys$names,
@@ -79,7 +125,7 @@ resy_page_set_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) 
     paste("file", unname(tools::md5sum(path)), sep = ":")
   kept <- .page$read[[key]]
   if (is.null(kept)) {
-    parsed <- if (is.null(path)) resy_load_expert(scheme = scheme, version = version) else tryCatch(
+    parsed <- if (is.null(path)) .page_load_shipped(scheme, version) else tryCatch(
       resy_load_expert(expertfile = path),
       error = function(e) stop("RESY could not read ", basename(path), " as an expert system (",
                                conditionMessage(e), ").", call. = FALSE)
@@ -88,6 +134,21 @@ resy_page_set_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) 
     .page$read[[key]] <- kept
   }
   kept
+}
+
+# A shipped expert system: parsed when the bundle was built
+# (extdata/parsed/<scheme>/<version>.rds), so that the page need not parse the
+# file; its source names the file of this session.
+.page_load_shipped <- function(scheme, version = NULL) {
+  if (is.null(version)) {
+    root <- system.file("extdata", "classifications", scheme, package = "RESY")
+    version <- sort(list.dirs(root, full.names = FALSE, recursive = FALSE), decreasing = TRUE)[1]
+  }
+  rds <- system.file("extdata", "parsed", scheme, paste0(version, ".rds"), package = "RESY")
+  if (!nzchar(rds)) return(resy_load_expert(scheme = scheme, version = version))
+  parsed <- readRDS(rds)
+  parsed$source$file <- resy_expert_path(scheme, version)
+  parsed
 }
 
 # Runs `f()` with the expert system `parsed` in use, and the system in use
@@ -120,6 +181,7 @@ resy_page_set_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) 
   .page$system <- list(
     scheme = scheme,
     parsed = parsed,
+    backbone_source = .page_backbone_source(parsed),
     eunis = eunis,
     names = names,
     header_cols = header_cols,
@@ -132,15 +194,22 @@ resy_page_set_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) 
 # those names lose their matches while the aggregation table stays identical.
 .page_use_taxonomy <- function(parsed) {
   old <- .page$system$parsed
-  if (!identical(old$aggs, parsed$aggs)) {
+  if (!identical(old$aggs, parsed$aggs) || !identical(old$backbone, parsed$backbone)) {
     .page$taxa <- character()
+    .page$importance <- character()
+  } else if (!is.null(parsed$backbone)) {
+    # along a backbone a changed name can change what any plot name counts as
+    if (!identical(RESY:::.resy_expert_used(old), RESY:::.resy_expert_used(parsed))) {
+      .page$taxa <- character()
+      .page$importance <- character()
+    }
   } else if (length(.page$taxa)) {
     before <- RESY:::.resy_expert_used(old)
     after <- RESY:::.resy_expert_used(parsed)
     changed <- union(setdiff(before, after), setdiff(after, before))
     if (length(changed)) {
       raw <- names(.page$taxa)
-      .page$taxa <- .page$taxa[!resy_clean_names(raw) %in% changed]
+      .page$taxa <- .page$taxa[!.page_clean_names(raw) %in% changed]
     }
   }
 }
@@ -152,17 +221,32 @@ resy_page_set_expert <- function(scheme = "EUNIS", version = NULL, path = NULL) 
 .page_taxa <- function(raw) {
   new <- setdiff(unique(raw), names(.page$taxa))
   if (length(new)) {
+    backbone <- !is.null(.page$system$parsed$backbone)
     known <- .page_check_taxa(new)
+    # Along a backbone, author citations are handled by the matching itself.
     open <- is.na(known)
-    if (any(open)) known[open] <- .page_check_taxa(resy_clean_names(new[open]))
+    if (!backbone && any(open)) known[open] <- .page_check_taxa(.page_clean_names(new[open]))
     .page$taxa <- c(.page$taxa, stats::setNames(known, new))
   }
   unname(.page$taxa[raw])
 }
 .page_check_taxa <- function(names) {
+  if (!is.null(.page$system$parsed$backbone)) .page_set_backbone()
   checked <- as.data.frame(resy_check_taxonomy(data.frame(scientificName = unique(names)),
                                                .page$system$parsed, col = "scientificName"))
+  if ("importance" %in% names(checked)) {
+    .page$importance <- c(.page$importance,
+                          stats::setNames(checked$importance, checked$scientificName))
+  }
   checked$TaxonName[match(names, checked$scientificName)]
+}
+
+# Of the plot names `raw` that count for no expert taxon, those that may matter
+# (see resy_check_taxonomy()); none for a system without a backbone.
+.page_important <- function(raw) {
+  if (!length(.page$importance)) return(character())
+  imp <- .page$importance[unique(raw)]
+  sort(names(imp)[imp %in% "important"])
 }
 
 # Numbers written with a decimal point or a decimal comma ("60.5", "60,5"), as
@@ -306,7 +390,10 @@ resy_page_batch <- function(species_tsv, sites_tsv, coast_dunes = TRUE, coast_bu
     sites <- .page_sites(raw_sites, coast_dunes, coast_buffer)
     res <- .page_run(sp, sites)
     types <- .page_plot_types(res)
+    important <- .page_important(sp$name)
     c(types, list(n_obs = nrow(res$obs), unmatched = sum(is.na(res$obs$TaxonName)),
+                  important = I(important),
+                  n_important = sum(sp$name %in% important),
                   sites = .page_site_counts(types$id, raw_sites, res$header)))
   },
   warning = function(w) {
@@ -374,6 +461,7 @@ resy_page_batch <- function(species_tsv, sites_tsv, coast_dunes = TRUE, coast_bu
   obs <- data.frame(PlotObservationID = sp$PlotObservationID,
                     TaxonName = .page_taxa(sp$name),
                     Cover_Perc = cover)
+  if (!is.null(.page$system$parsed$backbone)) .page_set_backbone()
   utils::capture.output(
     res <- resy_classify(obs = obs, header = sites, expert = .page$system$parsed, mc = 1L)
   )

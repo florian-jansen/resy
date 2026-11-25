@@ -115,16 +115,22 @@ export function ensureGeography(webR) {
     await mountLibraries(webR, [['tables', tables]]);
   });
 }
-// The synonym layer of RESY (inst/extdata/esy_synonym_layer.csv.xz); returns its path in the session.
-export function ensureSynonymLayer(webR) {
-  return once(webR, 'synonyms', async () => {
+// The whole of EuroSL, prepared for matching without vegdata, for expert
+// systems the user brings and for the Maker (a shipped system brings the part
+// of EuroSL it names). Tells R where it is and returns its path in the session.
+export function ensureBackbone(webR) {
+  return once(webR, 'backbone', async () => {
     const info = await manifest;
-    const image = await fetchImage(info.images.synonyms);
-    await webR.FS.mkdir('/synonyms');
-    await webR.FS.mount('WORKERFS', { packages: [image] }, '/synonyms');
-    return '/synonyms/esy_synonym_layer.csv.xz';
+    const image = await fetchImage(info.images.backbone);
+    await webR.FS.mkdir('/backbone');
+    await webR.FS.mount('WORKERFS', { packages: [image] }, '/backbone');
+    const path = '/backbone/EuroSL.rds';
+    await webR.evalRVoid(`resy_page_backbone(${rString(path)})`);
+    return path;
   });
 }
+// The backbone the newest shipped systems use, for a new system in the Maker.
+export const backboneInfo = () => manifest.then((info) => info.backbone ?? null);
 
 export async function prepareSites(webR, path, options) {
   const cached = await webR.evalRBoolean(`resy_page_sites_cached(${rString(path)}, ${options})`);

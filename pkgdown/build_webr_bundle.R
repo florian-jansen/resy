@@ -10,6 +10,14 @@
 # names of the same length that R does not export; webR then links them to a
 # stub and fmatch() itself is unchanged.
 #
+# The App and the Maker match species names without vegdata, against EuroSL
+# prepared here: for each shipped expert system with a taxonomic backbone, the
+# part of EuroSL it names (with children, synonyms and ancestors) inside the
+# RESY library; the whole of EuroSL as a library loaded on demand (systems the
+# user brings, the Maker). EuroSL is read with vegdata from the option
+# `resy.backbone` or the environment variable RESY_BACKBONE (an SQLite or CSV
+# file), else from the list installed for vegdata.
+#
 # Usage: Rscript pkgdown/build_webr_bundle.R [resy_repo] [git_ref|WORKTREE] [webr_r_version]
 # Run it from an R whose libraries hold RESY's dependencies (add --vanilla when
 # they are in the user library rather than the renv project library). The R
@@ -157,6 +165,28 @@ runtime_files <- function(files) {
 # Cached example sites are produced by the runtime harmonisation helper.
 loadNamespace("fastmatch")
 .libPaths(c(lib, .libPaths()))
+
+# EuroSL for the App and the Maker (see above).
+if (nzchar(Sys.getenv("RESY_BACKBONE"))) options(resy.backbone = Sys.getenv("RESY_BACKBONE"))
+eurosl <- RESY:::.resy_backbone_get("EuroSL")
+classifications <- file.path(lib, "RESY", "extdata", "classifications")
+for (scheme in list.dirs(classifications, full.names = FALSE, recursive = FALSE)) {
+  for (version in list.dirs(file.path(classifications, scheme), full.names = FALSE, recursive = FALSE)) {
+    parsed <- RESY::resy_load_expert(scheme = scheme, version = version, location = "package")
+    # The parsed system, so that the pages need not parse the file (seconds in webR).
+    target <- file.path(lib, "RESY", "extdata", "parsed", scheme)
+    dir.create(target, recursive = TRUE, showWarnings = FALSE)
+    saveRDS(parsed, file.path(target, paste0(version, ".rds")), compress = "xz")
+    if (is.null(parsed$backbone)) next
+    target <- file.path(lib, "RESY", "extdata", "backbone", scheme)
+    dir.create(target, recursive = TRUE, showWarnings = FALSE)
+    saveRDS(RESY:::.resy_backbone_prepare(eurosl, list(parsed)),
+            file.path(target, paste0(version, ".rds")), compress = "xz")
+  }
+}
+backbone <- file.path(work, "backbone")
+dir.create(backbone)
+saveRDS(RESY:::.resy_backbone_prepare(eurosl), file.path(backbone, "EuroSL.rds"), compress = "xz")
 source(file.path(site, "resy_page.R"))
 si <- read.csv(file.path(lib, "RESY", "extdata", "data_example_sites.csv"), check.names = FALSE)
 stopifnot(nrow(si) == 200L, !anyDuplicated(si$PlotObservationID))
@@ -177,23 +207,22 @@ dir.create(gis)
 file.copy(list.files(file.path(lib, "RESY", "data"), full.names = TRUE), gis)
 # A placeholder keeps the read-only package's data mount point present.
 file.create(file.path(lib, "RESY", "data", ".mount"))
-# The synonym layer is fetched only when the Maker matches names against it.
-synonyms <- file.path(work, "synonyms")
-dir.create(synonyms)
-file.copy(file.path(lib, "RESY", "extdata", "esy_synonym_layer.csv.xz"), synonyms)
 images <- list(resy = library_image(lib, "resy", function(x)
                  runtime_files(x) & (!startsWith(x, "RESY/data/") | endsWith(x, "/.mount")) &
                    !endsWith(x, "data_example_altitude.tif") &
-                   !grepl("^RESY/extdata/esy_synonym_layer", x)),
+                   !grepl("^RESY/extdata/(esy_synonym_layer|eurosl_example)", x)),
                core = library_image(file.path(work, "core"), "core", runtime_files),
                tables = library_image(file.path(work, "tables"), "tables", runtime_files),
                gis = library_image(gis, "gis"),
-               synonyms = library_image(synonyms, "synonyms"))
+               backbone = library_image(backbone, "backbone"))
 # The EUNIS-ESy releases in the bundle, newest first, for the release menu.
 eunis_versions <- sort(list.dirs(file.path(lib, "RESY", "extdata", "classifications", "EUNIS"),
                                  full.names = FALSE, recursive = FALSE), decreasing = TRUE)
 writeLines(jsonlite::toJSON(list(resy = resy_version, commit = commit, r = webr_r,
                                  fastmatch = fm_version, eunis_versions = I(eunis_versions),
+                                 backbone = list(name = "EuroSL",
+                                                 url = "https://eurosl.infinitenature.org",
+                                                 version = eurosl$version),
                                  images = images),
                             auto_unbox = TRUE),
            file.path(site, "bundle.json"))

@@ -62,7 +62,7 @@ species <- read.csv(
   system.file("extdata", "data_example_species.csv", package = "RESY")
 )
 header <- unique(species["PlotObservationID"])
-res <- resy_classify(species, header, scheme = "Apennine-test")
+res <- resy_classify(species, header, scheme = "Apennine-test", version = "2026-06-27")
 
 resy_compare_types(res, "NG", "NS")
 resy_compare_types(res, "NG", "NS", plot = as.character(header$PlotObservationID[1]))

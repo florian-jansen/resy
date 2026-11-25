@@ -53,7 +53,7 @@ restores it instead of parsing it. The cached copy is used only while the
 file keeps its size and modification time and the same installed version of
 RESY loads it; storing a new copy removes the older ones of that file. Set
 \code{options(RESY.cache = FALSE)} to parse every time, or
-\code{options(RESY.cache_dir = <path>)} to keep the cache elsewhere.
+\verb{options(RESY.cache_dir = <path>)} to keep the cache elsewhere.
 }
 \examples{
 expert <- resy_load_expert(scheme = "Apennine-test")

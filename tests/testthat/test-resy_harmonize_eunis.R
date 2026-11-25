@@ -46,7 +46,6 @@ test_that("resy_harmonize_eunis accepts data frame with required columns", {
       RESY:::resy_harmonize_eunis(
         data = test_data,
         source_crs = 4326,
-        run_taxonomy = FALSE,
         run_coast_dunes = FALSE,
         verbose = FALSE
       )
@@ -71,7 +70,6 @@ test_that("resy_harmonize_eunis outputs correct columns", {
       RESY:::resy_harmonize_eunis(
         data = test_data,
         source_crs = 4326,
-        run_taxonomy = FALSE,
         run_coast_dunes = FALSE,
         verbose = FALSE
       )
@@ -107,7 +105,6 @@ test_that("resy_harmonize_eunis accepts sf objects", {
       RESY:::resy_harmonize_eunis(
         data = test_sf,
         source_crs = NULL,  # Should be ignored for sf input
-        run_taxonomy = FALSE,
         run_coast_dunes = FALSE,
         verbose = FALSE
       )
@@ -180,7 +177,6 @@ test_that("resy_harmonize_eunis warns about missing Altitude column", {
     RESY:::resy_harmonize_eunis(
       data = test_data,
       source_crs = 4326,
-      run_taxonomy = FALSE,
       run_coast_dunes = FALSE,
       verbose = FALSE
     ),
@@ -199,7 +195,6 @@ test_that("resy_harmonize_eunis tolerates NA values in Altitude without warning"
       RESY:::resy_harmonize_eunis(
         data = test_data,
         source_crs = 4326,
-        run_taxonomy = FALSE,
         run_coast_dunes = FALSE,
         verbose = FALSE
       )

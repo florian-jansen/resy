@@ -102,19 +102,21 @@ export function parseCondition(text) {
 export const exceptName = (entry) => entry.replace(/^(###|##[QCD]|#TC|#SC|#T\$|#\d\d) /, '');
 export const exceptIsGroup = (entry) => entry !== exceptName(entry);
 
-function operandProblem(o) {
+// What a condition still lacks. A name stands on the left for a species, on
+// the right of a site column for one of its categories.
+function operandProblem(o, side) {
   switch (o.k) {
-    case 'num': return /^-?\d+(\.\d+)?$/.test(o.text) ? null : 'a number is missing';
-    case 'share': return /^\d+$/.test(o.pct) ? null : 'a percentage is missing';
-    case 'hnum': case 'hcat': return o.col.trim() ? null : 'a site column is missing';
-    case 'name': return o.text.trim() ? null : 'a name is missing';
-    case 'measure': return o.groups.length && o.groups.every((g) => g.trim()) ? null : 'a group is missing';
+    case 'num': return /^-?\d+(\.\d+)?$/.test(o.text) ? null : 'a condition has no number yet';
+    case 'share': return /^\d+$/.test(o.pct) ? null : 'a condition has no percentage yet';
+    case 'hnum': case 'hcat': return o.col.trim() ? null : 'a condition has no site column chosen yet';
+    case 'name': return o.text.trim() ? null : side === 'lhs' ? 'a condition on the cover of one species has no species chosen yet' : 'a condition on a site column has no category chosen yet';
+    case 'measure': return o.groups.length && o.groups.every((g) => g.trim()) ? null : 'a condition has no group chosen yet';
     default: return null;
   }
 }
 export function conditionProblem(c) {
-  if (c.raw !== undefined) return c.raw.trim() ? (/[<>]/.test(c.raw) ? 'a condition cannot contain < or >' : null) : 'the condition is empty';
-  return operandProblem(c.lhs) ?? (c.op ? operandProblem(c.rhs) : null);
+  if (c.raw !== undefined) return c.raw.trim() ? (/[<>]/.test(c.raw) ? 'a condition cannot contain < or >' : null) : 'a condition is empty';
+  return operandProblem(c.lhs, 'lhs') ?? (c.op ? operandProblem(c.rhs, 'rhs') : null);
 }
 
 // ---- Formulas -------------------------------------------------------------------
@@ -238,6 +240,7 @@ export const conditions = (root) => { const out = []; eachNode(root, (n) => { if
 // ---- The expert system ---------------------------------------------------------------
 // model = {
 //   metadata: { scheme, version, description },
+//   backbone: { name, url, version } or null,           the taxonomic backbone (Section 1)
 //   synonyms: Map(canonical name -> [other names]),      the species list
 //   groups:   [{ id, prefix, name, members: [species] }],
 //   rules:    [{ id, priority, code, description, comment, expression, tree, order, problem }]
@@ -252,8 +255,12 @@ export const GROUP_PREFIXES = ['###', '##D', '##Q', '##C', '$$C', '$$N'];
 export const PRIORITIES = [...'0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'];
 export const groupKey = (g) => `${g.prefix} ${g.name}`;
 
-export const newModel = () => ({
+// A system with a backbone matches species along it; its species list is only
+// the names the page offers and is not written to the file. A system without
+// one (the published EUNIS-ESy releases) lists its species and their synonyms.
+export const newModel = (backbone = null) => ({
   metadata: { scheme: '', version: new Date().toISOString().slice(0, 10), description: '' },
+  backbone: backbone ? { ...backbone } : null,
   synonyms: new Map(), groups: [], rules: [],
 });
 export const newGroup = (name = '') => ({ id: uid(), prefix: '###', name, members: [] });
@@ -420,12 +427,15 @@ const strings = (v) => (v == null ? [] : Array.isArray(v) ? v.map(String) : [Str
 
 export function modelFromJson(x) {
   if (!x || typeof x !== 'object' || Array.isArray(x)) throw new Error('The file does not hold an expert system.');
-  for (const key of ['synonyms', 'groups', 'rules']) if (!(key in x)) throw new Error(`The file has no "${key}".`);
+  for (const key of ['groups', 'rules']) if (!(key in x)) throw new Error(`The file has no "${key}".`);
+  if (!('synonyms' in x) && !('backbone' in x)) throw new Error('The file has neither "synonyms" nor "backbone".');
+  const bb = x.backbone && typeof x.backbone === 'object' && !Array.isArray(x.backbone) ? x.backbone : null;
   if (!Array.isArray(x.rules)) throw new Error('"rules" must be a list of rules.');
   const meta = x.metadata ?? {};
   const model = {
     metadata: { ...meta, scheme: String(meta.scheme ?? ''), version: String(meta.version ?? ''), description: String(meta.description ?? '') },
-    synonyms: new Map(Object.entries(x.synonyms).map(([name, v]) => [name, strings(v)])),
+    backbone: bb ? { name: String(bb.name ?? ''), url: String(bb.url ?? ''), version: String(bb.version ?? '') } : null,
+    synonyms: new Map(Object.entries(bb ? {} : x.synonyms ?? {}).map(([name, v]) => [name, strings(v)])),
     groups: Object.entries(x.groups).map(([key, v]) => ({ id: uid(), prefix: key.slice(0, 3), name: key.slice(4), members: strings(v) })),
     rules: x.rules.map((r) => {
       const inh = r._inherit && typeof r._inherit === 'object' && !Array.isArray(r._inherit) ? r._inherit : null;
@@ -562,11 +572,14 @@ function inheritJson(rule, f, own) {
 }
 
 // The JSON expert file of the model. `rules` picks the rules to write (those
-// without a problem), `synonyms: false` leaves the species list empty.
+// without a problem), `synonyms: false` leaves the species list empty. A
+// system with a backbone writes the backbone instead of the species list.
 export function modelToJson(model, { synonyms = true, rules = model.rules.filter((r) => !ruleProblem(r, model.rules)) } = {}) {
   return {
     metadata: model.metadata,
-    synonyms: synonyms ? Object.fromEntries(model.synonyms) : {},
+    ...(model.backbone
+      ? { backbone: Object.fromEntries(Object.entries(model.backbone).filter(([, v]) => v !== '')) }
+      : { synonyms: synonyms ? Object.fromEntries(model.synonyms) : {} }),
     groups: Object.fromEntries(model.groups.filter((g) => g.name.trim()).map((g) => [groupKey(g), g.members])),
     rules: rules.map((r) => {
       const f = r.inherit ? fullRule(r, model.rules) : null;

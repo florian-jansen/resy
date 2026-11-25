@@ -2,7 +2,7 @@
 // helpers sit next to this script; pkgdown/build_webr_bundle.R builds the bundle.
 // The data files are read here in parts and classified in batches of whole
 // plots, spread over several webR sessions, so files of any size can be used.
-import { $, escapeHtml, rString, cleanError, fmt, plural, createLoader, fetchAssets, bootSession, setFile, saveBlob, store, createShell, pinNavbar, prepareSites, ensureGeography } from './resy_core.js';
+import { $, escapeHtml, rString, cleanError, fmt, plural, createLoader, fetchAssets, bootSession, setFile, saveBlob, store, createShell, pinNavbar, prepareSites, ensureGeography, ensureBackbone } from './resy_core.js';
 import { lineChunks, splitFields, splitRecords, fileText, readHeader, pick, SPECIES_COLS, SPECIES_COL_LABEL, fillSpeciesColumns, tsvValue, plotId, tsvPlotId, fieldNumber } from './resy_files.js';
 import { compareHtml, evidenceHtml, wireEvidence } from './resy_evidence.js';
 import { placeOf, createDotMap } from './resy_map.js';
@@ -96,6 +96,12 @@ async function applySystem(s, first = false, target = system) {
   }
   if (first) { status('Reading the expert system…'); stage('parse'); }
   const out = JSON.parse(await s.webR.evalRString(target.call));
+  // A system that is not shipped with RESY matches its names against the
+  // whole of EuroSL, loaded once per session.
+  if (out.needs_backbone) {
+    if (first) status('Loading the taxonomic backbone…');
+    await ensureBackbone(s.webR);
+  }
   s.key = target.key;
   s.info = out;
   return out;
@@ -400,7 +406,7 @@ function newResults(source, capacity) {
   const r = {
     source, n: 0, ids: [], codes: [], codeIndex: new Map(), counts: [], candLists: [], candIndex: new Map(),
     readSites: new Uint8Array(source.sites.lon.length), readUnplaced: new Set(),
-    nObs: 0, unmatched: 0, warnings: new Set(), done: 0, completedBytes: 0, t0: performance.now(),
+    nObs: 0, unmatched: 0, important: new Set(), nImportant: 0, warnings: new Set(), done: 0, completedBytes: 0, t0: performance.now(),
     sites: { matched: 0, absent: 0, present: new Set(), missing: new Map(), maps: new Map() },
   };
   for (const [k, T] of Object.entries(COLUMNS)) r[k] = new T(Math.max(1024, capacity));
@@ -623,6 +629,8 @@ async function classifyBatch(result, b, bytes) {
   });
   result.done += out.id.length;
   result.nObs += out.n_obs; result.unmatched += out.unmatched;
+  for (const name of out.important ?? []) result.important.add(name);
+  result.nImportant += out.n_important ?? 0;
   for (const w of out.warnings) result.warnings.add(w);
   mergeSiteCounts(result.sites, out.sites);
   result.completedBytes += bytes;
@@ -701,7 +709,12 @@ function render() {
   $('s-system').innerHTML = `${R.incomplete ? '<strong>Incomplete classification.</strong> ' : ''}Classified with the ${escapeHtml(systemLabel(R.system))} expert system${R.system.doi ? ` (<a href="https://doi.org/${escapeHtml(R.system.doi)}">doi:${escapeHtml(R.system.doi)}</a>)` : ''}.`;
 
   const notes = siteNotes(R);
-  if (R.unmatched) notes.unshift(`Species names in ${fmt(R.unmatched)} of ${fmt(R.nObs)} records are not recognised by the expert system. These records do not contribute to the classification.`);
+  if (R.unmatched) {
+    const important = [...R.important].sort();
+    const shown = important.slice(0, 10).join(', ') + (important.length > 10 ? ', …' : '');
+    notes.unshift(`Species names in ${fmt(R.unmatched)} of ${fmt(R.nObs)} records count for no taxon of the expert system and do not contribute to the classification.`
+      + (important.length ? ` ${fmt(important.length)} of these names may matter (${plural(R.nImportant, 'record')}): ${shown}. Check their spelling or determination.` : ''));
+  }
   $('warnings').innerHTML = notes.map((w) => `<li>${escapeHtml(w)}</li>`).join('');
   $('notes-n').textContent = `${plural(notes.length, 'note')} on the data and the run`;
   $('notes').style.visibility = notes.length ? '' : 'hidden';

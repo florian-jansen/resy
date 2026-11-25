@@ -1,7 +1,10 @@
 # ---- JSON expert-system schema ----------------------------------------------
 # Shared by the JSON parser (.resy_parse_json) and the JSON validator.
 
-.resy_json_required  <- c("synonyms", "groups", "rules")
+.resy_json_required  <- c("groups", "rules")
+# A JSON expert system either lists its synonyms (the old Section 1) or names
+# its taxonomic backbone.
+.resy_json_taxonomy  <- c("synonyms", "backbone")
 .resy_json_rule_keys <- c("priority", "code", "description", "expression")
 
 # Required keys a rule lacks. Keys starting with "_" (e.g. "_comment") are
@@ -35,7 +38,10 @@
 #' \describe{
 #'   \item{`metadata`}{Object with `scheme` and `version` (both strings).
 #'     Optional: `description`, `source_file`.}
-#'   \item{`synonyms`}{Object mapping each canonical name (key) to an array of
+#'   \item{`backbone`}{Object with `name`, `url` and optionally `version` of
+#'     the taxonomic backbone (e.g. EuroSL). Replaces `synonyms`: species are
+#'     then matched along the backbone's taxon tree.}
+#'   \item{`synonyms`}{(Only without `backbone`.) Object mapping each canonical name (key) to an array of
 #'     accepted spelling variants / author-cited synonyms (value). An empty
 #'     array means the canonical name has no known aliases.}
 #'   \item{`groups`}{Object mapping each species-group name (key, including its
@@ -74,10 +80,23 @@
     stop("JSON expert file is missing required keys: ",
          paste(missing, collapse = ", "))
 
+  if (!any(.resy_json_taxonomy %in% names(x)))
+    stop("JSON expert file needs either 'synonyms' or 'backbone'.")
+
+  # backbone: {"name": ..., "url": ..., "version": ...}
+  backbone <- NULL
+  if (!is.null(x$backbone)) {
+    if (!is.list(x$backbone) || is.null(x$backbone$name) || is.null(x$backbone$url))
+      stop("'backbone' must be a JSON object with 'name' and 'url'.")
+    backbone <- list(name = as.character(x$backbone$name),
+                     url = as.character(x$backbone$url),
+                     version = as.character(x$backbone$version %||% NA_character_))
+  }
+
   # synonyms -> aggs: canonical name -> character vector of aliases
-  if (!is.list(x$synonyms))
+  if (!is.null(x$synonyms) && !is.list(x$synonyms))
     stop("'synonyms' must be a JSON object (key: array pairs).")
-  aggs <- .resy_json_chr_list(x$synonyms)
+  aggs <- if (is.null(backbone)) .resy_json_chr_list(x$synonyms) else list()
 
   # groups -> solver groups; keys already carry the solver prefix (e.g. "### ")
   if (!is.list(x$groups))
@@ -104,5 +123,6 @@
   membership.formulas <- as.character(vapply(rules, `[[`, character(1L), "expression"))
 
   raw <- .resy_transform_formulas(aggs, groups, membership.formulas, membership.formula.names)
+  raw$backbone <- backbone
   .resy_build_parsed(raw)
 }

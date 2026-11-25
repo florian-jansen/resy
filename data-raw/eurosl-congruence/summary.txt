@@ -1,0 +1,18 @@
+## EUNIS-2025-10-03
+Section 1: 20159 aggregations, 100709 members
+  groups:  duplicate_node: 39, group_is_synonym: 318, group_level_unclear: 54, group_name_needs_cleaning: 36, group_not_found: 372, group_uncertain_determination: 2, ok: 19338
+  nested inside another aggregation: 885
+  members: eurosl_placement_missing: 787, group_unresolved: 1811, member_broader_than_group: 426, member_elsewhere: 532, member_level_unclear: 576, member_misapplied_name: 20, member_not_found: 9537, member_uncertain_determination: 2531, ok_after_cleaning: 1623 
+  of these used in Sections 2/3 (important): 11383 members, 191 groups
+Section 2: 326 groups, 22626 member entries
+  issues:  level_unclear: 167, needs_cleaning: 35, not_found: 252, synonym: 279
+
+## Apennine-test-2026-06-27
+Section 1: 950 aggregations, 978 members
+  groups:  duplicate_node: 31, group_is_synonym: 120, group_misapplied_name: 1, group_name_needs_cleaning: 7, group_not_found: 5, ok: 786
+  nested inside another aggregation: 9
+  members: member_elsewhere: 11, member_level_unclear: 1, member_misapplied_name: 1, member_not_found: 12, ok_after_cleaning: 6 
+  of these used in Sections 2/3 (important): 0 members, 2 groups
+Section 2: 4 groups, 17 member entries
+  issues:  
+

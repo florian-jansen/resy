@@ -25,10 +25,13 @@
 
 # Taxa of each element of `parts` (a list of group names): the members of the
 # groups it names, without duplicates. With `species = TRUE`, a name that is
-# not a group is a single species and follows the group members.
+# not a group is a single species and follows the group members; `species_sets`
+# (expert systems with a taxonomic backbone) widens such a species to the
+# expert taxa below it.
 #' @keywords internal
 #' @noRd
-.resy_parts_taxa <- function(parts, groups, groups.names, species = FALSE) {
+.resy_parts_taxa <- function(parts, groups, groups.names, species = FALSE,
+                             species_sets = NULL) {
   id <- rep.int(seq_along(parts), lengths(parts))
   tok <- unlist(parts, use.names = FALSE)
   gi <- fastmatch::fmatch(tok, groups.names)
@@ -37,13 +40,26 @@
   mid <- rep.int(id[hit], lengths(members))
   val <- trimws(unlist(members, use.names = FALSE))
   if (species) {
-    mid <- c(mid, id[!hit])
-    val <- c(val, tok[!hit])
+    sp <- .resy_species_taxa(tok[!hit], species_sets)
+    mid <- c(mid, rep.int(id[!hit], lengths(sp)))
+    val <- c(val, unlist(sp, use.names = FALSE))
   } else {
     mid <- mid[nzchar(val)]
     val <- val[nzchar(val)]
   }
   unname(lapply(split(val, factor(mid, levels = seq_along(parts))), unique))
+}
+
+# Taxa a single-species condition refers to: the species itself, widened by
+# `species_sets` where it holds the species.
+#' @keywords internal
+#' @noRd
+.resy_species_taxa <- function(x, species_sets = NULL) {
+  if (is.null(species_sets)) return(as.list(x))
+  i <- fastmatch::fmatch(x, names(species_sets))
+  out <- as.list(x)
+  out[!is.na(i)] <- species_sets[i[!is.na(i)]]
+  unname(out)
 }
 
 #' @keywords internal
@@ -54,9 +70,10 @@
 
 #' @keywords internal
 #' @noRd
-.resy_group_taxa_or_species_list <- function(x, groups, groups.names, prefix = NULL) {
+.resy_group_taxa_or_species_list <- function(x, groups, groups.names, prefix = NULL,
+                                             species_sets = NULL) {
   .resy_parts_taxa(.resy_membership_parts_list(x, prefix = prefix), groups, groups.names,
-                   species = TRUE)
+                   species = TRUE, species_sets = species_sets)
 }
 
 #' @keywords internal
@@ -67,9 +84,10 @@
 
 #' @keywords internal
 #' @noRd
-.resy_group_taxa_or_species <- function(x, groups, groups.names, prefix = NULL) {
+.resy_group_taxa_or_species <- function(x, groups, groups.names, prefix = NULL,
+                                        species_sets = NULL) {
   .resy_group_taxa_or_species_list(paste(x, collapse = "|"), groups, groups.names,
-                                   prefix = prefix)[[1]]
+                                   prefix = prefix, species_sets = species_sets)[[1]]
 }
 
 # Taxa that one membership condition (an element of `parsed$conditions`) refers
@@ -81,19 +99,21 @@
 # group return no taxa.
 #' @keywords internal
 #' @noRd
-.resy_condition_taxa <- function(condition, groups, groups.names) {
+.resy_condition_taxa <- function(condition, groups, groups.names, species_sets = NULL) {
   x <- trimws(condition)
   if (startsWith(x, "NON ")) x <- trimws(substring(x, 5L))
   if (startsWith(x, "$")) return(character())
-  if (!startsWith(x, "#")) return(x)
+  if (!startsWith(x, "#")) return(.resy_species_taxa(x, species_sets)[[1L]])
   code <- substr(x, 1L, 3L)
   x <- trimws(substring(x, 4L))
   if (!nzchar(x)) return(character())
   parts <- trimws(strsplit(x, "EXCEPT", fixed = TRUE)[[1]])
-  taxa <- .resy_group_taxa_or_species(parts[1], groups, groups.names, prefix = code)
+  taxa <- .resy_group_taxa_or_species(parts[1], groups, groups.names, prefix = code,
+                                      species_sets = species_sets)
   if (length(parts) > 1L) {
     taxa <- setdiff(taxa, .resy_group_taxa_or_species(parts[2], groups, groups.names,
-                                                      prefix = code))
+                                                      prefix = code,
+                                                      species_sets = species_sets))
   }
   taxa
 }
@@ -149,14 +169,16 @@
 # minus the taxa of the groups or species in B. Without EXCEPT, the union of A.
 #' @keywords internal
 #' @noRd
-.resy_except_taxa_list <- function(x, groups, groups.names, prefix = NULL) {
+.resy_except_taxa_list <- function(x, groups, groups.names, prefix = NULL,
+                                   species_sets = NULL) {
   sides <- strsplit(x, "EXCEPT", fixed = TRUE)
   a <- trimws(vapply(sides, `[`, character(1), 1L))
   has_b <- lengths(sides) > 1L
   taxa <- .resy_group_taxa_union_list(a, groups, groups.names, prefix = prefix)
   if (any(has_b)) {
     b <- trimws(vapply(sides[has_b], `[`, character(1), 2L))
-    drop <- .resy_group_taxa_or_species_list(b, groups, groups.names, prefix = prefix)
+    drop <- .resy_group_taxa_or_species_list(b, groups, groups.names, prefix = prefix,
+                                             species_sets = species_sets)
     taxa[has_b] <- Map(function(t, d) t[is.na(fastmatch::fmatch(t, d))], taxa[has_b], drop)
   }
   taxa
@@ -258,8 +280,10 @@
   body <- function(x) substr(x, 5, nchar(x))
   union_of <- function(x, prefix = NULL)
     .resy_group_taxa_union_list(x, groups, groups.names, prefix = prefix)
+  species_sets <- parsed$species_sets
   except_of <- function(x, prefix)
-    .resy_except_taxa_list(x, groups, groups.names, prefix = prefix)
+    .resy_except_taxa_list(x, groups, groups.names, prefix = prefix,
+                           species_sets = species_sets)
   plot_row <- match(obs$PlotObservationID, plots)
   fill <- function(cols, taxa, stat, param = NULL, exclude = FALSE)
     .resy_fill_conditions(plot.cond, obs$TaxonName, plot_row, obs$Cover_Perc, cols, taxa,
@@ -366,7 +390,7 @@
                !startsWith(conditions, "$") &
                !startsWith(conditions, "NON"))
   message('Step 5.7  Number of conditions with single species, header levels (e.g. country names): ', length(w))
-  plot.cond <- fill(w, as.list(conditions[w]), "mean")
+  plot.cond <- fill(w, .resy_species_taxa(conditions[w], species_sets), "mean")
 
   ################################################################## #
   # 5.8   Highest Cover_Perc of any species in plot (#$$ EXCEPT)  ####
@@ -379,7 +403,7 @@
   message('          Number of conditions with maximum Cover_Perc in plot EXCEPT species of target group: ', length(w))
   outside <- lapply(conditions[w], function(i)
     .resy_group_taxa_or_species(trimws(strsplit(i, "EXCEPT", fixed = TRUE)[[1]])[[2]],
-                                groups, groups.names))
+                                groups, groups.names, species_sets = species_sets))
   plot.cond <- fill(w, outside, "max", exclude = TRUE)
 
   ################################################## #

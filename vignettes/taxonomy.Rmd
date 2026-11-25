@@ -1,6 +1,6 @@
 ---
 title: "Match species names"
-author: "Gilles Colling"
+author: "Florian Jansen"
 output:
    rmarkdown::html_vignette:
       toc: true
@@ -13,329 +13,189 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = requireNamespace("vegdata", quietly = TRUE)
 )
 ```
 
-This vignette shows how to match species names before classifying vegetation
-plots with `resy_classify()`. Each expert system uses a particular set of species
-names, and the names in your plot data need to match.
+This vignette explains how RESY matches the species names of vegetation plots
+to the species of an expert system. An expert system names species in its
+species groups and rules; a plot record counts for such a species when it
+refers to the same taxon or to a taxon within it. RESY decides this with a
+**taxonomic backbone**: a reference list of taxon concepts with their synonyms
+and their place in the taxonomic hierarchy. The expert systems bundled with
+RESY use [EuroSL](https://eurosl.infinitenature.org), the European species
+list built on Euro+Med PlantBase.
 
-The EUNIS expert system (Chytrý et al.
-[2020](https://doi.org/10.1111/avsc.12519)), for example, uses the same species
-names as the European Vegetation Archive (Chytrý et al. [2016](https://doi.org/10.1111/avsc.12191)),
-so data from there can be used
-directly. Data following other taxonomic sources, such as [GBIF](https://www.gbif.org/),
-[World Flora Online](https://www.worldfloraonline.org/), [POWO](https://powo.science.kew.org/)
-or a national checklist, may use synonyms, different author citations or
-spelling variants. RESY matches these names in a separate step so
-you can review the matches before classification.
-
-1. **Resolve** the species names with `resy_resolve_taxa()`.
-2. **Inspect** the matches with [`summary()`](https://rdrr.io/r/base/summary.html).
-3. **Classify** the vegetation surveys with the resolved data with `resy_classify()`.
-
-## Example
-
-The following R packages are required to run the example of this vignette:
+Plant names are ambiguous: the same name can stand for taxa of different
+extent, and one taxon can have many names (Jansen & Dengler
+[2010](https://doi.org/10.1111/j.1654-1103.2010.01209.x)). Matching names as
+character strings, or through tables of synonyms, therefore either misses
+records or merges taxa that differ. Matching along a backbone keeps taxon
+concepts apart.
 
 ```{r setup, message=FALSE}
 library(RESY)
-library(ggplot2)
-library(readr)
 ```
 
-```{r build-info, include=FALSE}
-build <- utils::read.csv(
-  system.file("extdata", "esy_synonym_layer_build.csv", package = "RESY"),
-  stringsAsFactors = FALSE
-)
-backbones <- utils::read.csv(
-  system.file("extdata", "esy_synonym_layer_backbones.csv", package = "RESY"),
-  stringsAsFactors = FALSE, na.strings = ""
-)
-bb <- function(name, col) backbones[[col]][backbones$backbone == name]
-pct <- function(x, n) round(100 * x / n)
-big <- function(x) format(x, big.mark = ",")
+## The backbone of an expert system
+
+Section 1 of an expert system declares its backbone, with the name, the
+address and the version of the list:
+
+```{r section-1}
+eunis <- resy_load_expert(scheme = "EUNIS")
+eunis$backbone
 ```
 
-### Resolve names
+In an expert file this is
 
-`resy_resolve_taxa()` maps a column of names to the species names of an expert
-system. By default, this is the newest release of the EUNIS expert system that
-ships with RESY; the argument `expert` takes any other expert system read with
-`resy_load_expert()`. The names come from the expert system itself, not from a
-taxonomic database. The canonical names are the names its classifier evaluates:
-the species aggregates of Section 1 of the expert system, and the species that
-a species group or a rule names and that no aggregate includes.
-`resy_canonical_species()` returns them.
-
-Each name is looked up in up to four steps, and the first step that finds it
-sets the match type:
-
-1. The name is a species name the expert system uses, a canonical name or a
-   name it lists in an aggregate (`"exact"`).
-2. The name is in the synonym table (`"synonym"`), described in
-   [The shipped synonym table](#the-shipped-synonym-table).
-3. With its author citation removed by `resy_clean_names()`, the name is a
-   species name the expert system uses (`"cleaned_exact"`).
-4. With its author citation removed, the name is in the synonym table
-   (`"cleaned_synonym"`).
-
-The name without author citation is used only for the lookup; the name column
-in your data keeps the name as submitted. A name that none of the four steps
-finds stays `NA` and is flagged `"unresolved"`. Nothing is ever replaced with a
-best guess.
-
-```{r resolve}
-plots <- data.frame(
-  TaxonName = c(
-    "Hibiscus praecox",        # a synonym in the shipped table
-    "Abelmoschus longifolius",  # another synonym
-    "Fagus sylvatica",          # already a canonical name
-    "Anemone nemorosa L.",      # canonical name with an author citation
-    "Not a real species 123"    # resolves to nothing
-  ),
-  stringsAsFactors = FALSE
-)
-
-resolved <- resy_resolve_taxa(plots, species_col = "TaxonName")
-resolved
+```
+SECTION 1: Taxonomic backbone
+EuroSL https://eurosl.infinitenature.org 2026-11-24
+SECTION 1: End
 ```
 
-The result is a `resy_taxa` table, the same kind `resy_check_taxonomy()`
-returns. `summary()` reports how many names and records resolved, the records by
-match type, and the distinct names that stayed unresolved.
+or, in a JSON expert file, a `backbone` object with the same three fields.
+The published EUNIS-ESy releases (versions `2020-06-08`, `2021-06-01`,
+`2025-10-03`) list species aggregations in Section 1 instead; see
+[Older expert systems](#older-expert-systems) below.
 
-```{r summarise}
-summary(resolved)
+RESY reads the backbone with the
+[vegdata](https://cran.r-project.org/package=vegdata) package. Install EuroSL
+once with
+
+```{r install, eval = FALSE}
+vegdata::taxref_download_eurosl()
 ```
 
-Unresolved names can be fixed by correcting a spelling, adding a row to your own
-crosswalk (see [Bring your own crosswalk](#bring-your-own-crosswalk)), or
-leaving them out.
+and RESY finds it by itself. A list in another place is named with
+`options(resy.backbone = <path>)`, either an SQLite file or a CSV file.
+This vignette uses the part of EuroSL that ships with RESY and covers the
+example data:
 
-### The shipped synonym table
-
-RESY ships one set of synonyms for all expert systems and all their releases. It
-pools the synonyms of six taxonomic backbones, the reference lists of accepted
-names and their synonyms that taxonomic databases publish
-(Euro+Med (europlusmed.org), [WFO](https://www.worldfloraonline.org/),
-[GBIF](https://www.gbif.org/),
-[Catalogue of Life](https://www.catalogueoflife.org/),
-[ITIS](https://www.itis.gov/),
-[NCBI](https://www.ncbi.nlm.nih.gov/datasets/taxonomy/)),
-so a name coming from any of them can resolve without you having to say which
-backbone it came from. These `r big(build$n_pairs)` synonym pairs point to
-Euro+Med names and to the canonical names of the expert systems that ship with
-RESY.
-
-When synonyms are needed, RESY turns this set into a synonym table for the
-expert system in use, so each release of an expert system gets a table that
-fits its own species names:
-
-- A synonym pair is kept when the name it points to is a canonical name of the
-  expert system.
-- A synonym that points to two names the expert system evaluates differently is
-  resolved by Euro+Med, the taxonomy that the EUNIS expert system follows. When
-  Euro+Med gives a single answer it is kept; otherwise the synonym stays
-  unresolved.
-- A name the expert system already uses is never remapped.
-- A synonym that Euro+Med accepts as a species of its own is kept only when
-  Euro+Med treats it as the same taxon as the name it points to, such as a
-  spelling variant.
-
-With an expert system whose species names follow another taxonomy, the table
-resolves only names that point to a name the expert system uses; for the other
-names, use your own synonym table (see
-[Bring your own crosswalk](#bring-your-own-crosswalk)).
-
-The synonym pairs were collected on `r build$built` from the backbone releases
-below. `data-raw/build_synonyms.R` in the source repository collects them again
-with taxify `r build$taxify_version`
-(Colling [2026](https://doi.org/10.32614/CRAN.package.taxify)).
-
-```{r build-backbones, echo=FALSE}
-knitr::kable(
-  data.frame(
-    Backbone      = backbones$backbone,
-    `Upstream data` = ifelse(is.na(backbones$upstream_date), "", backbones$upstream_date),
-    check.names   = FALSE
-  )
-)
+```{r backbone}
+options(resy.backbone = system.file("extdata", "eurosl_example.csv.xz",
+                                    package = "RESY"))
 ```
 
-The synonyms are binomials (genus and species epithet). Infraspecific names,
-hybrid formulas, and bare genera are not in the table, so a name of that kind is
-not resolved through it.
+`resy_backbone()` returns the list itself:
 
-`resy_read_synonyms()` without arguments returns the synonym table of the
-newest EUNIS release; its argument `expert` takes any other expert system:
-
-```{r shipped-table}
-syn <- resy_read_synonyms()
-nrow(syn)
-head(syn)
+```{r backbone-list}
+bb <- resy_backbone(eunis)
+nrow(bb)
+head(bb[, c("TaxonName", "SYNONYM", "taxonRank", "TaxonConceptID")])
 ```
 
-Each row of the table is a synonym pair: an alternate spelling
-(`synonym`) and the EUNIS name it resolves to (`esy_canonical`), with the
-backbone(s) that list the synonym under that name (`source`). The column
-`accepted_in` names the backbones that list the same synonym as an accepted
-name of its own, by the same author as in the backbones of `source` (an accepted
-name by another author is a different taxon with the same name and is not
-counted). A backbone appears in both `source` and `accepted_in` when it holds
-an accepted row and a synonym row for the name.
+## How names are matched
 
-The column is empty for
-`r round(100 * mean(is.na(syn$accepted_in)))`% of the synonym pairs: no backbone
-accepts these synonyms as species of their own, so every backbone that lists the
-name agrees that it is a synonym. A filled `accepted_in` marks a name that one
-backbone treats as a synonym and another as a separate species:
+`resy_check_taxonomy()` matches the names of a species table and reports, for
+each name, how it was matched and which expert taxon it counts for. The
+following names show the cases:
 
-```{r accepted-in}
-head(syn[!is.na(syn$accepted_in), ], 4)
+```{r examples}
+names <- data.frame(TaxonName = c(
+  "Fagus sylvatica L.",       # with author citation
+  "Fagus sylvatca",           # spelling variant
+  "Abies pectinata",          # synonym
+  "Festuca rubra agg.",       # an aggregate
+  "Quercus cf. robur",        # uncertain determination
+  "Quercus sp.",              # genus only, EUNIS names the genus
+  "Planta inventa"            # not in the backbone
+))
+checked <- resy_check_taxonomy(names, eunis)
+checked[, c("scientificName", "TaxonName", "backbone_name", "match", "status")]
 ```
 
-A synonym pair with several backbones in `source` is counted once for each of them, so
-the counts per backbone add up to more than the number of rows.
+RESY uses the matching of vegdata (`vegdata::taxname.match()`), restricted to
+steps that keep the taxon concept:
 
-```{r support-table}
-per_backbone <- table(unlist(strsplit(syn$source, ";", fixed = TRUE)))
-support <- data.frame(
-  backbone = names(per_backbone),
-  pairs    = as.integer(per_backbone),
-  share    = round(100 * as.integer(per_backbone) / nrow(syn), 1)
-)
-support <- support[order(-support$pairs), ]
+| Name in the data | Matched? |
+|---|---|
+| with an author citation, e.g. `Fagus sylvatica L.` | yes, the author is removed |
+| a spelling variant, e.g. `Fagus sylvatca` | yes, if the backbone has a close name of the same genus whose epithet starts with the same three letters |
+| a synonym, e.g. `Abies pectinata` | yes, to the accepted taxon |
+| an aggregate, `agg.`, `aggr.`, `s. l.` | only to an aggregate (or section) of the backbone, never to the species of the same name |
+| `s. str.` | no: whether it means the species of the backbone is left to you |
+| a misapplied name (`auct.`) | no: it does not name the concept of the plain name |
+| an uncertain determination (`cf.`, `aff.`, `?`) | no: what it represents is unknown, so it is ignored |
 
-knitr::kable(
-  support,
-  row.names   = FALSE,
-  col.names   = c("Backbone", "Synonym pairs", "% of table"),
-  format.args = list(big.mark = ",")
+## Which expert taxon a plot taxon counts for
+
+A plot taxon counts for an expert taxon when the backbone places it at or below
+that taxon: a synonym counts for its accepted taxon, a subspecies for its
+species, a species for its aggregate, and a species for its genus where the
+expert system names a genus. When the expert system names several taxa above
+a plot taxon, for example a species and its aggregate, the plot taxon counts
+as the closest one, and a species group that holds the aggregate also counts
+the species. Each plot record therefore counts once in each species group.
+
+A record of a broader taxon does not count for a narrower expert taxon: a plot
+record of `Festuca ovina agg.` says nothing about `Festuca ovina` in the narrow
+sense.
+
+The classification of the example plots shows the matching in
+`res$taxon_resolution`:
+
+```{r classify, message=FALSE, warning=FALSE}
+species <- utils::read.csv(
+  system.file("extdata", "data_example_species.csv", package = "RESY")
 )
+header <- data.frame(PlotObservationID = unique(species$PlotObservationID))
+res <- resy_classify(species, header, expert = eunis, mc = 1L)
+head(res$taxon_resolution[, c("scientificName", "TaxonName", "status")])
 ```
 
-The backbones also differ in size: in the releases above, the GBIF backbone
-holds `r big(bb("gbif", "synonym_rows"))` synonym rows and the Euro+Med
-backbone `r big(bb("euromed", "synonym_rows"))`. Euro+Med synonyms are also
-often names that the EUNIS expert system lists in its own species aggregates;
-the classifier already counts those, so the table leaves them out.
+## Names that cannot be used
 
-Most synonym pairs are supported by more than one backbone:
+`summary()` lists the names that do not count for any expert taxon although
+they might, in two parts:
 
-```{r support-plot, fig.width=6, fig.height=3}
-per_pair <- table(lengths(strsplit(syn$source, ";", fixed = TRUE)))
-support_n <- data.frame(
-  n_backbones = names(per_pair),
-  pairs       = as.integer(per_pair)
-)
-
-ggplot(support_n, aes(x = n_backbones, y = pairs)) +
-  geom_col() +
-  scale_y_continuous(labels = function(x) format(x, big.mark = ",")) +
-  labs(x = "Number of backbones supporting a synonym pair", y = "Synonym pairs") +
-  theme_classic()
+```{r summary}
+summary(res$taxon_resolution)
 ```
 
-### Bring your own crosswalk
+**Potentially important** names may change a classification:
 
-A crosswalk is a table that maps each name of one name list to the matching
-name in another, here from the names in your data to the canonical names of the
-expert system. The synonym table of RESY is one; `resy_resolve_taxa()` also
-accepts your own, with three columns: `synonym`, `esy_canonical`, and `source`.
-It can come from a national checklist, a Turboveg species list, or a
-name-matching package such as [taxify](https://github.com/gcol33/taxify) or
-[taxize](https://doi.org/10.32614/CRAN.package.taxize) (Chamberlain & Szocs
-[2013](https://f1000research.com/articles/2-191/v2)). A small example ships with the package.
+- `not found` with a genus the expert system uses: check the spelling, or
+  whether the taxon is in the backbone under another name.
+- `broader than expert taxon`: the record is of a taxon broader than the one
+  the expert system names; determine it more precisely if possible.
+- `expert taxon not in backbone`: the expert system names a taxon that the
+  backbone lacks (for example an aggregate it does not distinguish), so the
+  records of this species cannot count for it. This is for the authors of the
+  expert system and of the backbone to resolve.
+- `level unclear`: an aggregate or `s. str.` name that the backbone cannot
+  place.
 
-```{r own-csv}
-cw_path <- system.file("extdata", "example_crosswalk.csv", package = "RESY")
-crosswalk <- resy_read_synonyms(cw_path)
-crosswalk
+**Probably unimportant** names cannot affect the rules: records determined
+only to genus or a higher rank, uncertain determinations, and names of genera
+the expert system does not use.
+
+Names the backbone knows but the expert system does not use (`not_used`) are
+no problem: like all records, they count for the total cover and the number of
+species of a plot.
+
+## Older expert systems
+
+The published EUNIS-ESy releases list species aggregations in Section 1: each
+aggregate name with the names it includes. For these expert systems the names
+in the plot data must be written as in the expert system; RESY merges the
+names each aggregation lists and classifies them as they are.
+
+```{r old-release, eval = FALSE}
+res_2025 <- resy_classify(species, header, scheme = "EUNIS",
+                          version = "2025-10-03")
 ```
 
-Pass it to `synonyms=`, and give the target names to `canonical=` so resolution
-uses your table alone:
-
-```{r own-resolve}
-my_plots <- data.frame(
-  TaxonName = c("Fagus silvatica", "Abies pectinata", "Quercus robur"),
-  stringsAsFactors = FALSE
-)
-
-resy_resolve_taxa(
-  my_plots,
-  species_col = "TaxonName",
-  synonyms    = crosswalk,
-  canonical   = unique(crosswalk$esy_canonical)
-)
-```
-
-If your crosswalk lives in an Excel sheet, read it yourself and pass the data
-frame. RESY validates the columns and uses it directly, so it needs no Excel
-package as a dependency:
-
-```{r excel, eval=FALSE}
-crosswalk <- readxl::read_excel("my_crosswalk.xlsx")
-resy_resolve_taxa(my_plots, synonyms = crosswalk,
-                  canonical = unique(crosswalk$esy_canonical))
-```
-
-A synonym that maps to more than one canonical name is dropped, so an ambiguous
-table cannot produce a silent substitution.
-
-### Classify the resolved data
-
-Once the names match the species list of the expert system, classify as in
-[Get started](RESY.html).
-Resolve them against the species list of the expert system you classify with
-(here `Apennine-test`), write the resolved name back to the name column, keeping the original
-where a name did not resolve, and pass the result to `resy_classify()`. The species list is taken from
-`expert$aggs`, which holds the taxa of the expert system: each name is a taxon
-the rules use, and its elements are the names counted as that taxon.
-
-```{r classify, message=FALSE}
-species <- read_csv(
-  system.file("extdata", "data_example_species.csv", package = "RESY"),
-  show_col_types = FALSE
-)
-species <- head(species, 200)   # keep the example quick
-
-obs <- data.frame(
-  PlotObservationID = species$PlotObservationID,
-  TaxonName         = species$scientificName,
-  Cover_Perc        = species$Cover_Perc,
-  stringsAsFactors  = FALSE
-)
-expert <- resy_load_expert(scheme = "Apennine-test")
-expert_vocab <- unique(c(names(expert$aggs), unlist(expert$aggs, use.names = FALSE)))
-
-resolved_obs <- resy_resolve_taxa(
-  obs, species_col = "TaxonName", canonical = expert_vocab
-)
-table(resolved_obs$taxon_confidence)
-
-resolved_obs$TaxonName <- ifelse(
-  is.na(resolved_obs$canonical), resolved_obs$TaxonName, resolved_obs$canonical
-)
-obs <- resolved_obs[c("PlotObservationID", "TaxonName", "Cover_Perc")]
-header <- as.data.frame(unique(obs["PlotObservationID"]))
-
-res <- resy_classify(obs, header, scheme = "Apennine-test")
-head(res$result.classification)
-```
-
-For a quick pass, `resy_classify(..., resolve_taxa = TRUE)` runs the resolution
-against the species list of the expert system and then classifies in a single call, and reports
-what it did in `res$taxon_resolution`. The two-step route above is recommended,
-since it lets you check the unresolved names before they reach the classifier.
+The synonym table that RESY used to bridge other name sources to these
+releases (`resy_resolve_taxa()`, `resy_read_synonyms()`,
+`resy_canonical_species()`) is deprecated and will be removed in RESY 0.4.
 
 ## References
 
-Chamberlain S, Szocs E ([2013](https://f1000research.com/articles/2-191/v2)) taxize: taxonomic search and retrieval in R. &ndash; _F1000Research_ 2, 191. [https://f1000research.com/articles/2-191/v2](https://f1000research.com/articles/2-191/v2)
-
 Chytrý M, Tichý L, Hennekens SM, Knollová I et al. ([2020](https://doi.org/10.1111/avsc.12519)) EUNIS Habitat Classification: expert system, characteristic species combinations and distribution maps of European habitats. &ndash; _Applied Vegetation Science_ 23, 648&ndash;675. [https://doi.org/10.1111/avsc.12519](https://doi.org/10.1111/avsc.12519)
 
-Colling G ([2026](https://doi.org/10.32614/CRAN.package.taxify)) taxify: Offline Taxonomic Name Matching Against Darwin Core Backbones. &ndash; R package version `r build$taxify_version`. [https://doi.org/10.32614/CRAN.package.taxify](https://doi.org/10.32614/CRAN.package.taxify)
+Euro+Med (2006+) Euro+Med PlantBase &ndash; the information resource for Euro-Mediterranean plant diversity. [https://europlusmed.org](https://europlusmed.org)
+
+Jansen F, Dengler J ([2010](https://doi.org/10.1111/j.1654-1103.2010.01209.x)) Plant names in vegetation databases &ndash; a neglected source of bias. &ndash; _Journal of Vegetation Science_ 21, 1179&ndash;1186. [https://doi.org/10.1111/j.1654-1103.2010.01209.x](https://doi.org/10.1111/j.1654-1103.2010.01209.x)

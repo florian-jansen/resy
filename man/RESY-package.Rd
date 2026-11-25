@@ -19,10 +19,9 @@ the ESy \code{.txt} or \code{.json} format can be added.
 \item Pick an expert system: \code{\link[=resy_available_classifications]{resy_available_classifications()}} lists the
 shipped ones, \code{\link[=resy_add_classification]{resy_add_classification()}} stores your own, and
 \code{\link[=resy_load_expert]{resy_load_expert()}} loads one.
-\item Prepare the plot data: \code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}} checks species names
-against the expert system, \code{\link[=resy_resolve_taxa]{resy_resolve_taxa()}} harmonises names from
-other taxonomic backbones, and \code{\link[=resy_harmonize_eunis]{resy_harmonize_eunis()}} adds the header
-columns EUNIS-ESy needs.
+\item Prepare the plot data: \code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}} matches the species
+names to the taxonomic backbone of the expert system (\code{\link[=resy_backbone]{resy_backbone()}}),
+and \code{\link[=resy_harmonize_eunis]{resy_harmonize_eunis()}} adds the header columns EUNIS-ESy needs.
 \item Classify with \code{\link[=resy_classify]{resy_classify()}}.
 \item Inspect the result: \code{\link[=resy_candidates]{resy_candidates()}} lists the candidate types per
 plot, \code{\link[=resy_eval_plot]{resy_eval_plot()}} shows why a plot matched, and \code{\link[=resy_expert_tree]{resy_expert_tree()}} shows the type hierarchy.

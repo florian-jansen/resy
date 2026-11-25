@@ -57,7 +57,7 @@ header <- unique(species["PlotObservationID"])
 res <- resy_classify(
   species,
   header,
-  scheme = "Apennine-test"
+  scheme = "Apennine-test", version = "2026-06-27"
 )
 
 resy_candidates(res, top_n = 3)

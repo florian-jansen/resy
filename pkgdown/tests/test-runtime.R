@@ -85,3 +85,23 @@ testthat::test_that("Maker parsing changes with rules and synonyms", {
   testthat::expect_identical(.maker_system(path)$parsed$aggs[[1]], "Abies pectinata")
   unlink(c(path, syn))
 })
+
+testthat::test_that("systems with a backbone match names along the prepared EuroSL", {
+  testthat::skip_if_not_installed("vegdata")
+  bb <- RESY:::.resy_backbone_get("EuroSL",
+                                  system.file("extdata", "eurosl_example.csv.xz", package = "RESY"))
+  path <- tempfile(fileext = ".rds")
+  saveRDS(RESY:::.resy_backbone_prepare(bb), path)
+  resy_page_backbone(path)
+  out <- jsonlite::fromJSON(resy_page_set_expert("Apennine-test"))
+  testthat::expect_identical(out$backbone, "EuroSL")
+  testthat::expect_identical(.page_taxa(c("Fagus sylvatica L.", "Abies pectinata", "Planta inventa")),
+                             c("Fagus sylvatica", "Abies alba", NA))
+  json <- tempfile(fileext = ".json")
+  resy_maker_open(json, scheme = "Apennine-test")
+  testthat::expect_identical(jsonlite::read_json(json)$backbone$name, "EuroSL")
+  txt <- tempfile(fileext = ".txt")
+  resy_maker_write_txt(json, txt)
+  testthat::expect_identical(resy_load_expert(expertfile = txt)$backbone$name, "EuroSL")
+  unlink(c(path, json, txt))
+})

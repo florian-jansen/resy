@@ -1,0 +1,287 @@
+{
+  "metadata": {
+    "scheme": "Apennine-test",
+    "version": "2026-11-25",
+    "description": "Small example expert system for the vegetation of the Italian Apennines and Tuscany: three broad types (forest, non-forest, wetland) and sixteen types."
+  },
+  "backbone": {
+    "name": "EuroSL",
+    "url": "https://eurosl.infinitenature.org",
+    "version": "2026-11-24"
+  },
+  "groups": {
+    "### Trees": [
+      "Fagus sylvatica",
+      "Abies alba",
+      "Castanea sativa",
+      "Quercus",
+      "Acer",
+      "Fraxinus",
+      "Ostrya carpinifolia",
+      "Carpinus betulus",
+      "Alnus glutinosa",
+      "Populus",
+      "Salix alba",
+      "Ulmus minor",
+      "Tilia",
+      "Pinus"
+    ],
+    "### Wetland": [
+      "Lemna",
+      "Potamogeton",
+      "Callitriche",
+      "Myriophyllum",
+      "Ceratophyllum",
+      "Phragmites australis",
+      "Eleocharis",
+      "Mentha requienii",
+      "Mentha aquatica",
+      "Typha",
+      "Schoenoplectus",
+      "Bolboschoenus maritimus",
+      "Lythrum salicaria",
+      "Petasites hybridus",
+      "Limonium narbonense",
+      "Salicornia",
+      "Sarcocornia",
+      "Arthrocnemum",
+      "Halimione portulacoides",
+      "Juncus maritimus"
+    ],
+    "### Beech-forest-trees": [
+      "Fagus sylvatica",
+      "Abies alba"
+    ],
+    "### Beech-forest-herbs": [
+      "Prenanthes purpurea",
+      "Oxalis acetosella",
+      "Dryopteris filix-mas",
+      "Cephalanthera longifolia",
+      "Anemone nemorosa"
+    ],
+    "### Thermophilous-trees": [
+      "Quercus cerris",
+      "Quercus pubescens",
+      "Quercus frainetto",
+      "Acer obtusatum",
+      "Acer campestre",
+      "Acer monspessulanum",
+      "Ostrya carpinifolia",
+      "Fraxinus ornus",
+      "Carpinus orientalis"
+    ],
+    "### Riparian-trees": [
+      "Alnus glutinosa",
+      "Salix alba",
+      "Populus nigra",
+      "Populus alba",
+      "Fraxinus angustifolia",
+      "Ulmus minor"
+    ],
+    "### Nardus-grassland": [
+      "Nardus stricta",
+      "Geum montanum",
+      "Potentilla erecta",
+      "Agrostis capillaris",
+      "Vaccinium myrtillus"
+    ],
+    "### Sub-Mediterranean": [
+      "Quercus pubescens",
+      "Fraxinus ornus",
+      "Asparagus acutifolius",
+      "Brachypodium genuense",
+      "Brachypodium rupestre"
+    ],
+    "### Dry-grassland": [
+      "Bromopsis erecta",
+      "Bothriochloa ischaemum",
+      "Festuca inops",
+      "Festuca circummediterranea",
+      "Koeleria splendens",
+      "Carex caryophyllea",
+      "Eryngium campestre",
+      "Sesleria"
+    ],
+    "### Annual-grassland": [
+      "Vulpia",
+      "Aegilops geniculata",
+      "Aegilops neglecta",
+      "Avena barbata",
+      "Aira caryophyllea",
+      "Aira elegans",
+      "Anisantha rubens",
+      "Anisantha madritensis",
+      "Bromus hordeaceus",
+      "Brachypodium distachyon",
+      "Trifolium scabrum",
+      "Trifolium stellatum",
+      "Trifolium campestre"
+    ],
+    "### Heath-maquis": [
+      "Erica arborea",
+      "Erica scoparia",
+      "Ulex europaeus",
+      "Cistus",
+      "Arbutus unedo",
+      "Myrtus communis",
+      "Phillyrea",
+      "Pistacia lentiscus",
+      "Calicotome",
+      "Helichrysum stoechas",
+      "Spartium junceum"
+    ],
+    "### Coastal-dunes": [
+      "Ammophila arenaria",
+      "Elytrigia juncea",
+      "Eryngium maritimum",
+      "Pancratium maritimum",
+      "Achillea maritima",
+      "Cakile maritima"
+    ],
+    "### Aquatic": [
+      "Lemna",
+      "Potamogeton",
+      "Callitriche",
+      "Myriophyllum",
+      "Ceratophyllum"
+    ],
+    "### Marsh": [
+      "Phragmites australis",
+      "Eleocharis",
+      "Mentha requienii",
+      "Mentha aquatica",
+      "Typha",
+      "Schoenoplectus",
+      "Bolboschoenus maritimus",
+      "Lythrum salicaria",
+      "Petasites hybridus"
+    ],
+    "### Saltmarsh": [
+      "Limonium narbonense",
+      "Salicornia",
+      "Sarcocornia",
+      "Arthrocnemum",
+      "Halimione portulacoides",
+      "Juncus maritimus"
+    ]
+  },
+  "rules": [
+    {
+      "priority": "2",
+      "code": "F",
+      "description": "Forest",
+      "expression": "<#TC Trees GR 25>",
+      "_comment": "Broad type: trees cover more than 25%"
+    },
+    {
+      "priority": "2",
+      "code": "W",
+      "description": "Wetland and water",
+      "expression": "<#TC Wetland GR 25> NOT <#TC Trees GR 25>",
+      "_comment": "Broad type: wetland plants cover more than 25%"
+    },
+    {
+      "priority": "2",
+      "code": "N",
+      "description": "Non-forest",
+      "expression": "<#T$ GR 0> NOT (<#TC Trees GR 25> OR <#TC Wetland GR 25>)",
+      "_comment": "Broad type: every other plot with vegetation"
+    },
+    {
+      "priority": "5",
+      "code": "FB",
+      "description": "Beech-fir montane forest",
+      "expression": "(<#TC Beech-forest-trees GR 15> AND <#TC Beech-forest-herbs GR 10>)"
+    },
+    {
+      "priority": "4",
+      "code": "FF",
+      "description": "Beech and fir forest",
+      "expression": "<#TC Beech-forest-trees GR 25>"
+    },
+    {
+      "priority": "5",
+      "code": "FC",
+      "description": "Chestnut forest",
+      "expression": "<Castanea sativa GR 25>"
+    },
+    {
+      "priority": "4",
+      "code": "FQ",
+      "description": "Thermophilous deciduous forest",
+      "expression": "<#TC Thermophilous-trees GR 25>"
+    },
+    {
+      "priority": "4",
+      "code": "FI",
+      "description": "Holm oak forest",
+      "expression": "<Quercus ilex GR 10> AND <#TC Trees GR 25>"
+    },
+    {
+      "priority": "4",
+      "code": "FR",
+      "description": "Riparian forest",
+      "expression": "<#TC Riparian-trees GR 25>"
+    },
+    {
+      "priority": "5",
+      "code": "NG",
+      "description": "Nardus acidic grassland",
+      "expression": "(<Nardus stricta GR 10> AND <#TC Nardus-grassland GR 25>) NOT <#TC Trees GR 25>"
+    },
+    {
+      "priority": "3",
+      "code": "NS",
+      "description": "Sub-Mediterranean scrub and woodland",
+      "expression": "<#TC Sub-Mediterranean GR 15> NOT <#TC Trees GR 25>"
+    },
+    {
+      "priority": "5",
+      "code": "NA",
+      "description": "Ampelodesmos grassland",
+      "expression": "<Ampelodesmos mauritanicus GR 15> NOT <#TC Trees GR 25>"
+    },
+    {
+      "priority": "4",
+      "code": "NB",
+      "description": "Dry grassland",
+      "expression": "<#TC Dry-grassland GR 15> NOT <#TC Trees GR 25>"
+    },
+    {
+      "priority": "3",
+      "code": "NT",
+      "description": "Mediterranean annual grassland",
+      "expression": "<#TC Annual-grassland GR 15> NOT <#TC Trees GR 25>"
+    },
+    {
+      "priority": "4",
+      "code": "NH",
+      "description": "Heath and maquis",
+      "expression": "<#TC Heath-maquis GR 25> NOT <#TC Trees GR 25>"
+    },
+    {
+      "priority": "4",
+      "code": "ND",
+      "description": "Coastal dunes",
+      "expression": "<#TC Coastal-dunes GR 15> NOT <#TC Trees GR 25>"
+    },
+    {
+      "priority": "4",
+      "code": "WA",
+      "description": "Open water",
+      "expression": "<#TC Aquatic GR 15> NOT <#TC Trees GR 25>"
+    },
+    {
+      "priority": "4",
+      "code": "WM",
+      "description": "Marsh and tall herb vegetation",
+      "expression": "<#TC Marsh GR 25> NOT <#TC Trees GR 25>"
+    },
+    {
+      "priority": "4",
+      "code": "WS",
+      "description": "Saltmarsh",
+      "expression": "<#TC Saltmarsh GR 15> NOT <#TC Trees GR 25>"
+    }
+  ]
+}

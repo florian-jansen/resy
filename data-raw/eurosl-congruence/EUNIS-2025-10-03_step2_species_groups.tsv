@@ -1,0 +1,734 @@
+system	group	member	status	matched_via	suggestion
+EUNIS-2025-10-03	### Alpine-acidophilous-herbs	Hieracium alpinum aggr.	level_unclear	exact	decide taxon level (candidate Hieracium alpinum [SPE, 6MSKEC9P])
+EUNIS-2025-10-03	### Alpine-acidophilous-herbs	Narcissus bulbocodium aggr.	level_unclear	aggregate as species	decide taxon level (candidate Narcissus bulbocodium [SPE, 70T34CHK])
+EUNIS-2025-10-03	### Alpine-acidophilous-herbs	Narcissus pseudonarcissus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Narcissus pseudonarcissus [SPE, 70SK6E1K])
+EUNIS-2025-10-03	### Alpine-acidophilous-herbs	Silene flos-jovis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Alpine-acidophilous-herbs	Trifolium parnassii	needs_cleaning	fuzzy	use Trifolium parnassi [SPE, 6RRKCE9Q]
+EUNIS-2025-10-03	### Aralo-Caspian-semi-desert-species	Salsola dendroides	synonym	exact	use Caroxylon dendroides [SPE, 64RKCCHR6W]
+EUNIS-2025-10-03	### Arctic-alpine-bryophytes-lichens	Cetraria cucullata	synonym	exact	use Flavocetraria cucullata [SPE, 64SKJDSG74]
+EUNIS-2025-10-03	### Arctic-alpine-bryophytes-lichens	Cetraria nivalis	synonym	exact	use Flavocetraria nivalis [SPE, 64SKJDSH60]
+EUNIS-2025-10-03	### Arctic-alpine-bryophytes-lichens	Sphaerophorus globosus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Sphaerophorus globosus [SPE, 64T3CE9R6C])
+EUNIS-2025-10-03	### Arctic-alpine-bryophytes-lichens	Vulpicidia tubulosus	synonym	exact	use Vulpicida juniperinus [SPE, 64T3GDHK70]
+EUNIS-2025-10-03	### Arctic-alpine-dwarf-willows	Salix herbacea x polaris	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Atlantic-and-Baltic-soft-sea-cliff-salt-indicators	Plantago coronopus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Plantago coronopus [SPE, 64RK8D1G])
+EUNIS-2025-10-03	### Atlantic-forest-species	Hedera helix aggr.	level_unclear	aggregate as species	decide taxon level (candidate Hedera helix [SPE, 6CRKGD1M])
+EUNIS-2025-10-03	### Atlantic-heath-shrubs	Ulex boivinii	synonym	exact	use Stauracanthus boivinii [SPE, 6RTK4E1Q]
+EUNIS-2025-10-03	### Betula pendula-pubescens	Betula alba	synonym	exact	use Betula pubescens var. pubescens [VAR, 64R38D1N6W]
+EUNIS-2025-10-03	### Betula pendula-pubescens	Betula alba aggr.	synonym	exact	use Betula pendula agg. [AGG, 64TK6CHH64]
+EUNIS-2025-10-03	### Betula pendula-pubescens	Betula pendula x pubescens	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Betula pendula-pubescens	Betula pendula + B. pubescens	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Bog-Pinus	Pinus mugo subsp. mugo	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Bog-Pinus	Pinus mugo subsp. rotundata	synonym	exact	use Pinus rotundata [SPE, 68VKECSS]
+EUNIS-2025-10-03	### Brackish-water-macrophytes	Ceramium nodulosum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Brackish-water-macrophytes	Ectocarpus confervoides	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Brackish-water-macrophytes	Enteromorpha intestinalis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Brackish-water-macrophytes	Enteromorpha prolifera	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Brackish-water-macrophytes	Enteromorpha species	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Brackish-water-macrophytes	Fucus mytili	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Brackish-water-macrophytes	Furcellaria fastigiata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Brackish-water-macrophytes	Phyllophora truncata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### C-Mediterranean-mountain-thorny-cushion-shrubs	Astracantha nebrodensis	synonym	exact	use Astragalus nebrodensis [SPE, 6RT3JE1R]
+EUNIS-2025-10-03	### C-Mediterranean-mountain-thorny-cushion-shrubs	Astracantha parnassi subsp. calabrica	needs_cleaning	fuzzy	use Astragalus parnassi subsp. calabricus [SSP, 6RR3AC1M]
+EUNIS-2025-10-03	### C-Mediterranean-mountain-thorny-cushion-shrubs	Astracantha sicula	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Canary-Island-xerophytic-scrub-species	Cytisus filipes	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Canary-Island-xerophytic-scrub-species	ChrysoChrysoChrysojasminum odoratissimum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Canary-Island-xerophytic-scrub-species	Vicia aphylla	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Chamaephytes	Arenaria aggregata aggr.	level_unclear	aggregate as species	decide taxon level (candidate Arenaria aggregata [SPE, 64V3JE0])
+EUNIS-2025-10-03	### Chamaephytes	Arenaria procera	synonym	exact	use Eremogone procera [SPE, 70TK8DR]
+EUNIS-2025-10-03	### Chamaephytes	Astracantha nebrodensis	synonym	exact	use Astragalus nebrodensis [SPE, 6RT3JE1R]
+EUNIS-2025-10-03	### Chamaephytes	Astracantha parnassi subsp. calabrica	needs_cleaning	fuzzy	use Astragalus parnassi subsp. calabricus [SSP, 6RR3AC1M]
+EUNIS-2025-10-03	### Chamaephytes	Astracantha sicula	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Chamaephytes	Dianthus arrostii	needs_cleaning	fuzzy	use Dianthus arrostoi [SPE, 6GS3ACR]
+EUNIS-2025-10-03	### Chamaephytes	Dorycnium hirsutum	synonym	exact	use Lotus hirsutus [SPE, 6RV38CSK]
+EUNIS-2025-10-03	### Chamaephytes	Gypsophila arrostii	needs_cleaning	fuzzy	use Gypsophila arrostoi [SPE, 70R36D0]
+EUNIS-2025-10-03	### Chamaephytes	Linum suffruticosum aggr.	level_unclear	aggregate as species	decide taxon level (candidate Linum suffruticosum [SPE, 64VKAC1G])
+EUNIS-2025-10-03	### Chamaephytes	Lotus longesiliquosus	needs_cleaning	fuzzy	use Lotus longisiliquosus [SPE, 6MWKAC9H]
+EUNIS-2025-10-03	### Chamaephytes	Minuartia austriaca	synonym	exact	use Sabulina austriaca [SPE, 74TK6D8]
+EUNIS-2025-10-03	### Chamaephytes	Minuartia cherlerioides	synonym	exact	use Facchinia cherlerioides [SPE, 64R3CDHS]
+EUNIS-2025-10-03	### Chamaephytes	Minuartia graminifolia	synonym	exact	use Mcneillia graminifolia [SPE, 6CV34CG]
+EUNIS-2025-10-03	### Chamaephytes	Minuartia grignensis	synonym	exact	use Facchinia grignensis [SPE, 70R3GC8]
+EUNIS-2025-10-03	### Chamaephytes	Minuartia rupestris	synonym	exact	use Facchinia rupestris [SPE, 68VK6CG]
+EUNIS-2025-10-03	### Chamaephytes	Minuartia villarii	synonym	exact	use Sabulina villarii [SPE, 6WRK2]
+EUNIS-2025-10-03	### Chamaephytes	Ononis masquilierii	needs_cleaning	fuzzy	use Ononis masquillierii [SPE, 6MWK8E1N]
+EUNIS-2025-10-03	### Chamaephytes	Oxytropis jacquinii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Chamaephytes	Satureja montana aggr.	level_unclear	exact	decide taxon level (candidate Satureja montana [SPE, 64R36CSK6R])
+EUNIS-2025-10-03	### Chamaephytes	Sideritis hyssopifolia aggr.	level_unclear	aggregate as species	decide taxon level (candidate Sideritis hyssopifolia [SPE, 70R38E9P])
+EUNIS-2025-10-03	### Chamaephytes	Stellaria holostea	synonym	exact	use Rabelera holostea [SPE, 64TKJE1M]
+EUNIS-2025-10-03	### Chamaephytes	Thymus odoratissimus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Thymus odoratissimus [SPE, 70V3GE9M])
+EUNIS-2025-10-03	### Charoids	Chara delicatula	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Charoids	Chara foetida	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Charoids	Chara jubata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Charoids	Chara pedunculata	synonym	exact	use Chara aculeolata [SPE, 64TK0D1P74]
+EUNIS-2025-10-03	### Charoids	Chara denudata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Charoids	Chara intermedia	synonym	exact	use Chara papillosa [SPE, 64TK0D1S6W]
+EUNIS-2025-10-03	### Charoids	Chara muscosa	synonym	exact	use Chara contraria [SPE, 64TK0D1Q70]
+EUNIS-2025-10-03	### Charoids	Chara polyacantha	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Charoids	Chara rudis	synonym	exact	use Chara subspinosa [SPE, 64TK0D9G60]
+EUNIS-2025-10-03	### Charoids	Tolypella intricata	synonym	exact	use Sphaerochara intricata [SPE, 64TK0D9J6M]
+EUNIS-2025-10-03	### Charoids	Tolypella prolifera	synonym	exact	use Sphaerochara prolifera [SPE, 64TK0D9J6R]
+EUNIS-2025-10-03	### Cliff-ferns	Polypodium x fontqueri	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Crops	x_Triticosecale rimpaui	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Dry-heath-shrubs	Ulex boivinii	synonym	exact	use Stauracanthus boivinii [SPE, 6RTK4E1Q]
+EUNIS-2025-10-03	### Dryas	Dryas integrifolia	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Dry-continental-pine-forest-species	Arenaria procera	synonym	exact	use Eremogone procera [SPE, 70TK8DR]
+EUNIS-2025-10-03	### Dwarf-shrubs	Anthyllis onobrychoides	needs_cleaning	fuzzy	use Anthyllis onobrychioides [SPE, 6WSK6D9K]
+EUNIS-2025-10-03	### Dwarf-shrubs	Anthyllis ramburii	needs_cleaning	fuzzy	use Anthyllis ramburei [SPE, 6WS3JCSM]
+EUNIS-2025-10-03	### Dwarf-shrubs	Arenaria aggregata aggr.	level_unclear	aggregate as species	decide taxon level (candidate Arenaria aggregata [SPE, 64V3JE0])
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha caspica	synonym	exact	use Astragalus caspicus [SPE, 6MVK8C1J]
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha caucasica	synonym	exact	use Astragalus caucasicus [SPE, 6WVKAC9H]
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha condensata	synonym	exact	use Astragalus condensatus [SPE, 6RRKAC9Q]
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha cretica	synonym	exact	use Astragalus creticus [SPE, 6RTKADHN]
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha echinus	synonym	exact	use Astragalus echinus [SPE, 6RVK0D9P]
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha erinacea	synonym	exact	use Astragalus microcephalus [SPE, 6RTK6CHR]
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha granatensis	synonym	exact	use Astragalus granatensis [SPE, 6RTKJC9M]
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha gummifera	synonym	exact	use Astragalus gummifer [SPE, 6MVKED1N]
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha nebrodensis	synonym	exact	use Astragalus nebrodensis [SPE, 6RT3JE1R]
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha parnassi subsp. calabrica	needs_cleaning	fuzzy	use Astragalus parnassi subsp. calabricus [SSP, 6RR3AC1M]
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha parnassi subsp. cyllenea	synonym	exact	use Astragalus thracicus subsp. cylleneus [SSP, 6MWKJD1Q]
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha parnassi subsp. parnassi	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha prusiana	synonym	exact	use Astragalus prusianus [SPE, 6RRK2CHH]
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha rumelica	synonym	exact	use Astragalus rumelicus [SPE, 6RT34CHP]
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha sicula	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha thracica	synonym	exact	use Astragalus thracicus [SPE, 6RRK6C9J]
+EUNIS-2025-10-03	### Dwarf-shrubs	Astracantha trojana	synonym	exact	use Astragalus thracicus [SPE, 6RRK6C9J]
+EUNIS-2025-10-03	### Dwarf-shrubs	Dorycnium fulgurans	synonym	exact	use Lotus dorycnium subsp. fulgurans [SSP, 6RR30E1N]
+EUNIS-2025-10-03	### Dwarf-shrubs	Dorycnium hirsutum	synonym	exact	use Lotus hirsutus [SPE, 6RV38CSK]
+EUNIS-2025-10-03	### Dwarf-shrubs	Dryas integrifolia	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Dwarf-shrubs	Genista balearica	synonym	exact	use Genista valdes-bermejoi [SPE, 6WT34C1P]
+EUNIS-2025-10-03	### Dwarf-shrubs	Lembotropis nigricans	synonym	exact	use Cytisus nigricans [SPE, 6MWKEC9J]
+EUNIS-2025-10-03	### Dwarf-shrubs	Linum suffruticosum aggr.	level_unclear	aggregate as species	decide taxon level (candidate Linum suffruticosum [SPE, 64VKAC1G])
+EUNIS-2025-10-03	### Dwarf-shrubs	Putoria calabrica	synonym	exact	use Plocama calabrica [SPE, 6WS3GCR]
+EUNIS-2025-10-03	### Dwarf-shrubs	Salix herbacea x polaris	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Dwarf-shrubs	Salix sphenophylla	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Dwarf-shrubs	Sideritis hyssopifolia aggr.	level_unclear	aggregate as species	decide taxon level (candidate Sideritis hyssopifolia [SPE, 70R38E9P])
+EUNIS-2025-10-03	### Dwarf-shrubs	Ulex genistoides	synonym	exact	use Stauracanthus genistoides [SPE, 6RR34E9Q]
+EUNIS-2025-10-03	### E-Mediterranean-mountain-thorny-cushion-shrubs	Astracantha arnacantha	synonym	exact	use Astragalus arnacantha [SPE, 6WSK2D1R]
+EUNIS-2025-10-03	### E-Mediterranean-mountain-thorny-cushion-shrubs	Astracantha caspica	synonym	exact	use Astragalus caspicus [SPE, 6MVK8C1J]
+EUNIS-2025-10-03	### E-Mediterranean-mountain-thorny-cushion-shrubs	Astracantha caucasica	synonym	exact	use Astragalus caucasicus [SPE, 6WVKAC9H]
+EUNIS-2025-10-03	### E-Mediterranean-mountain-thorny-cushion-shrubs	Astracantha condensata	synonym	exact	use Astragalus condensatus [SPE, 6RRKAC9Q]
+EUNIS-2025-10-03	### E-Mediterranean-mountain-thorny-cushion-shrubs	Astracantha cretica	synonym	exact	use Astragalus creticus [SPE, 6RTKADHN]
+EUNIS-2025-10-03	### E-Mediterranean-mountain-thorny-cushion-shrubs	Astracantha echinus	synonym	exact	use Astragalus echinus [SPE, 6RVK0D9P]
+EUNIS-2025-10-03	### E-Mediterranean-mountain-thorny-cushion-shrubs	Astracantha parnassi subsp. cyllenea	synonym	exact	use Astragalus thracicus subsp. cylleneus [SSP, 6MWKJD1Q]
+EUNIS-2025-10-03	### E-Mediterranean-mountain-thorny-cushion-shrubs	Astracantha parnassi subsp. parnassi	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### E-Mediterranean-mountain-thorny-cushion-shrubs	Astracantha erinacea	synonym	exact	use Astragalus microcephalus [SPE, 6RTK6CHR]
+EUNIS-2025-10-03	### E-Mediterranean-mountain-thorny-cushion-shrubs	Astracantha rumelica	synonym	exact	use Astragalus rumelicus [SPE, 6RT34CHP]
+EUNIS-2025-10-03	### E-Mediterranean-mountain-thorny-cushion-shrubs	Astracantha thracica	synonym	exact	use Astragalus thracicus [SPE, 6RRK6C9J]
+EUNIS-2025-10-03	### E-garrigue-herbs	Petrorhagia armerioides	synonym	exact	use Dianthus tunicoides [SPE, 64SK4CHN]
+EUNIS-2025-10-03	### Erico-Pinetalia-species	Carduus defloratus aggr.	level_unclear	exact	decide taxon level (candidate Carduus defloratus [SPE, 6CW3ADHN])
+EUNIS-2025-10-03	### Erico-Pinetalia-species	Polygala nicaeensis aggr.	level_unclear	aggregate as species	decide taxon level (candidate Polygala nicaeensis [SPE, 68R3ACHN])
+EUNIS-2025-10-03	### Fresh-water-submerged-macrophytes	Potamogeton antaicus	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Fresh-water-submerged-macrophytes	Potamogeton lucens x perfoliatus	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Fresh-water-submerged-macrophytes	Potamogeton x sparganifolius	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Fresh-water-submerged-macrophytes	Potamogeton x variifolius	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Fresh-water-submerged-macrophytes	Stuckenia x fennica	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Garrigue-and-micro-garrigue-species	Linum suffruticosum aggr.	level_unclear	aggregate as species	decide taxon level (candidate Linum suffruticosum [SPE, 64VKAC1G])
+EUNIS-2025-10-03	### Garrigue-and-micro-garrigue-species	Satureja montana aggr.	level_unclear	exact	decide taxon level (candidate Satureja montana [SPE, 64R36CSK6R])
+EUNIS-2025-10-03	### Genistoid-shrubs	Cytisus arboreus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Cytisus arboreus [SPE, 6RT32DHM])
+EUNIS-2025-10-03	### Genistoid-shrubs	Cytisus ingramii	synonym	exact	use Cytisus commutatus [SPE, 6WSK2CSK]
+EUNIS-2025-10-03	### Genistoid-shrubs	Genista linifolia	synonym	exact	use Teline linifolia [SPE, 6WSK6D9S]
+EUNIS-2025-10-03	### Genistoid-shrubs	Genista monspessulana	synonym	exact	use Teline monspessulana [SPE, 6WT3CCHG]
+EUNIS-2025-10-03	### Gypsophilous-dwarf-shrubs	Astragalus alopecuroides subsp. grossii	needs_cleaning	fuzzy	use Astragalus alopecuroides subsp. grosii [SSP, 6RV38D9G]
+EUNIS-2025-10-03	### Hemicryptophytes	Achnatherum bromoides aggr.	level_unclear	aggregate as species	decide taxon level (candidate Achnatherum bromoides [SPE, 6RV36C9H])
+EUNIS-2025-10-03	### Hemicryptophytes	Aster novi-belgii aggr.	synonym	exact	use Symphyotrichum novi-belgii agg. [AGG, 64TK6E9P6C]
+EUNIS-2025-10-03	### Hemicryptophytes	Aster x salignus	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Hemicryptophytes	Campanula patula aggr.	level_unclear	exact	decide taxon level (candidate Campanula patula [SPE, 64SK6D9G])
+EUNIS-2025-10-03	### Hemicryptophytes	Carduus defloratus aggr.	level_unclear	exact	decide taxon level (candidate Carduus defloratus [SPE, 6CW3ADHN])
+EUNIS-2025-10-03	### Hemicryptophytes	Carlina corymbosa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Carlina corymbosa [SPE, 6CSK8E9K])
+EUNIS-2025-10-03	### Hemicryptophytes	Centaurea alba aggr.	level_unclear	aggregate as species	decide taxon level (candidate Centaurea alba [SPE, 6MRKCD1N])
+EUNIS-2025-10-03	### Hemicryptophytes	Centaurea phrygia aggr.	level_unclear	exact	decide taxon level (candidate Centaurea phrygia [SPE, 6GW30C1M])
+EUNIS-2025-10-03	### Hemicryptophytes	Cirsium spinosissimum aggr.	level_unclear	aggregate as species	decide taxon level (candidate Cirsium spinosissimum [SPE, 6GR3CD1M])
+EUNIS-2025-10-03	### Hemicryptophytes	Cyanus triumfettii aggr.	level_unclear	aggregate as species	decide taxon level (candidate Cyanus triumfettii [SPE, 6CWK2CSM])
+EUNIS-2025-10-03	### Hemicryptophytes	Dorycnium pentaphyllum	synonym	exact	use Lotus dorycnium [SPE, 6RR30E1G]
+EUNIS-2025-10-03	### Hemicryptophytes	Dorycnium rectum	synonym	exact	use Lotus rectus [SPE, 6WS3AD9N]
+EUNIS-2025-10-03	### Hemicryptophytes	Erysimum nevadense aggr.	level_unclear	aggregate as species	decide taxon level (candidate Erysimum nevadense [SPE, 6GTKEDG])
+EUNIS-2025-10-03	### Hemicryptophytes	Ferula communis aggr.	level_unclear	aggregate as species	decide taxon level (candidate Ferula communis [SPE, 68R3CE9H])
+EUNIS-2025-10-03	### Hemicryptophytes	Festuca valesiaca aggr.	level_unclear	aggregate as species	decide taxon level (candidate Festuca valesiaca [SPE, 6WT3ADSK])
+EUNIS-2025-10-03	### Hemicryptophytes	Hedysarum coronarium	synonym	exact	use Sulla coronaria [SPE, 6WSKAE1P]
+EUNIS-2025-10-03	### Hemicryptophytes	Hieracium alpinum aggr.	level_unclear	exact	decide taxon level (candidate Hieracium alpinum [SPE, 6MSKEC9P])
+EUNIS-2025-10-03	### Hemicryptophytes	Lotus delortii	synonym	exact	use Lotus corniculatus subsp. delortii [SSP, 6WSKADSG]
+EUNIS-2025-10-03	### Hemicryptophytes	Lotus preslii	synonym	exact	use Lotus corniculatus subsp. preslii [SSP, 6RTKGE9P]
+EUNIS-2025-10-03	### Hemicryptophytes	Myosotis scorpioides aggr.	synonym	exact	use Myosotis palustris agg. [AGG, 64TK6DHJ74]
+EUNIS-2025-10-03	### Hemicryptophytes	Myosoton aquaticum	synonym	exact	use Stellaria aquatica [SPE, 6RSKEE0]
+EUNIS-2025-10-03	### Hemicryptophytes	Ochlopoa supina	synonym	exact	use Poa supina [SPE, 6RWKAC9K]
+EUNIS-2025-10-03	### Hemicryptophytes	Piptatherum miliaceum	synonym	exact	use Oloptum miliaceum [SPE, 6RWK0E9M]
+EUNIS-2025-10-03	### Hemicryptophytes	Piptatherum virescens	synonym	exact	use Achnatherum virescens [SPE, 64S38D1R68]
+EUNIS-2025-10-03	### Hemicryptophytes	Polygala nicaeensis aggr.	level_unclear	aggregate as species	decide taxon level (candidate Polygala nicaeensis [SPE, 68R3ACHN])
+EUNIS-2025-10-03	### Hemicryptophytes	Sagina subulata	synonym	exact	use Sagina alexandrae [SPE, 6WW3JDG]
+EUNIS-2025-10-03	### Hemicryptophytes	Senecio squalidus subsp. rupestris	synonym	exact	use Senecio rupestris [SPE, 6CV36C1M]
+EUNIS-2025-10-03	### Hemicryptophytes	Silene coronaria	synonym	exact	use Lychnis coronaria [SPE, 64RKCCHK]
+EUNIS-2025-10-03	### Hemicryptophytes	Silene flos-cuculi	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Hemicryptophytes	Silene flos-jovis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Hemicryptophytes	Silene ichnusae	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Hemicryptophytes	Silene suecica	synonym	exact	use Viscaria alpina [SPE, 68SKJE0]
+EUNIS-2025-10-03	### Hemicryptophytes	Silene viscaria	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Macaronesian-xero-halophile-scrub-species	Minuartia webbii	synonym	exact	use Rhodalsine geniculata [SPE, 6RTKA]
+EUNIS-2025-10-03	### Madeiran-xerophytic-scrub-species	ChrysoChrysoChrysojasminum odoratissimum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Mediterranean-genistoid-shrubs	Cytisus arboreus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Cytisus arboreus [SPE, 6RT32DHM])
+EUNIS-2025-10-03	### Mediterranean-genistoid-shrubs	Cytisus ingramii	synonym	exact	use Cytisus commutatus [SPE, 6WSK2CSK]
+EUNIS-2025-10-03	### Mediterranean-genistoid-shrubs	Genista linifolia	synonym	exact	use Teline linifolia [SPE, 6WSK6D9S]
+EUNIS-2025-10-03	### Mediterranean-genistoid-shrubs	Genista monspessulana	synonym	exact	use Teline monspessulana [SPE, 6WT3CCHG]
+EUNIS-2025-10-03	### Mediterranean-halo-nitrophilous-scrub-species	Salsola tetrandra	synonym	exact	use Caroxylon tetrandrum [SPE, 64RKAD9N6M]
+EUNIS-2025-10-03	### Mediterranean-halo-nitrophilous-scrub-species	Salsola divaricata	synonym	exact	use Afrosalsola divaricata [SPE, 64S3CD9P6C]
+EUNIS-2025-10-03	### Mediterranean-halo-nitrophilous-scrub-species	Salsola aegaea	synonym	exact	use Caroxylon aegaeum [SPE, 64RKAD9N6C]
+EUNIS-2025-10-03	### Mediterranean-halo-nitrophilous-scrub-species	Salsola genistoides	synonym	exact	use Caroxylon genistoides [SPE, 64RKCDSM60]
+EUNIS-2025-10-03	### Mediterranean-halo-nitrophilous-scrub-species	Salsola vermiculata	synonym	exact	use Caroxylon vermiculatum [SPE, 64RKEC9Q6M]
+EUNIS-2025-10-03	### Mediterranean-halo-nitrophilous-scrub-species	Salsola verticillata	synonym	exact	use Afrosalsola divaricata subsp. verticillata [SSP, 64S3CD9Q60]
+EUNIS-2025-10-03	### Mediterranean-halo-nitrophilous-scrub-species	Trigonella rechingeri	synonym	exact	use Trigonella corniculata subsp. rechingeri [SSP, 6MWKEC9G]
+EUNIS-2025-10-03	### Mediterranean-mountain-relict-mire-species	Silene asterias	synonym	exact	use Viscaria asterias [SPE, 64SK4DHK]
+EUNIS-2025-10-03	### Mediterranean-riparian-species	Piptatherum miliaceum	synonym	exact	use Oloptum miliaceum [SPE, 6RWK0E9M]
+EUNIS-2025-10-03	### Mesomediterranean-maquis-shrubs	Juniperus oxycedrus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Juniperus oxycedrus [SPE, 64VK4E9R])
+EUNIS-2025-10-03	### Mire-specialist-bryophytes	Sphagnum imbricatum	synonym	exact	use Sphagnum imbricatum agg. [AGG, 64TK6E9M74]
+EUNIS-2025-10-03	### Mire-specialist-bryophytes	Warnstorfia exannulata	synonym	exact	use Sarmentypnum exannulatum [SPE, 64SK6CHH6W]
+EUNIS-2025-10-03	### Native-broadleaf-trees	Acer cappadocicum aggr.	level_unclear	aggregate as species	decide taxon level (candidate Acer cappadocicum [SPE, 6WT38E1P])
+EUNIS-2025-10-03	### Native-broadleaf-trees	Acer undulatum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x airensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x allorgeana	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x arrimatensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x bedaei	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x calvescens	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x cerrioides	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x fagineomirbeckii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x fontanesii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x fontqueri	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x gracilis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x mixta	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x neomairei	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x penasii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x rotensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x salcedoi	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Quercus x senneniana	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-broadleaf-trees	Tilia x vulgaris	synonym	exact	use Tilia ×europaea [SPE, 64TK6C1H68]
+EUNIS-2025-10-03	### Native-conifer-trees	Pinus mugo subsp. rotundata	synonym	exact	use Pinus rotundata [SPE, 68VKECSS]
+EUNIS-2025-10-03	### Native-conifer-trees	Pinus x celakovskiorum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-light-canopy-trees	Pinus mugo subsp. rotundata	synonym	exact	use Pinus rotundata [SPE, 68VKECSS]
+EUNIS-2025-10-03	### Native-light-canopy-trees	Pinus x celakovskiorum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Acer cappadocicum aggr.	level_unclear	aggregate as species	decide taxon level (candidate Acer cappadocicum [SPE, 6WT38E1P])
+EUNIS-2025-10-03	### Native-trees	Acer undulatum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Pinus mugo subsp. rotundata	synonym	exact	use Pinus rotundata [SPE, 68VKECSS]
+EUNIS-2025-10-03	### Native-trees	Pinus x celakovskiorum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x airensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x allorgeana	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x arrimatensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x bedaei	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x calvescens	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x cerrioides	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x fagineomirbeckii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x fontanesii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x fontqueri	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x gracilis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x mixta	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x neomairei	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x penasii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x rotensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x salcedoi	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Quercus x senneniana	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Native-trees	Sorbus hybrida aggr.	level_unclear	aggregate as species	decide taxon level (candidate Sorbus hybrida [SPE, 6RTKAE9N])
+EUNIS-2025-10-03	### Native-trees	Tilia x vulgaris	synonym	exact	use Tilia ×europaea [SPE, 64TK6C1H68]
+EUNIS-2025-10-03	### Non-native-broadleaf-deciduous-trees	Fagus crenata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-broadleaf-deciduous-trees	Fagus sylvatica (cult.)	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-broadleaf-deciduous-trees	Malus pumila	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-broadleaf-deciduous-trees	Prunus dulcis	synonym	exact	use Prunus amygdalus [SPE, 6RW32D1R]
+EUNIS-2025-10-03	### Non-native-broadleaf-deciduous-trees	Pterocarya stenoptera	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-broadleaf-deciduous-trees	Quercus robur (cult.)	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-broadleaf-deciduous-trees	Quercus rubra (cult.)	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-broadleaf-evergreen-trees	Acacia karroo	synonym	exact	use Vachellia karroo [SPE, 6RTKADSQ]
+EUNIS-2025-10-03	### Non-native-conifer-trees	Larix x eurolepis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-conifer-trees	Pinus pinaster (cult.)	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-trees	Acacia karroo	synonym	exact	use Vachellia karroo [SPE, 6RTKADSQ]
+EUNIS-2025-10-03	### Non-native-trees	Fagus crenata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-trees	Fagus sylvatica (cult.)	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-trees	Larix x eurolepis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-trees	Malus pumila	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-trees	Pinus pinaster (cult.)	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-trees	Prunus dulcis	synonym	exact	use Prunus amygdalus [SPE, 6RW32D1R]
+EUNIS-2025-10-03	### Non-native-trees	Pterocarya stenoptera	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-trees	Quercus robur (cult.)	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Non-native-trees	Quercus rubra (cult.)	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Pan-Mediterranean-basic-garrigue-shrubs	Dorycnium hirsutum	synonym	exact	use Lotus hirsutus [SPE, 6RV38CSK]
+EUNIS-2025-10-03	### Pinus mugo subsp. mugo	Pinus mugo subsp. mugo	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### R1B-Continental-dry-grassland-true-steppe-specialists	Festuca valesiaca aggr.	level_unclear	aggregate as species	decide taxon level (candidate Festuca valesiaca [SPE, 6WT3ADSK])
+EUNIS-2025-10-03	### R1E-Mediterranean-tall-perennial-dry-grassland-specialists	Stipa parviflora	synonym	exact	use Stipellula parviflora [SPE, 6RW36D9P]
+EUNIS-2025-10-03	### R1K-Balkan-and-Anatolian-oromediterranean-dry-grassland-specialists	Trifolium parnassii	needs_cleaning	fuzzy	use Trifolium parnassi [SPE, 6RRKCE9Q]
+EUNIS-2025-10-03	### R1L-Madeiran-oromediterranean-siliceous-dry-grassland-specialists	Anthyllis lemanniana	synonym	exact	use Anthyllis vulneraria subsp. lemanniana [SSP, 6RVKAE1P]
+EUNIS-2025-10-03	### R31-Mediterranean-tall-humid-inland-grassland-specialists	Dorycnium hirsutum	synonym	exact	use Lotus hirsutus [SPE, 6RV38CSK]
+EUNIS-2025-10-03	### R31-Mediterranean-tall-humid-inland-grassland-specialists	Dorycnium rectum	synonym	exact	use Lotus rectus [SPE, 6WS3AD9N]
+EUNIS-2025-10-03	### R31-Mediterranean-tall-humid-inland-grassland-specialists	Serapias vomeracea aggr.	level_unclear	aggregate as species	decide taxon level (candidate Serapias vomeracea [SPE, 74V30CSM])
+EUNIS-2025-10-03	### R31-Mediterranean-tall-humid-inland-grassland-specialists	Succisella andreae-molinae	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Semi-desert-riparian-shrubs	Tamarix elongata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Aronia x prunifolia	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Caragana stenophylla	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Colutea arborescens aggr.	level_unclear	exact	decide taxon level (candidate Colutea arborescens [SPE, 74VK8E9P])
+EUNIS-2025-10-03	### Shrubs	Cotoneaster x matrensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Crataegus x dipyrena	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Crataegus x kyrtostyla	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Cytisus arboreus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Cytisus arboreus [SPE, 6RT32DHM])
+EUNIS-2025-10-03	### Shrubs	Cytisus ardoinii	needs_cleaning	fuzzy	use Cytisus ardoinoi [SPE, 74RK2CHJ]
+EUNIS-2025-10-03	### Shrubs	Cytisus fontanesii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Cytisus ingramii	synonym	exact	use Cytisus commutatus [SPE, 6WSK2CSK]
+EUNIS-2025-10-03	### Shrubs	Cytisus reverchonii	synonym	exact	use Cytisus scoparius subsp. reverchonii [SSP, 6RVKAE9P]
+EUNIS-2025-10-03	### Shrubs	Cytisus x praecox	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Daphne x savensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Dasiphora parvifolia	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Genista linifolia	synonym	exact	use Teline linifolia [SPE, 6WSK6D9S]
+EUNIS-2025-10-03	### Shrubs	Genista monspessulana	synonym	exact	use Teline monspessulana [SPE, 6WT3CCHG]
+EUNIS-2025-10-03	### Shrubs	Juniperus oxycedrus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Juniperus oxycedrus [SPE, 64VK4E9R])
+EUNIS-2025-10-03	### Shrubs	Pinus mugo subsp. mugo	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Rosa arvensis x sempervirens	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Rosa canina x deseglisei	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Rosa canina x micrantha	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Rosa obtusifolia aggr.	level_unclear	aggregate as species	decide taxon level (candidate Rosa corymbifera [SPE, 6WR3ADHQ])
+EUNIS-2025-10-03	### Shrubs	Rosa squarrosa x canina	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Rosa x dumetorum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Rubus fruticosus aggr.	synonym	exact	use Rubus sect. Rubus [SEC, 64TK6E1M6W]
+EUNIS-2025-10-03	### Shrubs	Salix fragilis x pentandra	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Salix krylovii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Salix phlebophylla	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Salix phylicifolia x glauca	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Salix silesiaca x aurita	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Salix silesiaca x caprea	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Salix viminalis x purpurea	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Salsola dendroides	synonym	exact	use Caroxylon dendroides [SPE, 64RKCCHR6W]
+EUNIS-2025-10-03	### Shrubs	Salsola laricina	synonym	exact	use Caroxylon laricinum [SPE, 64RKCE9P74]
+EUNIS-2025-10-03	### Shrubs	Salsola vermiculata	synonym	exact	use Caroxylon vermiculatum [SPE, 64RKEC9Q6M]
+EUNIS-2025-10-03	### Shrubs	Tamarix elongata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Shrubs	Ulex boivinii	synonym	exact	use Stauracanthus boivinii [SPE, 6RTK4E1Q]
+EUNIS-2025-10-03	### Sphagnum	Sphagnum apiculatum	synonym	exact	use Sphagnum fallax [SPE, 64SK6CSJ74]
+EUNIS-2025-10-03	### Sphagnum	Sphagnum sect. Acutifolia	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Sphagnum	Sphagnum sect. Cuspidata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Sphagnum	Sphagnum tenerum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Subalpine	Pinus mugo subsp. mugo	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Temperate-Rubus	Rubus fruticosus aggr.	synonym	exact	use Rubus sect. Rubus [SEC, 64TK6E1M6W]
+EUNIS-2025-10-03	### Trees	Acacia karroo	synonym	exact	use Vachellia karroo [SPE, 6RTKADSQ]
+EUNIS-2025-10-03	### Trees	Acer cappadocicum aggr.	level_unclear	aggregate as species	decide taxon level (candidate Acer cappadocicum [SPE, 6WT38E1P])
+EUNIS-2025-10-03	### Trees	Acer undulatum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Fagus crenata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Fagus sylvatica (cult.)	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Larix x eurolepis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Malus pumila	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Pinus mugo subsp. rotundata	synonym	exact	use Pinus rotundata [SPE, 68VKECSS]
+EUNIS-2025-10-03	### Trees	Pinus pinaster (cult.)	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Pinus x celakovskiorum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Prunus dulcis	synonym	exact	use Prunus amygdalus [SPE, 6RW32D1R]
+EUNIS-2025-10-03	### Trees	Pterocarya stenoptera	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus elliptica	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus robur (cult.)	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus rubra (cult.)	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x airensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x allorgeana	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x arrimatensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x bedaei	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x benkoei	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x calvescens	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x cazanensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x cerrioides	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x fagineomirbeckii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x fontanesii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x fontqueri	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x gracilis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x mixta	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x neomairei	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x penasii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x rotensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x salcedoi	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Quercus x senneniana	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### Trees	Sorbus hybrida aggr.	level_unclear	aggregate as species	decide taxon level (candidate Sorbus hybrida [SPE, 6RTKAE9N])
+EUNIS-2025-10-03	### Trees	Tilia x vulgaris	synonym	exact	use Tilia ×europaea [SPE, 64TK6C1H68]
+EUNIS-2025-10-03	### W-Mediterranean-coastal-spiny-shrubs	Dorycnium fulgurans	synonym	exact	use Lotus dorycnium subsp. fulgurans [SSP, 6RR30E1N]
+EUNIS-2025-10-03	### W-acidic-garrigue-herbs	Centaurea alba aggr.	level_unclear	aggregate as species	decide taxon level (candidate Centaurea alba [SPE, 6MRKCD1N])
+EUNIS-2025-10-03	### W-acidic-garrigue-herbs	Narcissus triandrus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Narcissus triandrus [SPE, 70RK4CHG])
+EUNIS-2025-10-03	### W-acidic-garrigue-shrubs	Ulex genistoides	synonym	exact	use Stauracanthus genistoides [SPE, 6RR34E9Q]
+EUNIS-2025-10-03	### W-basic-garrigue-herbs	Centaurea alba aggr.	level_unclear	aggregate as species	decide taxon level (candidate Centaurea alba [SPE, 6MRKCD1N])
+EUNIS-2025-10-03	### W-basic-garrigue-herbs	Erysimum nevadense aggr.	level_unclear	aggregate as species	decide taxon level (candidate Erysimum nevadense [SPE, 6GTKEDG])
+EUNIS-2025-10-03	### W-basic-garrigue-herbs	Jasione crispa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Jasione crispa [SPE, 64TKJCHP])
+EUNIS-2025-10-03	### W-basic-garrigue-herbs	Teucrium bicoloreum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### W-basic-garrigue-shrubs	Anthyllis onobrychoides	needs_cleaning	fuzzy	use Anthyllis onobrychioides [SPE, 6WSK6D9K]
+EUNIS-2025-10-03	### W-basic-garrigue-shrubs	Anthyllis ramburii	needs_cleaning	fuzzy	use Anthyllis ramburei [SPE, 6WS3JCSM]
+EUNIS-2025-10-03	### W-basic-garrigue-shrubs	Arenaria aggregata aggr.	level_unclear	aggregate as species	decide taxon level (candidate Arenaria aggregata [SPE, 64V3JE0])
+EUNIS-2025-10-03	### W-basic-garrigue-shrubs	Astracantha granatensis	synonym	exact	use Astragalus granatensis [SPE, 6RTKJC9M]
+EUNIS-2025-10-03	### W-basic-garrigue-shrubs	Cytisus fontanesii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	### W-basic-garrigue-shrubs	Genista balearica	synonym	exact	use Genista valdes-bermejoi [SPE, 6WT34C1P]
+EUNIS-2025-10-03	### W-basic-garrigue-shrubs	Linum suffruticosum aggr.	level_unclear	aggregate as species	decide taxon level (candidate Linum suffruticosum [SPE, 64VKAC1G])
+EUNIS-2025-10-03	### W-basic-garrigue-shrubs	Sideritis hyssopifolia aggr.	level_unclear	aggregate as species	decide taxon level (candidate Sideritis hyssopifolia [SPE, 70R38E9P])
+EUNIS-2025-10-03	### Weeds-of-low-intensity-agricultural-land	Leopoldia comosa	synonym	exact	use Muscari comosum [SPE, 6MVKGC1N]
+EUNIS-2025-10-03	### Weeds-of-low-intensity-agricultural-land	Medicago polymorpha aggr.	level_unclear	aggregate as species	decide taxon level (candidate Medicago polymorpha [SPE, 6RSKECHS])
+EUNIS-2025-10-03	### Weeds-of-low-intensity-agricultural-land	Vaccaria hispanica	synonym	exact	use Gypsophila vaccaria [SPE, 68SK8CG]
+EUNIS-2025-10-03	##D +01 MA222-Atlantic-upper-saltmarsh	Odontites vulgaris aggr.	level_unclear	aggregate as species	decide taxon level (candidate Odontites vulgaris [SPE, 64T30D1G])
+EUNIS-2025-10-03	##D +01 MA222-Atlantic-upper-saltmarsh	Plantago coronopus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Plantago coronopus [SPE, 64RK8D1G])
+EUNIS-2025-10-03	##D +01 MA232-Baltic-coastal-meadow	Odontites vulgaris aggr.	level_unclear	aggregate as species	decide taxon level (candidate Odontites vulgaris [SPE, 64T30D1G])
+EUNIS-2025-10-03	##D +01 N13-Atlantic-and-Baltic-shifting-coastal-dune	x_Calammophila baltica	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +01 N15-Atlantic-and-Baltic-coastal-dune-grassland-grey-dune	Bupleurum baldense aggr.	level_unclear	aggregate as species	decide taxon level (candidate Bupleurum baldense [SPE, 68VKAD9J])
+EUNIS-2025-10-03	##D +01 N15-Atlantic-and-Baltic-coastal-dune-grassland-grey-dune	Viola tricolor aggr.	synonym	exact	use Viola tricolor agg. s. l. [GRP, 64TK8C1P6R]
+EUNIS-2025-10-03	##D +01 N1H-Atlantic-and-Baltic-moist-and-wet-dune-slack	Anacamptis palustris aggr.	level_unclear	aggregate as species	decide taxon level (candidate Anacamptis palustris [SPE, 70S30E9P])
+EUNIS-2025-10-03	##D +01 N31-Atlantic-and-Baltic-rocky-sea-cliff-and-shore	Jasione crispa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Jasione crispa [SPE, 64TKJCHP])
+EUNIS-2025-10-03	##D +01 N31-Atlantic-and-Baltic-rocky-sea-cliff-and-shore	Plantago coronopus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Plantago coronopus [SPE, 64RK8D1G])
+EUNIS-2025-10-03	##D +01 N34-Atlantic-and-Baltic-soft-sea-cliff	Plantago coronopus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Plantago coronopus [SPE, 64RK8D1G])
+EUNIS-2025-10-03	##D +02 MA251-Mediterranean-upper-saltmarsh	Plantago coronopus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Plantago coronopus [SPE, 64RK8D1G])
+EUNIS-2025-10-03	##D +02 N12-Mediterranean-and-Black-Sea-sand-beach	Astragalus baionensis	needs_cleaning	fuzzy	use Astragalus baionnensis [SPE, 6RTK6CHK]
+EUNIS-2025-10-03	##D +02 N1J-Mediterranean-and-Black-Sea-moist-and-wet-dune-slack	Anacamptis palustris aggr.	level_unclear	aggregate as species	decide taxon level (candidate Anacamptis palustris [SPE, 70S30E9P])
+EUNIS-2025-10-03	##D +02 N32-Mediterranean-and-Black-Sea-rocky-sea-cliff-and-shore	Genista thyrrena	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +02 N32-Mediterranean-and-Black-Sea-rocky-sea-cliff-and-shore	Plantago coronopus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Plantago coronopus [SPE, 64RK8D1G])
+EUNIS-2025-10-03	##D +02 N32-Mediterranean-and-Black-Sea-rocky-sea-cliff-and-shore	Salsola aegaea	synonym	exact	use Caroxylon aegaeum [SPE, 64RKAD9N6C]
+EUNIS-2025-10-03	##D +02 N32-Mediterranean-and-Black-Sea-rocky-sea-cliff-and-shore	Silene compacta	synonym	exact	use Atocion compactum [SPE, 68VK0CR]
+EUNIS-2025-10-03	##D +02 N32-Mediterranean-and-Black-Sea-rocky-sea-cliff-and-shore	Silene martinolii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +02 N33-Macaronesian-rocky-sea-cliff-and-shore	Plantago coronopus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Plantago coronopus [SPE, 64RK8D1G])
+EUNIS-2025-10-03	##D +03 U2a-Siliceous-high-mountain-scree	Minuartia inamoena	synonym	exact	use Pseudocherleria inamoena [SPE, 64S30CSQ]
+EUNIS-2025-10-03	##D +03 U2b-Siliceous-lowland-scree	Ranunculus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Ranunculus [GAT, 64R32E1R70])
+EUNIS-2025-10-03	##D +03 U2c-Base-rich-high-mountain-scree	Erysimum duriaei aggr.	level_unclear	aggregate as species	decide taxon level (candidate Erysimum duriaei [SPE, 6WVKJC0])
+EUNIS-2025-10-03	##D +03 U2c-Base-rich-high-mountain-scree	Minuartia austriaca	synonym	exact	use Sabulina austriaca [SPE, 74TK6D8]
+EUNIS-2025-10-03	##D +03 U2c-Base-rich-high-mountain-scree	Minuartia cerastiifolia	synonym	exact	use Facchinia cerastiifolia [SPE, 74VKECG]
+EUNIS-2025-10-03	##D +03 U2c-Base-rich-high-mountain-scree	Minuartia pauciflora	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U2d-Base-rich-lowland-scree	Erysimum duriaei aggr.	level_unclear	aggregate as species	decide taxon level (candidate Erysimum duriaei [SPE, 6WVKJC0])
+EUNIS-2025-10-03	##D +03 U2d-Base-rich-lowland-scree	Gouffeia arenarioides	synonym	exact	use Arenaria provincialis [SPE, 6MWK8C0]
+EUNIS-2025-10-03	##D +03 U2d-Base-rich-lowland-scree	Minuartia pauciflora	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U2d-Base-rich-lowland-scree	Putoria calabrica	synonym	exact	use Plocama calabrica [SPE, 6WS3GCR]
+EUNIS-2025-10-03	##D +03 U3a-Siliceous-high-mountain-cliff	Jasione crispa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Jasione crispa [SPE, 64TKJCHP])
+EUNIS-2025-10-03	##D +03 U3a-Siliceous-high-mountain-cliff	Minuartia villarii	synonym	exact	use Sabulina villarii [SPE, 6WRK2]
+EUNIS-2025-10-03	##D +03 U3a-Siliceous-high-mountain-cliff	Silene lerchenfeldiana	synonym	exact	use Atocion lerchenfeldianum [SPE, 64SKCCSM]
+EUNIS-2025-10-03	##D +03 U3b-Siliceous-lowland-cliff	Jasione crispa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Jasione crispa [SPE, 64TKJCHP])
+EUNIS-2025-10-03	##D +03 U3b-Siliceous-lowland-cliff	Linaria arcusangeli	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U3b-Siliceous-lowland-cliff	Minuartia villarii	synonym	exact	use Sabulina villarii [SPE, 6WRK2]
+EUNIS-2025-10-03	##D +03 U3b-Siliceous-lowland-cliff	Scilla peruviana	synonym	exact	use Oncostema peruvianum [SPE, 64S34C9K6W]
+EUNIS-2025-10-03	##D +03 U3b-Siliceous-lowland-cliff	Silene coelirosa	needs_cleaning	fuzzy	use Eudianthe coeli-rosa [SPE, 68SKJD0]
+EUNIS-2025-10-03	##D +03 U3c-Base-rich-high-mountain-cliff	Jasione crispa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Jasione crispa [SPE, 64TKJCHP])
+EUNIS-2025-10-03	##D +03 U3c-Base-rich-high-mountain-cliff	Minuartia cherlerioides	synonym	exact	use Facchinia cherlerioides [SPE, 64R3CDHS]
+EUNIS-2025-10-03	##D +03 U3c-Base-rich-high-mountain-cliff	Minuartia grignensis	synonym	exact	use Facchinia grignensis [SPE, 70R3GC8]
+EUNIS-2025-10-03	##D +03 U3c-Base-rich-high-mountain-cliff	Minuartia pauciflora	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U3c-Base-rich-high-mountain-cliff	Minuartia rupestris	synonym	exact	use Facchinia rupestris [SPE, 68VK6CG]
+EUNIS-2025-10-03	##D +03 U3c-Base-rich-high-mountain-cliff	Minuartia villarii	synonym	exact	use Sabulina villarii [SPE, 6WRK2]
+EUNIS-2025-10-03	##D +03 U3d-Base-rich-lowland-cliff	Antirrhinum subbaeticum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U3d-Base-rich-lowland-cliff	Asperula naufraga	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U3d-Base-rich-lowland-cliff	Chaenorhinum semiglabrum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U3d-Base-rich-lowland-cliff	Jasione crispa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Jasione crispa [SPE, 64TKJCHP])
+EUNIS-2025-10-03	##D +03 U3d-Base-rich-lowland-cliff	Medicago strasseri	synonym	exact	use Medicago arborea subsp. strasseri [SSP, 6RSKAC9J]
+EUNIS-2025-10-03	##D +03 U3d-Base-rich-lowland-cliff	Minuartia graminifolia	synonym	exact	use Mcneillia graminifolia [SPE, 6CV34CG]
+EUNIS-2025-10-03	##D +03 U3d-Base-rich-lowland-cliff	Minuartia grignensis	synonym	exact	use Facchinia grignensis [SPE, 70R3GC8]
+EUNIS-2025-10-03	##D +03 U3d-Base-rich-lowland-cliff	Minuartia pauciflora	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U3d-Base-rich-lowland-cliff	Minuartia pichleri	synonym	exact	use Sabulina pichleri [SPE, 6WT36DR]
+EUNIS-2025-10-03	##D +03 U3d-Base-rich-lowland-cliff	Minuartia villarii	synonym	exact	use Sabulina villarii [SPE, 6WRK2]
+EUNIS-2025-10-03	##D +03 U3d-Base-rich-lowland-cliff	Petrorhagia armerioides	synonym	exact	use Dianthus tunicoides [SPE, 64SK4CHN]
+EUNIS-2025-10-03	##D +03 U3d-Base-rich-lowland-cliff	Putoria calabrica	synonym	exact	use Plocama calabrica [SPE, 6WS3GCR]
+EUNIS-2025-10-03	##D +03 U3d-Base-rich-lowland-cliff	Scilla peruviana	synonym	exact	use Oncostema peruvianum [SPE, 64S34C9K6W]
+EUNIS-2025-10-03	##D +03 U3d-Base-rich-lowland-cliff	Silene gazulensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U3C-Macaronesian-inland-cliff	Aeonium x burchardii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U3C-Macaronesian-inland-cliff	Aeonium x meyerheymii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U3C-Macaronesian-inland-cliff	Aichryson bituminosum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U3C-Macaronesian-inland-cliff	Minuartia platyphylla	synonym	exact	use Rhodalsine geniculata [SPE, 6RTKA]
+EUNIS-2025-10-03	##D +03 U3C-Macaronesian-inland-cliff	Polypodium x fontqueri	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U52-Polar-desert	Gowardia nigricans	synonym	exact	use Alectoria nigricans [SPE, 64SKAE9H68]
+EUNIS-2025-10-03	##D +03 U52-Polar-desert	Parmelia skultii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U52-Polar-desert	Sticta arctica	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U62-Mediterranean-and-temperate-volcanic-field	Astracantha sicula	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U62-Mediterranean-and-temperate-volcanic-field	Helichrysum teydeum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +03 U62-Mediterranean-and-temperate-volcanic-field	Senecio squalidus subsp. aethnensis	synonym	exact	use Senecio aethnensis [SPE, 6CV30CHS]
+EUNIS-2025-10-03	##D +04 Spring-species	Platyhypnum molle aggr.	level_unclear	aggregate as species	decide taxon level (candidate Platyhypnum molle [SPE, 64SK4DHN74])
+EUNIS-2025-10-03	##D +04 Spring-species	Myosotis scorpioides aggr.	synonym	exact	use Myosotis palustris agg. [AGG, 64TK6DHJ74]
+EUNIS-2025-10-03	##D +04 Bog-species	Sphaerophorus globosus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Sphaerophorus globosus [SPE, 64T3CE9R6C])
+EUNIS-2025-10-03	##D +04 Fen-species	Silene asterias	synonym	exact	use Viscaria asterias [SPE, 64SK4DHK]
+EUNIS-2025-10-03	##D +04 Fen-species	Warnstorfia exannulata	synonym	exact	use Sarmentypnum exannulatum [SPE, 64SK6CHH6W]
+EUNIS-2025-10-03	##D +04 Q51-Tall-helophyte-bed	Myosotis scorpioides aggr.	synonym	exact	use Myosotis palustris agg. [AGG, 64TK6DHJ74]
+EUNIS-2025-10-03	##D +04 Q52-Small-helophyte-bed	Myosotis scorpioides aggr.	synonym	exact	use Myosotis palustris agg. [AGG, 64TK6DHJ74]
+EUNIS-2025-10-03	##D +04 Q62-Periodically-exposed-shore-with-stable-mesotrophic-sediments-with-pioneer-vegetation	Cerastium dubium	synonym	exact	use Dichodon viscidum [SPE, 6MSKED8]
+EUNIS-2025-10-03	##D +04 Q62-Periodically-exposed-shore-with-stable-mesotrophic-sediments-with-pioneer-vegetation	Chaetopogon fasciculatus	synonym	exact	use Agrostis linkii [SPE, 6WT3GE1Q]
+EUNIS-2025-10-03	##D +04 Q62-Periodically-exposed-shore-with-stable-mesotrophic-sediments-with-pioneer-vegetation	Fossombronia wodraczekii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 R12-Cryptogam-and-annual-dominated-vegetation-on-siliceous-rock-outcrops	Minuartia greuterina	needs_cleaning	fuzzy	use Minuartia greuteriana [SPE, 64V3AD1G]
+EUNIS-2025-10-03	##D +04 R13-Cryptogam-and-annual-dominated-vegetation-on-calcareous-and-ultramafic-rock-outcrops	Cladonia symphycarpia	needs_cleaning	fuzzy	use Cladonia symphycarpa [SPE, 64SKGE1S6C]
+EUNIS-2025-10-03	##D +04 R13-Cryptogam-and-annual-dominated-vegetation-on-calcareous-and-ultramafic-rock-outcrops	Crepis foliosa	synonym	exact	use Crepis foliata [SPE, 6GWKCD9H]
+EUNIS-2025-10-03	##D +04 R13-Cryptogam-and-annual-dominated-vegetation-on-calcareous-and-ultramafic-rock-outcrops	Leptogium schraderi	synonym	exact	use Scytinium schraderi [SPE, 64T3CE1Q68]
+EUNIS-2025-10-03	##D +04 R13-Cryptogam-and-annual-dominated-vegetation-on-calcareous-and-ultramafic-rock-outcrops	Minuartia mesogitana	synonym	exact	use Sabulina mesogitana [SPE, 74VKCD8]
+EUNIS-2025-10-03	##D +04 R13-Cryptogam-and-annual-dominated-vegetation-on-calcareous-and-ultramafic-rock-outcrops	Mycobilimbia lurida	synonym	exact	use Romjularia lurida [SPE, 64T3CDHN6W]
+EUNIS-2025-10-03	##D +04 R14-Perennial-rocky-grassland-of-the-Italian-Peninsula	Cyanus triumfettii aggr.	level_unclear	aggregate as species	decide taxon level (candidate Cyanus triumfettii [SPE, 6CWK2CSM])
+EUNIS-2025-10-03	##D +04 R14-Perennial-rocky-grassland-of-the-Italian-Peninsula	Stipa dasyvaginata	synonym	exact	use Stipa apertifolia [SPE, 6WR38C1J]
+EUNIS-2025-10-03	##D +04 R16-Perennial-rocky-grassland-of-Central-and-South-Eastern-Europe	Satureja montana aggr.	level_unclear	exact	decide taxon level (candidate Satureja montana [SPE, 64R36CSK6R])
+EUNIS-2025-10-03	##D +04 R17-Heavy-metal-dry-grassland-of-the-Balkans	Stachys goulimyi	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 R18-Perennial-rocky-calcareous-grassland-of-subatlantic-submediterranean-Europe	Linum suffruticosum aggr.	level_unclear	aggregate as species	decide taxon level (candidate Linum suffruticosum [SPE, 64VKAC1G])
+EUNIS-2025-10-03	##D +04 R19-Dry-steppic-submediterranean-pasture-of-the-Amphi-Adriatic-region	Satureja montana aggr.	level_unclear	exact	decide taxon level (candidate Satureja montana [SPE, 64R36CSK6R])
+EUNIS-2025-10-03	##D +04 R1B-Continental-dry-grassland-true-steppe	Festuca valesiaca aggr.	level_unclear	aggregate as species	decide taxon level (candidate Festuca valesiaca [SPE, 6WT3ADSK])
+EUNIS-2025-10-03	##D +04 R1B-Continental-dry-grassland-true-steppe	Psephellus turgaicus	needs_cleaning	fuzzy	use Psephellus turcicus [SPE, 6MTK2C9M]
+EUNIS-2025-10-03	##D +04 R1B-Continental-dry-grassland-true-steppe	Thymus odoratissimus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Thymus odoratissimus [SPE, 70V3GE9M])
+EUNIS-2025-10-03	##D +04 R1B-Continental-dry-grassland-true-steppe	Thymus punctulosus	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 R1C-Desert-steppe	Gypsophila rupestris	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 R1C-Desert-steppe	Limonium cretaceum	needs_cleaning	fuzzy	use Limonium creticum [SPE, 64RKJCHG6R]
+EUNIS-2025-10-03	##D +04 R1D-Mediterranean-closely-grazed-dry-grassland	Astragalus pelecinus	synonym	exact	use Biserrula pelecinus [SPE, 6MWK2CHR]
+EUNIS-2025-10-03	##D +04 R1D-Mediterranean-closely-grazed-dry-grassland	Lupinus micranthus	synonym	exact	use Lupinus stoloniferus [SPE, 6RRKCDHH]
+EUNIS-2025-10-03	##D +04 R1D-Mediterranean-closely-grazed-dry-grassland	Plantago coronopus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Plantago coronopus [SPE, 64RK8D1G])
+EUNIS-2025-10-03	##D +04 R1E-Mediterranean-tall-perennial-dry-grassland	Arenaria x decipiens	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 R1E-Mediterranean-tall-perennial-dry-grassland	Carlina corymbosa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Carlina corymbosa [SPE, 6CSK8E9K])
+EUNIS-2025-10-03	##D +04 R1E-Mediterranean-tall-perennial-dry-grassland	Stipa parviflora	synonym	exact	use Stipellula parviflora [SPE, 6RW36D9P]
+EUNIS-2025-10-03	##D +04 R1F-Mediterranean-annual-rich-dry-grassland	Buglossoides incrassata aggr.	level_unclear	aggregate as species	decide taxon level (candidate Buglossoides incrassata [SPE, 64RKGC9Q6C])
+EUNIS-2025-10-03	##D +04 R1F-Mediterranean-annual-rich-dry-grassland	Bupleurum baldense aggr.	level_unclear	aggregate as species	decide taxon level (candidate Bupleurum baldense [SPE, 68VKAD9J])
+EUNIS-2025-10-03	##D +04 R1F-Mediterranean-annual-rich-dry-grassland	Callipeltis cucullaris	needs_cleaning	fuzzy	use Callipeltis cucullaria [SPE, 64T3ACG]
+EUNIS-2025-10-03	##D +04 R1F-Mediterranean-annual-rich-dry-grassland	Crepis neglecta aggr.	level_unclear	aggregate as species	decide taxon level (candidate Crepis neglecta [SPE, 6CW32C9G])
+EUNIS-2025-10-03	##D +04 R1F-Mediterranean-annual-rich-dry-grassland	Hedysarum spinosissimum	synonym	exact	use Sulla spinosissima [SPE, 6RR32CHK]
+EUNIS-2025-10-03	##D +04 R1F-Mediterranean-annual-rich-dry-grassland	Minuartia mediterranea	synonym	exact	use Sabulina mediterranea [SPE, 6RVK0DR]
+EUNIS-2025-10-03	##D +04 R1F-Mediterranean-annual-rich-dry-grassland	Ononis ornithopodioides	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 R1F-Mediterranean-annual-rich-dry-grassland	Ononis viscosa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Ononis viscosa [SPE, 6RRK0DSJ])
+EUNIS-2025-10-03	##D +04 R1F-Mediterranean-annual-rich-dry-grassland	Stipa capensis	synonym	exact	use Stipellula capensis [SPE, 70SK6C1Q]
+EUNIS-2025-10-03	##D +04 R1G-Iberian-oromediterranean-siliceous-dry-grassland	Jasione crispa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Jasione crispa [SPE, 64TKJCHP])
+EUNIS-2025-10-03	##D +04 R1H-Iberian-oromediterranean-basiphilous-dry-grassland	Arenaria aggregata aggr.	level_unclear	aggregate as species	decide taxon level (candidate Arenaria aggregata [SPE, 64V3JE0])
+EUNIS-2025-10-03	##D +04 R1H-Iberian-oromediterranean-basiphilous-dry-grassland	Cytisus ardoinii	needs_cleaning	fuzzy	use Cytisus ardoinoi [SPE, 74RK2CHJ]
+EUNIS-2025-10-03	##D +04 R1H-Iberian-oromediterranean-basiphilous-dry-grassland	Minuartia villarii	synonym	exact	use Sabulina villarii [SPE, 6WRK2]
+EUNIS-2025-10-03	##D +04 R1H-Iberian-oromediterranean-basiphilous-dry-grassland	Sideritis hyssopifolia aggr.	level_unclear	aggregate as species	decide taxon level (candidate Sideritis hyssopifolia [SPE, 70R38E9P])
+EUNIS-2025-10-03	##D +04 R1K-Balkan-and-Anatolian-oromediterranean-dry-grassland	Trifolium parnassii	needs_cleaning	fuzzy	use Trifolium parnassi [SPE, 6RRKCE9Q]
+EUNIS-2025-10-03	##D +04 R1L-Madeiran-oromediterranean-siliceous-dry-grassland	Anthyllis lemanniana	synonym	exact	use Anthyllis vulneraria subsp. lemanniana [SSP, 6RVKAE1P]
+EUNIS-2025-10-03	##D +04 R1P-Oceanic-to-subcontinental-inland-sand-grassland-on-dry-acid-and-neutral-soils	Viola tricolor aggr.	synonym	exact	use Viola tricolor agg. s. l. [GRP, 64TK8C1P6R]
+EUNIS-2025-10-03	##D +04 R1R-Mediterranean-to-Atlantic-open-dry-acid-and-neutral-grassland	Anthyllis lemanniana	synonym	exact	use Anthyllis vulneraria subsp. lemanniana [SSP, 6RVKAE1P]
+EUNIS-2025-10-03	##D +04 R1R-Mediterranean-to-Atlantic-open-dry-acid-and-neutral-grassland	Astragalus pelecinus	synonym	exact	use Biserrula pelecinus [SPE, 6MWK2CHR]
+EUNIS-2025-10-03	##D +04 R22-Low-and-medium-altitude-hay-meadow	Campanula patula aggr.	level_unclear	exact	decide taxon level (candidate Campanula patula [SPE, 64SK6D9G])
+EUNIS-2025-10-03	##D +04 R23-Mountain-hay-meadow	Campanula patula aggr.	level_unclear	exact	decide taxon level (candidate Campanula patula [SPE, 64SK6D9G])
+EUNIS-2025-10-03	##D +04 R23-Mountain-hay-meadow	Centaurea phrygia aggr.	level_unclear	exact	decide taxon level (candidate Centaurea phrygia [SPE, 6GW30C1M])
+EUNIS-2025-10-03	##D +04 R31-Mediterranean-tall-humid-inland-grassland	Anacamptis palustris aggr.	level_unclear	aggregate as species	decide taxon level (candidate Anacamptis palustris [SPE, 70S30E9P])
+EUNIS-2025-10-03	##D +04 R31-Mediterranean-tall-humid-inland-grassland	Dorycnium hirsutum	synonym	exact	use Lotus hirsutus [SPE, 6RV38CSK]
+EUNIS-2025-10-03	##D +04 R31-Mediterranean-tall-humid-inland-grassland	Dorycnium rectum	synonym	exact	use Lotus rectus [SPE, 6WS3AD9N]
+EUNIS-2025-10-03	##D +04 R31-Mediterranean-tall-humid-inland-grassland	Serapias vomeracea aggr.	level_unclear	aggregate as species	decide taxon level (candidate Serapias vomeracea [SPE, 74V30CSM])
+EUNIS-2025-10-03	##D +04 R31-Mediterranean-tall-humid-inland-grassland	Succisella andreae-molinae	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 R32-Mediterranean-short-moist-grassland-of-lowlands	Deschampsia cespitosa aggr.	level_unclear	exact	decide taxon level (candidate Deschampsia cespitosa [SPE, 6RTKCE1M])
+EUNIS-2025-10-03	##D +04 R32-Mediterranean-short-moist-grassland-of-lowlands	Linum suffruticosum aggr.	level_unclear	aggregate as species	decide taxon level (candidate Linum suffruticosum [SPE, 64VKAC1G])
+EUNIS-2025-10-03	##D +04 R33-Mediterranean-short-moist-grassland-of-mountains	Deschampsia cespitosa aggr.	level_unclear	exact	decide taxon level (candidate Deschampsia cespitosa [SPE, 6RTKCE1M])
+EUNIS-2025-10-03	##D +04 R33-Mediterranean-short-moist-grassland-of-mountains	Lotus glacialis	synonym	exact	use Lotus corniculatus subsp. glacialis [SSP, 6WT34CSQ]
+EUNIS-2025-10-03	##D +04 R33-Mediterranean-short-moist-grassland-of-mountains	Narcissus bulbocodium aggr.	level_unclear	aggregate as species	decide taxon level (candidate Narcissus bulbocodium [SPE, 70T34CHK])
+EUNIS-2025-10-03	##D +04 R34-Submediterranean-moist-meadow	Anacamptis palustris aggr.	level_unclear	aggregate as species	decide taxon level (candidate Anacamptis palustris [SPE, 70S30E9P])
+EUNIS-2025-10-03	##D +04 R34-Submediterranean-moist-meadow	Deschampsia cespitosa aggr.	level_unclear	exact	decide taxon level (candidate Deschampsia cespitosa [SPE, 6RTKCE1M])
+EUNIS-2025-10-03	##D +04 R34-Submediterranean-moist-meadow	Medicago polymorpha aggr.	level_unclear	aggregate as species	decide taxon level (candidate Medicago polymorpha [SPE, 6RSKECHS])
+EUNIS-2025-10-03	##D +04 R34-Submediterranean-moist-meadow	Silene flos-cuculi	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 R35-Moist-or-wet-mesotrophic-to-eutrophic-hay-meadow	Cerastium dubium	synonym	exact	use Dichodon viscidum [SPE, 6MSKED8]
+EUNIS-2025-10-03	##D +04 R35-Moist-or-wet-mesotrophic-to-eutrophic-hay-meadow	Deschampsia cespitosa aggr.	level_unclear	exact	decide taxon level (candidate Deschampsia cespitosa [SPE, 6RTKCE1M])
+EUNIS-2025-10-03	##D +04 R35-Moist-or-wet-mesotrophic-to-eutrophic-hay-meadow	Myosotis scorpioides aggr.	synonym	exact	use Myosotis palustris agg. [AGG, 64TK6DHJ74]
+EUNIS-2025-10-03	##D +04 R35-Moist-or-wet-mesotrophic-to-eutrophic-hay-meadow	Silene flos-cuculi	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 R41-Snow-bed-vegetation	Cerastium cerastoides	synonym	exact	use Dichodon cerastoides [SPE, 6RT30D0]
+EUNIS-2025-10-03	##D +04 R43-Temperate-acidophilous-alpine-grassland	Hieracium alpinum aggr.	level_unclear	exact	decide taxon level (candidate Hieracium alpinum [SPE, 6MSKEC9P])
+EUNIS-2025-10-03	##D +04 R45-Alpine-and-subalpine-calcareous-grassland-of-the-Balkans-and-Apennines	Cyanus triumfettii aggr.	level_unclear	aggregate as species	decide taxon level (candidate Cyanus triumfettii [SPE, 6CWK2CSM])
+EUNIS-2025-10-03	##D +04 R45-Alpine-and-subalpine-calcareous-grassland-of-the-Balkans-and-Apennines	Satureja montana aggr.	level_unclear	exact	decide taxon level (candidate Satureja montana [SPE, 64R36CSK6R])
+EUNIS-2025-10-03	##D +04 R51-Thermophilous-forest-fringe-of-base-rich-soils	Cyanus triumfettii aggr.	level_unclear	aggregate as species	decide taxon level (candidate Cyanus triumfettii [SPE, 6CWK2CSM])
+EUNIS-2025-10-03	##D +04 R51-Thermophilous-forest-fringe-of-base-rich-soils	Lembotropis nigricans	synonym	exact	use Cytisus nigricans [SPE, 6MWKEC9J]
+EUNIS-2025-10-03	##D +04 R51-Thermophilous-forest-fringe-of-base-rich-soils	Silene coronaria	synonym	exact	use Lychnis coronaria [SPE, 64RKCCHK]
+EUNIS-2025-10-03	##D +04 R55-Lowland-moist-or-wet-tall-herb-and-fern-fringe	Dorycnium rectum	synonym	exact	use Lotus rectus [SPE, 6WS3AD9N]
+EUNIS-2025-10-03	##D +04 R55-Lowland-moist-or-wet-tall-herb-and-fern-fringe	Myosoton aquaticum	synonym	exact	use Stellaria aquatica [SPE, 6RSKEE0]
+EUNIS-2025-10-03	##D +04 R61-Mediterranean-inland-salt-steppe	Limonium cordovillense	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 R61-Mediterranean-inland-salt-steppe	Limonium pinillense	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 R61-Mediterranean-inland-salt-steppe	Suaeda braun-blanquetii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 R63-Temperate-inland-salt-marsh	Cerastium dubium	synonym	exact	use Dichodon viscidum [SPE, 6MSKED8]
+EUNIS-2025-10-03	##D +04 R64-Semi-desert-salt-pan	Climacoptera aralensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 R64-Semi-desert-salt-pan	Climacoptera transoxana	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 R64-Semi-desert-salt-pan	Halostachys belangeriana	synonym	exact	use Halostachys caspica [SPE, 70R32C1J]
+EUNIS-2025-10-03	##D +04 R64-Semi-desert-salt-pan	Salsola dendroides	synonym	exact	use Caroxylon dendroides [SPE, 64RKCCHR6W]
+EUNIS-2025-10-03	##D +04 R64-Semi-desert-salt-pan	Salsola laricina	synonym	exact	use Caroxylon laricinum [SPE, 64RKCE9P74]
+EUNIS-2025-10-03	##D +04 R64-Semi-desert-salt-pan	Salsola nitraria	synonym	exact	use Caroxylon nitrarium [SPE, 64RKCD9H74]
+EUNIS-2025-10-03	##D +04 R64-Semi-desert-salt-pan	Salsola orientalis	synonym	exact	use Caroxylon orientale [SPE, 64RKAD9P6G]
+EUNIS-2025-10-03	##D +04 R65-Continental-subsaline-alluvial-pasture-and-meadow	Limonium reniforme	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 U71-Unvegetated-or-sparsely-vegetated-shore-with-mobile-sediments-in-montane-alpine-regions	Silene compacta	synonym	exact	use Atocion compactum [SPE, 68VK0CR]
+EUNIS-2025-10-03	##D +04 U72-Unvegetated-or-sparsely-vegetated-shore-with-mobile-sediments-in-Mediterranean-region	Satureja montana aggr.	level_unclear	exact	decide taxon level (candidate Satureja montana [SPE, 64R36CSK6R])
+EUNIS-2025-10-03	##D +04 V32-Mediterranean-subnitrophilous-annual-grassland	Erucastrum nasturtIifolium	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 V32-Mediterranean-subnitrophilous-annual-grassland	Hedysarum coronarium	synonym	exact	use Sulla coronaria [SPE, 6WSKAE1P]
+EUNIS-2025-10-03	##D +04 V32-Mediterranean-subnitrophilous-annual-grassland	Hedysarum spinosissimum	synonym	exact	use Sulla spinosissima [SPE, 6RR32CHK]
+EUNIS-2025-10-03	##D +04 V32-Mediterranean-subnitrophilous-annual-grassland	Medicago polymorpha aggr.	level_unclear	aggregate as species	decide taxon level (candidate Medicago polymorpha [SPE, 6RSKECHS])
+EUNIS-2025-10-03	##D +04 V32-Mediterranean-subnitrophilous-annual-grassland	Silene nocturna aggr.	level_unclear	aggregate as species	decide taxon level (candidate Silene nocturna [SPE, 64RK6DSR])
+EUNIS-2025-10-03	##D +04 V32-Mediterranean-subnitrophilous-annual-grassland	Vaccaria hispanica	synonym	exact	use Gypsophila vaccaria [SPE, 68SK8CG]
+EUNIS-2025-10-03	##D +04 V33-Dry-mediterranean-lands-with-unpalatable-non-vernal-herbaceous-vegetation	Carlina corymbosa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Carlina corymbosa [SPE, 6CSK8E9K])
+EUNIS-2025-10-03	##D +04 V33-Dry-mediterranean-lands-with-unpalatable-non-vernal-herbaceous-vegetation	Echium anchusoides	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 V33-Dry-mediterranean-lands-with-unpalatable-non-vernal-herbaceous-vegetation	Ferula communis aggr.	level_unclear	aggregate as species	decide taxon level (candidate Ferula communis [SPE, 68R3CE9H])
+EUNIS-2025-10-03	##D +04 V35-Trampled-xeric-grassland-with-annuals	Ptychostomum archangelicum	synonym	exact	use Ptychostomum inclinatum [SPE, 64SK4E9N74]
+EUNIS-2025-10-03	##D +04 V35-Trampled-xeric-grassland-with-annuals	Ochlopoa infirma	synonym	exact	use Poa infirma [SPE, 6WS38E1S]
+EUNIS-2025-10-03	##D +04 V35-Trampled-xeric-grassland-with-annuals	Plantago coronopus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Plantago coronopus [SPE, 64RK8D1G])
+EUNIS-2025-10-03	##D +04 V37-Trampled-mesophilous-grassland-with-annuals	Ochlopoa annua	synonym	exact	use Poa annua [SPE, 6RVKED9K]
+EUNIS-2025-10-03	##D +04 V37-Trampled-mesophilous-grassland-with-annuals	Bryum funckii	needs_cleaning	fuzzy	use Ptychostomum funkii [SPE, 64SK4E9M6W]
+EUNIS-2025-10-03	##D +04 V39a-Annual-anthropogenic-herb-stands	Crepis foetida aggr.	level_unclear	exact	decide taxon level (candidate Crepis foetida [SPE, 6CW30E9Q])
+EUNIS-2025-10-03	##D +04 V39a-Annual-anthropogenic-herb-stands	Odontites vulgaris aggr.	level_unclear	aggregate as species	decide taxon level (candidate Odontites vulgaris [SPE, 64T30D1G])
+EUNIS-2025-10-03	##D +04 V39b-Dry-perennial-anthropogenic-herb-stands	Carlina corymbosa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Carlina corymbosa [SPE, 6CSK8E9K])
+EUNIS-2025-10-03	##D +04 V39b-Dry-perennial-anthropogenic-herb-stands	Crepis foetida aggr.	level_unclear	exact	decide taxon level (candidate Crepis foetida [SPE, 6CW30E9Q])
+EUNIS-2025-10-03	##D +04 V39b-Dry-perennial-anthropogenic-herb-stands	Odontites vulgaris aggr.	level_unclear	aggregate as species	decide taxon level (candidate Odontites vulgaris [SPE, 64T30D1G])
+EUNIS-2025-10-03	##D +04 V39b-Dry-perennial-anthropogenic-herb-stands	Piptatherum miliaceum	synonym	exact	use Oloptum miliaceum [SPE, 6RWK0E9M]
+EUNIS-2025-10-03	##D +04 V39b-Dry-perennial-anthropogenic-herb-stands	Silene chalcedonica	synonym	exact	use Lychnis chalcedonica [SPE, 64TKGCHH]
+EUNIS-2025-10-03	##D +04 V39c-Mesic-perennial-anthropogenic-herb-stands	Rodgersia podophylla	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +04 Arable-weeds	Vaccaria hispanica	synonym	exact	use Gypsophila vaccaria [SPE, 68SK8CG]
+EUNIS-2025-10-03	##D +08 Q31-Palsa-mire	Coelocaulon divergens	synonym	exact	use Bryocaulon divergens [SPE, 64TK0E1J6G]
+EUNIS-2025-10-03	##D +08 Q31-Palsa-mire	Sphaerophorus globosus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Sphaerophorus globosus [SPE, 64T3CE9R6C])
+EUNIS-2025-10-03	##D +09 Non-acidophilous-fen-species	Warnstorfia exannulata	synonym	exact	use Sarmentypnum exannulatum [SPE, 64SK6CHH6W]
+EUNIS-2025-10-03	##D +10 Arcto-alpine-rich-fen-species	Bryum bimum	synonym	exact	use Ptychostomum pseudotriquetrum var. bimum [VAR, 64SK6C1G70]
+EUNIS-2025-10-03	##D +10 Arcto-alpine-rich-fen-species	Bryum cryophyllum	needs_cleaning	fuzzy	use Ptychostomum cryophilum [SPE, 64SK4E9K64]
+EUNIS-2025-10-03	##D +10 Intermediate-fen-and-soft-water-spring-mire	Warnstorfia exannulata	synonym	exact	use Sarmentypnum exannulatum [SPE, 64SK6CHH6W]
+EUNIS-2025-10-03	##D +11 Acidophilous-forest-species	Lembotropis nigricans	synonym	exact	use Cytisus nigricans [SPE, 6MWKEC9J]
+EUNIS-2025-10-03	##D +11 Eutrophic-deciduous-forest-species	Arum orientale aggr.	level_unclear	aggregate as species	decide taxon level (candidate Arum orientale [SPE, 6RS38CSP])
+EUNIS-2025-10-03	##D +11 Eutrophic-deciduous-forest-species	Cardamine impatiens aggr.	level_unclear	aggregate as species	decide taxon level (candidate Cardamine impatiens [SPE, 6MS3AD0])
+EUNIS-2025-10-03	##D +11 Eutrophic-deciduous-forest-species	Digitalis schischkinii	synonym	exact	use Digitalis ferruginea subsp. schischkinii [SSP, 68T3ACHQ]
+EUNIS-2025-10-03	##D +11 Eutrophic-deciduous-forest-species	Hedera helix aggr.	level_unclear	aggregate as species	decide taxon level (candidate Hedera helix [SPE, 6CRKGD1M])
+EUNIS-2025-10-03	##D +11 Eutrophic-deciduous-forest-species	Stellaria holostea	synonym	exact	use Rabelera holostea [SPE, 64TKJE1M]
+EUNIS-2025-10-03	##D +11 Temperate-riparian-forest-species	Deschampsia cespitosa aggr.	level_unclear	exact	decide taxon level (candidate Deschampsia cespitosa [SPE, 6RTKCE1M])
+EUNIS-2025-10-03	##D +11 Temperate-riparian-forest-species	Hedera helix aggr.	level_unclear	aggregate as species	decide taxon level (candidate Hedera helix [SPE, 6CRKGD1M])
+EUNIS-2025-10-03	##D +11 Thermophilous-oak-forest-species	Asparagus officinalis aggr.	level_unclear	aggregate as species	decide taxon level (candidate Asparagus officinalis [SPE, 6MS30D1K])
+EUNIS-2025-10-03	##D +11 Thermophilous-oak-forest-species	Colutea arborescens aggr.	level_unclear	exact	decide taxon level (candidate Colutea arborescens [SPE, 74VK8E9P])
+EUNIS-2025-10-03	##D +11 Thermophilous-oak-forest-species	Piptatherum virescens	synonym	exact	use Achnatherum virescens [SPE, 64S38D1R68]
+EUNIS-2025-10-03	##D +11 Thermophilous-oak-forest-species	Silene coronaria	synonym	exact	use Lychnis coronaria [SPE, 64RKCCHK]
+EUNIS-2025-10-03	##D +12 Aquatic-species	Ceramium arachnoideum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Ceramium nodulosum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Ceramium rubrum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Chaetophora incrassata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Chara delicatula	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Chara denudata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Chara foetida	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Chara intermedia	synonym	exact	use Chara papillosa [SPE, 64TK0D1S6W]
+EUNIS-2025-10-03	##D +12 Aquatic-species	Chara jubata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Chara muscosa	synonym	exact	use Chara contraria [SPE, 64TK0D1Q70]
+EUNIS-2025-10-03	##D +12 Aquatic-species	Chara pedunculata	synonym	exact	use Chara aculeolata [SPE, 64TK0D1P74]
+EUNIS-2025-10-03	##D +12 Aquatic-species	Chara polyacantha	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Chara rudis	synonym	exact	use Chara subspinosa [SPE, 64TK0D9G60]
+EUNIS-2025-10-03	##D +12 Aquatic-species	Cladophora rivularis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Ectocarpus confervoides	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Enteromorpha intestinalis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Enteromorpha prolifera	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Enteromorpha species	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Fucus mytili	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Furcellaria fastigiata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Hydrodictyon reticulatum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Limnophila indica	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Palmogloea protuberans	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Phyllophora truncata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Potamogeton antaicus	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Potamogeton lucens x perfoliatus	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Potamogeton x sparganifolius	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Potamogeton x variifolius	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Spirogyra maxima	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Stuckenia x fennica	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Aquatic-species	Tolypella intricata	synonym	exact	use Sphaerochara intricata [SPE, 64TK0D9J6M]
+EUNIS-2025-10-03	##D +12 Aquatic-species	Tolypella prolifera	synonym	exact	use Sphaerochara prolifera [SPE, 64TK0D9J6R]
+EUNIS-2025-10-03	##D +12 Aquatic-species	Vaucheria geminata	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Coastal-saltmarsh-species	Odontites vulgaris aggr.	level_unclear	aggregate as species	decide taxon level (candidate Odontites vulgaris [SPE, 64T30D1G])
+EUNIS-2025-10-03	##D +12 Coastal-saltmarsh-species	Plantago coronopus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Plantago coronopus [SPE, 64RK8D1G])
+EUNIS-2025-10-03	##D +12 Coastal-sand-and-cliff-species	Anacamptis palustris aggr.	level_unclear	aggregate as species	decide taxon level (candidate Anacamptis palustris [SPE, 70S30E9P])
+EUNIS-2025-10-03	##D +12 Coastal-sand-and-cliff-species	Bupleurum baldense aggr.	level_unclear	aggregate as species	decide taxon level (candidate Bupleurum baldense [SPE, 68VKAD9J])
+EUNIS-2025-10-03	##D +12 Coastal-sand-and-cliff-species	Jasione crispa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Jasione crispa [SPE, 64TKJCHP])
+EUNIS-2025-10-03	##D +12 Coastal-sand-and-cliff-species	Plantago coronopus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Plantago coronopus [SPE, 64RK8D1G])
+EUNIS-2025-10-03	##D +12 Coastal-sand-and-cliff-species	Viola tricolor aggr.	synonym	exact	use Viola tricolor agg. s. l. [GRP, 64TK8C1P6R]
+EUNIS-2025-10-03	##D +12 Coastal-sand-and-cliff-species	x_Calammophila baltica	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Grassland-species	Anacamptis palustris aggr.	level_unclear	aggregate as species	decide taxon level (candidate Anacamptis palustris [SPE, 70S30E9P])
+EUNIS-2025-10-03	##D +12 Grassland-species	Anthyllis lemanniana	synonym	exact	use Anthyllis vulneraria subsp. lemanniana [SSP, 6RVKAE1P]
+EUNIS-2025-10-03	##D +12 Grassland-species	Arenaria aggregata aggr.	level_unclear	aggregate as species	decide taxon level (candidate Arenaria aggregata [SPE, 64V3JE0])
+EUNIS-2025-10-03	##D +12 Grassland-species	Arenaria x decipiens	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Grassland-species	Astragalus pelecinus	synonym	exact	use Biserrula pelecinus [SPE, 6MWK2CHR]
+EUNIS-2025-10-03	##D +12 Grassland-species	Bupleurum baldense aggr.	level_unclear	aggregate as species	decide taxon level (candidate Bupleurum baldense [SPE, 68VKAD9J])
+EUNIS-2025-10-03	##D +12 Grassland-species	Callipeltis cucullaris	needs_cleaning	fuzzy	use Callipeltis cucullaria [SPE, 64T3ACG]
+EUNIS-2025-10-03	##D +12 Grassland-species	Campanula patula aggr.	level_unclear	exact	decide taxon level (candidate Campanula patula [SPE, 64SK6D9G])
+EUNIS-2025-10-03	##D +12 Grassland-species	Carlina corymbosa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Carlina corymbosa [SPE, 6CSK8E9K])
+EUNIS-2025-10-03	##D +12 Grassland-species	Centaurea phrygia aggr.	level_unclear	exact	decide taxon level (candidate Centaurea phrygia [SPE, 6GW30C1M])
+EUNIS-2025-10-03	##D +12 Grassland-species	Cerastium cerastoides	synonym	exact	use Dichodon cerastoides [SPE, 6RT30D0]
+EUNIS-2025-10-03	##D +12 Grassland-species	Cerastium dubium	synonym	exact	use Dichodon viscidum [SPE, 6MSKED8]
+EUNIS-2025-10-03	##D +12 Grassland-species	Cladonia foliacea aggr.	level_unclear	aggregate as species	decide taxon level (candidate Cladonia foliacea [SPE, 64SKGDSM68])
+EUNIS-2025-10-03	##D +12 Grassland-species	Cladonia symphycarpia	needs_cleaning	fuzzy	use Cladonia symphycarpa [SPE, 64SKGE1S6C]
+EUNIS-2025-10-03	##D +12 Grassland-species	Climacoptera aralensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Grassland-species	Climacoptera transoxana	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Grassland-species	Crepis foliosa	synonym	exact	use Crepis foliata [SPE, 6GWKCD9H]
+EUNIS-2025-10-03	##D +12 Grassland-species	Crepis neglecta aggr.	level_unclear	aggregate as species	decide taxon level (candidate Crepis neglecta [SPE, 6CW32C9G])
+EUNIS-2025-10-03	##D +12 Grassland-species	Cyanus triumfettii aggr.	level_unclear	aggregate as species	decide taxon level (candidate Cyanus triumfettii [SPE, 6CWK2CSM])
+EUNIS-2025-10-03	##D +12 Grassland-species	Cytisus ardoinii	needs_cleaning	fuzzy	use Cytisus ardoinoi [SPE, 74RK2CHJ]
+EUNIS-2025-10-03	##D +12 Grassland-species	Deschampsia cespitosa aggr.	level_unclear	exact	decide taxon level (candidate Deschampsia cespitosa [SPE, 6RTKCE1M])
+EUNIS-2025-10-03	##D +12 Grassland-species	Dorycnium hirsutum	synonym	exact	use Lotus hirsutus [SPE, 6RV38CSK]
+EUNIS-2025-10-03	##D +12 Grassland-species	Dorycnium rectum	synonym	exact	use Lotus rectus [SPE, 6WS3AD9N]
+EUNIS-2025-10-03	##D +12 Grassland-species	Erysimum nevadense aggr.	level_unclear	aggregate as species	decide taxon level (candidate Erysimum nevadense [SPE, 6GTKEDG])
+EUNIS-2025-10-03	##D +12 Grassland-species	Festuca lueii	needs_cleaning	fuzzy	use Festuca luedii [SPE, 74S38E1J]
+EUNIS-2025-10-03	##D +12 Grassland-species	Festuca valesiaca aggr.	level_unclear	aggregate as species	decide taxon level (candidate Festuca valesiaca [SPE, 6WT3ADSK])
+EUNIS-2025-10-03	##D +12 Grassland-species	Halostachys belangeriana	synonym	exact	use Halostachys caspica [SPE, 70R32C1J]
+EUNIS-2025-10-03	##D +12 Grassland-species	Hedysarum spinosissimum	synonym	exact	use Sulla spinosissima [SPE, 6RR32CHK]
+EUNIS-2025-10-03	##D +12 Grassland-species	Jasione crispa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Jasione crispa [SPE, 64TKJCHP])
+EUNIS-2025-10-03	##D +12 Grassland-species	Lembotropis nigricans	synonym	exact	use Cytisus nigricans [SPE, 6MWKEC9J]
+EUNIS-2025-10-03	##D +12 Grassland-species	Leptogium schraderi	synonym	exact	use Scytinium schraderi [SPE, 64T3CE1Q68]
+EUNIS-2025-10-03	##D +12 Grassland-species	Limonium cordovillense	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Grassland-species	Limonium pinillense	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Grassland-species	Limonium reniforme	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Grassland-species	Linum suffruticosum aggr.	level_unclear	aggregate as species	decide taxon level (candidate Linum suffruticosum [SPE, 64VKAC1G])
+EUNIS-2025-10-03	##D +12 Grassland-species	Lotus glacialis	synonym	exact	use Lotus corniculatus subsp. glacialis [SSP, 6WT34CSQ]
+EUNIS-2025-10-03	##D +12 Grassland-species	Lupinus micranthus	synonym	exact	use Lupinus stoloniferus [SPE, 6RRKCDHH]
+EUNIS-2025-10-03	##D +12 Grassland-species	Medicago polymorpha aggr.	level_unclear	aggregate as species	decide taxon level (candidate Medicago polymorpha [SPE, 6RSKECHS])
+EUNIS-2025-10-03	##D +12 Grassland-species	Minuartia glaucina	synonym	exact	use Sabulina glaucina [SPE, 64SK0C1S]
+EUNIS-2025-10-03	##D +12 Grassland-species	Minuartia greuterina	needs_cleaning	fuzzy	use Minuartia greuteriana [SPE, 64V3AD1G]
+EUNIS-2025-10-03	##D +12 Grassland-species	Minuartia mediterranea	synonym	exact	use Sabulina mediterranea [SPE, 6RVK0DR]
+EUNIS-2025-10-03	##D +12 Grassland-species	Minuartia mesogitana	synonym	exact	use Sabulina mesogitana [SPE, 74VKCD8]
+EUNIS-2025-10-03	##D +12 Grassland-species	Minuartia villarii	synonym	exact	use Sabulina villarii [SPE, 6WRK2]
+EUNIS-2025-10-03	##D +12 Grassland-species	Mycobilimbia lurida	synonym	exact	use Romjularia lurida [SPE, 64T3CDHN6W]
+EUNIS-2025-10-03	##D +12 Grassland-species	Myosotis scorpioides aggr.	synonym	exact	use Myosotis palustris agg. [AGG, 64TK6DHJ74]
+EUNIS-2025-10-03	##D +12 Grassland-species	Myosoton aquaticum	synonym	exact	use Stellaria aquatica [SPE, 6RSKEE0]
+EUNIS-2025-10-03	##D +12 Grassland-species	Narcissus bulbocodium aggr.	level_unclear	aggregate as species	decide taxon level (candidate Narcissus bulbocodium [SPE, 70T34CHK])
+EUNIS-2025-10-03	##D +12 Grassland-species	Ononis ornithopodioides	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Grassland-species	Ononis viscosa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Ononis viscosa [SPE, 6RRK0DSJ])
+EUNIS-2025-10-03	##D +12 Grassland-species	Plantago coronopus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Plantago coronopus [SPE, 64RK8D1G])
+EUNIS-2025-10-03	##D +12 Grassland-species	Salsola dendroides	synonym	exact	use Caroxylon dendroides [SPE, 64RKCCHR6W]
+EUNIS-2025-10-03	##D +12 Grassland-species	Salsola laricina	synonym	exact	use Caroxylon laricinum [SPE, 64RKCE9P74]
+EUNIS-2025-10-03	##D +12 Grassland-species	Salsola nitraria	synonym	exact	use Caroxylon nitrarium [SPE, 64RKCD9H74]
+EUNIS-2025-10-03	##D +12 Grassland-species	Salsola orientalis	synonym	exact	use Caroxylon orientale [SPE, 64RKAD9P6G]
+EUNIS-2025-10-03	##D +12 Grassland-species	Satureja montana aggr.	level_unclear	exact	decide taxon level (candidate Satureja montana [SPE, 64R36CSK6R])
+EUNIS-2025-10-03	##D +12 Grassland-species	Serapias vomeracea aggr.	level_unclear	aggregate as species	decide taxon level (candidate Serapias vomeracea [SPE, 74V30CSM])
+EUNIS-2025-10-03	##D +12 Grassland-species	Sideritis hyssopifolia aggr.	level_unclear	aggregate as species	decide taxon level (candidate Sideritis hyssopifolia [SPE, 70R38E9P])
+EUNIS-2025-10-03	##D +12 Grassland-species	Silene coronaria	synonym	exact	use Lychnis coronaria [SPE, 64RKCCHK]
+EUNIS-2025-10-03	##D +12 Grassland-species	Silene flos-cuculi	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Grassland-species	Stipa capensis	synonym	exact	use Stipellula capensis [SPE, 70SK6C1Q]
+EUNIS-2025-10-03	##D +12 Grassland-species	Stipa dasyvaginata	synonym	exact	use Stipa apertifolia [SPE, 6WR38C1J]
+EUNIS-2025-10-03	##D +12 Grassland-species	Stipa parviflora	synonym	exact	use Stipellula parviflora [SPE, 6RW36D9P]
+EUNIS-2025-10-03	##D +12 Grassland-species	Suaeda braun-blanquetii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Grassland-species	Succisella andreae-molinae	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Grassland-species	Thuidium philiberti	needs_cleaning	fuzzy	use Thuidium assimile [SPE, 64SK6DHS70]
+EUNIS-2025-10-03	##D +12 Grassland-species	Thymus odoratissimus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Thymus odoratissimus [SPE, 70V3GE9M])
+EUNIS-2025-10-03	##D +12 Grassland-species	Trifolium parnassii	needs_cleaning	fuzzy	use Trifolium parnassi [SPE, 6RRKCE9Q]
+EUNIS-2025-10-03	##D +12 Grassland-species	Viola tricolor aggr.	synonym	exact	use Viola tricolor agg. s. l. [GRP, 64TK8C1P6R]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Aeonium x burchardii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Aeonium x meyerheymii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Aichryson bituminosum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Antirrhinum subbaeticum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Asperula naufraga	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Astracantha sicula	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Chaenorhinum semiglabrum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Erysimum duriaei aggr.	level_unclear	aggregate as species	decide taxon level (candidate Erysimum duriaei [SPE, 6WVKJC0])
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Gouffeia arenarioides	synonym	exact	use Arenaria provincialis [SPE, 6MWK8C0]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Gowardia nigricans	synonym	exact	use Alectoria nigricans [SPE, 64SKAE9H68]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Helichrysum teydeum	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Jasione crispa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Jasione crispa [SPE, 64TKJCHP])
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Linaria arcusangeli	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Medicago strasseri	synonym	exact	use Medicago arborea subsp. strasseri [SSP, 6RSKAC9J]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Minuartia austriaca	synonym	exact	use Sabulina austriaca [SPE, 74TK6D8]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Minuartia cerastiifolia	synonym	exact	use Facchinia cerastiifolia [SPE, 74VKECG]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Minuartia cherlerioides	synonym	exact	use Facchinia cherlerioides [SPE, 64R3CDHS]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Minuartia graminifolia	synonym	exact	use Mcneillia graminifolia [SPE, 6CV34CG]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Minuartia grignensis	synonym	exact	use Facchinia grignensis [SPE, 70R3GC8]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Minuartia inamoena	synonym	exact	use Pseudocherleria inamoena [SPE, 64S30CSQ]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Minuartia pauciflora	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Minuartia pichleri	synonym	exact	use Sabulina pichleri [SPE, 6WT36DR]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Minuartia platyphylla	synonym	exact	use Rhodalsine geniculata [SPE, 6RTKA]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Minuartia rupestris	synonym	exact	use Facchinia rupestris [SPE, 68VK6CG]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Minuartia villarii	synonym	exact	use Sabulina villarii [SPE, 6WRK2]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Parmelia skultii	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Petrorhagia armerioides	synonym	exact	use Dianthus tunicoides [SPE, 64SK4CHN]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Polypodium x fontqueri	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Putoria calabrica	synonym	exact	use Plocama calabrica [SPE, 6WS3GCR]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Scilla peruviana	synonym	exact	use Oncostema peruvianum [SPE, 64S34C9K6W]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Senecio squalidus subsp. aethnensis	synonym	exact	use Senecio aethnensis [SPE, 6CV30CHS]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Silene coelirosa	needs_cleaning	fuzzy	use Eudianthe coeli-rosa [SPE, 68SKJD0]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Silene gazulensis	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Silene lerchenfeldiana	synonym	exact	use Atocion lerchenfeldianum [SPE, 64SKCCSM]
+EUNIS-2025-10-03	##D +12 Inland-sparsely-vegetated-habitat-species	Sticta arctica	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Mire-species	Anacamptis palustris aggr.	level_unclear	aggregate as species	decide taxon level (candidate Anacamptis palustris [SPE, 70S30E9P])
+EUNIS-2025-10-03	##D +12 Mire-species	Pinus mugo subsp. rotundata	synonym	exact	use Pinus rotundata [SPE, 68VKECSS]
+EUNIS-2025-10-03	##D +12 Mire-species	Silene asterias	synonym	exact	use Viscaria asterias [SPE, 64SK4DHK]
+EUNIS-2025-10-03	##D +12 Mire-species	Warnstorfia exannulata	synonym	exact	use Sarmentypnum exannulatum [SPE, 64SK6CHH6W]
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Bryum funckii	needs_cleaning	fuzzy	use Ptychostomum funkii [SPE, 64SK4E9M6W]
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Carduus defloratus aggr.	level_unclear	exact	decide taxon level (candidate Carduus defloratus [SPE, 6CW3ADHN])
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Carlina corymbosa aggr.	level_unclear	aggregate as species	decide taxon level (candidate Carlina corymbosa [SPE, 6CSK8E9K])
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Crepis foetida aggr.	level_unclear	exact	decide taxon level (candidate Crepis foetida [SPE, 6CW30E9Q])
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Drimia maritima aggr.	level_unclear	aggregate as species	decide taxon level (candidate Squilla maritima [SPE, 6GW3JD1P])
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Echium anchusoides	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Erucastrum nasturtIifolium	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Ferula communis aggr.	level_unclear	aggregate as species	decide taxon level (candidate Ferula communis [SPE, 68R3CE9H])
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Hedysarum coronarium	synonym	exact	use Sulla coronaria [SPE, 6WSKAE1P]
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Hedysarum spinosissimum	synonym	exact	use Sulla spinosissima [SPE, 6RR32CHK]
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Medicago polymorpha aggr.	level_unclear	aggregate as species	decide taxon level (candidate Medicago polymorpha [SPE, 6RSKECHS])
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Ochlopoa annua	synonym	exact	use Poa annua [SPE, 6RVKED9K]
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Ochlopoa infirma	synonym	exact	use Poa infirma [SPE, 6WS38E1S]
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Odontites vulgaris aggr.	level_unclear	aggregate as species	decide taxon level (candidate Odontites vulgaris [SPE, 64T30D1G])
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Piptatherum miliaceum	synonym	exact	use Oloptum miliaceum [SPE, 6RWK0E9M]
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Plantago coronopus aggr.	level_unclear	aggregate as species	decide taxon level (candidate Plantago coronopus [SPE, 64RK8D1G])
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Rodgersia podophylla	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Silene chalcedonica	synonym	exact	use Lychnis chalcedonica [SPE, 64TKGCHH]
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Silene nocturna aggr.	level_unclear	aggregate as species	decide taxon level (candidate Silene nocturna [SPE, 64RK6DSR])
+EUNIS-2025-10-03	##D +12 Synanthropic-species	Vaccaria hispanica	synonym	exact	use Gypsophila vaccaria [SPE, 68SK8CG]
+EUNIS-2025-10-03	##D +12 Synanthropic-species	x_Triticosecale rimpaui	not_found	none	not in EuroSL
+EUNIS-2025-10-03	##D +12 Wetland-species	Cerastium dubium	synonym	exact	use Dichodon viscidum [SPE, 6MSKED8]
+EUNIS-2025-10-03	##D +12 Wetland-species	Chaetopogon fasciculatus	synonym	exact	use Agrostis linkii [SPE, 6WT3GE1Q]
+EUNIS-2025-10-03	##D +12 Wetland-species	Deschampsia cespitosa aggr.	level_unclear	exact	decide taxon level (candidate Deschampsia cespitosa [SPE, 6RTKCE1M])
+EUNIS-2025-10-03	##D +12 Wetland-species	Myosotis scorpioides aggr.	synonym	exact	use Myosotis palustris agg. [AGG, 64TK6DHJ74]
+EUNIS-2025-10-03	##D +12 Wetland-species	Myosoton aquaticum	synonym	exact	use Stellaria aquatica [SPE, 6RSKEE0]

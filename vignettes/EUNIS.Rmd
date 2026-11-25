@@ -13,13 +13,15 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = requireNamespace("vegdata", quietly = TRUE) &&
+    requireNamespace("sf", quietly = TRUE)
 )
 ```
 
 This vignette shows how to classify European vegetation relevés into **EUNIS habitat types** using the expert system of Chytrý et al. ([2020](https://doi.org/10.1111/avsc.12519)). Habitat descriptions are available on [FloraVeg.EU](https://floraveg.eu/habitat/) (Chytrý et al. [2024](https://doi.org/10.1111/avsc.12798)) and the [EEA EUNIS website](https://www.eea.europa.eu/en/datahub/datahubitem-view/123d0c9a-a6fa-4f2d-b887-5d8e5468faed).
 
-First, `resy_harmonize_eunis()` prepares the plot data. It adds geographic information such as country, ecoregion and coastal position, and checks and adjusts the coordinate format and species names to meet the expert system's requirements. Then, `resy_classify()` assigns the relevés to habitat types using their species composition and site data.
+First, `resy_harmonize_eunis()` prepares the site data. It adds geographic information such as country, ecoregion and coastal position, and checks and adjusts the coordinate format. Then, `resy_classify()` assigns the relevés to habitat types using their species composition and site data. The species names are matched to the taxonomic backbone of the expert system, [EuroSL](https://eurosl.infinitenature.org), on the way.
 
 ## Example
 
@@ -31,6 +33,16 @@ library(dplyr)
 library(ggplot2)
 library(sf)
 library(RESY)
+```
+
+RESY reads EuroSL with the [vegdata](https://cran.r-project.org/package=vegdata)
+package. For your own data, install EuroSL once with
+`vegdata::taxref_download_eurosl()`. This vignette uses the part of EuroSL that
+ships with RESY and covers the example data:
+
+```{r backbone}
+options(resy.backbone = system.file("extdata", "eurosl_example.csv.xz",
+                                    package = "RESY"))
 ```
 
 ### Load the example data
@@ -46,14 +58,8 @@ data_species <- read_csv(
 data_species
 ```
 
-`resy_clean_names()` removes the author names from the species names and keeps
-rank markers such as `subsp.` and `var.`:
-
-```{r clean-species-names, message=FALSE}
-data_species$scientificName <- resy_clean_names(
-  data_species$scientificName
-  )
-```
+The species names carry author citations; they can stay, the names are
+matched to EuroSL as they are.
 
 Second, load the header table:
 
@@ -106,22 +112,23 @@ The map shows part of Italy, mainly Tuscany, and the Tyrrhenian Sea. The dots ar
 
 ### Load the expert system
 
-`resy_load_expert()` reads the EUNIS expert system. `resy_harmonize_eunis()` uses it to check the species names.
+`resy_load_expert()` reads the EUNIS expert system. Without `version`, it reads
+the newest version, `2025-10-03-EuroSL`: the EUNIS-ESy release of 2025-10-03
+with EuroSL as its taxonomic backbone. The published release itself is
+`version = "2025-10-03"`.
 
 ```{r parse-expert-file}
 parsed_expert_file <- resy_load_expert(scheme = "EUNIS")
+parsed_expert_file$backbone
 ```
 
 ### Apply `resy_harmonize_eunis()`
 
-`resy_harmonize_eunis()` prepares the header table and the species table:
+`resy_harmonize_eunis()` prepares the header table:
 
 ```{r use-check-eunis}
 outcome <- resy_harmonize_eunis(
    data = data_sites,
-   run_taxonomy = TRUE,
-   species_data = data_species,
-   parsed = parsed_expert_file,
    run_coast_dunes = TRUE,
    coast_buffer = 5000
    )
@@ -169,29 +176,23 @@ ggplot() +
    theme_classic()
 ```
 
-### Checked species names
+### Check species names
 
-`outcome$species_checked` has one row per species name: the name in the data (`scientificName`), the name the expert system uses (`TaxonName`) and whether it matched (`matched`):
+`resy_check_taxonomy()` matches the species names to EuroSL and shows, for each
+name, the EUNIS taxon it counts for (`TaxonName`). A species counts for an
+expert taxon when EuroSL places it at or below that taxon, for example a
+subspecies under its species or a species under its aggregate:
 
 ```{r checked-species-names}
-outcome$species_checked
+checked <- resy_check_taxonomy(data_species, parsed_expert_file)
+checked
 ```
+
+`summary()` lists the names that cannot be used, split into potentially
+important and probably unimportant ones (see `vignette("taxonomy")`):
 
 ```{r summary-checked-species-names}
-summary(outcome$species_checked)
-```
-
-### Finalize species data
-
-`resy_classify()` needs the checked names together with the cover of each species, so the species table is joined to the checked names:
-
-```{r prepare-outcome_species2}
-outcome_species <- data_species |>
-  left_join(outcome$species_checked, by = "scientificName") |>
-  select(PlotObservationID, TaxonName, Cover_Perc)
-outcome_species |>
-  filter(PlotObservationID == "AE28") |>
-  arrange(desc(Cover_Perc), TaxonName)
+summary(checked)
 ```
 
 ## Classify relevés
@@ -200,15 +201,17 @@ outcome_species |>
 
 ```{r apply-resy-classify}
 res <- resy_classify(
-  obs = outcome_species,
+  obs = data_species,
   header = outcome$sites,
-  scheme = "EUNIS"
+  expert = parsed_expert_file
   )
 ```
 
 `resy_classify()` warns about the site data that is missing: the header has no
 `Altitude (m)` and no `Dataset` column (one EUNIS rule excludes the Swedish
-National Forest Inventory), and 23 plots have no ecoregion.
+National Forest Inventory), and 23 plots have no ecoregion. Its message on the
+species names repeats the check above; the same table is in
+`res$taxon_resolution`.
 
 ## Inspect results
 

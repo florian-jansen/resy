@@ -7,9 +7,9 @@
 resy_harmonize_eunis(
   data,
   source_crs = NULL,
-  run_taxonomy = FALSE,
-  species_data = NULL,
-  parsed = NULL,
+  run_taxonomy = lifecycle::deprecated(),
+  species_data = lifecycle::deprecated(),
+  parsed = lifecycle::deprecated(),
   run_coast_dunes = FALSE,
   coast_buffer = 5000,
   verbose = interactive()
@@ -30,14 +30,9 @@ Ignored when \code{data} is an \code{sf} object, which carries its own CRS.
 The optional package \code{sf} is required for \code{sf} input and CRS codes other
 than 4326, 4258 and 25832.}
 
-\item{run_taxonomy}{Logical; if \code{TRUE}, runs \code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}} on
-\code{species_data}.}
-
-\item{species_data}{A data frame with a column \code{scientificName}. Required
-when \code{run_taxonomy = TRUE}.}
-
-\item{parsed}{A \code{resy_parsed_expert} object from \code{\link[=resy_load_expert]{resy_load_expert()}}.
-Required when \code{run_taxonomy = TRUE}.}
+\item{run_taxonomy, species_data, parsed}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Check the species names with \code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}} instead, or read the
+\code{taxon_resolution} of the \code{\link[=resy_classify]{resy_classify()}} result.}
 
 \item{run_coast_dunes}{Logical; if \code{TRUE}, assigns \code{Coast_EEA} and
 \code{Dunes_Bohn} flags via spatial intersection.}
@@ -54,16 +49,16 @@ A named list:
 \item{\code{sites}}{Tibble of harmonised plot data, geometry dropped,
 WGS84 \code{Longitude} and \code{Latitude} added, and the same values as
 \code{DEG_LON} and \code{DEG_LAT}, the header fields EUNIS-ESy reads.}
-\item{\code{species_checked}}{Output from \code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}} when
-\code{run_taxonomy = TRUE}, otherwise \code{NULL}.}
+\item{\code{species_checked}}{Output from \code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}} with the
+deprecated \code{run_taxonomy = TRUE}, otherwise \code{NULL}.}
 }
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 Prepares vegetation plot header data for EUNIS habitat classification.
 Converts coordinates to EPSG:25832 (ETRS89 / UTM zone 32N), assigns WWF
-ecoregions and country identifiers, optionally computes coast/dune flags,
-and optionally checks and harmonizes species taxonomy.
+ecoregions and country identifiers, and optionally computes coast/dune
+flags.
 
 Use \code{\link[=resy_check_eunis]{resy_check_eunis()}} first to verify that the input data meets all
 requirements before running this function.

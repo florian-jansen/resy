@@ -1,5 +1,70 @@
 # RESY 0.3
 
+## Taxonomic backbone instead of Section 1 name matching
+
+* Section 1 of an expert system can now declare a taxonomic backbone instead
+  of listing species aggregations (`.txt`: `SECTION 1: Taxonomic backbone`
+  followed by `EuroSL https://eurosl.infinitenature.org <version>`; `.json`: a
+  `backbone` object in place of `synonyms`). Plot taxa are then resolved to the
+  backbone's taxon concepts with vegdata (concept-aware: s. l./agg./s. str.
+  kept apart, `auct.` never matched, cf./aff./? ignored) and count for an
+  expert taxon if the backbone places them at or below it.
+* New `resy_backbone()` loads the backbone (option `resy.backbone` points to a
+  local SQLite file or data frame). vegdata (>= 2.0.0), DBI and RSQLite are
+  suggested.
+* `resy_classify()` and `resy_check_taxonomy()` report the plot taxon names
+  that cannot be used, split into potentially important and probably
+  unimportant ones (`summary(res$taxon_resolution)`).
+* New default versions `EUNIS 2025-10-03-EuroSL` and
+  `Apennine-test 2026-06-27-EuroSL`: derived from the published releases, with
+  Section 1 replaced by the EuroSL backbone and species names updated to
+  accepted EuroSL names (`data-raw/build_eurosl_experts.R`). The published
+  releases stay unchanged; pass `version = "2025-10-03"` for the old matching.
+* The synonym layer (`resy_read_synonyms()`, `resy_resolve_taxa()`,
+  `resy_canonical_species()`) is anchored on the newest published release and
+  refuses expert systems with a backbone.
+* `resy_diff_expert()` reports a changed backbone (`section = "backbone"`).
+* New default `Apennine-test 2026-11-25` (`data-raw/build_apennine_test.R`):
+  broad types forest, non-forest and the new wetland type are wider, and there
+  are new forest (beech-fir, chestnut, thermophilous deciduous, holm oak,
+  riparian), grassland and scrub (Ampelodesmos, dry and annual grassland, heath
+  and maquis, coastal dunes) and wetland types (open water, marsh, saltmarsh).
+  All 200 example plots now get a type (92 did not before). Groups may name a
+  genus, which stands for all its species.
+* `resy_provenance()` reports the declared backbone (`backbone`,
+  `backbone_url`, `backbone_version`) and, for a result, the version used
+  (`backbone_version_used`).
+* A backbone read from a file is cached in RESY's cache directory. Name matches
+  and the resolved names of an expert system are kept for the session, so
+  classifying data in parts matches each name once.
+* Without vegdata (or with `options(resy.backbone_match = "light")`), RESY
+  matches names itself: as written, without author citation, aggregates only
+  to aggregates; no correction of spelling.
+* RESY App and Maker: the shipped systems with a backbone bring the part of
+  EuroSL they name (with children, synonyms and ancestors); systems the user
+  brings and the Maker load the whole of EuroSL (2.4 MB) on demand, in place
+  of the synonym layer. The App lists the potentially important names that
+  count for no taxon. The shipped systems are parsed when the bundle is built.
+  In the Maker, new systems use EuroSL; the species tab of a system with a
+  backbone shows how EuroSL reads its names and renames synonyms in the groups
+  to accepted names; a system with a species list can switch to EuroSL, and
+  its name suggestions come from EuroSL.
+* `inst/extdata/eurosl_example.csv.xz`: the part of EuroSL the example data and
+  the bundled expert systems need, for examples, vignettes and tests
+  (`data-raw/build_eurosl_example.R`).
+* Vignettes: `vignette("taxonomy")` is rewritten for the backbone;
+  `vignette("RESY")` and `vignette("EUNIS")` check names with
+  `resy_check_taxonomy()` and classify the names as given.
+
+## Deprecated
+
+* `resy_resolve_taxa()`, `resy_read_synonyms()`, `resy_canonical_species()`
+  (name matching through the synonym layer) and `resy_clean_names()`
+  (backbone matching removes author citations); to be removed in RESY 0.4.
+* `resy_classify(resolve_taxa, synonyms)` and
+  `resy_harmonize_eunis(run_taxonomy, species_data, parsed)`; check names with
+  `resy_check_taxonomy()` or read `taxon_resolution` of the result.
+
 ## Breaking changes — function renames
 
 * `prepare_eunis()` split into `resy_check_eunis()` (pure validation) and

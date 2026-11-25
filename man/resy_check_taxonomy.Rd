@@ -31,6 +31,14 @@ of the loaded expert system: the aggregates of Section 1 with the names they
 include, and the species that a species group or a membership condition
 names. Returns a per-taxon table of matches and canonical name mappings.
 
+For an expert system with a taxonomic backbone (Section 1 names e.g.
+EuroSL), names are matched against the backbone instead (see
+\code{\link[=resy_backbone]{resy_backbone()}}): a name counts for an expert taxon if the backbone places
+it at or below that taxon. Names with cf., aff. or ? are ignored. Names that
+cannot be used are marked as potentially important (their genus is used by
+the expert system, or they are broader than an expert taxon) or probably
+unimportant; \code{summary()} lists both.
+
 This is a purely offline check; no external name-resolution service is
 called.
 
@@ -39,7 +47,7 @@ holds and how many names matched; \code{\link[base:summary]{base::summary()}} re
 the unmatched names.
 }
 \examples{
-parsed <- resy_load_expert(scheme = "Apennine-test")
+parsed <- resy_load_expert(scheme = "Apennine-test", version = "2026-06-27")
 
 obs <- data.frame(
   PlotObservationID = c("p1", "p1", "p2"),

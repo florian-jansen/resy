@@ -52,7 +52,7 @@ is uploaded.
           </label>
           <label class="choice">
             <input class="form-check-input" type="radio" name="start" value="Apennine-test"> The Apennine example
-            <span class="hint">A small system with four species groups and five types that fits the example plots.</span>
+            <span class="hint">A small system with fifteen species groups and nineteen types that fits the example plots.</span>
           </label>
           <label class="choice">
             <input class="form-check-input" type="radio" name="start" value="EUNIS"> EUNIS-ESy
@@ -179,6 +179,18 @@ is uploaded.
         </div>
 
         <div id="tab-species" role="tabpanel" aria-labelledby="tab-button-species" hidden>
+          <div id="sp-backbone" hidden>
+            <p class="small mb-2">The system matches species along a taxonomic backbone: a plot taxon counts for a species of the system when the backbone places it at or below that species, as a synonym, a subspecies or a member of an aggregate.</p>
+            <div class="row g-2 mb-2">
+              <label class="col-4 small">Backbone <input class="form-control form-control-sm" data-bb="name" aria-label="Name of the backbone"></label>
+              <label class="col-5 small">Address <input class="form-control form-control-sm" data-bb="url" aria-label="Address of the backbone"></label>
+              <label class="col-3 small">Version <input class="form-control form-control-sm" data-bb="version" aria-label="Version of the backbone"></label>
+            </div>
+            <div id="bb-names"></div>
+            <div id="bb-test"></div>
+          </div>
+          <div id="sp-legacy">
+          <p class="small note">This system lists its species and their synonyms itself. <button type="button" class="btn btn-link btn-sm p-0 align-baseline" id="sp-to-backbone">Match its species along EuroSL instead</button></p>
           <div class="actions mt-0">
             <button type="button" class="btn btn-outline-primary btn-sm" id="sp-paste-toggle">Add species…</button>
             <button type="button" class="btn btn-outline-primary btn-sm" id="sp-match" data-sheet="match" aria-expanded="false" aria-controls="sheet-match" disabled>Add the names of the test plots…</button>
@@ -204,6 +216,7 @@ is uploaded.
             <button type="button" class="btn btn-outline-secondary btn-sm" id="sp-next">Next</button>
           </nav>
           <div id="sp-notes"></div>
+          </div>
         </div>
 
         <div id="tab-plots" role="tabpanel" aria-labelledby="tab-button-plots" hidden>

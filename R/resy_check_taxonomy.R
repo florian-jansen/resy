@@ -7,6 +7,14 @@
 #' include, and the species that a species group or a membership condition
 #' names. Returns a per-taxon table of matches and canonical name mappings.
 #'
+#' For an expert system with a taxonomic backbone (Section 1 names e.g.
+#' EuroSL), names are matched against the backbone instead (see
+#' [resy_backbone()]): a name counts for an expert taxon if the backbone places
+#' it at or below that taxon. Names with cf., aff. or ? are ignored. Names that
+#' cannot be used are marked as potentially important (their genus is used by
+#' the expert system, or they are broader than an expert taxon) or probably
+#' unimportant; `summary()` lists both.
+#'
 #' This is a purely offline check; no external name-resolution service is
 #' called.
 #'
@@ -28,7 +36,7 @@
 #'   }
 #' @seealso [resy_load_expert()], [resy_harmonize_eunis()]
 #' @examples
-#' parsed <- resy_load_expert(scheme = "Apennine-test")
+#' parsed <- resy_load_expert(scheme = "Apennine-test", version = "2026-06-27")
 #'
 #' obs <- data.frame(
 #'   PlotObservationID = c("p1", "p1", "p2"),
@@ -49,6 +57,12 @@ resy_check_taxonomy <- function(obs, parsed, col = NULL) {
   if (!inherits(parsed, "resy_parsed_expert"))
     stop("`parsed` must be a resy_parsed_expert object (from resy_load_expert()).")
   col <- .resy_species_col(obs, col, arg = "col")
+
+  if (!is.null(parsed$backbone)) {
+    bb <- .resy_backbone_get(parsed$backbone$name)
+    taxa <- .resy_backbone_plot_taxa(obs[[col]], .resy_backbone_expert(parsed, bb), bb)
+    return(.resy_backbone_taxa_table(taxa, col, parsed$backbone))
+  }
 
   # Section 1 maps aggregate names and their members to the aggregate; a
   # species that only a species group or a membership condition names is

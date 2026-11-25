@@ -9,7 +9,7 @@ test_that("Darwin Core columns classify like the RESY columns", {
   header <- unique(sp["PlotObservationID"])
 
   res <- suppressMessages(
-    resy_classify(sp, header, scheme = "Apennine-test",
+    resy_classify(sp, header, scheme = "Apennine-test", version = "2026-06-27",
                   species_col = "scientificName", mc = 1L)
   )
 
@@ -21,7 +21,7 @@ test_that("Darwin Core columns classify like the RESY columns", {
   )
   dwc_header <- data.frame(eventID = unique(sp$PlotObservationID))
   res_dwc <- suppressMessages(
-    resy_classify(dwc, dwc_header, scheme = "Apennine-test", mc = 1L)
+    resy_classify(dwc, dwc_header, scheme = "Apennine-test", version = "2026-06-27", mc = 1L)
   )
 
   key <- function(r) {
@@ -85,7 +85,7 @@ test_that("site checks accept Darwin Core names", {
 })
 
 test_that("resy_check_taxonomy finds scientificName without col", {
-  parsed <- resy_load_expert(scheme = "Apennine-test")
+  parsed <- resy_load_expert(scheme = "Apennine-test", version = "2026-06-27")
   obs <- data.frame(scientificName = c("Fagus sylvatica", "Planta inventa"))
   checked <- resy_check_taxonomy(obs, parsed)
   expect_equal(sum(checked$matched), 1)

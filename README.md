@@ -40,22 +40,18 @@ Afterwards you can [apply an expert
 system](https://florian-jansen.github.io/resy/articles/RESY.html) with
 `resy_classify()` to your vegetation relevés.
 
-Each expert system uses its own list of species names. The EUNIS expert
-system, for example, uses the names of [Euro+Med
-PlantBase](https://europlusmed.org/), the taxonomy used in data from the
-[European Vegetation Archive (EVA)](https://euroveg.org/eva-database/).
-Species names in plot data that follow another taxonomy, such as
-[GBIF](https://www.gbif.org/) or [World Flora
-Online](https://www.worldfloraonline.org/), must first be matched to the
-names of the expert system. `resy_resolve_taxa()` does this for any
-expert system: it removes author names and looks up synonyms. RESY ships
-the synonyms of six taxonomies (Euro+Med, World Flora Online, GBIF,
-Catalogue of Life, ITIS and NCBI) and fits them to the species names of
-the expert system you use, so each release of the EUNIS expert system
-gets its own synonym table. For the newest release, it links about
-67,000 synonyms to EUNIS species names. For an expert system with other
-species names, you can supply your own synonym table, as shown in [Match
-species
+Each expert system declares the taxonomic backbone its species names
+refer to. The EUNIS expert system uses
+[EuroSL](https://eurosl.infinitenature.org), the European species list
+built on [Euro+Med PlantBase](https://europlusmed.org/). RESY matches
+the species names of your plots to the taxon concepts of the backbone
+with the [vegdata](https://cran.r-project.org/package=vegdata) package,
+accepting synonyms, author citations and spelling variants but keeping
+taxa of different extent apart. A plot taxon counts for an expert taxon
+when the backbone places it at or below that taxon, for example a
+subspecies for its species. `resy_check_taxonomy()` lists the names that
+cannot be used, split into potentially important and probably
+unimportant ones; see [Match species
 names](https://florian-jansen.github.io/resy/articles/taxonomy.html).
 
 The [RESY App](https://florian-jansen.github.io/resy/articles/app.html)
@@ -98,8 +94,15 @@ small expert system whose rules require no site data. The header table
 therefore contains only plot IDs, but `resy_classify()` still requires
 it.
 
+RESY matches the species names to the taxonomic backbone of the expert
+system, EuroSL, with the vegdata package. Install EuroSL once with
+`vegdata::taxref_download_eurosl()`; this example uses the part of
+EuroSL that ships with RESY.
+
 ``` r
 library(RESY)
+options(resy.backbone = system.file("extdata", "eurosl_example.csv.xz",
+                                    package = "RESY"))
 
 file <- system.file("extdata", "data_example_species.csv", package = "RESY")
 species <- read.csv(file)
@@ -109,15 +112,15 @@ res <- resy_classify(species, header, scheme = "Apennine-test")
 cand <- resy_candidates(res, top_n = 3, wide = TRUE)
 table(cand$classification)
 #> 
-#>  ?  F FB  N NG NS 
-#> 92 33  8  6 20 41
+#>  F FB FC FF FQ FR  N NA NB ND NG NH NS NT WA WM WS 
+#>  1  8  5 33 16  3 20 11 19  4 20 13 24  9  4  8  2
 ```
 
-`F`, `FB`, `N`, `NG` and `NS` are the five vegetation types of
-`Apennine-test`. A plot marked `?` meets no type’s rule and is not
-classified. Here, 92 of the 200 plots remain unclassified. In these
-plots, all four indicator groups have at most 4% cover, below the lowest
-threshold in the rules (5%).
+`Apennine-test` has three broad types, forest (`F`), non-forest (`N`)
+and wetland (`W`), with sixteen types below them, for example beech-fir
+forest (`FB`), chestnut forest (`FC`), dry grassland (`NB`) or open
+water (`WA`). A plot that meets the rule of no type would be marked `?`;
+in the example data every plot gets a type.
 
 Each type has a priority in the expert system. When a plot meets the
 rules of several types, it is assigned to the one with the highest
@@ -128,9 +131,9 @@ its parent type `F` (forest, priority 2), and is assigned to `FB`:
 
 ``` r
 subset(cand, plot_id == "CX45")
-#>    plot_id classification type_1 priority_1 type_2 priority_2
-#>     <char>         <char> <char>      <ord> <char>      <ord>
-#> 1:    CX45             FB     FB          5      F          2
+#>    plot_id classification type_1 priority_1 type_2 priority_2 type_3 priority_3
+#>     <char>         <char> <char>      <ord> <char>      <ord> <char>      <ord>
+#> 1:    CX45             FB     FB          5     FF          4      F          2
 ```
 
 `resy_eval_plot(res, p = "CX45")` shows the species and conditions
@@ -169,8 +172,8 @@ These vignettes show how to use RESY:
   get the altitude column which some EUNIS rules use
 - [Match species
   names](https://florian-jansen.github.io/resy/articles/taxonomy.html):
-  matching the species names in your data to the names the expert system
-  uses
+  matching the species names in your data to the taxonomic backbone of
+  the expert system
 
 ## :desktop_computer: Functions
 
@@ -179,8 +182,9 @@ These are the main functions:
 - `resy_classify()` assigns each plot to a vegetation or habitat type
 - `resy_candidates()` lists the assigned and candidate types per plot
 - `resy_harmonize_eunis()` adds the site data EUNIS needs (ecoregion,
-  country, coast, dunes) from the plot coordinates `resy_resolve_taxa()`
-  matches names from other taxonomies to them
+  country, coast, dunes) from the plot coordinates
+- `resy_check_taxonomy()` matches the species names to the taxonomic
+  backbone of the expert system and reports those that cannot be used
 
 An overview of all functions and data is given in the tab
 [**Reference**](https://florian-jansen.github.io/resy/reference/).

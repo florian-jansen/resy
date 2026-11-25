@@ -18,7 +18,7 @@ apennine_result <- local({
       sp <- eval_plot_data()
       header <- as.data.frame(unique(sp["PlotObservationID"]))
       res <<- suppressMessages(
-        resy_classify(sp, header, scheme = "Apennine-test", mc = 1L)
+        resy_classify(sp, header, scheme = "Apennine-test", version = "2026-06-27", mc = 1L)
       )
     }
     res

@@ -37,7 +37,7 @@ browser tab and are not uploaded anywhere.
           </label>
           <label class="choice">
             <input class="form-check-input" type="radio" name="system" value="Apennine-test" aria-label="Apennine example system"> Apennine example system
-            <span class="hint">A small system with five types for the example data, shipped with RESY.</span>
+            <span class="hint">A small system with three broad and sixteen further types for the example data, shipped with RESY.</span>
           </label>
           <label class="choice">
             <input class="form-check-input" type="radio" name="system" value="file" aria-label="Your own expert system"> Your own expert system

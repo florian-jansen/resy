@@ -54,7 +54,7 @@ header <- unique(species["PlotObservationID"])
 res <- resy_classify(
   species,
   header,
-  scheme = "Apennine-test"
+  scheme = "Apennine-test", version = "2026-06-27"
 )
 
 resy_eval_plot(res, p = as.character(header$PlotObservationID[1]))

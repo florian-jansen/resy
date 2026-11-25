@@ -12,12 +12,21 @@ resy_canonical_species(path = NULL, expert = NULL)
 column) reads the canonical names from an override instead.}
 
 \item{expert}{An expert system read with \code{\link{resy_load_expert}}, used
-when \code{path = NULL}. \code{NULL} (default) uses the newest EUNIS release.}
+when \code{path = NULL}. \code{NULL} (default) uses the newest published
+EUNIS release.}
 }
 \value{
 A sorted character vector of unique canonical species names.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+This function belongs to the name matching through the synonym layer, used by the
+published expert systems with Section 1 aggregations. Expert systems with a
+taxonomic backbone (the bundled default versions) match species along the
+backbone; check names with \code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}}. It will be removed in
+RESY 0.4.
+}
+\details{
 Returns the canonical species names of an expert system: the names its
 classifier evaluates, which is the target column a user builds a translation
 table against. These are the aggregate names of Section 1, and the species

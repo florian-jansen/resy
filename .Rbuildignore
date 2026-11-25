@@ -19,3 +19,6 @@
 ^nonmatching\.xlsx$
 ^LICENSE\.md$
 ^cran-comments\.md$
+^taxonomy-branch\.md$
+^README\.html$
+^\.hermes\.md$

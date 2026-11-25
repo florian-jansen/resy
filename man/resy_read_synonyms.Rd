@@ -13,21 +13,29 @@ resy_read_synonyms(path = NULL, expert = NULL)
 returned unchanged.}
 
 \item{expert}{An expert system read with \code{\link{resy_load_expert}}, used
-when \code{path = NULL}. \code{NULL} (default) uses the newest EUNIS release,
-the expert system \code{resy_load_expert()} reads by default.}
+when \code{path = NULL}. \code{NULL} (default) uses the newest published
+EUNIS release. Expert systems with a taxonomic backbone (see
+\code{\link{resy_backbone}}) do not use the synonym layer.}
 }
 \value{
 A data frame with columns \code{synonym}, \code{esy_canonical}, and
 \code{source}, and \code{accepted_in} when the table has it.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+This function belongs to the name matching through the synonym layer, used by the
+published expert systems with Section 1 aggregations. Expert systems with a
+taxonomic backbone (the bundled default versions) match species along the
+backbone; check names with \code{\link[=resy_check_taxonomy]{resy_check_taxonomy()}}. It will be removed in
+RESY 0.4.
+}
+\details{
 Returns the table of alternate species names mapped to the species names of an
 expert system. Each row is a synonym pair: an alternate string a plot dataset
 might carry, keyed to the name of the expert system it resolves to;
 \code{source} records the taxonomic backbone(s) that support the synonym pair
 (\code{;}-separated when more than one).
-}
-\details{
+
 RESY ships one synonym layer for all expert systems and all their releases:
 the synonym pairs of six taxonomic backbones (Euro+Med, WFO, GBIF, COL, ITIS,
 NCBI). With \code{path = NULL}, the layer is anchored on the expert system

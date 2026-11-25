@@ -33,7 +33,8 @@ resy_maker_open <- function(out, scheme = NULL, version = NULL, path = NULL) {
   on.exit(close(con))
   writeBin(charToRaw(paste0(
     '{"metadata":', json(model$metadata),
-    ',"synonyms":', .maker_json_lists(model$synonyms),
+    if (is.null(model$backbone)) paste0(',"synonyms":', .maker_json_lists(model$synonyms))
+    else paste0(',"backbone":', json(model$backbone)),
     ',"groups":', .maker_json_lists(model$groups),
     ',"rules":', json(model$rules), "}"
   )), con)
@@ -67,6 +68,8 @@ resy_maker_open <- function(out, scheme = NULL, version = NULL, path = NULL) {
   tree <- resy_read_expert(path)
   entries <- function(n) RESY:::.resy_section_by_number(tree, n)$entries %||% list()
   aggs <- entries(1L)
+  backbone <- if (!is.null(aggs$backbone)) aggs$backbone
+  if (!is.null(backbone)) aggs <- list()
   groups <- Filter(function(g) !is.na(g$prefix), entries(2L))
   rules <- Filter(function(r) !is.na(r$priority) && grepl("<", r$expression, fixed = TRUE), entries(3L))
   # A JSON object holds each name once: the entries of a species or group that
@@ -76,6 +79,7 @@ resy_maker_open <- function(out, scheme = NULL, version = NULL, path = NULL) {
            function(v) unique(as.character(unlist(v, use.names = FALSE))))
   }
   list(
+    backbone = backbone,
     synonyms = by_name(lapply(aggs, function(a) a$synonyms),
                        vapply(aggs, function(a) a$canonical, character(1))),
     groups = by_name(lapply(groups, function(g) g$members),
@@ -97,7 +101,7 @@ resy_maker_set_data <- function(species_tsv, sites_tsv) {
   sp <- .page_read(species_tsv)
   sp <- sp[!is.na(sp$name) & !is.na(sp$PlotObservationID), , drop = FALSE]
   raw <- unique(sp$name)
-  clean <- resy_clean_names(raw)
+  clean <- .page_clean_names(raw)
   ok <- !is.na(clean) & nzchar(clean)
   raw <- raw[ok]
   clean <- clean[ok]
@@ -164,36 +168,62 @@ resy_maker_synonyms <- function(path) {
 }
 
 # Proposals for the species names of the test plots that the system in
-# `rules_json` does not know: the species of its list each name may be read as.
-# A name below species level is taken to the words before its rank marker
-# (`kind` "autonym" for the type subspecies or variety, "infra" for another);
-# a name at species level, or such a species not in the list, is looked up in
-# the synonym layer at `layer_path`, anchored on the list as RESY anchors it on
-# an expert system (`via_synonym`; `kind` "synonym" for a name at species
-# level, "same" for one the list has once its author is removed). Names that
-# match nothing are left out. Each name comes with its form without author
-# (`cleaned`), the form the page and RESY look up. Reads
-# the names as the last test did (resy_maker_test()).
-resy_maker_suggest_synonyms <- function(rules_json, layer_path) {
+# `rules_json` (a system with a species list in Section 1) does not know: the
+# species of its list each name may be read as, by the taxon concepts of the
+# backbone at `backbone_path` (EuroSL). A name of the same concept as a listed
+# species is proposed as its synonym (`kind` "same" when the names differ in
+# the author only, "synonym" otherwise); a name the backbone places below a
+# listed species as a synonym of that species ("autonym" for the type
+# subspecies or variety, "infra" for another). Names that match nothing are
+# left out, and so are listed genera, which stand for records determined to the
+# genus only. Each name comes with its form without author (`cleaned`), the
+# form the page and RESY look up. Reads the names as the last test did
+# (resy_maker_test()).
+resy_maker_suggest_synonyms <- function(rules_json, backbone_path) {
   sp <- .maker$sp
   if (is.null(sp)) return(.page_json(list()))
   parsed <- .maker_system(rules_json)$parsed
   records <- table(sp$name)
   unknown <- names(records)[is.na(.page_taxa(names(records)))]
-  cleaned <- resy_clean_names(unknown)
-  part <- RESY:::.resy_species_part(cleaned)
-  nm <- RESY:::.resy_expert_names(parsed)
-  lookup <- RESY:::.resy_synonym_lookup(
-    RESY:::.resy_anchor_synonyms(RESY:::.resy_synonym_layer(layer_path), nm))
-  m <- RESY:::.resy_match_taxa(part$species, nm$vocab, lookup)
-  species <- unname(nm$evaluated_as[m$canonical])
+  cleaned <- .page_clean_names(unknown)
+  bb <- RESY:::.resy_backbone_get("EuroSL", backbone_path)
+  listed <- unique(c(names(parsed$aggs), RESY:::.resy_expert_used(parsed)))
+  lc <- RESY:::.resy_backbone_match(listed, bb)$concept
+  # a genus (or higher) of the list stands for records determined to it only
+  lc[unname(bb$rank_of[lc]) %in% RESY:::.resy_coarse_ranks] <- NA
+  species_of <- tapply(listed[!is.na(lc)], lc[!is.na(lc)], `[`, 1L)
+  uc <- RESY:::.resy_backbone_match(unknown, bb)$concept
+  anc <- RESY:::.resy_backbone_ancestors(uc, bb$parent)
+  anc <- anc[anc$ancestor %in% names(species_of)]
+  data.table::setorderv(anc, c("concept", "depth"))
+  anc <- anc[!duplicated(anc$concept)]
+  at <- match(uc, anc$concept)
+  species <- unname(species_of[anc$ancestor[at]])
+  depth <- anc$depth[at]
   ok <- which(!is.na(species))
-  kind <- ifelse(part$autonym, "autonym", ifelse(part$infra, "infra",
-                 ifelse(m$confidence == "synonym", "synonym", "same")))
+  last <- function(x) sub("^.* ", "", x)
+  kind <- ifelse(depth == 0L, ifelse(cleaned == species, "same", "synonym"),
+                 ifelse(last(cleaned) == last(species), "autonym", "infra"))
   .page_json(unname(Map(function(k) list(name = unknown[k], cleaned = cleaned[k],
                                          species = species[k], kind = kind[k],
-                                         via_synonym = m$confidence[k] == "synonym",
+                                         via_synonym = kind[k] == "synonym",
                                          records = as.integer(records[[unknown[k]]])), ok)))
+}
+
+# The species names the system in `rules_json` (with a backbone) uses, each
+# with how the backbone (the whole list, see resy_page_backbone()) reads it:
+# `status` "accepted" (an accepted name of the backbone), "renamed" (a synonym
+# or spelling of `accepted`), or why it is not matched ("level_unclear",
+# "misapplied_name", "uncertain_determination", "not_found").
+resy_maker_taxonomy <- function(rules_json) {
+  parsed <- .maker_system(rules_json)$parsed
+  if (is.null(parsed$backbone) || is.null(.page$full_backbone)) return(.page_json(list()))
+  bb <- RESY:::.resy_backbone_get(parsed$backbone$name, .page$full_backbone)
+  used <- RESY:::.resy_expert_used(parsed)
+  m <- RESY:::.resy_backbone_match(used, bb)
+  status <- ifelse(!is.na(m$issue), m$issue, ifelse(m$accepted == m$name, "accepted", "renamed"))
+  .page_json(data.frame(name = m$name, status = status, accepted = m$accepted,
+                        stringsAsFactors = FALSE))
 }
 
 # The parsed system belongs to the complete rules document and the current
@@ -202,11 +232,17 @@ resy_maker_suggest_synonyms <- function(rules_json, layer_path) {
   document <- readBin(path, "raw", file.size(path))
   if (!is.null(.maker$parsed) && identical(document, .maker$document)) return(.maker$parsed)
   x <- RESY:::.resy_raw_json(document)
-  x$synonyms <- .maker$synonyms %||% list()
+  # A system with a backbone has no species list of its own.
+  if (is.null(x$backbone)) x$synonyms <- .maker$synonyms %||% list()
   groups <- RESY:::.resy_json_chr_list(x$groups)
+  backbone <- if (!is.null(x$backbone))
+    list(name = as.character(x$backbone$name), url = as.character(x$backbone$url %||% ""),
+         version = as.character(x$backbone$version %||% NA_character_))
   parsed <- if (length(x$rules)) RESY:::.resy_parsed_from_json(x) else
-    structure(list(aggs = RESY:::.resy_json_chr_list(x$synonyms), groups = groups,
-                    groups.names = RESY:::.resy_group_name(names(groups)), conditions = character()),
+    structure(list(backbone = backbone,
+                   aggs = if (is.null(backbone)) RESY:::.resy_json_chr_list(x$synonyms) else list(),
+                   groups = groups, groups.names = RESY:::.resy_group_name(names(groups)),
+                   conditions = character(), membership.expressions = character()),
                class = "resy_parsed_expert")
   .maker$document <- document
   .maker$parsed <- list(x = x, groups = groups, parsed = parsed)
@@ -277,7 +313,16 @@ resy_maker_test <- function(rules_json, coast_dunes = TRUE, coast_buffer = 5000)
   taxon <- .page_taxa(sp$name)
   out$n_records <- nrow(sp)
   out$n_unmatched <- sum(is.na(taxon))
-  out$unmatched <- I(sort(unique(resy_clean_names(unique(sp$name[is.na(taxon)])))))
+  if (is.null(parsed$backbone)) {
+    out$unmatched <- I(sort(unique(.page_clean_names(unique(sp$name[is.na(taxon)])))))
+  } else {
+    # the names that count for no taxon of the system, by how much they may matter
+    unmatched <- unique(sp$name[is.na(taxon)])
+    imp <- .page$importance[unmatched]
+    by <- function(k) I(sort(unmatched[imp %in% k]))
+    out$unmatched <- I(character())
+    out$taxonomy <- list(important = by("important"), unimportant = by("unimportant"))
+  }
   plot_of <- sp$PlotObservationID
   .maker$group_plots <- lapply(groups, function(m) unique(plot_of[taxon %in% trimws(m)]))
   out$groups <- as.list(lengths(.maker$group_plots))
@@ -391,7 +436,7 @@ resy_maker_check <- function(json_path) {
 # groups, types and formulas from it as from the JSON file.
 resy_maker_write_txt <- function(json_path, out) {
   x <- jsonlite::read_json(json_path, simplifyVector = FALSE)
-  synonyms <- RESY:::.resy_json_chr_list(x$synonyms)
+  synonyms <- RESY:::.resy_json_chr_list(x$synonyms %||% list())
   groups <- RESY:::.resy_json_chr_list(x$groups)
   priority <- vapply(x$rules, function(r) as.character(r$priority), character(1))
   if (any(!priority %in% as.character(0:9)))
@@ -405,7 +450,12 @@ resy_maker_write_txt <- function(json_path, out) {
   s3 <- unlist(lapply(x$rules, function(r) c(
     RESY:::.resy_rule_header(r$priority, r$code, r$description), as.character(r$expression), ""
   )), use.names = FALSE)
-  lines <- c("SECTION 1: Species aggregation", "", s1, "SECTION 1: End",
+  section1 <- if (!is.null(x$backbone)) {
+    c("SECTION 1: Taxonomic backbone",
+      RESY:::.resy_backbone_line(list(name = x$backbone$name, url = x$backbone$url,
+                                      version = x$backbone$version %||% NA_character_)))
+  } else c("SECTION 1: Species aggregation", "", s1)
+  lines <- c(section1, "SECTION 1: End",
              "SECTION 2: Species groups", "", s2, "SECTION 2: End",
              "SECTION 3: Group definitions", "", s3, "SECTION 3: End", "",
              "SECTION 4: Similarity", "", "SECTION 4: End")
@@ -419,7 +469,8 @@ resy_maker_write_txt <- function(json_path, out) {
 
   a <- resy_load_expert(expertfile = json_path)
   b <- resy_load_expert(expertfile = out)
-  parts <- c(species = identical(a$aggs, b$aggs),
+  parts <- c(backbone = identical(a$backbone, b$backbone),
+             species = identical(a$aggs, b$aggs),
              groups = identical(a$groups, b$groups),
              types = identical(a$vegtype.formula.names, b$vegtype.formula.names),
              priorities = identical(as.character(a$vegtype.priority), as.character(b$vegtype.priority)),

@@ -13,10 +13,9 @@
 #'   \item Pick an expert system: [resy_available_classifications()] lists the
 #'     shipped ones, [resy_add_classification()] stores your own, and
 #'     [resy_load_expert()] loads one.
-#'   \item Prepare the plot data: [resy_check_taxonomy()] checks species names
-#'     against the expert system, [resy_resolve_taxa()] harmonises names from
-#'     other taxonomic backbones, and [resy_harmonize_eunis()] adds the header
-#'     columns EUNIS-ESy needs.
+#'   \item Prepare the plot data: [resy_check_taxonomy()] matches the species
+#'     names to the taxonomic backbone of the expert system ([resy_backbone()]),
+#'     and [resy_harmonize_eunis()] adds the header columns EUNIS-ESy needs.
 #'   \item Classify with [resy_classify()].
 #'   \item Inspect the result: [resy_candidates()] lists the candidate types per
 #'     plot, [resy_eval_plot()] shows why a plot matched, and [resy_expert_tree()] shows the type hierarchy.

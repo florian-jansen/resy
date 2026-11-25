@@ -17,7 +17,8 @@
 #' @return A data frame of class `resy_expert_diff`, one row per change, with
 #'   columns
 #'   \describe{
-#'     \item{`section`}{`"aggregate"` (Section 1 aggregation of taxa),
+#'     \item{`section`}{`"backbone"` (taxonomic backbone declared in
+#'       Section 1), `"aggregate"` (Section 1 aggregation of taxa),
 #'       `"group"` (Section 2 species group) or `"type"` (Section 3
 #'       definition).}
 #'     \item{`key`}{Aggregate name, group name or type code.}
@@ -45,6 +46,7 @@ resy_diff_expert <- function(from, to, scheme = "EUNIS") {
   b <- .resy_as_parsed(to, scheme)
 
   out <- rbind(
+    .resy_diff_backbone(a$backbone, b$backbone),
     .resy_diff_members("aggregate", .resy_member_sets(a$aggs), .resy_member_sets(b$aggs)),
     .resy_diff_members("group", .resy_member_sets(a$groups, strip = "^#+\\s*"),
                        .resy_member_sets(b$groups, strip = "^#+\\s*")),
@@ -121,8 +123,24 @@ print.summary.resy_expert_diff <- function(x, max = 30L, ...) {
   else s$file
 }
 
+# The taxonomic backbone declared in Section 1: one row when it was added,
+# removed or changed, `from` and `to` holding the declarations.
+.resy_diff_backbone <- function(a, b) {
+  la <- if (is.null(a)) NA_character_ else .resy_backbone_line(a)
+  lb <- if (is.null(b)) NA_character_ else .resy_backbone_line(b)
+  if (identical(la, lb)) {
+    return(data.frame(section = character(), key = character(), change = character(),
+                      what = character(), from = character(), to = character(),
+                      stringsAsFactors = FALSE))
+  }
+  data.frame(section = "backbone", key = (b %||% a)$name,
+             change = if (is.na(la)) "added" else if (is.na(lb)) "removed" else "changed",
+             what = NA_character_, from = la, to = lb, stringsAsFactors = FALSE)
+}
+
 # Named list of sorted unique member sets; a name declared twice is merged.
 .resy_member_sets <- function(x, strip = NULL) {
+  if (!length(x)) return(stats::setNames(list(), character()))
   nm <- names(x)
   if (!is.null(strip)) nm <- sub(strip, "", nm)
   nm <- trimws(nm)

@@ -18,20 +18,21 @@
 #'
 #' @description
 #' `r lifecycle::badge("experimental")`
-#' Loads an expert system (by file or by scheme/version), aggregates taxa,
-#' evaluates the membership conditions, and returns plot classifications.
+#' Loads an expert system (by file or by scheme/version), matches the species
+#' of the plots to it, evaluates the membership conditions, and returns plot
+#' classifications.
 #'
-#' The classifier is taxonomy-agnostic: it classifies the species names in `obs`
-#' as they are given. Names should already match the expert system's vocabulary.
-#' If your plot data uses names from a general backbone (GBIF, WFO, POWO,
-#' Euro+Med, a national checklist), harmonise them first as an explicit step with
-#' [resy_resolve_taxa] and inspect the result with its `summary()` before
-#' classifying, so the taxonomic choices stay visible (see the taxonomy
-#' vignette). Setting `resolve_taxa = TRUE` runs that resolution inside
-#' `resy_classify()` as a convenience: names already in the expert system pass through
-#' untouched, unknown names are looked up in the synonym table, and names that
-#' resolve to nothing keep their original value (never a best guess). What was
-#' resolved is then reported in the result's `taxon_resolution`.
+#' How species names are matched depends on Section 1 of the expert system:
+#' * An expert system with a taxonomic backbone (the bundled defaults, e.g.
+#'   EUNIS `2025-10-03-EuroSL` with EuroSL) resolves the plot names to taxon
+#'   concepts of the backbone (see [resy_backbone()]). A plot taxon counts for
+#'   an expert taxon if the backbone places it at or below that taxon. Names
+#'   that cannot be used are reported in the result's `taxon_resolution`,
+#'   split into potentially important and probably unimportant ones (see the
+#'   taxonomy vignette).
+#' * An expert system with species aggregations in Section 1 (the published
+#'   EUNIS-ESy releases) classifies the names as they are given, after merging
+#'   the names each aggregation lists.
 #'
 #' @param obs Observations as a data frame or `data.table` with at least columns
 #'   describing plot id, the species name (see `species_col`), and the cover
@@ -52,23 +53,25 @@
 #' @param species_col Name of the column in `obs` holding the species name. If
 #'   `NULL` (default), uses `TaxonName`, then Darwin Core `scientificName`.
 #'   Resolved names are written back to `TaxonName`.
-#' @param resolve_taxa Logical; if `FALSE` (default) the classifier is
-#'   taxonomy-agnostic and uses the names in `obs` as given. If `TRUE`, species
-#'   names are resolved to the expert's vocabulary via [resy_resolve_taxa] before
-#'   classification (see Description).
-#' @param synonyms Synonym-table override passed to [resy_resolve_taxa] when
-#'   `resolve_taxa = TRUE`; `NULL` uses the shipped synonym layer anchored on
-#'   the expert system used for the classification.
+#' @param resolve_taxa,synonyms `r lifecycle::badge("deprecated")` Resolution
+#'   of names through the synonym layer ([resy_resolve_taxa()]) for expert
+#'   systems with Section 1 aggregations. Expert systems with a taxonomic
+#'   backbone always match names along the backbone.
 #' @param mc Number of CPU cores to use.
 #' @param expert An expert system already read with [resy_load_expert()]. When
 #'   given, `expertfile`, `scheme`, `version` and `location` are not used, so
 #'   data classified in several parts reads the expert system only once.
-#' @return An object of class `resy_result`. When `resolve_taxa = TRUE` it also
-#'   carries the `summary()` of the [resy_resolve_taxa] result as
-#'   `taxon_resolution`; otherwise `taxon_resolution` is `NULL`. The
+#' @return An object of class `resy_result`. For an expert system with a
+#'   taxonomic backbone, `taxon_resolution` is the table of plot taxon names
+#'   matched against the backbone (as from [resy_check_taxonomy()]); its
+#'   `summary()` lists the names not matched, split into potentially important
+#'   and probably unimportant ones, and `backbone_version` is the version of the
+#'   backbone used. With the deprecated `resolve_taxa = TRUE`,
+#'   `taxon_resolution` is the `summary()` of the [resy_resolve_taxa()] result;
+#'   otherwise it is `NULL`. The
 #'   expert-system release and, when the bundled synonym layer was used, its
 #'   build are reported by [resy_provenance()].
-#' @seealso [resy_resolve_taxa], [resy_check_taxonomy], [resy_provenance()]
+#' @seealso [resy_check_taxonomy()], [resy_backbone()], [resy_provenance()]
 #' @examples
 #' \donttest{
 #' # Classify the bundled example plots with the minimal Apennine-test scheme.
@@ -79,7 +82,7 @@
 #' # A one-row-per-plot header is required even without geographic conditions.
 #' header <- as.data.frame(unique(species["PlotObservationID"]))
 #'
-#' res <- resy_classify(species, header, scheme = "Apennine-test",
+#' res <- resy_classify(species, header, scheme = "Apennine-test", version = "2026-06-27",
 #'                      species_col = "scientificName")
 #' head(res$result.classification)
 #' }
@@ -92,8 +95,8 @@ resy_classify <- function(obs,
                           location = c("user", "package"),
                           id_col = NULL,
                           species_col = NULL,
-                          resolve_taxa = FALSE,
-                          synonyms = NULL,
+                          resolve_taxa = lifecycle::deprecated(),
+                          synonyms = lifecycle::deprecated(),
                           mc = max(1L, floor(parallel::detectCores() * 0.75)),
                           expert = NULL) {
   if (!inherits(obs, "data.table")) obs <- data.table::as.data.table(obs)
@@ -104,16 +107,23 @@ resy_classify <- function(obs,
   parsed <- expert %||% resy_load_expert(expertfile = expertfile, scheme = scheme,
                                          version = version, location = location)
 
-  # Optional convenience: resolve species names to the expert's vocabulary. The
-  # expert system carries its own synonymy (aggregation targets + members), so a
-  # name it already knows passes through untouched; only names it lacks are looked
-  # up in the synonym table anchored on this expert. Unresolved taxa keep their
-  # original value (no row dropped, so obs stays aligned with header) and classify
-  # as an unknown species. Off by default: the classifier is taxonomy-agnostic and
-  # resolution is an explicit user step (see resy_resolve_taxa and the taxonomy
-  # vignette).
+  # Deprecated: resolution through the synonym layer, for expert systems with
+  # Section 1 aggregations. Unresolved taxa keep their original value.
+  if (lifecycle::is_present(synonyms)) {
+    lifecycle::deprecate_warn("0.3.0", "resy_classify(synonyms)",
+                              details = .resy_backbone_hint)
+  } else {
+    synonyms <- NULL
+  }
+  if (lifecycle::is_present(resolve_taxa)) {
+    lifecycle::deprecate_warn("0.3.0", "resy_classify(resolve_taxa)",
+                              details = .resy_backbone_hint)
+    resolve_taxa <- isTRUE(resolve_taxa) && is.null(parsed$backbone)
+  } else {
+    resolve_taxa <- FALSE
+  }
   taxon_resolution <- NULL
-  if (isTRUE(resolve_taxa)) {
+  if (resolve_taxa) {
     resolved <- resy_resolve_taxa(obs, species_col = species_col,
                                   synonyms = synonyms, expert = parsed)
     taxon_resolution <- summary(resolved)
@@ -158,7 +168,20 @@ resy_classify <- function(obs,
             call. = FALSE)
   }
 
-  obs2 <- .resy_aggregate_taxa(obs, parsed$aggs)
+  # Expert systems with a taxonomic backbone: plot taxa count for an expert
+  # taxon if the backbone places them at or below it. Otherwise Section 1
+  # aggregates the plot taxa.
+  if (!is.null(parsed$backbone)) {
+    bb <- .resy_backbone_apply(obs, parsed)
+    obs2 <- bb$obs
+    parsed <- bb$parsed
+    taxon_resolution <- .resy_backbone_taxa_table(bb$taxa, species_col, parsed$backbone)
+    backbone_version <- bb$version
+    .resy_backbone_message(bb$taxa)
+  } else {
+    obs2 <- .resy_aggregate_taxa(obs, parsed$aggs)
+    backbone_version <- NULL
+  }
   plot.cond <- .resy_init_plot_conditions(obs2, parsed$conditions)
   
   res <- .resy_solve_membership(
@@ -195,7 +218,8 @@ resy_classify <- function(obs,
     c(list(obs = obs2, header = header, expertfile = expertfile,
            scheme = src$scheme %||% scheme, version = src$version %||% version,
            prefer = location, candidates = cand, taxon_resolution = taxon_resolution,
-           synonym_layer = if (isTRUE(resolve_taxa) && is.null(synonyms))
+           backbone_version = backbone_version,
+           synonym_layer = if (resolve_taxa && is.null(synonyms))
              .resy_synonym_layer_build() else NULL),
       res,
       list(parsed = parsed)),

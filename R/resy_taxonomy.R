@@ -17,6 +17,13 @@
 
 #' Read the taxonomy synonym table
 #'
+#' `r lifecycle::badge("deprecated")`
+#' This function belongs to the name matching through the synonym layer, used by the
+#' published expert systems with Section 1 aggregations. Expert systems with a
+#' taxonomic backbone (the bundled default versions) match species along the
+#' backbone; check names with [resy_check_taxonomy()]. It will be removed in
+#' RESY 0.4.
+#'
 #' Returns the table of alternate species names mapped to the species names of an
 #' expert system. Each row is a synonym pair: an alternate string a plot dataset
 #' might carry, keyed to the name of the expert system it resolves to;
@@ -57,8 +64,9 @@
 #'   \code{.gz}/\code{.xz}) with the same schema. A data frame is validated and
 #'   returned unchanged.
 #' @param expert An expert system read with \code{\link{resy_load_expert}}, used
-#'   when \code{path = NULL}. \code{NULL} (default) uses the newest EUNIS release,
-#'   the expert system \code{resy_load_expert()} reads by default.
+#'   when \code{path = NULL}. \code{NULL} (default) uses the newest published
+#'   EUNIS release. Expert systems with a taxonomic backbone (see
+#'   \code{\link{resy_backbone}}) do not use the synonym layer.
 #' @return A data frame with columns \code{synonym}, \code{esy_canonical}, and
 #'   \code{source}, and \code{accepted_in} when the table has it.
 #' @seealso \code{\link{resy_resolve_taxa}}, \code{\link{resy_canonical_species}}
@@ -67,9 +75,10 @@
 #' head(synonyms)
 #' @export
 resy_read_synonyms <- function(path = NULL, expert = NULL) {
+  lifecycle::deprecate_soft("0.3.0", "resy_read_synonyms()", details = .resy_backbone_hint)
   if (is.data.frame(path)) return(.resy_validate_synonyms(path))
   if (is.null(path)) {
-    return(.resy_expert_synonyms(expert %||% resy_load_expert()))
+    return(.resy_expert_synonyms(.resy_synonym_expert(expert)))
   }
   if (!is.character(path) || length(path) != 1L) {
     stop("resy_read_synonyms: `path` must be NULL, a single character path, ",
@@ -108,6 +117,9 @@ resy_read_synonyms <- function(path = NULL, expert = NULL) {
   cond <- trimws(parsed$conditions)
   cond <- trimws(sub("^NON ", "", cond))
   cond <- cond[!startsWith(cond, "$")]
+  # values compared with EQ are header categories (countries, coast types)
+  eq <- grep("\\sEQ\\s", parsed$membership.expressions, value = TRUE)
+  cond <- setdiff(cond, trimws(sub("^.*\\sEQ\\s+", "", eq)))
   sides <- trimws(unlist(strsplit(cond, "EXCEPT", fixed = TRUE), use.names = FALSE))
   tok <- norm(.resy_membership_parts(sides[nzchar(sides)]))
   tok <- tok[!startsWith(tok, "#") & !startsWith(tok, "$") &
@@ -141,6 +153,22 @@ resy_read_synonyms <- function(path = NULL, expert = NULL) {
   evaluated_as[is_member] <- agg_of[match(vocab[is_member], agg_members)]
   names(evaluated_as) <- vocab
   list(targets = targets, vocab = vocab, evaluated_as = evaluated_as)
+}
+
+# The expert system the synonym layer is anchored on: `expert`, or by default
+# the newest published EUNIS release. Expert systems with a taxonomic backbone
+# match species along the backbone and have no use for the layer.
+.resy_synonym_expert <- function(expert = NULL) {
+  if (is.null(expert)) {
+    rel <- .resy_releases()
+    expert <- resy_load_expert(scheme = "EUNIS",
+                               version = max(rel$version[rel$scheme == "EUNIS"]))
+  }
+  if (!is.null(expert$backbone))
+    stop("The expert system matches species along its taxonomic backbone (",
+         expert$backbone$name, "); use resy_check_taxonomy() instead of the ",
+         "synonym layer.", call. = FALSE)
+  expert
 }
 
 # The synonym layer: synonym pairs harvested from the taxonomic backbones,
@@ -244,6 +272,13 @@ resy_read_synonyms <- function(path = NULL, expert = NULL) {
 
 #' Export the canonical species names of an expert system
 #'
+#' `r lifecycle::badge("deprecated")`
+#' This function belongs to the name matching through the synonym layer, used by the
+#' published expert systems with Section 1 aggregations. Expert systems with a
+#' taxonomic backbone (the bundled default versions) match species along the
+#' backbone; check names with [resy_check_taxonomy()]. It will be removed in
+#' RESY 0.4.
+#'
 #' Returns the canonical species names of an expert system: the names its
 #' classifier evaluates, which is the target column a user builds a translation
 #' table against. These are the aggregate names of Section 1, and the species
@@ -254,7 +289,8 @@ resy_read_synonyms <- function(path = NULL, expert = NULL) {
 #'   \code{expert}. A character path or data frame (with an \code{esy_canonical}
 #'   column) reads the canonical names from an override instead.
 #' @param expert An expert system read with \code{\link{resy_load_expert}}, used
-#'   when \code{path = NULL}. \code{NULL} (default) uses the newest EUNIS release.
+#'   when \code{path = NULL}. \code{NULL} (default) uses the newest published
+#'   EUNIS release.
 #' @return A sorted character vector of unique canonical species names.
 #' @seealso \code{\link{resy_read_synonyms}}, \code{\link{resy_resolve_taxa}}
 #' @examples
@@ -262,6 +298,7 @@ resy_read_synonyms <- function(path = NULL, expert = NULL) {
 #' head(canonical)
 #' @export
 resy_canonical_species <- function(path = NULL, expert = NULL) {
+  lifecycle::deprecate_soft("0.3.0", "resy_canonical_species()", details = .resy_backbone_hint)
   if (is.data.frame(path)) {
     if (!"esy_canonical" %in% names(path)) {
       stop("resy_canonical_species: data frame needs an `esy_canonical` column.",
@@ -270,7 +307,7 @@ resy_canonical_species <- function(path = NULL, expert = NULL) {
     return(sort(unique(.resy_normalize_name(as.character(path$esy_canonical)))))
   }
   if (is.null(path)) {
-    return(sort(.resy_expert_names(expert %||% resy_load_expert())$targets))
+    return(sort(.resy_expert_names(.resy_synonym_expert(expert))$targets))
   }
   if (!is.character(path) || length(path) != 1L || !file.exists(path)) {
     stop("resy_canonical_species: `path` must be NULL, an existing file, ",
@@ -286,6 +323,13 @@ resy_canonical_species <- function(path = NULL, expert = NULL) {
 }
 
 #' Resolve plot species names to canonical ESy names
+#'
+#' `r lifecycle::badge("deprecated")`
+#' This function belongs to the name matching through the synonym layer, used by the
+#' published expert systems with Section 1 aggregations. Expert systems with a
+#' taxonomic backbone (the bundled default versions) match species along the
+#' backbone; check names with [resy_check_taxonomy()]. It will be removed in
+#' RESY 0.4.
 #'
 #' Maps a column of plot species names to the canonical ESy names used by the
 #' expert system, so the result can be classified with \code{\link{resy_classify}}
@@ -342,6 +386,7 @@ resy_canonical_species <- function(path = NULL, expert = NULL) {
 resy_resolve_taxa <- function(
     obs, species_col = NULL, synonyms = NULL, canonical = NULL, expert = NULL
     ) {
+  lifecycle::deprecate_soft("0.3.0", "resy_resolve_taxa()", details = .resy_backbone_hint)
 
   if (!is.data.frame(obs)) {
     stop("resy_resolve_taxa: `obs` must be a data frame.", call. = FALSE)
@@ -355,8 +400,8 @@ resy_resolve_taxa <- function(
   }
   species_col <- .resy_species_col(obs, species_col)
   
-  if (is.null(expert) && (is.null(synonyms) || is.null(canonical))) {
-    expert <- resy_load_expert()
+  if (!is.null(expert) || is.null(synonyms) || is.null(canonical)) {
+    expert <- .resy_synonym_expert(expert)
   }
   # A character vector of length > 1 is taken as the canonical names directly;
   # a single path or a data frame is read via resy_canonical_species().

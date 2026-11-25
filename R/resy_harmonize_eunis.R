@@ -4,8 +4,8 @@
 #' `r lifecycle::badge("experimental")`
 #' Prepares vegetation plot header data for EUNIS habitat classification.
 #' Converts coordinates to EPSG:25832 (ETRS89 / UTM zone 32N), assigns WWF
-#' ecoregions and country identifiers, optionally computes coast/dune flags,
-#' and optionally checks and harmonizes species taxonomy.
+#' ecoregions and country identifiers, and optionally computes coast/dune
+#' flags.
 #'
 #' Use [resy_check_eunis()] first to verify that the input data meets all
 #' requirements before running this function.
@@ -22,12 +22,9 @@
 #'   Ignored when `data` is an `sf` object, which carries its own CRS.
 #'   The optional package `sf` is required for `sf` input and CRS codes other
 #'   than 4326, 4258 and 25832.
-#' @param run_taxonomy Logical; if `TRUE`, runs [resy_check_taxonomy()] on
-#'   `species_data`.
-#' @param species_data A data frame with a column `scientificName`. Required
-#'   when `run_taxonomy = TRUE`.
-#' @param parsed A `resy_parsed_expert` object from [resy_load_expert()].
-#'   Required when `run_taxonomy = TRUE`.
+#' @param run_taxonomy,species_data,parsed `r lifecycle::badge("deprecated")`
+#'   Check the species names with [resy_check_taxonomy()] instead, or read the
+#'   `taxon_resolution` of the [resy_classify()] result.
 #' @param run_coast_dunes Logical; if `TRUE`, assigns `Coast_EEA` and
 #'   `Dunes_Bohn` flags via spatial intersection.
 #' @param coast_buffer Numeric buffer in metres for coastline proximity
@@ -39,8 +36,8 @@
 #'     \item{`sites`}{Tibble of harmonised plot data, geometry dropped,
 #'       WGS84 `Longitude` and `Latitude` added, and the same values as
 #'       `DEG_LON` and `DEG_LAT`, the header fields EUNIS-ESy reads.}
-#'     \item{`species_checked`}{Output from [resy_check_taxonomy()] when
-#'       `run_taxonomy = TRUE`, otherwise `NULL`.}
+#'     \item{`species_checked`}{Output from [resy_check_taxonomy()] with the
+#'       deprecated `run_taxonomy = TRUE`, otherwise `NULL`.}
 #'   }
 #' @seealso [resy_check_eunis()], [resy_check_taxonomy()], [resy_classify()]
 #' @examples
@@ -61,9 +58,9 @@
 resy_harmonize_eunis <- function(
     data,
     source_crs      = NULL,
-    run_taxonomy    = FALSE,
-    species_data    = NULL,
-    parsed          = NULL,
+    run_taxonomy    = lifecycle::deprecated(),
+    species_data    = lifecycle::deprecated(),
+    parsed          = lifecycle::deprecated(),
     run_coast_dunes = FALSE,
     coast_buffer    = 5000,
     verbose = interactive()
@@ -103,7 +100,14 @@ resy_harmonize_eunis <- function(
   # ---- 5. Taxonomy ----
   
   taxonomy_checked <- NULL
-  if (run_taxonomy) {
+  if (lifecycle::is_present(run_taxonomy) || lifecycle::is_present(species_data) ||
+      lifecycle::is_present(parsed)) {
+    lifecycle::deprecate_warn("0.3.0", "resy_harmonize_eunis(run_taxonomy)",
+                              "resy_check_taxonomy()")
+  }
+  if (!lifecycle::is_present(species_data)) species_data <- NULL
+  if (!lifecycle::is_present(parsed)) parsed <- NULL
+  if (lifecycle::is_present(run_taxonomy) && isTRUE(run_taxonomy)) {
     
     if (is.null(species_data))
       stop("'species_data' must be provided when run_taxonomy = TRUE.")

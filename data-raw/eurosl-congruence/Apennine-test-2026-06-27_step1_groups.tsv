@@ -1,0 +1,165 @@
+system	group	status	eurosl_node	matched_via	eurosl_descendants	same_node	nested_in	suggestion	importance
+Apennine-test-2026-06-27	Agrostis capillaris	duplicate_node	Agrostis capillaris [SPE, 6RWK0CHQ]	exact	3	Agrostis tenuis		""	important
+Apennine-test-2026-06-27	Anemone nemorosa	duplicate_node	Anemone nemorosa [SPE, 6CS30E1Q]	exact		Anemonoides nemorosa		""	important
+Apennine-test-2026-06-27	Aegilops geniculata	duplicate_node	Aegilops geniculata [SPE, 6RTK8D1G]	exact	1	Triticum vagans		""	unimportant
+Apennine-test-2026-06-27	Ammophila arenaria	duplicate_node	Ammophila arenaria [SPE, 70TKEE9P]	exact	2	Ammophila littoralis		""	unimportant
+Apennine-test-2026-06-27	Anagallis arvensis	duplicate_node	Anagallis arvensis [SPE, 64R3EDSJ]	exact		Lysimachia arvensis		""	unimportant
+Apennine-test-2026-06-27	Anisantha madritensis	duplicate_node	Anisantha madritensis [SPE, 6RWKEE1G]	exact	3	Bromus madritensis		""	unimportant
+Apennine-test-2026-06-27	Avenella flexuosa	duplicate_node	Avenella flexuosa [SPE, 6RTKJE1G]	exact	3	Deschampsia flexuosa		""	unimportant
+Apennine-test-2026-06-27	Bituminaria bituminosa	duplicate_node	Bituminaria bituminosa [SPE, 74SKACHM]	exact		Psoralea bituminosa		""	unimportant
+Apennine-test-2026-06-27	Brachypodium retusum	duplicate_node	Brachypodium retusum [SPE, 6WR38E9H]	exact		Brachypodium plukenetii, Brachypodium ramosum		""	unimportant
+Apennine-test-2026-06-27	Bromopsis erecta	duplicate_node	Bromopsis erecta [SPE, 6RSK2DSQ]	exact	9	Bromus erectus		""	unimportant
+Apennine-test-2026-06-27	Catapodium rigidum	duplicate_node	Catapodium rigidum [SPE, 70T3EE9G]	exact	2	Desmazeria rigida		""	unimportant
+Apennine-test-2026-06-27	Clinopodium acinos	duplicate_node	Clinopodium acinos [SPE, 70WK8DHG]	exact		Acinos arvensis, Satureja acinos		""	unimportant
+Apennine-test-2026-06-27	Cruciata glabra	duplicate_node	Cruciata glabra [SPE, 64SKACSG]	exact		Galium vernum		""	unimportant
+Apennine-test-2026-06-27	Dittrichia viscosa	duplicate_node	Dittrichia viscosa [SPE, 6CR34DSM]	exact	4	Inula viscosa		""	unimportant
+Apennine-test-2026-06-27	Globularia bisnagarica	duplicate_node	Globularia bisnagarica [SPE, 6MSKGCR]	exact		Globularia punctata		""	unimportant
+Apennine-test-2026-06-27	Hippocrepis emerus	duplicate_node	Hippocrepis emerus [SPE, 6RRKEC1S]	exact	2	Coronilla emerus		""	unimportant
+Apennine-test-2026-06-27	Hirschfeldia incana	duplicate_node	Hirschfeldia incana [SPE, 68T3GE0]	exact	2	Brassica adpressa		""	unimportant
+Apennine-test-2026-06-27	Juncus trifidus	duplicate_node	Juncus trifidus [SPE, 6WTKGE9G]	exact		Oreojuncus trifidus		""	unimportant
+Apennine-test-2026-06-27	Micromeria graeca	duplicate_node	Micromeria graeca [SPE, 70SKJC1N]	exact	9	Satureja graeca		""	unimportant
+Apennine-test-2026-06-27	Muscari comosum	duplicate_node	Muscari comosum [SPE, 6MVKGC1N]	exact		Leopoldia comosa		""	unimportant
+Apennine-test-2026-06-27	Patzkea paniculata	duplicate_node	Patzkea paniculata [SPE, 6WRKED1Q]	exact	7	Festuca paniculata		""	unimportant
+Apennine-test-2026-06-27	Phillyrea latifolia	duplicate_node	Phillyrea latifolia [SPE, 6MW38C9N]	exact	2	Phillyrea media		""	unimportant
+Apennine-test-2026-06-27	Pilosella officinarum	duplicate_node	Pilosella officinarum [SPE, 68S30CSN]	exact	2	Hieracium pilosella		""	unimportant
+Apennine-test-2026-06-27	Pilosella piloselloides	duplicate_node	Pilosella piloselloides [SPE, 68TK8CSK]	exact	4	Hieracium piloselloides		""	unimportant
+Apennine-test-2026-06-27	Sanguisorba minor	duplicate_node	Sanguisorba minor [SPE, 70S3GC1N]	exact	6	Poterium sanguisorba		""	unimportant
+Apennine-test-2026-06-27	Scirpoides holoschoenus	duplicate_node	Scirpoides holoschoenus [SPE, 64RKJD9S60]	exact	2	Holoschoenus australis		""	unimportant
+Apennine-test-2026-06-27	Senecio ovatus	duplicate_node	Senecio ovatus [SPE, 6CW3GDSQ]	exact	3	Senecio fuchsii		""	unimportant
+Apennine-test-2026-06-27	Sesleria juncifolia	duplicate_node	Sesleria juncifolia [SPE, 6RR3CC1H]	exact	2	Sesleria apennina		""	unimportant
+Apennine-test-2026-06-27	Vaccinium uliginosum	duplicate_node	Vaccinium uliginosum [SPE, 64R3ED9M6W]	exact		Vaccinium gaultherioides		""	unimportant
+Apennine-test-2026-06-27	Vicia hirsuta	duplicate_node	Vicia hirsuta [SPE, 74S32D1S]	exact		Ervilia hirsuta		""	unimportant
+Apennine-test-2026-06-27	Vulpia myuros	duplicate_node	Vulpia myuros [SPE, 6RRKGD1K]	exact		Festuca myuros		""	unimportant
+Apennine-test-2026-06-27	Acinos arvensis	group_is_synonym	Clinopodium acinos [SPE, 70WK8DHG]	exact		Clinopodium acinos, Satureja acinos		rename group to Clinopodium acinos [SPE, 70WK8DHG]	unimportant
+Apennine-test-2026-06-27	Adenostyles australis	group_is_synonym	Adenostyles alpina subsp. australis [SSP, 6CRKCCSG]	exact		""	Adenostyles glabra	rename group to Adenostyles alpina subsp. australis [SSP, 6CRKCCSG]	unimportant
+Apennine-test-2026-06-27	Adenostyles glabra	group_is_synonym	Adenostyles alpina [SPE, 68W32C1Q]	exact	6	""		rename group to Adenostyles alpina [SPE, 68W32C1Q]	unimportant
+Apennine-test-2026-06-27	Aetheorhiza bulbosa	group_is_synonym	Sonchus bulbosus [SPE, 6CV3EC9G]	exact	3	""		rename group to Sonchus bulbosus [SPE, 6CV3EC9G]	unimportant
+Apennine-test-2026-06-27	Agropyron caninum	group_is_synonym	Elymus caninus [SPE, 6RSKCDHQ]	exact		""		rename group to Elymus caninus [SPE, 6RSKCDHQ]	unimportant
+Apennine-test-2026-06-27	Agropyron repens	group_is_synonym	Elytrigia repens [SPE, 6RV30CHS]	exact	4	""		rename group to Elytrigia repens [SPE, 6RV30CHS]	unimportant
+Apennine-test-2026-06-27	Agrostis tenuis	group_is_synonym	Agrostis capillaris [SPE, 6RWK0CHQ]	exact	3	Agrostis capillaris		rename group to Agrostis capillaris [SPE, 6RWK0CHQ]	unimportant
+Apennine-test-2026-06-27	Alyssum bertolonii	group_is_synonym	Odontarrhena bertolonii [SPE, 64S38C9P6M]	exact	3	""		rename group to Odontarrhena bertolonii [SPE, 64S38C9P6M]	unimportant
+Apennine-test-2026-06-27	Ammophila littoralis	group_is_synonym	Ammophila arenaria [SPE, 70TKEE9P]	exact	2	Ammophila arenaria		rename group to Ammophila arenaria [SPE, 70TKEE9P]	unimportant
+Apennine-test-2026-06-27	Anemonoides nemorosa	group_is_synonym	Anemone nemorosa [SPE, 6CS30E1Q]	exact		Anemone nemorosa		rename group to Anemone nemorosa [SPE, 6CS30E1Q]	unimportant
+Apennine-test-2026-06-27	Anthoxanthum nipponicum	group_is_synonym	Anthoxanthum alpinum [SPE, 70R36CHP]	exact		""		rename group to Anthoxanthum alpinum [SPE, 70R36CHP]	unimportant
+Apennine-test-2026-06-27	Anthyllis tetraphylla	group_is_synonym	Tripodion tetraphyllum [SPE, 74T3GE1R]	exact		""		rename group to Tripodion tetraphyllum [SPE, 74T3GE1R]	unimportant
+Apennine-test-2026-06-27	Arabis turrita	group_is_synonym	Pseudoturritis turrita [SPE, 68W36D9H]	exact		""		rename group to Pseudoturritis turrita [SPE, 68W36D9H]	unimportant
+Apennine-test-2026-06-27	Asplenium onopteris	group_is_synonym	Asplenium adiantum-nigrum subsp. onopteris [SSP, 64WK0DHM]	exact		""		rename group to Asplenium adiantum-nigrum subsp. onopteris [SSP, 64WK0DHM]	unimportant
+Apennine-test-2026-06-27	Aster tripolium	group_is_synonym	Tripolium pannonicum subsp. tripolium [SSP, 6CSK8DSR]	exact		""		rename group to Tripolium pannonicum subsp. tripolium [SSP, 6CSK8DSR]	unimportant
+Apennine-test-2026-06-27	Astragalus pelecinus	group_is_synonym	Biserrula pelecinus [SPE, 6MWK2CHR]	exact		""		rename group to Biserrula pelecinus [SPE, 6MWK2CHR]	unimportant
+Apennine-test-2026-06-27	Brachypodium plukenetii	group_is_synonym	Brachypodium retusum [SPE, 6WR38E9H]	exact		Brachypodium ramosum, Brachypodium retusum		rename group to Brachypodium retusum [SPE, 6WR38E9H]	unimportant
+Apennine-test-2026-06-27	Brachypodium ramosum	group_is_synonym	Brachypodium retusum [SPE, 6WR38E9H]	exact		Brachypodium plukenetii, Brachypodium retusum		rename group to Brachypodium retusum [SPE, 6WR38E9H]	unimportant
+Apennine-test-2026-06-27	Brassica adpressa	group_is_synonym	Hirschfeldia incana [SPE, 68T3GE0]	exact	2	Hirschfeldia incana		rename group to Hirschfeldia incana [SPE, 68T3GE0]	unimportant
+Apennine-test-2026-06-27	Bromus erectus	group_is_synonym	Bromopsis erecta [SPE, 6RSK2DSQ]	exact	9	Bromopsis erecta		rename group to Bromopsis erecta [SPE, 6RSK2DSQ]	unimportant
+Apennine-test-2026-06-27	Bromus gussonei	group_is_synonym	Anisantha diandra [SPE, 6RR3ADSP]	exact		""		rename group to Anisantha diandra [SPE, 6RR3ADSP]	unimportant
+Apennine-test-2026-06-27	Bromus madritensis	group_is_synonym	Anisantha madritensis [SPE, 6RWKEE1G]	exact	3	Anisantha madritensis		rename group to Anisantha madritensis [SPE, 6RWKEE1G]	unimportant
+Apennine-test-2026-06-27	Bromus ramosus	group_is_synonym	Bromopsis ramosa [SPE, 6RSKCD1M]	exact	2	""		rename group to Bromopsis ramosa [SPE, 6RSKCD1M]	unimportant
+Apennine-test-2026-06-27	Bromus rubens	group_is_synonym	Anisantha rubens [SPE, 6RV3GDSR]	exact	2	""		rename group to Anisantha rubens [SPE, 6RV3GDSR]	unimportant
+Apennine-test-2026-06-27	Bromus sterilis	group_is_synonym	Anisantha sterilis [SPE, 6RRK2DHS]	exact		""		rename group to Anisantha sterilis [SPE, 6RRK2DHS]	unimportant
+Apennine-test-2026-06-27	Bryum alpinum	group_is_synonym	Imbribryum alpinum [SPE, 64SK2E1S70]	exact		""		rename group to Imbribryum alpinum [SPE, 64SK2E1S70]	unimportant
+Apennine-test-2026-06-27	Bryum capillare	group_is_synonym	Ptychostomum capillare [SPE, 64SK4E9H6C]	exact		""		rename group to Ptychostomum capillare [SPE, 64SK4E9H6C]	unimportant
+Apennine-test-2026-06-27	Buglossoides purpurocaerulea	group_is_synonym	Aegonychon purpurocaeruleum [SPE, 64RKAD9S68]	exact		Lithospermum purpurocaeruleum		rename group to Aegonychon purpurocaeruleum [SPE, 64RKAD9S68]	unimportant
+Apennine-test-2026-06-27	Calamintha grandiflora	group_is_synonym	Clinopodium grandiflorum [SPE, 74S30DHP]	exact	2	""		rename group to Clinopodium grandiflorum [SPE, 74S30DHP]	unimportant
+Apennine-test-2026-06-27	Calamintha sylvatica	group_is_synonym	Clinopodium menthifolium subsp. menthifolium [SSP, 64R3EC9K64]	exact		""		rename group to Clinopodium menthifolium subsp. menthifolium [SSP, 64R3EC9K64]	unimportant
+Apennine-test-2026-06-27	Carduus micropterus	group_is_synonym	Carduus nutans subsp. micropterus [SSP, 6GR38CSG]	exact		""		rename group to Carduus nutans subsp. micropterus [SSP, 6GR38CSG]	unimportant
+Apennine-test-2026-06-27	Centaurea triumfettii	group_is_synonym	Cyanus triumfettii [SPE, 6CWK2CSM]	exact	16	Centaurea triumfetti		rename group to Cyanus triumfettii [SPE, 6CWK2CSM]	unimportant
+Apennine-test-2026-06-27	Cerastium holosteoides	group_is_synonym	Cerastium fontanum subsp. vulgare [SSP, 6RVK4]	exact		""		rename group to Cerastium fontanum subsp. vulgare [SSP, 6RVK4]	unimportant
+Apennine-test-2026-06-27	Chaerophyllum temulentum	group_is_synonym	Chaerophyllum temulum [SPE, 64W38C1M]	exact		""		rename group to Chaerophyllum temulum [SPE, 64W38C1M]	unimportant
+Apennine-test-2026-06-27	Coronilla emerus	group_is_synonym	Hippocrepis emerus [SPE, 6RRKEC1S]	exact	2	Hippocrepis emerus		rename group to Hippocrepis emerus [SPE, 6RRKEC1S]	unimportant
+Apennine-test-2026-06-27	Cymbopogon hirtus	group_is_synonym	Hyparrhenia hirta [SPE, 6WTK2DSS]	exact	1	""		rename group to Hyparrhenia hirta [SPE, 6WTK2DSS]	unimportant
+Apennine-test-2026-06-27	Dactylis hispanica	group_is_synonym	Dactylis glomerata subsp. hispanica [SSP, 6WT32D1G]	exact		""	Dactylis glomerata	rename group to Dactylis glomerata subsp. hispanica [SSP, 6WT32D1G]	unimportant
+Apennine-test-2026-06-27	Deschampsia flexuosa	group_is_synonym	Avenella flexuosa [SPE, 6RTKJE1G]	exact	3	Avenella flexuosa		rename group to Avenella flexuosa [SPE, 6RTKJE1G]	unimportant
+Apennine-test-2026-06-27	Desmazeria rigida	group_is_synonym	Catapodium rigidum [SPE, 70T3EE9G]	exact	2	Catapodium rigidum		rename group to Catapodium rigidum [SPE, 70T3EE9G]	unimportant
+Apennine-test-2026-06-27	Dianthus balbisii	group_is_synonym	Dianthus ferrugineus [SPE, 64R3CCSM]	exact	2	""		rename group to Dianthus ferrugineus [SPE, 64R3CCSM]	unimportant
+Apennine-test-2026-06-27	Dianthus longicaulis	group_is_synonym	Dianthus sylvestris subsp. longicaulis [SSP, 64S3EE1S]	exact		""	Dianthus sylvestris	rename group to Dianthus sylvestris subsp. longicaulis [SSP, 64S3EE1S]	unimportant
+Apennine-test-2026-06-27	Digitalis micrantha	group_is_synonym	Digitalis lutea subsp. australis [SSP, 64S30D1R]	exact		""	Digitalis lutea	rename group to Digitalis lutea subsp. australis [SSP, 64S30D1R]	unimportant
+Apennine-test-2026-06-27	Dorycnium hirsutum	group_is_synonym	Lotus hirsutus [SPE, 6RV38CSK]	exact		""		rename group to Lotus hirsutus [SPE, 6RV38CSK]	unimportant
+Apennine-test-2026-06-27	Dorycnium pentaphyllum	group_is_synonym	Lotus dorycnium [SPE, 6RR30E1G]	exact	8	""		rename group to Lotus dorycnium [SPE, 6RR30E1G]	unimportant
+Apennine-test-2026-06-27	Elymus farctus	group_is_synonym	Elytrigia juncea [SPE, 6WT3JCHK]	exact	2	""		rename group to Elytrigia juncea [SPE, 6WT3JCHK]	unimportant
+Apennine-test-2026-06-27	Erophila verna	group_is_synonym	Draba verna [SPE, 6GVKGE8]	exact	2	""		rename group to Draba verna [SPE, 6GVKGE8]	unimportant
+Apennine-test-2026-06-27	Ervilia hirsuta	group_is_synonym	Vicia hirsuta [SPE, 74S32D1S]	exact		Vicia hirsuta		rename group to Vicia hirsuta [SPE, 74S32D1S]	unimportant
+Apennine-test-2026-06-27	Euphorbia pinea	group_is_synonym	Euphorbia segetalis var. pinea [VAR, 64R3AC1M64]	exact		""		rename group to Euphorbia segetalis var. pinea [VAR, 64R3AC1M64]	unimportant
+Apennine-test-2026-06-27	Festuca arundinacea	group_is_synonym	Schedonorus arundinaceus [SPE, 6RV36D9Q]	exact	7	""		rename group to Schedonorus arundinaceus [SPE, 6RV36D9Q]	unimportant
+Apennine-test-2026-06-27	Festuca myuros	group_is_synonym	Vulpia myuros [SPE, 6RRKGD1K]	exact		Vulpia myuros		rename group to Vulpia myuros [SPE, 6RRKGD1K]	unimportant
+Apennine-test-2026-06-27	Festuca paniculata	group_is_synonym	Patzkea paniculata [SPE, 6WRKED1Q]	exact	7	Patzkea paniculata		rename group to Patzkea paniculata [SPE, 6WRKED1Q]	unimportant
+Apennine-test-2026-06-27	Festuca trachyphylla	group_is_synonym	Festuca stricta subsp. trachyphylla [SSP, 6WR32DSG]	exact		""		rename group to Festuca stricta subsp. trachyphylla [SSP, 6WR32DSG]	unimportant
+Apennine-test-2026-06-27	Fraxinus oxycarpa	group_is_synonym	Fraxinus angustifolia subsp. oxycarpa [SSP, 6MW32DSG]	exact		""		rename group to Fraxinus angustifolia subsp. oxycarpa [SSP, 6MW32DSG]	unimportant
+Apennine-test-2026-06-27	Galium vernum	group_is_synonym	Cruciata glabra [SPE, 64SKACSG]	exact		Cruciata glabra		rename group to Cruciata glabra [SPE, 64SKACSG]	unimportant
+Apennine-test-2026-06-27	Globularia punctata	group_is_synonym	Globularia bisnagarica [SPE, 6MSKGCR]	exact		Globularia bisnagarica		rename group to Globularia bisnagarica [SPE, 6MSKGCR]	unimportant
+Apennine-test-2026-06-27	Grimmia apocarpa	group_is_synonym	Schistidium apocarpum [SPE, 64SK6C1S70]	exact		""		rename group to Schistidium apocarpum [SPE, 64SK6C1S70]	unimportant
+Apennine-test-2026-06-27	Hedysarum coronarium	group_is_synonym	Sulla coronaria [SPE, 6WSKAE1P]	exact		""		rename group to Sulla coronaria [SPE, 6WSKAE1P]	unimportant
+Apennine-test-2026-06-27	Helictochloa praetutiana	group_is_synonym	Helictochloa versicolor subsp. praetutiana [SSP, 6RWKEDHJ]	exact		""		rename group to Helictochloa versicolor subsp. praetutiana [SSP, 6RWKEDHJ]	unimportant
+Apennine-test-2026-06-27	Helleborus bocconei	group_is_synonym	Helleborus viridis subsp. bocconei [SSP, 68W34C1H]	exact		""	Helleborus viridis	rename group to Helleborus viridis subsp. bocconei [SSP, 68W34C1H]	unimportant
+Apennine-test-2026-06-27	Hieracium pilosella	group_is_synonym	Pilosella officinarum [SPE, 68S30CSN]	exact	2	Pilosella officinarum		rename group to Pilosella officinarum [SPE, 68S30CSN]	unimportant
+Apennine-test-2026-06-27	Hieracium piloselloides	group_is_synonym	Pilosella piloselloides [SPE, 68TK8CSK]	exact	4	Pilosella piloselloides		rename group to Pilosella piloselloides [SPE, 68TK8CSK]	unimportant
+Apennine-test-2026-06-27	Hieracium virgaurea	group_is_synonym	Hieracium racemosum subsp. virgaurea [SSP, 6MRKEE1M]	exact		""		rename group to Hieracium racemosum subsp. virgaurea [SSP, 6MRKEE1M]	unimportant
+Apennine-test-2026-06-27	Holoschoenus australis	group_is_synonym	Scirpoides holoschoenus [SPE, 64RKJD9S60]	exact	2	Scirpoides holoschoenus		rename group to Scirpoides holoschoenus [SPE, 64RKJD9S60]	unimportant
+Apennine-test-2026-06-27	Inula crithmoides	group_is_synonym	Limbarda crithmoides [SPE, 6CRK2D9Q]	exact	2	""		rename group to Limbarda crithmoides [SPE, 6CRK2D9Q]	unimportant
+Apennine-test-2026-06-27	Inula viscosa	group_is_synonym	Dittrichia viscosa [SPE, 6CR34DSM]	exact	4	Dittrichia viscosa		rename group to Dittrichia viscosa [SPE, 6CR34DSM]	unimportant
+Apennine-test-2026-06-27	Knautia collina	group_is_synonym	Knautia purpurea [SPE, 68W34D1H]	exact		""		rename group to Knautia purpurea [SPE, 68W34D1H]	unimportant
+Apennine-test-2026-06-27	Lactuca muralis	group_is_synonym	Cicerbita muralis [SPE, 6CVKGD1R]	exact	2	Mycelis muralis		rename group to Cicerbita muralis [SPE, 6CVKGD1R]	unimportant
+Apennine-test-2026-06-27	Leontodon helveticus Mérat	group_is_synonym	Scorzoneroides helvetica [SPE, 6GR3ED1Q]	exact		""		rename group to Scorzoneroides helvetica [SPE, 6GR3ED1Q]	unimportant
+Apennine-test-2026-06-27	Leopoldia comosa	group_is_synonym	Muscari comosum [SPE, 6MVKGC1N]	exact		Muscari comosum		rename group to Muscari comosum [SPE, 6MVKGC1N]	unimportant
+Apennine-test-2026-06-27	Lithospermum purpurocaeruleum	group_is_synonym	Aegonychon purpurocaeruleum [SPE, 64RKAD9S68]	exact		Buglossoides purpurocaerulea		rename group to Aegonychon purpurocaeruleum [SPE, 64RKAD9S68]	unimportant
+Apennine-test-2026-06-27	Lophochloa cristata	group_is_synonym	Rostraria cristata [SPE, 6WR30C9K]	exact	3	""		rename group to Rostraria cristata [SPE, 6WR30C9K]	unimportant
+Apennine-test-2026-06-27	Lysimachia arvensis	group_is_synonym	Anagallis arvensis [SPE, 64R3EDSJ]	exact		Anagallis arvensis		rename group to Anagallis arvensis [SPE, 64R3EDSJ]	unimportant
+Apennine-test-2026-06-27	Microthlaspi perfoliatum	group_is_synonym	Noccaea perfoliata [SPE, 6GW3GC0]	exact		""		rename group to Noccaea perfoliata [SPE, 6GW3GC0]	unimportant
+Apennine-test-2026-06-27	Mnium affine	group_is_synonym	Plagiomnium affine [SPE, 64SK4CSQ6W]	exact		""		rename group to Plagiomnium affine [SPE, 64SK4CSQ6W]	unimportant
+Apennine-test-2026-06-27	Mycelis muralis	group_is_synonym	Cicerbita muralis [SPE, 6CVKGD1R]	exact	2	Lactuca muralis		rename group to Cicerbita muralis [SPE, 6CVKGD1R]	unimportant
+Apennine-test-2026-06-27	Myrrhoides nodosa	group_is_synonym	Chaerophyllum nodosum [SPE, 64W3AE9G]	exact		""		rename group to Chaerophyllum nodosum [SPE, 64W3AE9G]	unimportant
+Apennine-test-2026-06-27	Oreojuncus trifidus	group_is_synonym	Juncus trifidus [SPE, 6WTKGE9G]	exact		Juncus trifidus		rename group to Juncus trifidus [SPE, 6WTKGE9G]	unimportant
+Apennine-test-2026-06-27	Otanthus maritimus	group_is_synonym	Achillea maritima [SPE, 68R3JDHN]	exact	2	""		rename group to Achillea maritima [SPE, 68R3JDHN]	unimportant
+Apennine-test-2026-06-27	Oxyrrhynchium praelongum	group_is_synonym	Kindbergia praelonga [SPE, 64SK2E9R64]	exact		""		rename group to Kindbergia praelonga [SPE, 64SK2E9R64]	unimportant
+Apennine-test-2026-06-27	Phillyrea media	group_is_synonym	Phillyrea latifolia [SPE, 6MW38C9N]	exact	2	Phillyrea latifolia		rename group to Phillyrea latifolia [SPE, 6MW38C9N]	unimportant
+Apennine-test-2026-06-27	Picris echioides	group_is_synonym	Helminthotheca echioides [SPE, 6CSK8C9P]	exact		""		rename group to Helminthotheca echioides [SPE, 6CSK8C9P]	unimportant
+Apennine-test-2026-06-27	Plantago cynops	group_is_synonym	Plantago afra [SPE, 68VK8CR]	exact	2	""		rename group to Plantago afra [SPE, 68VK8CR]	unimportant
+Apennine-test-2026-06-27	Plantago psyllium	group_is_synonym	Plantago arenaria [SPE, 64RK8CSH]	exact	2	""		rename group to Plantago arenaria [SPE, 64RK8CSH]	unimportant
+Apennine-test-2026-06-27	Pleurochaete squarrosa	group_is_synonym	Tortella squarrosa [SPE, 64SK6E1G70]	exact		""		rename group to Tortella squarrosa [SPE, 64SK6E1G70]	unimportant
+Apennine-test-2026-06-27	Poa sylvicola	group_is_synonym	Poa trivialis subsp. sylvicola [SSP, 6RWK2CHH]	exact		""	Poa trivialis	rename group to Poa trivialis subsp. sylvicola [SSP, 6RWK2CHH]	unimportant
+Apennine-test-2026-06-27	Polygonum amphibium	group_is_synonym	Persicaria amphibia [SPE, 64S3AC9N74]	exact		""		rename group to Persicaria amphibia [SPE, 64S3AC9N74]	unimportant
+Apennine-test-2026-06-27	Polypodium australe Fée	group_is_synonym	Polypodium cambricum subsp. cambricum [SSP, 68TKGC1G]	exact		""		rename group to Polypodium cambricum subsp. cambricum [SSP, 68TKGC1G]	unimportant
+Apennine-test-2026-06-27	Poterium sanguisorba	group_is_synonym	Sanguisorba minor [SPE, 70S3GC1N]	exact	6	Sanguisorba minor		rename group to Sanguisorba minor [SPE, 70S3GC1N]	unimportant
+Apennine-test-2026-06-27	Primula vulgaris	group_is_synonym	Primula acaulis [SPE, 64S3EC9G]	exact	4	""		rename group to Primula acaulis [SPE, 64S3EC9G]	unimportant
+Apennine-test-2026-06-27	Psoralea bituminosa	group_is_synonym	Bituminaria bituminosa [SPE, 74SKACHM]	exact		Bituminaria bituminosa		rename group to Bituminaria bituminosa [SPE, 74SKACHM]	unimportant
+Apennine-test-2026-06-27	Pyrus amygdaliformis	group_is_synonym	Pyrus spinosa [SPE, 6RV3EDHJ]	exact		""		rename group to Pyrus spinosa [SPE, 6RV3EDHJ]	unimportant
+Apennine-test-2026-06-27	Pyrus pyraster	group_is_synonym	Pyrus communis subsp. pyraster [SSP, 6WV3ED1M]	exact		""		rename group to Pyrus communis subsp. pyraster [SSP, 6WV3ED1M]	unimportant
+Apennine-test-2026-06-27	Ranunculus ficaria	group_is_synonym	Ficaria verna [SPE, 64R36DHS64]	exact	4	""		rename group to Ficaria verna [SPE, 64R36DHS64]	unimportant
+Apennine-test-2026-06-27	Robertia taraxacoides	group_is_synonym	Hypochaeris robertia [SPE, 6CV38CSQ]	exact		""		rename group to Hypochaeris robertia [SPE, 6CV38CSQ]	unimportant
+Apennine-test-2026-06-27	Romulea insularis	group_is_synonym	Romulea revelieri [SPE, 74WK6E1J]	exact		""		rename group to Romulea revelieri [SPE, 74WK6E1J]	unimportant
+Apennine-test-2026-06-27	Rubus fruticosus	group_is_synonym	Rubus plicatus [SPE, 6WWK4CHP]	exact		""		rename group to Rubus plicatus [SPE, 6WWK4CHP]	unimportant
+Apennine-test-2026-06-27	Rubus hirtus	group_is_synonym	Rubus hirtus agg. [AGG, 6WVKGC9H]	exact	2	""		rename group to Rubus hirtus agg. [AGG, 6WVKGC9H]	unimportant
+Apennine-test-2026-06-27	Rumex alpestris	group_is_synonym	Rumex scutatus [SPE, 64S38E1N64]	exact	3	""		rename group to Rumex scutatus [SPE, 64S38E1N64]	unimportant
+Apennine-test-2026-06-27	Sagina subulata	group_is_synonym	Sagina alexandrae [SPE, 6WW3JDG]	exact		""		rename group to Sagina alexandrae [SPE, 6WW3JDG]	unimportant
+Apennine-test-2026-06-27	Satureja acinos	group_is_synonym	Clinopodium acinos [SPE, 70WK8DHG]	exact		Acinos arvensis, Clinopodium acinos		rename group to Clinopodium acinos [SPE, 70WK8DHG]	unimportant
+Apennine-test-2026-06-27	Satureja graeca	group_is_synonym	Micromeria graeca [SPE, 70SKJC1N]	exact	9	Micromeria graeca		rename group to Micromeria graeca [SPE, 70SKJC1N]	unimportant
+Apennine-test-2026-06-27	Scabiosa atropurpurea	group_is_synonym	Sixalix atropurpurea [SPE, 68W38DHS]	exact	2	""		rename group to Sixalix atropurpurea [SPE, 68W38DHS]	unimportant
+Apennine-test-2026-06-27	Scabiosa maritima	group_is_synonym	Sixalix atropurpurea subsp. maritima [SSP, 68VK4E1N]	exact		""	Scabiosa atropurpurea	rename group to Sixalix atropurpurea subsp. maritima [SSP, 68VK4E1N]	unimportant
+Apennine-test-2026-06-27	Senecio erucifolius	group_is_synonym	Jacobaea erucifolia [SPE, 68SK8D9M]	exact	4	""		rename group to Jacobaea erucifolia [SPE, 68SK8D9M]	unimportant
+Apennine-test-2026-06-27	Senecio fuchsii	group_is_synonym	Senecio ovatus [SPE, 6CW3GDSQ]	exact	3	Senecio ovatus		rename group to Senecio ovatus [SPE, 6CW3GDSQ]	unimportant
+Apennine-test-2026-06-27	Serratula cichoracea	group_is_synonym	Klasea flavescens subsp. cichoracea [SSP, 6GW3ECSR]	exact		""		rename group to Klasea flavescens subsp. cichoracea [SSP, 6GW3ECSR]	unimportant
+Apennine-test-2026-06-27	Sesleria apennina	group_is_synonym	Sesleria juncifolia [SPE, 6RR3CC1H]	exact	2	Sesleria juncifolia		rename group to Sesleria juncifolia [SPE, 6RR3CC1H]	unimportant
+Apennine-test-2026-06-27	Sesleria argentea	group_is_synonym	Sesleria autumnalis [SPE, 6RTKGCSG]	exact		""		rename group to Sesleria autumnalis [SPE, 6RTKGCSG]	unimportant
+Apennine-test-2026-06-27	Silene alba	group_is_synonym	Silene latifolia [SPE, 6GS3GD0]	exact		""		rename group to Silene latifolia [SPE, 6GS3GD0]	unimportant
+Apennine-test-2026-06-27	Silene badaroi	group_is_synonym	Silene tyrrhenia [SPE, 64SK8D9P]	exact		""		rename group to Silene tyrrhenia [SPE, 64SK8D9P]	unimportant
+Apennine-test-2026-06-27	Stellaria holostea	group_is_synonym	Rabelera holostea [SPE, 64TKJE1M]	exact		""		rename group to Rabelera holostea [SPE, 64TKJE1M]	unimportant
+Apennine-test-2026-06-27	Stellaria montana	group_is_synonym	Stellaria nemorum subsp. montana [SSP, 74WK6CR]	exact		""	Stellaria nemorum	rename group to Stellaria nemorum subsp. montana [SSP, 74WK6CR]	unimportant
+Apennine-test-2026-06-27	Tamus communis	group_is_synonym	Dioscorea communis [SPE, 64S30DSJ6M]	exact		""		rename group to Dioscorea communis [SPE, 64S30DSJ6M]	unimportant
+Apennine-test-2026-06-27	Tetragonolobus maritimus	group_is_synonym	Lotus maritimus [SPE, 6RSKEE1N]	exact		""		rename group to Lotus maritimus [SPE, 6RSKEE1N]	unimportant
+Apennine-test-2026-06-27	Tetragonolobus purpureus	group_is_synonym	Lotus tetragonolobus [SPE, 6RRKECSN]	exact		""		rename group to Lotus tetragonolobus [SPE, 6RRKECSN]	unimportant
+Apennine-test-2026-06-27	Trisetaria flavescens	group_is_synonym	Trisetum flavescens [SPE, 6WR36DSJ]	exact	11	""		rename group to Trisetum flavescens [SPE, 6WR36DSJ]	unimportant
+Apennine-test-2026-06-27	Triticum vagans	group_is_synonym	Aegilops geniculata [SPE, 6RTK8D1G]	exact	1	Aegilops geniculata		rename group to Aegilops geniculata [SPE, 6RTK8D1G]	unimportant
+Apennine-test-2026-06-27	Vaccinium gaultherioides	group_is_synonym	Vaccinium uliginosum [SPE, 64R3ED9M6W]	exact		Vaccinium uliginosum		rename group to Vaccinium uliginosum [SPE, 64R3ED9M6W]	unimportant
+Apennine-test-2026-06-27	Vicia incana	group_is_synonym	Vicia cracca subsp. incana [SSP, 74VK8DSR]	exact		""	Vicia cracca	rename group to Vicia cracca subsp. incana [SSP, 74VK8DSR]	unimportant
+Apennine-test-2026-06-27	Xanthium italicum	group_is_synonym	Xanthium orientale subsp. italicum [SSP, 6CS30C9J]	exact		""		rename group to Xanthium orientale subsp. italicum [SSP, 6CS30C9J]	unimportant
+Apennine-test-2026-06-27	Valantia hispida auct.	group_misapplied_name	""	misapplied name				misapplied name: needs a concept in EuroSL (auct.)	unimportant
+Apennine-test-2026-06-27	Centaurea triumfetti	group_name_needs_cleaning	Cyanus triumfettii [SPE, 6CWK2CSM]	fuzzy	16	Centaurea triumfettii		rename group to Cyanus triumfettii [SPE, 6CWK2CSM]	unimportant
+Apennine-test-2026-06-27	Galactites tomentosa	group_name_needs_cleaning	Galactites tomentosus [SPE, 6GS30D1G]	fuzzy		""		rename group to Galactites tomentosus [SPE, 6GS30D1G]	unimportant
+Apennine-test-2026-06-27	Lathyrus incospicuus	group_name_needs_cleaning	Lathyrus inconspicuus [SPE, 74RK2CHN]	fuzzy		""		rename group to Lathyrus inconspicuus [SPE, 74RK2CHN]	unimportant
+Apennine-test-2026-06-27	Robinia pseudacacia	group_name_needs_cleaning	Robinia pseudoacacia [SPE, 6RSK0E9Q]	fuzzy		""		rename group to Robinia pseudoacacia [SPE, 6RSK0E9Q]	unimportant
+Apennine-test-2026-06-27	Scleropodium tourretti	group_name_needs_cleaning	Scleropodium touretii [SPE, 64SK6D1R70]	fuzzy		""		rename group to Scleropodium touretii [SPE, 64SK6D1R70]	unimportant
+Apennine-test-2026-06-27	Taraxacum erythrosperma	group_name_needs_cleaning	Taraxacum erythrospermum [SPE, 6GR30D1M]	fuzzy		""		rename group to Taraxacum erythrospermum [SPE, 6GR30D1M]	unimportant
+Apennine-test-2026-06-27	Trifolium ochroleucum	group_name_needs_cleaning	Trifolium ochroleucon [SPE, 6WSK2C9S]	fuzzy		""		rename group to Trifolium ochroleucon [SPE, 6WSK2C9S]	unimportant
+Apennine-test-2026-06-27	Hieracium sylvaticum	group_not_found	""	none				add name to EuroSL or rename group	unimportant
+Apennine-test-2026-06-27	Narcissus poëticus	group_not_found	""	none				add name to EuroSL or rename group	unimportant
+Apennine-test-2026-06-27	Odontites rubra	group_not_found	""	none				add name to EuroSL or rename group	unimportant
+Apennine-test-2026-06-27	Populus canescens	group_not_found	""	none				add name to EuroSL or rename group	unimportant
+Apennine-test-2026-06-27	Rubus glandulosus	group_not_found	""	none				add name to EuroSL or rename group	unimportant

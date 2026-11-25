@@ -87,7 +87,7 @@ test_that("every species of the example data is known to Apennine-test", {
     system.file("extdata", "data_example_species.csv", package = "RESY"),
     stringsAsFactors = FALSE
   )
-  parsed <- resy_load_expert(scheme = "Apennine-test")
+  parsed <- resy_load_expert(scheme = "Apennine-test", version = "2026-06-27")
   out <- resy_check_taxonomy(sp, parsed, col = "scientificName")
 
   expect_equal(nrow(out), length(unique(sp$scientificName)))

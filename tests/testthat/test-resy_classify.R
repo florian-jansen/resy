@@ -20,7 +20,7 @@ test_that("resy_classify returns one classification per plot as a resy_result", 
   header <- as.data.frame(unique(obs["PlotObservationID"]))
 
   res <- suppressMessages(
-    resy_classify(obs, header, scheme = "Apennine-test", mc = 1L)
+    resy_classify(obs, header, scheme = "Apennine-test", version = "2026-06-27", mc = 1L)
   )
 
   expect_s3_class(res, "resy_result")
@@ -35,7 +35,7 @@ test_that("every classification is a defined code or the no-match marker", {
   header <- as.data.frame(unique(obs["PlotObservationID"]))
 
   res <- suppressMessages(
-    resy_classify(obs, header, scheme = "Apennine-test", mc = 1L)
+    resy_classify(obs, header, scheme = "Apennine-test", version = "2026-06-27", mc = 1L)
   )
   codes <- res$parsed$vegtype.formula.names.short
   expect_true(all(res$result.classification %in% c(codes, "?")))
@@ -46,7 +46,7 @@ test_that("the candidate table lists priorities per plot", {
   header <- as.data.frame(unique(obs["PlotObservationID"]))
 
   res <- suppressMessages(
-    resy_classify(obs, header, scheme = "Apennine-test", mc = 1L)
+    resy_classify(obs, header, scheme = "Apennine-test", version = "2026-06-27", mc = 1L)
   )
   cand <- res$candidates
   expect_s3_class(cand, "data.table")
@@ -60,17 +60,17 @@ test_that("classification is deterministic", {
   obs    <- example_obs()
   header <- as.data.frame(unique(obs["PlotObservationID"]))
 
-  r1 <- suppressMessages(resy_classify(obs, header, scheme = "Apennine-test", mc = 1L))
-  r2 <- suppressMessages(resy_classify(obs, header, scheme = "Apennine-test", mc = 1L))
+  r1 <- suppressMessages(resy_classify(obs, header, scheme = "Apennine-test", version = "2026-06-27", mc = 1L))
+  r2 <- suppressMessages(resy_classify(obs, header, scheme = "Apennine-test", version = "2026-06-27", mc = 1L))
   expect_identical(r1$result.classification, r2$result.classification)
 })
 
 test_that("an expert system read once classifies like the scheme name", {
   obs    <- example_obs()
   header <- as.data.frame(unique(obs["PlotObservationID"]))
-  expert <- resy_load_expert(scheme = "Apennine-test")
+  expert <- resy_load_expert(scheme = "Apennine-test", version = "2026-06-27")
 
-  r1 <- suppressMessages(resy_classify(obs, header, scheme = "Apennine-test", mc = 1L))
+  r1 <- suppressMessages(resy_classify(obs, header, scheme = "Apennine-test", version = "2026-06-27", mc = 1L))
   r2 <- suppressMessages(resy_classify(obs, header, expert = expert, mc = 1L))
   expect_identical(r1$result.classification, r2$result.classification)
   expect_identical(r1$candidates, r2$candidates)
@@ -97,7 +97,7 @@ test_that("resy_classify is taxonomy-agnostic by default", {
   header <- data.frame(PlotObservationID = c("p1", "p2"))
 
   res <- suppressMessages(
-    resy_classify(obs, header, scheme = "Apennine-test", mc = 1L)
+    resy_classify(obs, header, scheme = "Apennine-test", version = "2026-06-27", mc = 1L)
   )
   # Default does not resolve: no resolution summary, names used as given.
   expect_null(res$taxon_resolution)
@@ -111,7 +111,7 @@ test_that("the example data classifies some plots", {
   obs    <- example_obs()
   header <- as.data.frame(unique(obs["PlotObservationID"]))
   res <- suppressMessages(
-    resy_classify(obs, header, scheme = "Apennine-test", mc = 1L)
+    resy_classify(obs, header, scheme = "Apennine-test", version = "2026-06-27", mc = 1L)
   )
   expect_true(any(res$result.classification != "?"))
 })
@@ -126,20 +126,20 @@ test_that("species_col names the species column", {
   header <- data.frame(PlotObservationID = c("p1", "p2"))
 
   res <- suppressMessages(
-    resy_classify(obs, header, scheme = "Apennine-test",
+    resy_classify(obs, header, scheme = "Apennine-test", version = "2026-06-27",
                   species_col = "scientificName", mc = 1L)
   )
   expect_equal(res$obs$TaxonName[res$obs$PlotObservationID == "p1"],
                "Fagus sylvatica")
 
   expect_error(
-    resy_classify(obs, header, scheme = "Apennine-test",
+    resy_classify(obs, header, scheme = "Apennine-test", version = "2026-06-27",
                   species_col = "species", mc = 1L),
     "`obs` has no column `species`", fixed = TRUE
   )
   expect_error(
     resy_classify(obs[, !c("TaxonName", "scientificName")], header,
-                  scheme = "Apennine-test", mc = 1L),
+                  scheme = "Apennine-test", version = "2026-06-27", mc = 1L),
     "`obs` has no species column", fixed = TRUE
   )
 })
@@ -154,13 +154,13 @@ test_that("without species_col, TaxonName is used before scientificName", {
   header <- data.frame(PlotObservationID = c("p1", "p2"))
 
   res <- suppressMessages(
-    resy_classify(obs, header, scheme = "Apennine-test", mc = 1L)
+    resy_classify(obs, header, scheme = "Apennine-test", version = "2026-06-27", mc = 1L)
   )
   expect_equal(res$obs$TaxonName[res$obs$PlotObservationID == "p2"],
                "Fagus sylvatica")
 
   res_dwc <- suppressMessages(
-    resy_classify(obs[, !"TaxonName"], header, scheme = "Apennine-test",
+    resy_classify(obs[, !"TaxonName"], header, scheme = "Apennine-test", version = "2026-06-27",
                   mc = 1L)
   )
   expect_equal(res_dwc$obs$TaxonName[res_dwc$obs$PlotObservationID == "p1"],
@@ -168,6 +168,7 @@ test_that("without species_col, TaxonName is used before scientificName", {
 })
 
 test_that("resolve_taxa = TRUE reports resolution and never guesses unknowns", {
+  local_legacy()
   obs <- data.table::data.table(
     PlotObservationID = c("p1", "p1", "p2"),
     TaxonName         = c("Fagus sylvatica",
@@ -178,7 +179,7 @@ test_that("resolve_taxa = TRUE reports resolution and never guesses unknowns", {
   header <- data.frame(PlotObservationID = c("p1", "p2"))
 
   res <- suppressMessages(
-    resy_classify(obs, header, scheme = "Apennine-test",
+    resy_classify(obs, header, scheme = "Apennine-test", version = "2026-06-27",
                   resolve_taxa = TRUE, mc = 1L)
   )
   tr <- res$taxon_resolution

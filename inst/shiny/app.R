@@ -85,18 +85,24 @@ classification_choices <- build_classification_choices()
 json_to_txt_lines <- function(path) {
   x <- jsonlite::read_json(path, simplifyVector = TRUE)
 
-  if (!all(RESY:::.resy_json_required %in% names(x)))
-    stop('Unsupported JSON expert format: expected synonyms / groups / rules keys.')
+  if (!all(RESY:::.resy_json_required %in% names(x)) ||
+      !any(RESY:::.resy_json_taxonomy %in% names(x)))
+    stop('Unsupported JSON expert format: expected groups / rules and synonyms or backbone keys.')
 
   lines <- character()
 
-  # Section 1: canonical names + indented synonyms
-  lines <- c(lines, 'SECTION 1: Start')
-  syns <- x$synonyms
-  for (nm in names(syns)) {
-    lines <- c(lines, nm)
-    v <- syns[[nm]]
-    if (!is.null(v) && length(v)) lines <- c(lines, paste0('   ', v))
+  # Section 1: the taxonomic backbone, or canonical names + indented synonyms
+  if (!is.null(x$backbone)) {
+    lines <- c(lines, 'SECTION 1: Taxonomic backbone',
+               RESY:::.resy_backbone_line(x$backbone))
+  } else {
+    lines <- c(lines, 'SECTION 1: Start')
+    syns <- x$synonyms
+    for (nm in names(syns)) {
+      lines <- c(lines, nm)
+      v <- syns[[nm]]
+      if (!is.null(v) && length(v)) lines <- c(lines, paste0('   ', v))
+    }
   }
   lines <- c(lines, 'SECTION 1: End')
 

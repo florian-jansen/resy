@@ -194,7 +194,10 @@ resy_read_expert <- function(file, entries = TRUE) {
 .resy_parse_section <- function(sec) {
   parsed <- switch(
     as.character(sec$number),
-    "1" = .resy_parse_aggregation(sec$body_lines),
+    "1" = {
+      bb <- .resy_parse_backbone(sec$body_lines)
+      if (is.null(bb)) .resy_parse_aggregation(sec$body_lines) else list(backbone = bb)
+    },
     "2" = .resy_parse_groups(sec$body_lines),
     "3" = .resy_parse_definitions(sec$body_lines),
     "4" = .resy_parse_similarity(sec$body_lines),

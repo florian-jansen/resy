@@ -1,0 +1,76 @@
+{
+  "metadata": {
+    "scheme": "Apennine-test",
+    "version": "2026-06-27-EuroSL",
+    "description": "Minimal classification for Italian Apennine vegetation (data_example)"
+  },
+  "backbone": {
+    "name": "EuroSL",
+    "url": "https://eurosl.infinitenature.org",
+    "version": "2026-11-24"
+  },
+  "groups": {
+    "### Beech-forest-trees": [
+      "Fagus sylvatica",
+      "Abies alba"
+    ],
+    "### Beech-forest-herbs": [
+      "Prenanthes purpurea",
+      "Oxalis acetosella",
+      "Dryopteris filix-mas",
+      "Cephalanthera longifolia",
+      "Anemone nemorosa"
+    ],
+    "### Nardus-grassland": [
+      "Nardus stricta",
+      "Geum montanum",
+      "Potentilla erecta",
+      "Agrostis capillaris",
+      "Vaccinium myrtillus"
+    ],
+    "### Sub-Mediterranean": [
+      "Quercus pubescens",
+      "Fraxinus ornus",
+      "Asparagus acutifolius",
+      "Brachypodium genuense",
+      "Brachypodium rupestre"
+    ]
+  },
+  "rules": [
+    {
+      "_comment": "Forest parent type",
+      "priority": 2,
+      "code": "F",
+      "description": "Forest",
+      "expression": "<#TC Beech-forest-trees GR 10>"
+    },
+    {
+      "_comment": "",
+      "priority": 5,
+      "code": "FB",
+      "description": "Beech-fir montane forest",
+      "expression": "(<#TC Beech-forest-trees GR 15> AND <#TC Beech-forest-herbs GR 10>)"
+    },
+    {
+      "_comment": "Non-forest parent type",
+      "priority": 2,
+      "code": "N",
+      "description": "Non-forest",
+      "expression": "(<#TC Nardus-grassland GR 05> OR <#TC Sub-Mediterranean GR 05>) NOT <#TC Beech-forest-trees GR 15>"
+    },
+    {
+      "_comment": "",
+      "priority": 5,
+      "code": "NG",
+      "description": "Nardus acidic grassland",
+      "expression": "(<Nardus stricta GR 10> AND <#TC Nardus-grassland GR 25>)"
+    },
+    {
+      "_comment": "",
+      "priority": 3,
+      "code": "NS",
+      "description": "Sub-Mediterranean scrub and woodland",
+      "expression": "<#TC Sub-Mediterranean GR 15>"
+    }
+  ]
+}

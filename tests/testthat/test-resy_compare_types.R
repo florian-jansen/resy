@@ -44,7 +44,7 @@ test_that("for one plot each condition is read in each type and each type gets a
 })
 
 test_that("the same type in two systems compares its groups member by member", {
-  a <- resy_load_expert(scheme = "Apennine-test")
+  a <- resy_load_expert(scheme = "Apennine-test", version = "2026-06-27")
   b <- a
   i <- match("Beech-forest-herbs", b$groups.names)
   b$groups[[i]] <- c(setdiff(b$groups[[i]], b$groups[[i]][1]), "Galium odoratum")

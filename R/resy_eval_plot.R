@@ -41,7 +41,7 @@
 #' res <- resy_classify(
 #'   species,
 #'   header,
-#'   scheme = "Apennine-test"
+#'   scheme = "Apennine-test", version = "2026-06-27"
 #' )
 #'
 #' resy_eval_plot(res, p = as.character(header$PlotObservationID[1]))
@@ -496,7 +496,7 @@ resy_eval_plot <- function(res, p, type = character(), lower = TRUE, siblings = 
 
   species_of <- function(cc) {
     if (startsWith(cc, "$")) return(character())
-    .resy_condition_taxa(cc, parsed$groups, parsed$groups.names)
+    .resy_condition_taxa(cc, parsed$groups, parsed$groups.names, parsed$species_sets)
   }
   taxa <- unique(unlist(lapply(conds, species_of)))
   sp <- plot$species[plot$species$species %in% trimws(taxa), , drop = FALSE]

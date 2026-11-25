@@ -75,6 +75,15 @@ summary.resy_taxa <- function(object, ...) {
     names(by_confidence) <- c("confidence", "n")
     by_confidence$prop <- by_confidence$n / length(conf)
   }
+  # Backbone matching: unmatched names by how much they may matter
+  by_importance <- NULL
+  if ("importance" %in% names(object)) {
+    imp <- as.character(object$importance)
+    sel <- first & !m & !is.na(imp)
+    by_importance <- split(data.frame(name = taxa[sel], status = object$status[sel],
+                                      stringsAsFactors = FALSE),
+                           factor(imp[sel], levels = c("important", "unimportant")))
+  }
   structure(
     list(
       n               = sum(first),
@@ -83,7 +92,8 @@ summary.resy_taxa <- function(object, ...) {
       unmatched_names = sort(taxa[first & !m]),
       n_records       = length(m),
       records_matched = sum(m),
-      by_confidence   = by_confidence
+      by_confidence   = by_confidence,
+      by_importance   = by_importance
     ),
     class = "summary.resy_taxa"
   )
@@ -105,7 +115,18 @@ print.summary.resy_taxa <- function(x, ...) {
     cat(sprintf("  %-*s  %*d  (%s)\n", w, bc$confidence, max(nchar(bc$n)), bc$n,
                 vapply(bc$n, .resy_pct, character(1), n = x$n_records)), sep = "")
   }
-  if (x$unmatched > 0L) {
+  if (!is.null(x$by_importance)) {
+    labels <- c(important = "Potentially important", unimportant = "Probably unimportant")
+    for (k in names(labels)) {
+      d <- x$by_importance[[k]]
+      cat(sprintf("\n%s (%d):\n", labels[[k]], nrow(d)))
+      for (s in sort(unique(d$status))) {
+        nm <- sort(d$name[d$status == s])
+        cat(.resy_pack_names(sprintf("  %s (%d): ", gsub("_", " ", s), length(nm)), nm,
+                             width = getOption("width"), exdent = 4L), sep = "\n")
+      }
+    }
+  } else if (x$unmatched > 0L) {
     cat("\nNot matched:\n")
     kinds <- .resy_name_kind(x$unmatched_names)
     labels <- c(genus = "genus only", infraspecific = "below species level",

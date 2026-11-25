@@ -57,6 +57,9 @@ Imports:
     utils,
     lifecycle
 Suggests:
+    vegdata (>= 2.0.0),
+    DBI,
+    RSQLite,
     sf (>= 1.0-21),
     dplyr (>= 1.1.4),
     getaca,
@@ -74,7 +77,7 @@ Suggests:
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 NeedsCompilation: no
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1
 URL: https://florian-jansen.github.io/resy/, https://github.com/florian-jansen/resy
 BugReports: https://github.com/florian-jansen/resy/issues
 Roxygen: list(markdown = TRUE)

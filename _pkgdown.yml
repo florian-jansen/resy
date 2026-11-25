@@ -34,7 +34,8 @@ reference:
       - resy_eval_plot
       - resy_compare_types
       - resy_harmonize_eunis
-      - resy_resolve_taxa
+      - resy_check_taxonomy
+      - resy_backbone
       - resy_available_classifications
       - resy_load_expert
       - resy_read_expert
@@ -45,16 +46,21 @@ reference:
       - RESY-package
       - resy_add_classification
       - resy_candidates
-      - resy_canonical_species
       - resy_check_data
       - resy_check_eunis
-      - resy_check_taxonomy
-      - resy_clean_names
       - resy_eunis_names
       - resy_expert_path
       - resy_expert_tree
-      - resy_read_synonyms
       - resy_validate_esy
       - resy_view_expert
       - resy_write_expert
       - resy_write_expert_html
+  - title: Deprecated
+    desc: >
+      Name matching through the synonym layer, replaced by the taxonomic
+      backbone. To be removed in RESY 0.4.
+    contents:
+      - resy_resolve_taxa
+      - resy_read_synonyms
+      - resy_canonical_species
+      - resy_clean_names

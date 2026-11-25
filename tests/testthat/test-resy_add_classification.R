@@ -149,7 +149,7 @@ test_that("resy_classify runs on a stored classification", {
     resy_classify(obs, header, scheme = "MyScheme", version = "1.0", mc = 1L)
   )
   ref <- suppressMessages(
-    resy_classify(obs, header, scheme = "Apennine-test", mc = 1L)
+    resy_classify(obs, header, scheme = "Apennine-test", version = "2026-06-27", mc = 1L)
   )
   expect_identical(res$result.classification, ref$result.classification)
 })

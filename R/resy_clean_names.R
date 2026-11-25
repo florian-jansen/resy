@@ -22,6 +22,11 @@
 
 #' Remove taxonomic authorities from scientific names
 #'
+#' `r lifecycle::badge("deprecated")`
+#' Expert systems with a taxonomic backbone resolve names with vegdata, which
+#' removes author citations itself (see `vegdata::taxname.removeAuthors()`).
+#' This function will be removed in RESY 0.4.
+#'
 #' Strips author citations from scientific plant names while keeping the
 #' taxonomic structure that expert-system names depend on, so that names from
 #' different taxonomic backbones resolve against the canonical names and
@@ -63,6 +68,9 @@
 #' ))
 #' @export
 resy_clean_names <- function(x) {
+  lifecycle::deprecate_soft("0.3.0", "resy_clean_names()",
+                            details = paste("Backbone matching removes author citations;",
+                                            "see vegdata::taxname.removeAuthors()."))
   # Infraspecific rank markers are followed by an epithet and kept with it.
   # Aggregate and collective markers stand alone, denote a broader taxon
   # concept, and are kept as-is (usually terminal, sometimes after an epithet).

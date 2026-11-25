@@ -8,7 +8,11 @@ releases <- function() {
 
 test_that("every published release is shipped", {
   avail <- resy_available_classifications()
-  expect_setequal(avail$version[avail$scheme == "EUNIS"], releases()$version)
+  shipped <- avail$version[avail$scheme == "EUNIS"]
+  expect_true(all(releases()$version %in% shipped))
+  # further versions are derived from a release and use a taxonomic backbone
+  for (v in setdiff(shipped, releases()$version))
+    expect_false(is.null(resy_load_expert(scheme = "EUNIS", version = v)$backbone))
 })
 
 test_that("the shipped .txt.xz releases decompress to the published bytes", {
@@ -110,7 +114,7 @@ test_that("resy_diff_expert() lists the changes between two releases", {
 })
 
 test_that("an expert system does not differ from itself", {
-  e <- resy_load_expert(scheme = "Apennine-test")
+  e <- resy_load_expert(scheme = "Apennine-test", version = "2026-06-27")
   expect_identical(nrow(resy_diff_expert(e, e)), 0L)
 })
 

@@ -4,7 +4,7 @@
 // groups, the species list and the test plots. RESY in webR classifies the
 // plots after every change. The model and the formula syntax are in
 // maker_model.js; the R side is resy_maker.R.
-import { $, escapeHtml as h, rString, cleanError, fmt, plural, createLoader, fetchAssets, bootSession, saveBlob, store, createShell, pinNavbar, prepareMakerSites, ensureSynonymLayer } from './resy_core.js';
+import { $, escapeHtml as h, rString, cleanError, fmt, plural, createLoader, fetchAssets, bootSession, saveBlob, store, createShell, pinNavbar, prepareMakerSites, ensureBackbone, backboneInfo } from './resy_core.js';
 import { splitFields, splitRecords, fileText, readHeader, pick, SPECIES_COLS, SPECIES_COL_LABEL, fillSpeciesColumns, tsvValue, plotId, fieldNumber } from './resy_files.js';
 import { evidenceHtml, wireEvidence } from './resy_evidence.js';
 import * as M from './maker_model.js';
@@ -191,10 +191,15 @@ async function testOnce() {
   let newColumns = false, recolour = false, newLevels = false;
   if (fresh) {
     playStatus('Testing…', 'busy');
+    // A system with a backbone matches its names against the whole of EuroSL,
+    // loaded once; a system without one sends its species list.
+    if (model.backbone) await inR(() => ensureBackbone(webR));
     if (synDirty) {
       synDirty = false;
-      await rWrite(`${DIR}/synonyms.json`, JSON.stringify(Object.fromEntries(model.synonyms)));
-      await rVoid(`resy_maker_synonyms("${DIR}/synonyms.json")`);
+      if (!model.backbone) {
+        await rWrite(`${DIR}/synonyms.json`, JSON.stringify(Object.fromEntries(model.synonyms)));
+        await rVoid(`resy_maker_synonyms("${DIR}/synonyms.json")`);
+      }
     }
     await rWrite(`${DIR}/rules.json`, json);
     await inR(() => prepareMakerSites(webR, `${DIR}/rules.json`));
@@ -213,6 +218,8 @@ async function testOnce() {
     out.tested = rules.length;
     out.json = json;
     out.data = testedData;
+    // How the backbone reads each name the system uses.
+    out.names = model.backbone ? await rJson(`resy_maker_taxonomy("${DIR}/rules.json")`) : null;
     const before = test?.plots ? new Map(test.plots.id.map((id, i) => [id, test.plots.code[i]])) : null;
     moved = before && out.plots ? new Set(out.plots.id.flatMap((id, i) => (before.has(id) && before.get(id) !== out.plots.code[i] ? [i] : []))) : null;
     recolour = Boolean(test?.eunis) !== Boolean(out.eunis);
@@ -308,7 +315,7 @@ function showChrome() {
   $('play-problems').textContent = errors ? `${plural(errors, 'error')} to fix` : warnings ? plural(warnings, 'note') : '';
   $('play-problems').classList.toggle('error', errors > 0);
   $('n-groups').textContent = fmt(model.groups.length);
-  $('n-species').textContent = fmt(model.synonyms.size);
+  $('n-species').textContent = fmt(model.backbone ? usedNames().size : model.synonyms.size);
   $('n-plots').textContent = data ? fmt(test?.n_plots ?? data.n_plots) : '';
   for (const el of app.querySelectorAll('[data-meta]')) if (el !== document.activeElement) el.value = model.metadata[el.dataset.meta] ?? '';
 }
@@ -362,7 +369,7 @@ function saveFile() {
 }
 function renderClear() {
   const name = model.metadata.scheme.trim();
-  $('clear-text').textContent = `Removes the ${plural(model.rules.length, 'type')}, ${plural(model.groups.length, 'group')} and ${nSpecies(model.synonyms.size)} of ${name ? `“${name}”` : 'the system'}. The test plots stay. Undo cannot bring them back.`;
+  $('clear-text').textContent = `Removes the ${plural(model.rules.length, 'type')}, ${plural(model.groups.length, 'group')}${model.backbone ? '' : ` and ${nSpecies(model.synonyms.size)}`} of ${name ? `“${name}”` : 'the system'}. The test plots stay. Undo cannot bring them back.`;
   $('clear-status').textContent = '';
 }
 async function clearAll() {
@@ -412,7 +419,7 @@ function disarm() {
 async function openSystem(source) {
   $('start-status').textContent = 'Opening…';
   let next;
-  if (source.empty) next = M.newModel();
+  if (source.empty) next = M.newModel(await backboneInfo());
   else if (source.draft) next = source.draft.model;
   else {
     const file = source.file;
@@ -547,7 +554,44 @@ function speciesListed() {
   const hits = q ? listed.filter(({ search }) => search.some((s) => s.includes(q))) : listed;
   return { total: entries.length, kinds, hits, q };
 }
+// The species names the system uses: the members of its species groups (the
+// names in conditions come with the test, see renderBackbone()).
+function usedNames() {
+  return new Set(model.groups.filter((g) => !g.prefix.startsWith('$')).flatMap((g) => g.members));
+}
+// The species tab of a system with a backbone: the backbone, how it reads the
+// names of the system, and the names of the test plots that count for no
+// species of the system.
+const BACKBONE_STATUS = {
+  renamed: ['Synonyms or spellings of an accepted name', true],
+  not_found: ['Not in the backbone', true],
+  level_unclear: ['Extent unclear (s. l., agg., s. str.)', true],
+  misapplied_name: ['Misapplied names (auct.)', true],
+  uncertain_determination: ['Uncertain determinations (cf., aff., ?)', true],
+  accepted: ['Accepted names of the backbone', false],
+};
+function renderBackbone() {
+  for (const el of $('sp-backbone').querySelectorAll('[data-bb]')) if (el !== document.activeElement) el.value = model.backbone[el.dataset.bb] ?? '';
+  const names = test?.names ?? null;
+  if (!names) {
+    $('bb-names').innerHTML = `<p class="small text-body-secondary">${data ? 'How the backbone reads the names of the system is shown after the next test.' : 'Upload test plots to see how the backbone reads the names of the system.'}</p>`;
+  } else {
+    const by = (k) => names.filter((n) => n.status === k);
+    const renamed = by('renamed');
+    $('bb-names').innerHTML = `<p class="small mb-1"><strong>${plural(names.length, 'species name')}</strong> of the system${renamed.length ? `; ${plural(renamed.length, 'name')} can take the accepted name <button type="button" class="btn btn-link btn-sm p-0 align-baseline" id="bb-rename">Use the accepted names in the groups</button>` : ''}</p>`
+      + Object.entries(BACKBONE_STATUS).filter(([k]) => by(k).length).map(([k, [label, open]]) => `<details${open ? ' open' : ''}><summary class="small">${label} (${fmt(by(k).length)})</summary><ul class="match-list small">${
+        by(k).map((n) => `<li><i>${h(n.name)}</i>${n.status === 'renamed' ? ` → <i>${h(n.accepted)}</i>` : ''}</li>`).join('')}</ul></details>`).join('');
+  }
+  const t = test?.taxonomy;
+  $('bb-test').innerHTML = !t ? '' : `<p class="small mt-3 mb-1"><strong>Names of the test plots that count for no species of the system</strong></p>`
+    + [['important', 'Potentially important: check their spelling or determination', true], ['unimportant', 'Probably unimportant: genera not in the system, genus-only records, cf.', false]]
+      .filter(([k]) => t[k]?.length).map(([k, label, open]) => `<details${open ? ' open' : ''}><summary class="small">${label} (${fmt(t[k].length)})</summary><ul class="match-list small">${t[k].map((n) => `<li><i>${h(n)}</i></li>`).join('')}</ul></details>`).join('')
+    || '<p class="small text-body-secondary">All names of the test plots can be used.</p>';
+}
 function renderSpecies(searchOnly = false) {
+  $('sp-backbone').hidden = !model.backbone;
+  $('sp-legacy').hidden = Boolean(model.backbone);
+  if (model.backbone) { renderBackbone(); return; }
   const { total, kinds, hits, q } = speciesListed();
   renderedSpecies = speciesIndex;
   if (!searchOnly) {
@@ -584,6 +628,7 @@ function renderSpecies(searchOnly = false) {
   }).join('') || `<li class="more">${total ? 'No species matches.' : 'The list is empty.'}</li>`);
 }
 function refreshSpecies() {
+  if (model.backbone) { renderSpecies(); return; }
   renderSpeciesNotes();
   if (renderedSpecies === indexSpecies()) return;
   const active = document.activeElement;
@@ -638,7 +683,7 @@ function renderSpeciesNotes() {
 const MATCH_KINDS = [
   ['autonym', 'Type subspecies and varieties, as synonyms of their species', true],
   ['same', 'Names that differ from a listed species in the author only', true],
-  ['synonym', 'Synonyms of listed species in the taxonomic backbones (Euro+Med, WFO, GBIF, COL, ITIS, NCBI)', true],
+  ['synonym', 'Synonyms of listed species in EuroSL', true],
   ['infra', 'Other subspecies and varieties, as synonyms of their species', false],
 ];
 let matchRequest = null;
@@ -649,11 +694,11 @@ async function renderMatch() {
   matchRequest = request;
   const { missing } = request;
   $('match-go').disabled = true;
-  $('match-body').innerHTML = '<p class="small text-body-secondary mb-0">Loading the synonym table and matching the names…</p>';
+  $('match-body').innerHTML = '<p class="small text-body-secondary mb-0">Loading EuroSL and matching the names…</p>';
   try {
-    const layer = await inR(() => ensureSynonymLayer(webR));
+    const backbone = await inR(() => ensureBackbone(webR));
     if (!currentMatch(request)) return;
-    request.proposals = await rJson(`resy_maker_suggest_synonyms("${DIR}/rules.json", ${rString(layer)})`);
+    request.proposals = await rJson(`resy_maker_suggest_synonyms("${DIR}/rules.json", ${rString(backbone)})`);
   } catch (e) {
     if (currentMatch(request)) $('match-body').innerHTML = `<p class="small error mb-0">${h(cleanError(e))}</p>`;
     return;
@@ -856,7 +901,7 @@ function addMembers(g, names) {
     const name = raw.replace(/\s+/g, ' ').trim();
     if (!name || g.members.includes(name)) continue;
     g.members.push(name);
-    if (!model.synonyms.has(name)) { model.synonyms.set(name, [...(data?.species.get(name)?.variants ?? [])]); synDirty = true; pool = null; }
+    if (!model.backbone && !model.synonyms.has(name)) { model.synonyms.set(name, [...(data?.species.get(name)?.variants ?? [])]); synDirty = true; pool = null; }
     added++;
   }
   return added;
@@ -1545,7 +1590,7 @@ let pool = null;
 const ta = { input: null, items: [], at: 0 };
 function speciesPool() {
   if (!pool) {
-    const names = new Set([...model.synonyms.keys(), ...(data ? data.species.keys() : [])]);
+    const names = new Set([...(model.backbone ? usedNames() : model.synonyms.keys()), ...(data ? data.species.keys() : [])]);
     pool = [...names].map((name) => ({ name, lower: name.toLowerCase(), plots: plotsOf(name) }))
       .sort((a, b) => b.plots - a.plots || byName(a.name, b.name));
   }
@@ -1599,7 +1644,7 @@ function taPick(name) {
     const at = findNode(input.closest('[data-node]').dataset.node);
     at.node.c.lhs.text = name;
     input.value = name;
-    if (!model.synonyms.has(name) && data?.species.has(name)) { model.synonyms.set(name, [...data.species.get(name).variants]); synDirty = true; pool = null; }
+    if (!model.backbone && !model.synonyms.has(name) && data?.species.has(name)) { model.synonyms.set(name, [...data.species.get(name).variants]); synDirty = true; pool = null; }
     treeTouched();
     commit();
   }
@@ -2143,7 +2188,7 @@ async function previewExport(snapshot) {
     if (!current()) return;
     status.className = `small mb-0${r.ok ? '' : ' error'}`;
     status.textContent = (r.ok
-      ? `RESY reads the system: ${plural(model.rules.length, 'rule')} for ${plural(new Set(model.rules.map((x) => x.code)).size, 'type')}, ${plural(model.groups.length, 'group')}, ${nSpecies(model.synonyms.size)}.`
+      ? `RESY reads the system: ${plural(model.rules.length, 'rule')} for ${plural(new Set(model.rules.map((x) => x.code)).size, 'type')}, ${plural(model.groups.length, 'group')}, ${model.backbone ? `species matched along ${model.backbone.name || 'its backbone'}` : nSpecies(model.synonyms.size)}.`
       : `RESY does not read the system: ${r.errors.join(' ')}`)
       + (r.warnings.length ? ` Notes of its validation: ${r.warnings.map((w) => (/[.!?]$/.test(w) ? w : `${w}.`)).join(' ')}` : '');
   } catch (e) {
@@ -2234,6 +2279,35 @@ app.querySelector('[role="tablist"]').addEventListener('keydown', (e) => {
 // Name, version and description of the system
 app.addEventListener('input', (e) => { if (e.target.dataset?.meta) model.metadata[e.target.dataset.meta] = e.target.value.trim(); });
 app.addEventListener('change', (e) => { if (e.target.dataset?.meta) commit(); });
+
+// The taxonomic backbone (Section 1). Like the species list, it is not part of Undo.
+$('sp-backbone').addEventListener('change', (e) => {
+  const field = e.target.dataset?.bb;
+  if (!field || !model.backbone) return;
+  model.backbone[field] = e.target.value.trim();
+  speciesChanged();
+});
+// Group members that the backbone reads as a synonym or spelling take the accepted name.
+$('sp-backbone').addEventListener('click', (e) => {
+  if (!e.target.closest('#bb-rename') || !test?.names) return;
+  const accepted = new Map(test.names.filter((n) => n.status === 'renamed').map((n) => [n.name, n.accepted]));
+  let n = 0;
+  for (const g of model.groups) {
+    if (g.prefix.startsWith('$')) continue;
+    const members = g.members.map((m) => accepted.get(m) ?? m);
+    n += members.filter((m, i) => m !== g.members[i]).length;
+    g.members = [...new Set(members)];
+  }
+  if (n) groupsChanged();
+});
+// A system with a species list of its own can match its species along EuroSL instead.
+$('sp-to-backbone').addEventListener('click', async () => {
+  model.backbone = await backboneInfo() ?? { name: 'EuroSL', url: 'https://eurosl.infinitenature.org', version: '' };
+  model.synonyms = new Map();
+  matched = null;
+  speciesChanged();
+  renderSpecies();
+});
 
 // Saving and clearing
 $('save').addEventListener('click', saveFile);

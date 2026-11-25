@@ -26,6 +26,7 @@
   structure(
     list(
       parsing.result              = parsing.result,
+      backbone                    = parsing.result$backbone,
       aggs                        = aggs,
       groups                      = groups,
       groups.names                = groups.names,
@@ -71,8 +72,11 @@
   expert <- expert[!grepl("---", expert, fixed = TRUE)]
   marks <- grep("^\\s*SECTION\\s+\\d", expert, ignore.case = TRUE, perl = TRUE)
 
-  # ---- Section 1: Species aggregation
+  # ---- Section 1: Species aggregation, or the declaration of the taxonomic
+  # backbone that replaces it
   species.agg     <- .resy_section_body(expert, 1, marks)
+  backbone        <- .resy_parse_backbone(species.agg)
+  if (!is.null(backbone)) species.agg <- character()
   index.agg.names <- which(substr(species.agg, 1, 1) != " " & .resy_has_text(species.agg))
   index.agg.names <- index.agg.names[
     !grepl("^[ \t\r\n]*SECTION\\s+\\d", species.agg[index.agg.names], perl = TRUE)
@@ -81,6 +85,7 @@
                               clean = function(x) .resy_trim_trailing(.resy_trim_leading(x)))
   names(aggs) <- .resy_trim_trailing(species.agg[index.agg.names])
   if (any(!nzchar(names(aggs)))) aggs <- aggs[nzchar(names(aggs))]
+  if (!is.null(backbone)) aggs <- list()
 
   # ---- Section 2: Species groups
   species.groups    <- .resy_section_body(expert, 2, marks)
@@ -127,5 +132,7 @@
     }
   }
 
-  .resy_transform_formulas(aggs, groups, membership.formulas, membership.formula.names)
+  res <- .resy_transform_formulas(aggs, groups, membership.formulas, membership.formula.names)
+  res$backbone <- backbone
+  res
 }

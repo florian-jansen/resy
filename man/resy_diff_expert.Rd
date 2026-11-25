@@ -18,7 +18,8 @@ resy_diff_expert(from, to, scheme = "EUNIS")
 A data frame of class \code{resy_expert_diff}, one row per change, with
 columns
 \describe{
-\item{\code{section}}{\code{"aggregate"} (Section 1 aggregation of taxa),
+\item{\code{section}}{\code{"backbone"} (taxonomic backbone declared in
+Section 1), \code{"aggregate"} (Section 1 aggregation of taxa),
 \code{"group"} (Section 2 species group) or \code{"type"} (Section 3
 definition).}
 \item{\code{key}}{Aggregate name, group name or type code.}

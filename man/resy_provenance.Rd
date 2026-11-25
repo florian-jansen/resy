@@ -2,7 +2,7 @@
 % Please edit documentation in R/resy_provenance.R
 \name{resy_provenance}
 \alias{resy_provenance}
-\title{Which expert system and synonym layer produced a result}
+\title{Which expert system and taxonomic backbone produced a result}
 \usage{
 resy_provenance(x)
 }
@@ -13,9 +13,12 @@ resy_provenance(x)
 \value{
 A one-row data frame with columns \code{scheme}, \code{version},
 \code{expert_file}, \code{expert_md5}, \code{release_doi}, \code{identical_to_release},
+\code{backbone}, \code{backbone_url}, \code{backbone_version}, \code{backbone_version_used},
 \code{synonym_layer_built}, \code{synonym_layer_taxify} and \code{resy_version}.
 \code{identical_to_release} is \code{NA} when no published release of that scheme
 and version is known (for example a user's own system); the
+\verb{backbone*} columns are \code{NA} for an expert system without a backbone
+(\code{backbone_version_used} also for a parsed expert system), and the
 \verb{synonym_layer_*} columns are \code{NA} when no synonym layer was used.
 }
 \description{
@@ -24,11 +27,13 @@ Reports the expert-system release a parsed expert system or a
 classification result rests on, so it can be stored next to the result or
 cited: the scheme and version, the file that was read, the MD5 checksum of
 its content, the DOI of the published release, and whether the file is
-byte-identical to the published \code{.txt}. For a result of
-\code{\link[=resy_classify]{resy_classify()}} with \code{resolve_taxa = TRUE} and the bundled synonym
-layer, the build date of that layer and the
-\href{https://github.com/gcol33/taxify}{taxify} version it was built with are
-added.
+byte-identical to the published \code{.txt}. For an expert system with a
+taxonomic backbone, the backbone it declares (name, URL, version) is added,
+and for a classification result also the version of the backbone that was
+actually used. For a result of \code{\link[=resy_classify]{resy_classify()}} with the deprecated
+\code{resolve_taxa = TRUE} and the bundled synonym layer, the build date of that
+layer and the \href{https://github.com/gcol33/taxify}{taxify} version it was built
+with are added.
 }
 \examples{
 resy_provenance(resy_load_expert(scheme = "EUNIS", version = "2021-06-01"))

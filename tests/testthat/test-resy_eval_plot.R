@@ -22,7 +22,7 @@ test_that("a header in a different order from obs reports each plot's own types"
   header <- as.data.frame(unique(sp["PlotObservationID"]))
   header <- header[rev(seq_len(nrow(header))), , drop = FALSE]
   res <- suppressMessages(
-    resy_classify(sp, header, scheme = "Apennine-test", mc = 1L)
+    resy_classify(sp, header, scheme = "Apennine-test", version = "2026-06-27", mc = 1L)
   )
   expect_false(identical(as.character(res$header$PlotObservationID),
                          names(res$types)))

@@ -14,6 +14,7 @@ mini_syn <- function() {
 mini_canon <- function() data.frame(esy_canonical = c("Genus species", "Other taxon"))
 
 test_that("read_synonyms anchors the shipped layer and validates the schema", {
+  local_legacy()
   syn <- resy_read_synonyms()
   expect_true(all(RESY:::.RESY_SYNONYM_COLUMNS %in% names(syn)))
   expect_gt(nrow(syn), 60000L)
@@ -24,6 +25,7 @@ test_that("read_synonyms anchors the shipped layer and validates the schema", {
 })
 
 test_that("the shipped layer matches its recorded build", {
+  local_legacy()
   build <- utils::read.csv(
     system.file("extdata", "esy_synonym_layer_build.csv", package = "RESY"),
     stringsAsFactors = FALSE
@@ -49,6 +51,7 @@ test_that("the shipped layer matches its recorded build", {
 })
 
 test_that("the table anchored on EUNIS 2025-10-03 keeps its recorded content", {
+  local_legacy()
   expert <- resy_expert_path("EUNIS", "2025-10-03", mustWork = FALSE)
   skip_if(is.na(expert) || !file.exists(expert), "EUNIS expert not installed")
   parsed <- resy_load_expert(expertfile = expert)
@@ -96,6 +99,7 @@ mini_layer <- function() {
 }
 
 test_that("expert names hold the evaluated names and the whole vocabulary", {
+  local_legacy()
   nm <- RESY:::.resy_expert_names(mini_expert())
   expect_setequal(nm$targets, c("Genus alpha aggr.", "Genus beta", "Genus gamma",
                                 "Genus delta", "Genus epsilon"))
@@ -107,6 +111,7 @@ test_that("expert names hold the evaluated names and the whole vocabulary", {
 })
 
 test_that("anchoring keeps unambiguous pairs and never picks between targets", {
+  local_legacy()
   nm <- RESY:::.resy_expert_names(mini_expert())
   out <- RESY:::.resy_anchor_synonyms(mini_layer(), nm)
   got <- stats::setNames(out$esy_canonical, out$synonym)
@@ -127,6 +132,7 @@ test_that("anchoring keeps unambiguous pairs and never picks between targets", {
 })
 
 test_that("read_synonyms keeps the optional accepted_in column when present", {
+  local_legacy()
   syn <- mini_syn()
   expect_false("accepted_in" %in% names(resy_read_synonyms(syn)))
   
@@ -137,6 +143,7 @@ test_that("read_synonyms keeps the optional accepted_in column when present", {
 })
 
 test_that("resolve recovers canonical names exactly and via synonym fallback", {
+  local_legacy()
   obs <- data.frame(
     TaxonName = c("Genus species", " Old name ", "Older name", "Other taxon"),
     stringsAsFactors = FALSE
@@ -150,6 +157,7 @@ test_that("resolve recovers canonical names exactly and via synonym fallback", {
 })
 
 test_that("unmatched input stays NA and flagged, never substituted", {
+  local_legacy()
   res <- resy_resolve_taxa(data.frame(TaxonName = "Notareal speciesxyz"),
                            "TaxonName", synonyms = mini_syn(),
                            canonical = mini_canon())
@@ -158,6 +166,7 @@ test_that("unmatched input stays NA and flagged, never substituted", {
 })
 
 test_that("author citations are removed for matching when the name does not match as given", {
+  local_legacy()
   obs <- data.frame(
     TaxonName = c("Genus species L.", "Old name (L.) Schult.", "Other taxon",
                   "Notareal sp. Smith", NA),
@@ -174,6 +183,7 @@ test_that("author citations are removed for matching when the name does not matc
 })
 
 test_that("a name that matches as given is not cleaned", {
+  local_legacy()
   res <- resy_resolve_taxa(data.frame(TaxonName = "Genus species L."),
                            "TaxonName", synonyms = mini_syn(),
                            canonical = data.frame(esy_canonical = "Genus species L."))
@@ -182,6 +192,7 @@ test_that("a name that matches as given is not cleaned", {
 })
 
 test_that("cleaning does not merge distinct names", {
+  local_legacy()
   res <- resy_resolve_taxa(data.frame(TaxonName = "Taraxacum sect. Arctica"),
                            "TaxonName", synonyms = mini_syn(),
                            canonical = data.frame(esy_canonical = "Taraxacum sect. Alpina"))
@@ -190,6 +201,7 @@ test_that("cleaning does not merge distinct names", {
 })
 
 test_that("ambiguous synonyms resolve to nothing (no silent pick)", {
+  local_legacy()
   amb <- data.frame(synonym = c("Shared syn", "Shared syn"),
                     esy_canonical = c("Genus species", "Other taxon"),
                     source = "test", stringsAsFactors = FALSE)
@@ -200,12 +212,14 @@ test_that("ambiguous synonyms resolve to nothing (no silent pick)", {
 })
 
 test_that("resolver validates its arguments", {
+  local_legacy()
   expect_error(resy_resolve_taxa(list(), "TaxonName"), "must be a data frame")
   expect_error(resy_resolve_taxa(data.frame(a = 1), "TaxonName"),
                "`obs` has no column `TaxonName`", fixed = TRUE)
 })
 
 test_that("canonical_species returns the sorted unique canonical names", {
+  local_legacy()
   sp <- resy_canonical_species(mini_canon())
   expect_equal(sp, c("Genus species", "Other taxon"))
   expect_gt(length(resy_canonical_species()), 19000L)
@@ -214,6 +228,7 @@ test_that("canonical_species returns the sorted unique canonical names", {
 })
 
 test_that("resolve returns a resy_taxa table whose summary counts names and records", {
+  local_legacy()
   obs <- data.frame(
     PlotObservationID = c("p1", "p1", "p2", "p2", "p3"),
     TaxonName = c("Genus species", "Old name", "Notareal sp", "Stillfake",
@@ -240,6 +255,7 @@ test_that("resolve returns a resy_taxa table whose summary counts names and reco
 })
 
 test_that("printing a resolved table shows its taxonomy columns and names the rest", {
+  local_legacy()
   obs <- data.frame(PlotObservationID = c("p1", "p2"),
                     TaxonName = c("Genus species", "Genus species"),
                     stringsAsFactors = FALSE)
@@ -252,6 +268,7 @@ test_that("printing a resolved table shows its taxonomy columns and names the re
 })
 
 test_that("dropping a defining column turns a resy_taxa table into a data frame", {
+  local_legacy()
   res <- resy_resolve_taxa(data.frame(TaxonName = "Genus species"), "TaxonName",
                            synonyms = mini_syn(), canonical = mini_canon())
   kept <- res[c("TaxonName", "matched")]
@@ -263,6 +280,7 @@ test_that("dropping a defining column turns a resy_taxa table into a data frame"
 })
 
 test_that("classify with resolve_taxa = TRUE resolves and never corrupts known names", {
+  local_legacy()
   expert <- resy_expert_path("EUNIS", "2025-10-03", mustWork = FALSE)
   skip_if(is.na(expert) || !file.exists(expert), "EUNIS expert not installed")
   sp_path <- system.file(

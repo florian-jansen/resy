@@ -4,6 +4,7 @@
 # already a canonical form must round-trip unchanged.
 
 test_that("clean_names strips authors but keeps ranks and aggregate markers", {
+  local_legacy()
   # Author citations removed, genus + epithet kept.
   expect_equal(resy_clean_names("Fagus sylvatica L."), "Fagus sylvatica")
   expect_equal(
@@ -103,6 +104,7 @@ test_that("clean_names strips authors but keeps ranks and aggregate markers", {
 })
 
 test_that(".resy_species_part() takes a name below species level to its species", {
+  local_legacy()
   part <- .resy_species_part(c("Carex pilulifera subsp. pilulifera", "Lotus corniculatus subsp. alpinus",
                                "Thymus pulegioides var. pulegioides", "Salix x rubens", "Fagus sylvatica", NA))
   expect_identical(part$species, c("Carex pilulifera", "Lotus corniculatus", "Thymus pulegioides",

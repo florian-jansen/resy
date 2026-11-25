@@ -15,6 +15,12 @@ A character vector the same length as \code{x} with author citations
 removed and taxonomic structure preserved. \code{NA} values are preserved.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+Expert systems with a taxonomic backbone resolve names with vegdata, which
+removes author citations itself (see \code{vegdata::taxname.removeAuthors()}).
+This function will be removed in RESY 0.4.
+}
+\details{
 Strips author citations from scientific plant names while keeping the
 taxonomic structure that expert-system names depend on, so that names from
 different taxonomic backbones resolve against the canonical names and
