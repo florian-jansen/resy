@@ -1,8 +1,8 @@
-#' File names an expert system may be stored under
+# File names an expert system may be stored under
 #'
 #' Per format, the file names looked for in a version directory, in order of
 #' preference. Expert files of either format may be xz-compressed;
-#' `jsonlite::read_json()`, `readLines()` and [.resy_read_raw()] read them
+#' `jsonlite::read_json()`, `readLines()` and `.resy_read_raw()` read them
 #' directly.
 #'
 #' @keywords internal

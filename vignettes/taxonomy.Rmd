@@ -188,9 +188,6 @@ res_2025 <- resy_classify(species, header, scheme = "EUNIS",
                           version = "2025-10-03")
 ```
 
-The synonym table that RESY used to bridge other name sources to these
-releases (`resy_resolve_taxa()`, `resy_read_synonyms()`,
-`resy_canonical_species()`) is deprecated and will be removed in RESY 0.4.
 
 ## References
 
