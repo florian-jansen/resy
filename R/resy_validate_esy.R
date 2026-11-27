@@ -112,6 +112,7 @@ resy_validate_esy <- function(path, strict = FALSE, verbose = TRUE) {
 #   errors, warnings  problems of the file layout, found while reading
 #   complete          FALSE when the layout is too broken to read the parts
 #   groups            the group keys as written (prefix, space, name)
+#   members           the members of each group, named by its key
 #   rules             one list per type definition: priority, code,
 #                     description, expression, `where` (its place in the file)
 #                     and `disabled` (TRUE for a type switched off with "---")
@@ -121,10 +122,12 @@ resy_validate_esy <- function(path, strict = FALSE, verbose = TRUE) {
 
 .resy_esy_parts <- function(errors = character(), warnings = character(),
                             complete = TRUE, groups = character(),
-                            rules = list(), words, meta = list()) {
+                            rules = list(), words, meta = list(),
+                            members = list()) {
 
   list(errors = errors, warnings = warnings, complete = complete,
-       groups = groups, rules = rules, words = words, meta = meta)
+       groups = groups, rules = rules, words = words, meta = meta,
+       members = members)
 
 }
 
@@ -172,6 +175,10 @@ resy_validate_esy <- function(path, strict = FALSE, verbose = TRUE) {
   # indented.
   is_key <- nz(sec2_body) & !is_section_end(sec2_body) & !grepl("^\\s", sec2_body)
   groups <- sec2_body[is_key]
+  block <- cumsum(is_key)
+  is_member <- nz(sec2_body) & !is_key & !is_section_end(sec2_body) & block > 0L
+  members <- split(.resy_trim(sec2_body[is_member]), factor(block[is_member], levels = seq_along(groups)))
+  names(members) <- groups
 
   # Section 3: a type definition is a header line (priority character,
   # whitespace, code, description; "---" in front disables the type) followed
@@ -200,7 +207,7 @@ resy_validate_esy <- function(path, strict = FALSE, verbose = TRUE) {
   })
 
   .resy_esy_parts(errors, warnings, groups = groups, rules = rules,
-                  words = words, meta = meta)
+                  words = words, meta = meta, members = members)
 
 }
 
@@ -239,8 +246,10 @@ resy_validate_esy <- function(path, strict = FALSE, verbose = TRUE) {
 
   errors <- character()
   groups <- character()
+  members <- list()
   if (is.list(x[["groups"]])) {
     groups <- names(x[["groups"]]) %||% character()
+    members <- .resy_json_chr_list(x[["groups"]])
   } else {
     errors <- c(errors, "'groups' must be a JSON object (key: array pairs)")
   }
@@ -270,7 +279,8 @@ resy_validate_esy <- function(path, strict = FALSE, verbose = TRUE) {
   if (length(rules_j) && !length(rules))
     return(.resy_esy_parts(errors, warnings, complete = FALSE, words = words))
 
-  .resy_esy_parts(errors, warnings, groups = groups, rules = rules, words = words)
+  .resy_esy_parts(errors, warnings, groups = groups, rules = rules, words = words,
+                  members = members)
 
 }
 
@@ -314,6 +324,8 @@ resy_validate_esy <- function(path, strict = FALSE, verbose = TRUE) {
 
   }
   group_names <- unique(group_names)
+  # Groups named in groups (with their prefix) must be defined, without cycles
+  for (p in .resy_group_ref_problems(parts$members)) error(p)
 
   # --- Type definitions
   if (!length(parts$rules))

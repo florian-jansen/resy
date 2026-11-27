@@ -59,7 +59,7 @@ resy_check_taxonomy <- function(obs, parsed, col = NULL) {
   col <- .resy_species_col(obs, col, arg = "col")
 
   if (!is.null(parsed$backbone)) {
-    bb <- .resy_backbone_get(parsed$backbone$name)
+    bb <- .resy_backbone_get(parsed$backbone$name, version = parsed$backbone$version)
     taxa <- .resy_backbone_plot_taxa(obs[[col]], .resy_backbone_expert(parsed, bb), bb)
     return(.resy_backbone_taxa_table(taxa, col, parsed$backbone))
   }

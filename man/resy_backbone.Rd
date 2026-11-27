@@ -31,7 +31,9 @@ the list;
 \item the option \code{resy.backbone} (same forms), e.g.
 \code{options(resy.backbone = "~/EuroSL.sqlite")};
 \item the reference list of that name installed for vegdata
-(see \code{vegdata::taxref_download_eurosl()}).
+(see \code{vegdata::taxref_download_eurosl()}); if there is none, the list
+named after backbone name and version (e.g. \code{"GermanSL 1.5"}, see
+\code{vegdata::taxref_download_germansl()}).
 }
 
 The list is read once per session; a list read from a file is also kept in

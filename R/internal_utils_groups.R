@@ -62,3 +62,64 @@ NULL
 .resy_section_rows <- function(lines, n) {
   which(grepl(paste0("^\\s*SECTION\\s+", n, "\\b"), lines, ignore.case = TRUE, perl = TRUE))
 }
+#'
+#' Groups Named in Groups
+#'
+#' @description
+#' A member of a Section 2 group may be another group, written with its prefix
+#' (`"### Wet-meadows"`), so that a group is built from other groups (a group
+#' of site indicators from several species groups). `.resy_expand_group_refs()`
+#' replaces each such member by the species of the group it names, recursively;
+#' `.resy_group_ref_problems()`
+#' names references to undefined groups and groups that contain themselves.
+#'
+#' @param groups Named list of Section 2 groups (keys with prefix) and their
+#'   members.
+#' @return The groups with species only, or a character vector of problems.
+#' @keywords internal
+#' @noRd
+.resy_group_ref_prefixes <- c("###", "##D", "##Q", "##C")
+.resy_is_group_ref <- function(x)
+  substr(x, 1L, 3L) %in% .resy_group_ref_prefixes & substr(x, 4L, 4L) == " "
+.resy_group_key <- function(x) gsub("\\s+", " ", trimws(x))
+
+.resy_group_ref_problems <- function(groups) {
+  keys <- .resy_group_key(names(groups))
+  refs <- lapply(groups, function(m) .resy_group_key(m[.resy_is_group_ref(m)]))
+  names(refs) <- keys
+  problems <- character()
+  for (k in keys) for (r in setdiff(refs[[k]], keys))
+    problems <- c(problems, sprintf('Group "%s" names group "%s", which is not defined', k, r))
+  # A group that reaches itself through its references.
+  reach <- function(k, seen) {
+    for (r in intersect(refs[[k]], keys)) {
+      if (r %in% seen) return(TRUE)
+      if (reach(r, c(seen, r))) return(TRUE)
+    }
+    FALSE
+  }
+  for (k in keys[lengths(refs[keys]) > 0L]) if (reach(k, k))
+    problems <- c(problems, sprintf('Group "%s" contains itself through the groups it names', k))
+  problems
+}
+
+.resy_expand_group_refs <- function(groups) {
+  is_ref <- lapply(groups, .resy_is_group_ref)
+  if (!any(unlist(is_ref, use.names = FALSE))) return(groups)
+  problems <- .resy_group_ref_problems(groups)
+  if (length(problems)) stop(paste(problems, collapse = "; "), call. = FALSE)
+  keys <- .resy_group_key(names(groups))
+  done <- list()
+  expand <- function(i) {
+    if (!is.null(done[[keys[i]]])) return(done[[keys[i]]])
+    m <- groups[[i]]
+    r <- is_ref[[i]]
+    out <- unique(c(m[!r], unlist(lapply(match(.resy_group_key(m[r]), keys), expand),
+                                 use.names = FALSE)))
+    done[[keys[i]]] <<- out
+    out
+  }
+  out <- lapply(seq_along(groups), expand)
+  names(out) <- names(groups)
+  out
+}

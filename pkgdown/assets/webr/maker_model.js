@@ -635,6 +635,46 @@ export function renameGroup(model, from, to) {
   return changed;
 }
 
+// A member of a group may name another group with its prefix
+// ("### FG001-Drepanocladus-fluitans"); it stands for that group's species.
+export const isGroupRef = (m) => /^(###|##[DQC]) \S/.test(m);
+const refKey = (m) => m.replace(/\s+/g, ' ').trim();
+// The group a member names, or null.
+export const refGroup = (groups, m) => groups.find((g) => groupKey(g) === refKey(m)) ?? null;
+// The species of a group, with those of the groups it names, each once.
+export function groupSpecies(groups, g, seen = new Set()) {
+  const out = new Set();
+  if (seen.has(g.id)) return out;
+  seen.add(g.id);
+  for (const m of g.members) {
+    if (!isGroupRef(m)) { out.add(m); continue; }
+    const named = refGroup(groups, m);
+    if (named) for (const s of groupSpecies(groups, named, seen)) out.add(s);
+  }
+  return out;
+}
+// Whether the group `from` names the group `target`, directly or through
+// the groups it names.
+export function namesGroup(groups, from, target, seen = new Set()) {
+  if (seen.has(from.id)) return false;
+  seen.add(from.id);
+  return from.members.filter(isGroupRef).some((m) => {
+    const named = refGroup(groups, m);
+    return named && (named === target || namesGroup(groups, named, target, seen));
+  });
+}
+// Replaces the members naming the group key `from` by `to`, or removes them
+// when `to` is null. Returns the number of groups changed.
+export function renameGroupRefs(model, from, to) {
+  let changed = 0;
+  for (const g of model.groups) {
+    if (!g.members.some((m) => isGroupRef(m) && refKey(m) === from)) continue;
+    g.members = [...new Set(g.members.flatMap((m) => (isGroupRef(m) && refKey(m) === from ? (to ? [to] : []) : [m])))];
+    changed++;
+  }
+  return changed;
+}
+
 const NAME_BAD = /[<>|()[\]{}\t\n]|---| (GR|GE|EQ|EXCEPT|AND|OR|NOT) |^(AND|OR|NOT) | (AND|OR|NOT)$/;
 // What is wrong with the name of a group, or null.
 export function groupNameProblem(name) {
@@ -672,6 +712,9 @@ export function checkModel(model, data = null) {
     else if (names.has(g.name)) add('error', 'group', g.id, `Two groups are named "${g.name}".`);
     names.set(g.name, g);
     if (!g.members.length && !g.prefix.startsWith('$')) empty.push(g);
+    for (const m of g.members.filter(isGroupRef)) {
+      if (!refGroup(model.groups, m)) add('error', 'group', g.id, `Group "${g.name}" names the group ${m}, which does not exist.`);
+    }
   }
   note('group', empty, groupName, (n) => `Group ${n} has no species.`, (n) => `${n} groups have no species`);
   const groupNames = new Set(names.keys());

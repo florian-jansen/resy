@@ -4,7 +4,7 @@
 // groups, the species list and the test plots. RESY in webR classifies the
 // plots after every change. The model and the formula syntax are in
 // maker_model.js; the R side is resy_maker.R.
-import { $, escapeHtml as h, rString, cleanError, fmt, plural, createLoader, fetchAssets, bootSession, saveBlob, store, createShell, pinNavbar, prepareMakerSites, ensureBackbone, backboneInfo } from './resy_core.js';
+import { $, escapeHtml as h, rString, cleanError, fmt, plural, createLoader, fetchAssets, bootSession, saveBlob, store, createShell, pinNavbar, prepareMakerSites, ensureBackbone, backboneInfo, acceptDrops } from './resy_core.js';
 import { splitFields, splitRecords, fileText, readHeader, pick, SPECIES_COLS, SPECIES_COL_LABEL, fillSpeciesColumns, tsvValue, plotId, fieldNumber } from './resy_files.js';
 import { evidenceHtml, wireEvidence } from './resy_evidence.js';
 import * as M from './maker_model.js';
@@ -539,7 +539,7 @@ const SPECIES_PER_PAGE = 100;
 function indexSpecies() {
   const scope = test?.species_counts ?? data?.species;
   if (speciesIndex?.revision === revision && speciesIndex.scope === scope) return speciesIndex;
-  const grouped = new Set(model.groups.flatMap((g) => g.members));
+  const grouped = new Set(model.groups.flatMap((g) => g.members.filter((m) => !M.isGroupRef(m))));
   const entries = [...model.synonyms.keys()].sort(byName).map((name) => ({
     name, search: [name, ...model.synonyms.get(name)].map((s) => s.toLowerCase()),
   }));
@@ -557,7 +557,7 @@ function speciesListed() {
 // The species names the system uses: the members of its species groups (the
 // names in conditions come with the test, see renderBackbone()).
 function usedNames() {
-  return new Set(model.groups.filter((g) => !g.prefix.startsWith('$')).flatMap((g) => g.members));
+  return new Set(model.groups.filter((g) => !g.prefix.startsWith('$')).flatMap((g) => g.members.filter((m) => !M.isGroupRef(m))));
 }
 // The species tab of a system with a backbone: the backbone, how it reads the
 // names of the system, and the names of the test plots that count for no
@@ -826,7 +826,7 @@ function groupRowHtml(g) {
     return `<li data-id="${g.id}"${open ? ' class="open"' : ''}>
       <div class="head" tabindex="0" role="button" aria-expanded="${open}"${part ? ' draggable="true" title="Select the group to see its species. Drag it into the rule to add a condition on it."' : ''}>
         <span class="nm">${h(g.name || 'Unnamed group')}</span>
-        <span class="meta">${nSpecies(g.members.length)}<span data-group-hits="${g.id}">${n === undefined ? '' : ` · in ${plural(n, 'plot')}`}</span></span>
+        <span class="meta">${groupSize(g)}<span data-group-hits="${g.id}">${n === undefined ? '' : ` · in ${plural(n, 'plot')}`}</span></span>
       </div>
       <button type="button" class="mini x del" data-act="row-del" title="Delete the group ${h(g.name)} (Undo brings it back)" aria-label="Delete the group ${h(g.name)}">✕</button>
       ${open ? `<div id="g-editor">${groupEditorHtml(g)}</div>` : ''}
@@ -881,10 +881,12 @@ function groupEditorHtml(g) {
       <div class="form-label small mb-0"><label for="g-prefix">Kind</label>${g.prefix === '##D' ? `<span class="info-tip start ms-2"><button type="button" class="mini" aria-label="About groups of a set" aria-describedby="g-prefix-info">ⓘ</button><span class="bubble" role="tooltip" id="g-prefix-info">The groups of a set have names that start with the same number, such as <code>+01 Dry-grassland</code> and <code>+01 Wet-meadow</code>. The condition “scores highest in its set” holds for the group whose species have the highest sum of square-root covers in the plot.</span></span>` : ''}
         <select class="form-select form-select-sm mt-1" id="g-prefix" data-act="g-prefix">${prefixes.map((p) => `<option value="${h(p)}"${p === g.prefix ? ' selected' : ''}>${PREFIX_LABEL[p] ?? p}</option>`).join('')}</select></div>
     </div>
-    <ul class="chips" style="--member-digits:${String(data?.n_plots ?? 0).length}">${g.members.map((m) => `
+    ${refChipsHtml(g)}
+    <ul class="chips" style="--member-digits:${String(data?.n_plots ?? 0).length}">${g.members.filter((m) => !M.isGroupRef(m)).map((m) => `
       <li>${h(m)}<span class="n" data-member-count="${h(m)}" title="Test plots with this species">${memberCount(m) || ''}</span>
         <button type="button" class="mini x" data-act="g-del-member" data-name="${h(m)}" title="Remove ${h(m)}" aria-label="Remove ${h(m)}">✕</button></li>`).join('')}</ul>
     <input class="form-control form-control-sm" data-ta="member" placeholder="Add a species: type its name" aria-label="Add a species" autocomplete="off" spellcheck="false">
+    ${refPickerHtml(g)}
     <details class="mt-2"><summary class="small">Paste a list of species</summary>
       <textarea class="form-control form-control-sm mt-1" rows="4" id="g-paste" placeholder="One species name per line" aria-label="Species to add to the group, one per line"></textarea>
       <button type="button" class="btn btn-outline-primary btn-sm mt-1" data-act="g-paste-add">Add to the group</button></details>
@@ -895,11 +897,49 @@ function groupEditorHtml(g) {
       <button type="button" class="btn btn-outline-danger btn-sm" data-act="g-del">Delete</button>
     </div>`;
 }
+// A group may name other groups; their species count for it. Such members are
+// shown apart from the species, as links to the groups they name.
+const speciesCount = (g) => (g ? M.groupSpecies(model.groups, g).size : 0);
+function groupSize(g) {
+  const refs = g.members.filter(M.isGroupRef).length;
+  return `${refs ? `${plural(refs, 'group')} · ` : ''}${nSpecies(speciesCount(g))}`;
+}
+function refChipsHtml(g) {
+  const refs = g.members.filter(M.isGroupRef);
+  if (!refs.length) return '';
+  return `<p class="small mb-1 mt-2">Groups it holds (their species count for it):</p>
+    <ul class="chips refs">${refs.map((m) => {
+      const named = M.refGroup(model.groups, m);
+      return `<li class="ref${named ? '' : ' missing'}">${named
+        ? `<button type="button" class="btn btn-link btn-sm p-0" data-act="g-open-ref" data-id="${named.id}" title="Open the group ${h(named.name)}">${h(named.name)}</button><span class="n">${speciesCount(named)}</span>`
+        : `${h(m)} <span class="n">not found</span>`}
+        <button type="button" class="mini x" data-act="g-del-member" data-name="${h(m)}" title="Remove the group ${h(m)}" aria-label="Remove the group ${h(m)}">✕</button></li>`;
+    }).join('')}</ul>`;
+}
+// The groups that can be added to `g`: species groups it does not hold yet and
+// that do not hold `g` themselves.
+function refPickerHtml(g) {
+  if (g.prefix.startsWith('$')) return '';
+  const held = new Set(g.members.filter(M.isGroupRef).map((m) => m.replace(/\s+/g, ' ').trim()));
+  const options = model.groups.filter((x) => x !== g && !x.prefix.startsWith('$') && x.name.trim() &&
+    !held.has(M.groupKey(x)) && !M.namesGroup(model.groups, x, g));
+  if (!options.length) return '';
+  return `<select class="form-select form-select-sm mt-2" data-act="g-add-ref" aria-label="Add a group to this group">
+      <option value="">Add a group: its species count for this group</option>
+      ${options.map((x) => `<option value="${h(M.groupKey(x))}">${h(x.name)} (${nSpecies(speciesCount(x))})</option>`).join('')}</select>`;
+}
 function addMembers(g, names) {
   let added = 0;
   for (const raw of names) {
     const name = raw.replace(/\s+/g, ' ').trim();
     if (!name || g.members.includes(name)) continue;
+    if (M.isGroupRef(name)) {
+      const named = M.refGroup(model.groups, name);
+      if (!named || named === g || M.namesGroup(model.groups, named, g)) continue;
+      g.members.push(name);
+      added++;
+      continue;
+    }
     g.members.push(name);
     if (!model.backbone && !model.synonyms.has(name)) { model.synonyms.set(name, [...(data?.species.get(name)?.variants ?? [])]); synDirty = true; pool = null; }
     added++;
@@ -1192,7 +1232,7 @@ function numRange(c) {
     return [Math.floor(col.min / step) * step, Math.ceil(col.max / step) * step, step];
   }
   if (l.k === 'measure' && ['###', '##D'].includes(l.code)) {
-    return [0, Math.max(5, ...l.groups.map((g) => model.groups.find((x) => x.name === g)?.members.length ?? 0)), 1];
+    return [0, Math.max(5, ...l.groups.map((g) => speciesCount(model.groups.find((x) => x.name === g)))), 1];
   }
   if (l.k === 'measure' && l.code === '##Q') return null;
   return [0, 100, 1];
@@ -2316,6 +2356,7 @@ $('clear-go').addEventListener('click', clearAll);
 
 // Opening a system
 $('start-go').addEventListener('click', startClicked);
+acceptDrops(['start-file', 'f-species', 'f-sites'].map((id) => $(id)));
 for (const el of document.querySelectorAll('input[name=start]')) el.addEventListener('change', disarm);
 $('start-file').addEventListener('change', () => { document.querySelector('input[name=start][value=file]').checked = true; disarm(); });
 $('start-eunis-version').addEventListener('change', () => { document.querySelector('input[name=start][value=EUNIS]').checked = true; disarm(); });
@@ -2376,6 +2417,7 @@ $('g-new').addEventListener('click', () => {
 });
 function deleteGroup(g) {
   model.groups.splice(model.groups.indexOf(g), 1);
+  M.renameGroupRefs(model, M.groupKey(g), null);
   if (sel.group === g.id) sel.group = null;
   groupsChanged();
 }
@@ -2387,6 +2429,7 @@ groupsTab.addEventListener('click', (e) => {
   if (!el || !g) return;
   switch (el.dataset.act) {
     case 'g-del-member': g.members = g.members.filter((m) => m !== el.dataset.name); break;
+    case 'g-open-ref': return openGroup(el.dataset.id);
     case 'g-paste-add': addMembers(g, $('g-paste').value.split(/\r?\n/)); break;
     case 'g-dup': {
       const copy = { ...structuredClone(g), id: M.uid(), name: freeName(`${g.name}-copy`, groupNames()) };
@@ -2423,14 +2466,25 @@ groupsTab.addEventListener('input', (e) => {
 });
 groupsTab.addEventListener('change', (e) => {
   const g = group(), el = e.target;
-  if (el.dataset.act === 'g-prefix') { g.prefix = el.value; return groupsChanged(); }
+  if (el.dataset.act === 'g-prefix') {
+    const from = M.groupKey(g);
+    g.prefix = el.value;
+    M.renameGroupRefs(model, from, M.groupKey(g));
+    return groupsChanged();
+  }
+  if (el.dataset.act === 'g-add-ref') {
+    if (el.value) addMembers(g, [el.value]);
+    return groupsChanged();
+  }
   if (el.dataset.act !== 'g-name') return;
   // Spaces become hyphens, as in the group names of the EUNIS-ESy releases.
   const name = el.value.trim().replace(/\s+/g, ' ').replace(/^(\+\d+ )?(.*)$/, (_, set, rest) => (set ?? '') + rest.replace(/ /g, '-'));
   if (name === g.name) { el.value = name; return; }
   if (groupNameFeedback(el, name)) return;
   const n = M.renameGroup(model, g.name, name);
+  const from = M.groupKey(g);
   g.name = name;
+  M.renameGroupRefs(model, from, M.groupKey(g));
   for (const r of model.rules) touched.add(r.id);
   groupsChanged();
   const text = $('t-editor').querySelector('[data-act="rule-text"]'), r = rule();

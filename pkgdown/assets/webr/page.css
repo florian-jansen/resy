@@ -232,3 +232,6 @@ html.resy-framed nav.navbar, html.resy-framed body > footer, html.resy-framed .c
 html.resy-framed body { padding-top: 0 !important; }
 html.resy-framed #tool:not([hidden]) { animation: none; }
 html.resy-framed main { margin-top: 26px; }
+
+/* A file field (or its label) a file is dragged over. */
+#resy-app .drop-file { outline: 2px dashed var(--bs-primary); outline-offset: 2px; border-radius: 0.375rem; }

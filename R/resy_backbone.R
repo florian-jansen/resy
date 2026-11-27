@@ -66,7 +66,9 @@
 #' 2. the option `resy.backbone` (same forms), e.g.
 #'    `options(resy.backbone = "~/EuroSL.sqlite")`;
 #' 3. the reference list of that name installed for vegdata
-#'    (see `vegdata::taxref_download_eurosl()`).
+#'    (see `vegdata::taxref_download_eurosl()`); if there is none, the list
+#'    named after backbone name and version (e.g. `"GermanSL 1.5"`, see
+#'    `vegdata::taxref_download_germansl()`).
 #'
 #' The list is read once per session; a list read from a file is also kept in
 #' RESY's cache directory (see [resy_load_expert()]) for later sessions.
@@ -84,13 +86,16 @@ resy_backbone <- function(expert, source = getOption("resy.backbone")) {
   name <- if (inherits(expert, "resy_parsed_expert")) expert$backbone$name else expert
   if (is.null(name) || !nzchar(name))
     stop("The expert system declares no taxonomic backbone.", call. = FALSE)
-  .resy_backbone_get(name, source)$list
+  version <- if (inherits(expert, "resy_parsed_expert")) expert$backbone$version
+  .resy_backbone_get(name, source, version)$list
 }
 
 # The backbone `name` with its lookups, cached per session: `list` (the
 # reference list), `concept_of` (usage -> accepted concept), `parent`,
-# `name_of` and `rank_of` (by accepted concept).
-.resy_backbone_get <- function(name, source = getOption("resy.backbone")) {
+# `name_of` and `rank_of` (by accepted concept). `version` is the declared
+# version of the backbone; vegdata names some lists by name and version
+# ("GermanSL 1.5").
+.resy_backbone_get <- function(name, source = getOption("resy.backbone"), version = NULL) {
   # A backbone prepared with .resy_backbone_build() and saved as RDS
   if (is.character(source) && grepl("\\.rds$", source, ignore.case = TRUE)) {
     key <- paste(name, normalizePath(source, mustWork = FALSE))
@@ -116,7 +121,7 @@ resy_backbone <- function(expert, source = getOption("resy.backbone")) {
     path <- tryCatch(vegdata::db_path(tolower(name)), error = function(e) NULL)
   }
   key <- if (is.data.frame(source)) rlang::hash(source) else
-    paste(name, normalizePath(path %||% "", mustWork = FALSE))
+    paste(name, if (is.null(source)) version, normalizePath(path %||% "", mustWork = FALSE))
   if (!is.null(.resy_backbone_cache[[key]])) return(.resy_backbone_cache[[key]])
 
   # A backbone read from a file is kept in RESY's cache directory, so that later
@@ -125,7 +130,7 @@ resy_backbone <- function(expert, source = getOption("resy.backbone")) {
     .resy_cache_file(path, scheme = "backbone", version = name)
   bb <- .resy_cache_read(file)
   if (is.null(bb)) {
-    bb <- .resy_backbone_build(name, .resy_backbone_read(name, source))
+    bb <- .resy_backbone_build(name, .resy_backbone_read(name, source), version)
     .resy_cache_write(file, bb, path)
   }
   bb$memo <- new.env(parent = emptyenv())
@@ -152,9 +157,12 @@ resy_backbone <- function(expert, source = getOption("resy.backbone")) {
 
 # The standardised reference list with the lookups RESY uses: `list`,
 # `concept_of` (usage -> accepted concept), `parent`, `name_of`, `rank_of` (by
-# accepted concept) and `version`.
-.resy_backbone_build <- function(name, refl) {
+# accepted concept) and `version`. A list vegdata does not know by `name` is
+# looked up by name and `version`.
+.resy_backbone_build <- function(name, refl, version = NULL) {
   sp <- suppressMessages(vegdata::tax("all", refl = refl))
+  if (is.null(sp) && is.character(refl) && !is.na(version %||% NA))
+    sp <- suppressMessages(vegdata::tax("all", refl = paste(name, version)))
   if (is.null(sp))
     stop("Backbone '", name, "' is not available. Install it for vegdata ",
          "(e.g. vegdata::taxref_download_eurosl()) or set ",
@@ -170,6 +178,9 @@ resy_backbone <- function(expert, source = getOption("resy.backbone")) {
 .resy_backbone_from <- function(sp, version) {
   sp <- sp[, c("TaxonUsageID", "TaxonName", "TaxonConceptID", "SYNONYM", "taxonRank",
                "parentTaxonConceptID"), with = FALSE]
+  # IDs are looked up by name: numeric IDs (GermanSL) would index by position
+  ids <- c("TaxonUsageID", "TaxonConceptID", "parentTaxonConceptID")
+  sp[, (ids) := lapply(.SD, as.character), .SDcols = ids]
   # vegdata takes the list as it is only when it is marked as standardised
   data.table::setattr(sp, "standardised", TRUE)
   acc <- sp[!sp$SYNONYM %in% TRUE]
@@ -490,7 +501,7 @@ resy_backbone <- function(expert, source = getOption("resy.backbone")) {
 # group and species condition widened to the expert taxa below it in the
 # backbone tree. Returns `obs`, `parsed` and the plot taxon table (`taxa`).
 .resy_backbone_apply <- function(obs, parsed, source = getOption("resy.backbone")) {
-  bb <- .resy_backbone_get(parsed$backbone$name, source)
+  bb <- .resy_backbone_get(parsed$backbone$name, source, parsed$backbone$version)
   ex <- .resy_backbone_expert(parsed, bb)
   taxa <- .resy_backbone_plot_taxa(obs$TaxonName, ex, bb)
   i <- fastmatch::fmatch(obs$TaxonName, taxa$scientificName)

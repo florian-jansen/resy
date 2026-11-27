@@ -105,3 +105,18 @@ testthat::test_that("systems with a backbone match names along the prepared Euro
   testthat::expect_identical(resy_load_expert(expertfile = txt)$backbone$name, "EuroSL")
   unlink(c(path, json, txt))
 })
+
+testthat::test_that("a folder of whole backbones is read by backbone name", {
+  dir <- tempfile()
+  dir.create(dir)
+  file.create(file.path(dir, c("EuroSL.rds", "GermanSL.rds")))
+  resy_page_backbone(dir)
+  testthat::expect_identical(.page_full_backbone("GermanSL"), file.path(dir, "GermanSL.rds"))
+  testthat::expect_identical(.page_full_backbone("EuroSL"), file.path(dir, "EuroSL.rds"))
+  testthat::expect_null(.page_full_backbone("Other"))
+  resy_page_backbone(file.path(dir, "EuroSL.rds"))
+  testthat::expect_identical(.page_full_backbone("EuroSL"), file.path(dir, "EuroSL.rds"))
+  testthat::expect_null(.page_full_backbone("GermanSL"))
+  .page$full_backbone <- NULL
+  unlink(dir, recursive = TRUE)
+})

@@ -170,6 +170,7 @@ loadNamespace("fastmatch")
 if (nzchar(Sys.getenv("RESY_BACKBONE"))) options(resy.backbone = Sys.getenv("RESY_BACKBONE"))
 eurosl <- RESY:::.resy_backbone_get("EuroSL")
 classifications <- file.path(lib, "RESY", "extdata", "classifications")
+other_backbones <- list()
 for (scheme in list.dirs(classifications, full.names = FALSE, recursive = FALSE)) {
   for (version in list.dirs(file.path(classifications, scheme), full.names = FALSE, recursive = FALSE)) {
     parsed <- RESY::resy_load_expert(scheme = scheme, version = version, location = "package")
@@ -180,13 +181,23 @@ for (scheme in list.dirs(classifications, full.names = FALSE, recursive = FALSE)
     if (is.null(parsed$backbone)) next
     target <- file.path(lib, "RESY", "extdata", "backbone", scheme)
     dir.create(target, recursive = TRUE, showWarnings = FALSE)
-    saveRDS(RESY:::.resy_backbone_prepare(eurosl, list(parsed)),
+    # A system along another backbone (e.g. GermanSL) takes its part
+    # from the list installed for vegdata.
+    bb <- if (identical(parsed$backbone$name, "EuroSL")) eurosl else
+      RESY:::.resy_backbone_get(parsed$backbone$name, source = NULL,
+                                version = parsed$backbone$version)
+    other_backbones[[parsed$backbone$name]] <- bb
+    saveRDS(RESY:::.resy_backbone_prepare(bb, list(parsed)),
             file.path(target, paste0(version, ".rds")), compress = "xz")
   }
 }
+# The whole of each backbone the shipped systems use, one file per backbone.
 backbone <- file.path(work, "backbone")
 dir.create(backbone)
 saveRDS(RESY:::.resy_backbone_prepare(eurosl), file.path(backbone, "EuroSL.rds"), compress = "xz")
+for (name in setdiff(names(other_backbones), "EuroSL"))
+  saveRDS(RESY:::.resy_backbone_prepare(other_backbones[[name]]), file.path(backbone, paste0(name, ".rds")),
+          compress = "xz")
 source(file.path(site, "resy_page.R"))
 si <- read.csv(file.path(lib, "RESY", "extdata", "data_example_sites.csv"), check.names = FALSE)
 stopifnot(nrow(si) == 200L, !anyDuplicated(si$PlotObservationID))

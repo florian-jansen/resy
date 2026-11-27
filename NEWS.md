@@ -1,5 +1,22 @@
 # RESY 0.3
 
+## Groups of groups, backbones and the App
+
+* A member of a Section 2 group may name another group with its prefix
+  (`"### Wet-meadows"`); RESY reads such a group as the species of the groups it
+  names, recursively. `resy_validate_esy()` reports references to undefined
+  groups and groups that contain themselves. The RESY Maker shows the groups a
+  group names apart from its species, adds them from a list and follows
+  renamed, retyped and deleted groups.
+* The webR bundle carries the whole of each backbone the shipped systems use,
+  not only EuroSL.
+* App and Maker take a file dropped onto a file field or its label; a file
+  dropped beside it is no longer opened or saved by the browser.
+* A backbone that vegdata names by name and version (`GermanSL 1.5`) is found
+  from the declared name and version (`GermanSL`, `1.5`).
+* Backbones with numeric taxon IDs (GermanSL) resolved names to wrong concepts
+  and ranks, because IDs were looked up by position; IDs are now read as text.
+
 ## Taxonomic backbone instead of Section 1 name matching
 
 * Section 1 of an expert system can now declare a taxonomic backbone instead

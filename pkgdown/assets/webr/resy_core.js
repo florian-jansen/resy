@@ -115,18 +115,18 @@ export function ensureGeography(webR) {
     await mountLibraries(webR, [['tables', tables]]);
   });
 }
-// The whole of EuroSL, prepared for matching without vegdata, for expert
+// The whole backbones, prepared for matching without vegdata, for expert
 // systems the user brings and for the Maker (a shipped system brings the part
-// of EuroSL it names). Tells R where it is and returns its path in the session.
+// of its backbone it names): one file per backbone (EuroSL.rds, GermanSL.rds).
+// Tells R where they are and returns the path of EuroSL in the session.
 export function ensureBackbone(webR) {
   return once(webR, 'backbone', async () => {
     const info = await manifest;
     const image = await fetchImage(info.images.backbone);
     await webR.FS.mkdir('/backbone');
     await webR.FS.mount('WORKERFS', { packages: [image] }, '/backbone');
-    const path = '/backbone/EuroSL.rds';
-    await webR.evalRVoid(`resy_page_backbone(${rString(path)})`);
-    return path;
+    await webR.evalRVoid(`resy_page_backbone("/backbone")`);
+    return '/backbone/EuroSL.rds';
   });
 }
 // The backbone the newest shipped systems use, for a new system in the Maker.
@@ -182,6 +182,34 @@ export function setFile(input, file) {
   const dt = new DataTransfer();
   dt.items.add(file);
   input.files = dt.files;
+}
+
+// File fields that take a file dragged onto them or onto their label. A file
+// dropped beside such a field would be opened or saved by the browser; it is
+// ignored instead.
+const hasFiles = (e) => [...(e.dataTransfer?.types ?? [])].includes('Files');
+export function acceptDrops(inputs) {
+  for (const type of ['dragover', 'drop']) {
+    window.addEventListener(type, (e) => { if (hasFiles(e)) e.preventDefault(); });
+  }
+  for (const input of inputs) {
+    const zone = input.closest('label') ?? input;
+    zone.addEventListener('dragover', (e) => {
+      if (!hasFiles(e)) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      zone.classList.add('drop-file');
+    });
+    zone.addEventListener('dragleave', (e) => { if (!zone.contains(e.relatedTarget)) zone.classList.remove('drop-file'); });
+    zone.addEventListener('drop', (e) => {
+      zone.classList.remove('drop-file');
+      const file = e.dataTransfer?.files?.[0];
+      if (!file) return;
+      e.preventDefault();
+      setFile(input, file);
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  }
 }
 
 export function saveBlob(blob, name) {

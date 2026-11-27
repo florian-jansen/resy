@@ -54,6 +54,9 @@
   if (any(grepl("{", membership.formulas, fixed = TRUE)))
     stop('Nested bracket "{}" is not implemented, only "()" is allowed.')
 
+  # Groups named in groups stand for their species
+  groups <- .resy_expand_group_refs(groups)
+
   gr <- c(.resy_group_name(names(groups)), "GE 30")
   if (any(duplicated(gr)))
     stop(paste("Duplicated group name found:", gr[duplicated(gr)]))

@@ -8,10 +8,11 @@ suppressPackageStartupMessages({
 
 .page <- new.env()
 
-# Species names are matched without vegdata, against EuroSL prepared for the
-# pages: a shipped system brings the part of EuroSL it names
+# Species names are matched without vegdata, against the backbone prepared for
+# the pages: a shipped system brings the part of its backbone it names
 # (extdata/backbone/<scheme>/<version>.rds); other systems use the whole list,
-# which the page loads on demand and names with resy_page_backbone().
+# which the page loads on demand and names with resy_page_backbone(): a folder
+# with one file per backbone (EuroSL.rds, GermanSL.rds), or one file, EuroSL.
 options(resy.backbone_match = "light")
 # Expert systems with species aggregations (the published releases) still go
 # through the name cleaning that RESY deprecates for its users.
@@ -25,6 +26,14 @@ resy_page_backbone <- function(path) {
   invisible(TRUE)
 }
 
+# The whole of the backbone `name`, NULL when it is not loaded.
+.page_full_backbone <- function(name) {
+  path <- .page$full_backbone
+  if (is.null(path) || !dir.exists(path)) return(if (identical(name, "EuroSL")) path)
+  file <- file.path(path, paste0(name, ".rds"))
+  if (file.exists(file)) file
+}
+
 # The prepared backbone a parsed expert system uses, NULL when it has none or
 # the whole list is not loaded yet.
 .page_backbone_source <- function(parsed) {
@@ -32,7 +41,7 @@ resy_page_backbone <- function(path) {
   src <- parsed$source
   shipped <- if (.page_shipped(parsed))
     system.file("extdata", "backbone", src$scheme, paste0(src$version, ".rds"), package = "RESY") else ""
-  if (nzchar(shipped)) shipped else .page$full_backbone
+  if (nzchar(shipped)) shipped else .page_full_backbone(parsed$backbone$name)
 }
 
 # Whether a parsed system is the shipped file of its scheme and version (a
@@ -48,7 +57,8 @@ resy_page_backbone <- function(path) {
 
 # Points RESY to the backbone of the system in use before names are matched.
 .page_set_backbone <- function() {
-  options(resy.backbone = .page$system$backbone_source %||% .page$full_backbone)
+  options(resy.backbone = .page$system$backbone_source %||%
+            .page_full_backbone(.page$system$parsed$backbone$name))
 }
 
 .page_json <- function(x, ...) jsonlite::toJSON(x, auto_unbox = TRUE, na = "null", dataframe = "rows", ...)

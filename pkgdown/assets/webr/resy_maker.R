@@ -217,8 +217,9 @@ resy_maker_suggest_synonyms <- function(rules_json, backbone_path) {
 # "misapplied_name", "uncertain_determination", "not_found").
 resy_maker_taxonomy <- function(rules_json) {
   parsed <- .maker_system(rules_json)$parsed
-  if (is.null(parsed$backbone) || is.null(.page$full_backbone)) return(.page_json(list()))
-  bb <- RESY:::.resy_backbone_get(parsed$backbone$name, .page$full_backbone)
+  full <- if (!is.null(parsed$backbone)) .page_full_backbone(parsed$backbone$name)
+  if (is.null(full)) return(.page_json(list()))
+  bb <- RESY:::.resy_backbone_get(parsed$backbone$name, full)
   used <- RESY:::.resy_expert_used(parsed)
   m <- RESY:::.resy_backbone_match(used, bb)
   status <- ifelse(!is.na(m$issue), m$issue, ifelse(m$accepted == m$name, "accepted", "renamed"))

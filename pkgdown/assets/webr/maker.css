@@ -364,3 +364,11 @@
   #resy-app .cond select.kind { max-width: calc(100% - 3rem); }
   #resy-app .typeahead .meta { white-space: normal; flex: 0 0 4rem; }
 }
+
+/* A file field (or its label) a file is dragged over. */
+#resy-app .drop-file { outline: 2px dashed var(--bs-primary); outline-offset: 2px; border-radius: 0.375rem; }
+
+/* Groups named in a group: upright, linked to the group they name. */
+#resy-app .chips.refs li { font-style: normal; background: var(--bs-tertiary-bg); }
+#resy-app .chips.refs li.missing { border-color: var(--bs-danger); color: var(--bs-danger); }
+#resy-app .chips.refs .btn-link { font-size: inherit; text-decoration: none; }

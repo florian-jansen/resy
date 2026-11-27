@@ -2,7 +2,7 @@
 // helpers sit next to this script; pkgdown/build_webr_bundle.R builds the bundle.
 // The data files are read here in parts and classified in batches of whole
 // plots, spread over several webR sessions, so files of any size can be used.
-import { $, escapeHtml, rString, cleanError, fmt, plural, createLoader, fetchAssets, bootSession, setFile, saveBlob, store, createShell, pinNavbar, prepareSites, ensureGeography, ensureBackbone } from './resy_core.js';
+import { $, escapeHtml, rString, cleanError, fmt, plural, createLoader, fetchAssets, bootSession, setFile, saveBlob, store, createShell, pinNavbar, prepareSites, ensureGeography, ensureBackbone, acceptDrops } from './resy_core.js';
 import { lineChunks, splitFields, splitRecords, fileText, readHeader, pick, SPECIES_COLS, SPECIES_COL_LABEL, fillSpeciesColumns, tsvValue, plotId, tsvPlotId, fieldNumber } from './resy_files.js';
 import { compareHtml, evidenceHtml, wireEvidence } from './resy_evidence.js';
 import { placeOf, createDotMap } from './resy_map.js';
@@ -1261,6 +1261,7 @@ for (const id of DATA_INPUTS) $(id).addEventListener('change', async () => {
 for (const id of [...SPECIES_COLS.map(([, id]) => id), 'o-coast', 'o-buffer']) $(id).addEventListener('change', () => { invalidateResults(); updateReadiness(); });
 $('o-coast').addEventListener('change', () => { $('o-buffer').disabled = !$('o-coast').checked; });
 $('reset-data').addEventListener('click', resetData);
+acceptDrops([...DATA_INPUTS.map((id) => $(id)), $('f-expert')]);
 for (const [kind, header] of Object.entries({ species: 'PlotObservationID,scientificName,Cover_Perc', sites: 'PlotObservationID,Longitude,Latitude' })) {
   $(`template-${kind}`).addEventListener('click', () => saveBlob(new Blob([header + '\n'], { type: 'text/csv' }), `resy_${kind}_template.csv`));
 }
